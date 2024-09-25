@@ -11,6 +11,7 @@ import team4.footwithme.stadium.domain.Stadium;
 import team4.footwithme.stadium.repository.StadiumRepository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -22,14 +23,16 @@ public class StadiumServiceImpl implements StadiumService {
     // 구장 목록 조회
     public List<StadiumsResponse> getStadiumList() {
         return stadiumRepository.findAll().stream()
-                .map(stadium -> new StadiumsResponse(stadium.getName(), stadium.getAddress()))
+                .map(stadium -> new StadiumsResponse(stadium.getStadiumId(), stadium.getName(), stadium.getAddress()))
                 .toList();
     }
+
 
     public StadiumDetailResponse getStadiumDetail(Long id) {
         Stadium stadium = findByIdOrThrowStadiumException(id);
 
         return new StadiumDetailResponse(
+                stadium.getMember().getMemberId(),
                 stadium.getName(),
                 stadium.getAddress(),
                 stadium.getPhoneNumber(),
@@ -38,6 +41,16 @@ public class StadiumServiceImpl implements StadiumService {
                 stadium.getPosition().getLongitude()
         );
     }
+
+
+    public List<StadiumsResponse> getAutocompleteSuggestions(String query) {
+        List<Stadium> stadiums = stadiumRepository.findByNameContainingIgnoreCase(query);
+        return stadiums.stream()
+                .map(stadium -> new StadiumsResponse(stadium.getStadiumId(), stadium.getName(), stadium.getAddress()))
+                .collect(Collectors.toList());
+    }
+
+
 
     // 구장 조회 예외처리
     public Stadium findByIdOrThrowStadiumException(long id) {

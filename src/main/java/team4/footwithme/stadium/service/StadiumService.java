@@ -9,6 +9,7 @@ import java.util.List;
 public interface StadiumService {
     List<StadiumsResponse> getStadiumList();
     StadiumDetailResponse getStadiumDetail(Long id);
+    List<StadiumsResponse> getAutocompleteSuggestions(String query);
 
 
 

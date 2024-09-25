@@ -2,10 +2,7 @@ package team4.footwithme.stadium.api;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import team4.footwithme.global.api.ApiResponse;
 import team4.footwithme.stadium.api.response.StadiumDetailResponse;
 import team4.footwithme.stadium.api.response.StadiumsResponse;
@@ -36,4 +33,9 @@ public class StadiumApi {
         return ApiResponse.ok(stadiumDetailResponse);
     }
 
+    @GetMapping("/autocomplete")
+    public ApiResponse<List<StadiumsResponse>> autocomplete(@RequestParam String query) {
+        List<StadiumsResponse> stadiums = stadiumService.getAutocompleteSuggestions(query);
+        return ApiResponse.ok(stadiums);
+    }
 }

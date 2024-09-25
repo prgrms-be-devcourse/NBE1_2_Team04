@@ -95,6 +95,15 @@ class StadiumServiceImplTest {
         assertEquals(2.0, response.longitude());
     }
 
+
+    @Test
+    void getAutocompleteSuggestions() {
+        List<StadiumsResponse> result = stadiumService.getAutocompleteSuggestions("2");
+        assertEquals(1, result.size());
+        assertEquals("Stadium2", result.get(0).name());
+    }
+
+
     @Test
     void findByIdOrThrowStadiumException_whenStadiumExists() {
         Stadium stadium = stadiumRepository.findAll().get(0);
