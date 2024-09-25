@@ -1,11 +1,12 @@
 package team4.footwithme.stadium.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import team4.footwithme.global.exception.Stadium.StadiumException;
 import team4.footwithme.global.exception.Stadium.StadiumExceptionMessage;
+import team4.footwithme.stadium.api.response.StadiumDetailResponse;
+import team4.footwithme.stadium.api.response.StadiumsResponse;
 import team4.footwithme.stadium.domain.Stadium;
 import team4.footwithme.stadium.repository.StadiumRepository;
 
@@ -19,8 +20,23 @@ public class StadiumServiceImpl implements StadiumService {
     private final StadiumRepository stadiumRepository;
 
     // 구장 목록 조회
-    public List<Stadium> getStadiums() {
-        return stadiumRepository.findAll();
+    public List<StadiumsResponse> getStadiumList() {
+        return stadiumRepository.findAll().stream()
+                .map(stadium -> new StadiumsResponse(stadium.getName(), stadium.getAddress()))
+                .toList();
+    }
+
+    public StadiumDetailResponse getStadiumDetail(Long id) {
+        Stadium stadium = findByIdOrThrowStadiumException(id);
+
+        return new StadiumDetailResponse(
+                stadium.getName(),
+                stadium.getAddress(),
+                stadium.getPhoneNumber(),
+                stadium.getDescription(),
+                stadium.getPosition().getLatitude(),
+                stadium.getPosition().getLongitude()
+        );
     }
 
     // 구장 조회 예외처리
