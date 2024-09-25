@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum MatchStatus {
+public enum GameStatus {
     PENDING,
     READY,
     IGNORE,

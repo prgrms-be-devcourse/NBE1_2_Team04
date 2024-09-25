@@ -11,9 +11,10 @@ import team4.footwithme.stadium.domain.Stadium;
 import org.hibernate.annotations.SQLDelete;
 
 @Getter
-@Entity
+@Builder
 @SQLDelete(sql = "UPDATE team SET is_deleted = TRUE WHERE team_id = ?")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Entity
 public class Team extends BaseEntity {
 
     @Id
@@ -28,6 +29,7 @@ public class Team extends BaseEntity {
     private Long chatRoomId;
 
     @NotNull
+    @Column(length = 50)
     private String name;
 
     @Column(length = 200, nullable = true)
@@ -36,6 +38,7 @@ public class Team extends BaseEntity {
     @Embedded
     private TotalRecord totalRecord;
 
+    @Column(length = 100, nullable = true)
     private String location;
 
     @Builder

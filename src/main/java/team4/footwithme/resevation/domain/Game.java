@@ -11,13 +11,13 @@ import team4.footwithme.global.domain.BaseEntity;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLDelete(sql = "UPDATE match SET is_deleted = TRUE WHERE match_id = ?")
+@SQLDelete(sql = "UPDATE game SET is_deleted = TRUE WHERE game_id = ?")
 @Entity
-public class Match extends BaseEntity {
+public class Game extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long matchId;
+    private Long gameId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "first_team_reservation_id", nullable = false)
@@ -29,20 +29,20 @@ public class Match extends BaseEntity {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    private MatchStatus matchStatus;
+    private GameStatus gameStatus;
 
     @Builder
-    private Match(Reservation firstTeamReservation, Reservation secondTeamReservation, MatchStatus matchStatus) {
+    private Game(Reservation firstTeamReservation, Reservation secondTeamReservation, GameStatus gameStatus) {
         this.firstTeamReservation = firstTeamReservation;
         this.secondTeamReservation = secondTeamReservation;
-        this.matchStatus = matchStatus;
+        this.gameStatus = gameStatus;
     }
 
-    public static Match create(Reservation firstTeamReservation, Reservation secondTeamReservation, MatchStatus matchStatus) {
-        return Match.builder()
+    public static Game create(Reservation firstTeamReservation, Reservation secondTeamReservation, GameStatus gameStatus) {
+        return Game.builder()
             .firstTeamReservation(firstTeamReservation)
             .secondTeamReservation(secondTeamReservation)
-            .matchStatus(matchStatus)
+            .gameStatus(gameStatus)
             .build();
     }
 
