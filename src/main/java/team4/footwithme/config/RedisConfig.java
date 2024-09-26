@@ -1,4 +1,4 @@
-package team4.footwithme.global.config;
+package team4.footwithme.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,7 +15,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @RequiredArgsConstructor
 @Configuration
 @EnableRedisRepositories
-public class RedisRepositoryConfig {
+public class RedisConfig {
 
     @Value("${spring.data.redis.host}")
     private String host;

@@ -1,4 +1,4 @@
-package team4.footwithme.global.config;
+package team4.footwithme.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
