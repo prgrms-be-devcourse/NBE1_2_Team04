@@ -3,14 +3,15 @@ package team4.footwithme.stadium.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.locationtech.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+import team4.footwithme.global.util.PositionUtil;
 import team4.footwithme.member.domain.*;
 import team4.footwithme.member.repository.MemberRepository;
 import team4.footwithme.stadium.api.response.StadiumDetailResponse;
 import team4.footwithme.stadium.api.response.StadiumsResponse;
-import team4.footwithme.stadium.domain.Position;
 import team4.footwithme.stadium.domain.Stadium;
 import team4.footwithme.stadium.repository.StadiumRepository;
 
@@ -51,26 +52,40 @@ class StadiumServiceImplTest {
                 .build();
         memberRepository.save(testMember);
 
+        Point position1 = PositionUtil.createPoint(37.5642135, 127.0016985);
+        Point position2 = PositionUtil.createPoint(35.1379222, 129.05562775);
+        Point position3 = PositionUtil.createPoint(36.3504119, 127.3845475);
+
         Stadium stadium1 = Stadium.builder()
                 .name("Stadium1")
-                .address("Address1")
+                .address("seoul")
                 .phoneNumber("123-4567")
                 .description("Description1")
-                .position(Position.builder().latitude(1.0).longitude(2.0).build())
+                .position(position1)
                 .member(testMember)
                 .build();
 
         Stadium stadium2 = Stadium.builder()
                 .name("Stadium2")
-                .address("Address2")
+                .address("busan")
                 .phoneNumber("890-1234")
                 .description("Description2")
-                .position(Position.builder().latitude(3.0).longitude(4.0).build())
+                .position(position2)
+                .member(testMember)
+                .build();
+
+        Stadium stadium3 = Stadium.builder()
+                .name("Stadium3")
+                .address("daegu")
+                .phoneNumber("321-6547")
+                .description("Description3")
+                .position(position3)
                 .member(testMember)
                 .build();
 
         stadiumRepository.save(stadium1);
         stadiumRepository.save(stadium2);
+        stadiumRepository.save(stadium3);
     }
 
     @Test
@@ -78,29 +93,30 @@ class StadiumServiceImplTest {
     void getStadiumList() {
         List<StadiumsResponse> result = stadiumService.getStadiumList();
 
-        assertThat(result).hasSize(2);
+        assertThat(result).hasSize(3);
         assertThat(result.get(0).name()).isEqualTo("Stadium1");
         assertThat(result.get(1).name()).isEqualTo("Stadium2");
+        assertThat(result.get(2).name()).isEqualTo("Stadium3");
     }
 
     @Test
     @DisplayName("구장 이름이 매우 긴 경우에도 정상적으로 저장되고 반환되어야 한다")
     void getStadiumList_withLongStadiumName() {
         String longName = "A".repeat(255);
+        Point position = PositionUtil.createPoint(37.5665, 126.9780);
         Stadium stadium = Stadium.builder()
                 .name(longName)
                 .address("LongNameAddress")
                 .phoneNumber("123-4567")
-                .position(Position.builder().latitude(1.0).longitude(2.0).build())
+                .position(position)
                 .member(testMember)
                 .build();
         stadiumRepository.save(stadium);
 
         List<StadiumsResponse> result = stadiumService.getStadiumList();
 
-        assertThat(result.get(2).name()).isEqualTo(longName);
+        assertThat(result.get(3).name()).isEqualTo(longName);
     }
-
 
     @Test
     @DisplayName("특정 구장의 상세 정보를 정상적으로 반환해야 한다")
@@ -113,17 +129,42 @@ class StadiumServiceImplTest {
         assertThat(response.name()).isEqualTo("Stadium1");
         assertThat(response.address()).isEqualTo("Address1");
         assertThat(response.phoneNumber()).isEqualTo("123-4567");
-        assertThat(response.latitude()).isEqualTo(1.0);
-        assertThat(response.longitude()).isEqualTo(2.0);
+        assertThat(response.latitude()).isEqualTo(37.5642135);
+        assertThat(response.longitude()).isEqualTo(127.0016985);
     }
 
     @Test
-    @DisplayName("검색어로 구장 자동완성 리스트를 정상적으로 반환해야 한다")
+    @DisplayName("이름 검색어로 구장 리스트를 정상적으로 반환해야 한다")
     void searchStadiumByName() {
-        List<StadiumsResponse> result = stadiumService.searchStadiumByName("2");
+        List<StadiumsResponse> result = stadiumService.getStadiumsByName("2");
 
         assertThat(result).hasSize(1);
         assertThat(result.get(0).name()).isEqualTo("Stadium2");
+    }
+
+    @Test
+    @DisplayName("주어진 거리 내의 구장 목록을 반환해야 한다")
+    void getStadiumsWithinDistance_shouldReturnStadiumsWithinGivenDistance() {
+        Double searchLatitude = 37.5665;
+        Double searchLongitude = 126.9780;
+        Double distance = 100.0;
+
+        List<StadiumsResponse> result = stadiumService.getStadiumsWithinDistance(searchLatitude, searchLongitude, distance);
+
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).name()).isEqualTo("Stadium1");
+    }
+
+    @Test
+    @DisplayName("주어진 거리 외의 구장이 반환되지 않아야 한다")
+    void getStadiumsWithinDistance_shouldReturnEmptyListWhenTooFar() {
+        Double searchLatitude = 33.450701;
+        Double searchLongitude = 126.570667;
+        Double distance = 1.0;
+
+        List<StadiumsResponse> result = stadiumService.getStadiumsWithinDistance(searchLatitude, searchLongitude, distance);
+
+        assertThat(result).isEmpty();
     }
 
     @Test

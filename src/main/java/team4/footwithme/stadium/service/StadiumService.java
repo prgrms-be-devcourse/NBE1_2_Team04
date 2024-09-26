@@ -9,9 +9,9 @@ import java.util.List;
 public interface StadiumService {
     List<StadiumsResponse> getStadiumList();
     StadiumDetailResponse getStadiumDetail(Long id);
-    List<StadiumsResponse> searchStadiumByName(String query);
-    List<StadiumsResponse> searchStadiumByAddress(String address);
-
+    List<StadiumsResponse> getStadiumsByName(String query);
+    List<StadiumsResponse> getStadiumsByAddress(String address);
+    List<StadiumsResponse> getStadiumsWithinDistance(Double latitude, Double longitude, Double distance);
 
 
 

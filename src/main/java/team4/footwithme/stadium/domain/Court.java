@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLDelete(sql = "UPDATE court SET is_deleted = TRUE WHERE court_id = ?")
+@SQLDelete(sql = "UPDATE court SET is_deleted = 'TRUE' WHERE court_id = ?")
 @Entity
 public class Court extends BaseEntity {
 

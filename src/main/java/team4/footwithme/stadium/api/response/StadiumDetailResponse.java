@@ -6,6 +6,6 @@ public record StadiumDetailResponse(
         String address,
         String phoneNumber,
         String description,
-        double latitude,
-        double longitude
+        Double latitude,
+        Double longitude
 ) {}

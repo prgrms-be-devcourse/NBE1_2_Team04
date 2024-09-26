@@ -2,8 +2,11 @@ package team4.footwithme.stadium.api;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import team4.footwithme.global.api.ApiResponse;
+import team4.footwithme.stadium.api.request.StadiumSearchByLocationRequest;
 import team4.footwithme.stadium.api.response.StadiumDetailResponse;
 import team4.footwithme.stadium.api.response.StadiumsResponse;
 import team4.footwithme.stadium.domain.Stadium;
@@ -32,10 +35,21 @@ public class StadiumApi {
     }
 
     @GetMapping("/stadiums/search/name")
-    public ApiResponse<List<StadiumsResponse>> autocomplete(@RequestParam String query) {
-        List<StadiumsResponse> stadiums = stadiumService.searchStadiumByName(query);
+    public ApiResponse<List<StadiumsResponse>> getStadiumsByName(@RequestParam String query) {
+        List<StadiumsResponse> stadiums = stadiumService.getStadiumsByName(query);
         return ApiResponse.ok(stadiums);
     }
 
+    @GetMapping("/stadiums/search/address")
+    public ApiResponse<List<StadiumsResponse>> getStadiumsByAddress(@RequestParam String query) {
+        List<StadiumsResponse> stadiums = stadiumService.getStadiumsByAddress(query);
+        return ApiResponse.ok(stadiums);
+    }
 
+    @PostMapping("/stadiums/search/location")
+    public ApiResponse<List<StadiumsResponse>> getStadiumsByLocation(@Validated @RequestBody StadiumSearchByLocationRequest request) {
+        List<StadiumsResponse> stadiums = stadiumService.getStadiumsWithinDistance(
+                request.latitude(), request.longitude(), request.distance());
+        return ApiResponse.ok(stadiums);
+    }
 }

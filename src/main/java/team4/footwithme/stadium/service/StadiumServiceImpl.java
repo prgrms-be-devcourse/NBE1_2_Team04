@@ -2,7 +2,9 @@ package team4.footwithme.stadium.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.locationtech.jts.geom.Point;
 import org.springframework.stereotype.Service;
+import team4.footwithme.global.util.PositionUtil;
 import team4.footwithme.stadium.exception.StadiumExceptionMessage;
 import team4.footwithme.stadium.api.response.StadiumDetailResponse;
 import team4.footwithme.stadium.api.response.StadiumsResponse;
@@ -29,6 +31,7 @@ public class StadiumServiceImpl implements StadiumService {
     // 구장 상세 정보 조회
     public StadiumDetailResponse getStadiumDetail(Long id) {
         Stadium stadium = findByIdOrThrowException(id);
+        Point position = stadium.getPosition();
 
         return new StadiumDetailResponse(
                 stadium.getMember().getMemberId(),
@@ -36,13 +39,13 @@ public class StadiumServiceImpl implements StadiumService {
                 stadium.getAddress(),
                 stadium.getPhoneNumber(),
                 stadium.getDescription(),
-                stadium.getPosition().getLatitude(),
-                stadium.getPosition().getLongitude()
+                position.getY(),
+                position.getX()
         );
     }
 
     // 이름으로 구장 검색
-    public List<StadiumsResponse> searchStadiumByName(String query) {
+    public List<StadiumsResponse> getStadiumsByName(String query) {
         List<Stadium> stadiums = stadiumRepository.findByNameContainingIgnoreCase(query);
         return stadiums.stream()
                 .map(stadium -> new StadiumsResponse(stadium.getStadiumId(), stadium.getName(), stadium.getAddress()))
@@ -50,8 +53,18 @@ public class StadiumServiceImpl implements StadiumService {
     }
 
     // 주소로 구장 검색
-    public List<StadiumsResponse> searchStadiumByAddress(String address) {
+    public List<StadiumsResponse> getStadiumsByAddress(String address) {
         List<Stadium> stadiums = stadiumRepository.findByAddressContainingIgnoreCase(address);
+        return stadiums.stream()
+                .map(stadium -> new StadiumsResponse(stadium.getStadiumId(), stadium.getName(), stadium.getAddress()))
+                .collect(Collectors.toList());
+    }
+
+    // 위도, 경도의 일정 거리 내의 구장 목록 반환
+    public List<StadiumsResponse> getStadiumsWithinDistance(Double latitude, Double longitude, Double distance) {
+        Point point = PositionUtil.createPoint(latitude, longitude);
+        String wktPoint = String.format("POINT(%s %s)", point.getY(), point.getX());
+        List<Stadium> stadiums = stadiumRepository.findStadiumsByLocation(wktPoint, distance);
         return stadiums.stream()
                 .map(stadium -> new StadiumsResponse(stadium.getStadiumId(), stadium.getName(), stadium.getAddress()))
                 .collect(Collectors.toList());
