@@ -79,4 +79,20 @@ public class VoteServiceImpl implements VoteService {
             .toList()
         );
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public VoteResponse getStadiumVote(long voteId) {
+        Vote vote = voteRepository.findById(voteId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 투표입니다."));
+
+        List<VoteItemLocate> voteItems = voteItemRepository.findByVoteVoteId(voteId);
+
+        List<String> stadiumNames = getStadiumNames(voteItems);
+
+        return VoteResponse.of(vote, voteItems.stream()
+            .map(voteItem -> VoteItemResponse.of(voteItem.getVoteItemId(), stadiumNames.get(voteItems.indexOf(voteItem)), 0L))
+            .toList()
+        );
+    }
 }

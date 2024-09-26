@@ -21,6 +21,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
@@ -39,9 +40,9 @@ public class VoteApiDocs extends RestDocsSupport {
     }
 
 
-    @DisplayName("투표를 등록하는 API")
+    @DisplayName("구장 투표를 등록하는 API")
     @Test
-    void createVote() throws Exception {
+    void createStadiumVote() throws Exception {
         //given
         LocalDateTime endAt = LocalDateTime.now().plusDays(1);
         StadiumChoices stadiumChoices1 = new StadiumChoices(1L);
@@ -73,6 +74,57 @@ public class VoteApiDocs extends RestDocsSupport {
                 ),
                 pathParameters(
                     parameterWithName("teamId").description("팀 ID")
+                ),
+                responseFields(
+                    fieldWithPath("code").type(JsonFieldType.NUMBER)
+                        .description("코드"),
+                    fieldWithPath("status").type(JsonFieldType.STRING)
+                        .description("상태"),
+                    fieldWithPath("message").type(JsonFieldType.STRING)
+                        .description("메시지"),
+                    fieldWithPath("data").type(JsonFieldType.OBJECT)
+                        .description("응답 데이터"),
+                    fieldWithPath("data.voteId").type(JsonFieldType.NUMBER)
+                        .description("투표 ID"),
+                    fieldWithPath("data.title").type(JsonFieldType.STRING)
+                        .description("투표 제목"),
+                    fieldWithPath("data.endAt").type(JsonFieldType.ARRAY)
+                        .description("투표 종료 시간"),
+                    fieldWithPath("data.choices").type(JsonFieldType.ARRAY)
+                        .description("투표 선택지 목록"),
+                    fieldWithPath("data.choices[].voteItemId").type(JsonFieldType.NUMBER)
+                        .description("투표 선택지 ID"),
+                    fieldWithPath("data.choices[].content").type(JsonFieldType.STRING)
+                        .description("투표 선택지 내용"),
+                    fieldWithPath("data.choices[].voteCount").type(JsonFieldType.NUMBER)
+                        .description("투표 선택지 투표 수")
+                )
+            ));
+    }
+
+    @DisplayName("구장 투표를 조회하는 API")
+    @Test
+    void getVoteStadium() throws Exception {
+        LocalDateTime endAt = LocalDateTime.now().plusDays(1);
+        long voteId = 1L;
+
+        given(voteService.getStadiumVote(voteId))
+            .willReturn(new VoteResponse(
+                1L,
+                "연말 행사 투표",
+                endAt,
+                List.of(new VoteItemResponse(1L, "최강 풋살장", 5L),
+                    new VoteItemResponse(2L, "열정 풋살장", 4L)
+                )
+            ));
+
+        mockMvc.perform(get("/api/v1/votes/{voteId}",voteId)
+            .contentType(MediaType.APPLICATION_JSON))
+            .andDo(document("vote-stadium-get",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                pathParameters(
+                    parameterWithName("voteId").description("투표 ID")
                 ),
                 responseFields(
                     fieldWithPath("code").type(JsonFieldType.NUMBER)

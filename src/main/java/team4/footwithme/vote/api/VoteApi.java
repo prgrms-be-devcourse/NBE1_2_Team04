@@ -21,4 +21,9 @@ public class VoteApi {
         return ApiResponse.created(voteService.createStadiumVote(request.toServiceRequest(),teamId, email));
     }
 
+    @GetMapping("{voteId}")
+    public ApiResponse<VoteResponse> getVote(@PathVariable Long voteId) {
+        return ApiResponse.ok(voteService.getStadiumVote(voteId));
+    }
+
 }
