@@ -8,6 +8,7 @@ import team4.footwithme.stadium.repository.StadiumRepository;
 import team4.footwithme.team.repository.TeamRepository;
 import team4.footwithme.vote.domain.VoteItemLocate;
 import team4.footwithme.vote.domain.Vote;
+import team4.footwithme.vote.repository.ChoiceRepository;
 import team4.footwithme.vote.repository.VoteItemRepository;
 import team4.footwithme.vote.repository.VoteRepository;
 import team4.footwithme.vote.service.request.VoteStadiumCreateServiceRequest;
@@ -30,6 +31,8 @@ public class VoteServiceImpl implements VoteService {
 
     private final TeamRepository teamRepository;
 
+    private final ChoiceRepository choiceRepository;
+
     @Transactional
     @Override
     public VoteResponse createStadiumVote(VoteStadiumCreateServiceRequest request, Long teamId, String email) {
@@ -50,7 +53,11 @@ public class VoteServiceImpl implements VoteService {
         List<String> stadiumNames = getStadiumNames(savedVoteItems);
 
         return VoteResponse.of(savedVote, savedVoteItems.stream()
-            .map(voteItem -> VoteItemResponse.of(voteItem.getVoteItemId(), stadiumNames.get(savedVoteItems.indexOf(voteItem)), 0L))
+            .map(voteItem -> {
+                Long voteItemId = voteItem.getVoteItemId();
+                String contents = stadiumNames.get(savedVoteItems.indexOf(voteItem));
+                return VoteItemResponse.of(voteItemId, contents, 0L);
+            })
             .toList()
         );
     }
@@ -83,16 +90,26 @@ public class VoteServiceImpl implements VoteService {
     @Transactional(readOnly = true)
     @Override
     public VoteResponse getStadiumVote(long voteId) {
-        Vote vote = voteRepository.findById(voteId)
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 투표입니다."));
+        Vote vote = getVote(voteId);
 
         List<VoteItemLocate> voteItems = voteItemRepository.findByVoteVoteId(voteId);
 
         List<String> stadiumNames = getStadiumNames(voteItems);
 
         return VoteResponse.of(vote, voteItems.stream()
-            .map(voteItem -> VoteItemResponse.of(voteItem.getVoteItemId(), stadiumNames.get(voteItems.indexOf(voteItem)), 0L))
+            .map(voteItem -> {
+                Long voteItemId = voteItem.getVoteItemId();
+                Long voteCount = choiceRepository.countByVoteItemId(voteItemId);
+                String contents = stadiumNames.get(voteItems.indexOf(voteItem));
+                return VoteItemResponse.of(voteItemId, contents, voteCount);
+            })
             .toList()
         );
     }
+
+    private Vote getVote(long voteId) {
+        return voteRepository.findById(voteId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 투표입니다."));
+    }
+
 }

@@ -12,9 +12,11 @@ import team4.footwithme.stadium.domain.Stadium;
 import team4.footwithme.stadium.repository.StadiumRepository;
 import team4.footwithme.team.domain.Team;
 import team4.footwithme.team.repository.TeamRepository;
+import team4.footwithme.vote.domain.Choice;
 import team4.footwithme.vote.domain.Vote;
 import team4.footwithme.vote.domain.VoteItem;
 import team4.footwithme.vote.domain.VoteItemLocate;
+import team4.footwithme.vote.repository.ChoiceRepository;
 import team4.footwithme.vote.repository.VoteItemRepository;
 import team4.footwithme.vote.repository.VoteRepository;
 import team4.footwithme.vote.service.request.VoteStadiumCreateServiceRequest;
@@ -45,6 +47,9 @@ class VoteServiceImplTest extends IntegrationTestSupport {
 
     @Autowired
     private TeamRepository teamRepository;
+
+    @Autowired
+    private ChoiceRepository choiceRepository;
 
     @DisplayName("새로운 구장 투표를 생성한다")
     @Test
@@ -192,6 +197,13 @@ class VoteServiceImplTest extends IntegrationTestSupport {
 
         List<VoteItemLocate> savedVoteItems = voteItemRepository.saveAll(voteItemLocates);
 
+        Choice choice1 = Choice.create(10L, savedVoteItems.get(0).getVoteItemId());
+        Choice choice2 = Choice.create(10L, savedVoteItems.get(1).getVoteItemId());
+        Choice choice3 = Choice.create(20L, savedVoteItems.get(0).getVoteItemId());
+
+        choiceRepository.saveAll(List.of(choice1, choice2, choice3));
+
+
         //when
         VoteResponse response = voteService.getStadiumVote(savedVote.getVoteId());
 
@@ -206,8 +218,8 @@ class VoteServiceImplTest extends IntegrationTestSupport {
             .hasSize(3)
             .extracting("voteItemId", "content", "voteCount")
             .containsExactlyInAnyOrder(
-                tuple(savedVoteItems.get(0).getVoteItemId(), "최강 풋살장", 0L),
-                tuple(savedVoteItems.get(1).getVoteItemId(), "열정 풋살장", 0L),
+                tuple(savedVoteItems.get(0).getVoteItemId(), "최강 풋살장", 2L),
+                tuple(savedVoteItems.get(1).getVoteItemId(), "열정 풋살장", 1L),
                 tuple(savedVoteItems.get(2).getVoteItemId(), "우주 풋살장", 0L)
             );
     }
