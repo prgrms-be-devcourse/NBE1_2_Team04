@@ -30,6 +30,7 @@ public class Vote extends BaseEntity {
     private Long teamId;
 
     @NotNull
+    @Column(length = 50)
     private String title;
 
     @NotNull
@@ -47,12 +48,19 @@ public class Vote extends BaseEntity {
     }
 
     public static Vote create(Long memberId, Long teamId, String title, LocalDateTime endAt) {
+        validateEndAt(endAt);
         return Vote.builder()
             .memberId(memberId)
             .teamId(teamId)
             .title(title)
             .endAt(endAt)
             .build();
+    }
+
+    private static void validateEndAt(LocalDateTime endAt) {
+        if (endAt.isBefore(LocalDateTime.now())) {
+            throw new IllegalArgumentException("투표 종료일은 현재 시간 이후여야 합니다.");
+        }
     }
 
     public void addChoice(VoteItem voteItem) {

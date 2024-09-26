@@ -5,5 +5,6 @@ import org.springframework.stereotype.Repository;
 import team4.footwithme.member.domain.Member;
 
 @Repository
-public interface MemberRepository extends JpaRepository<Member, Long> {
+public interface MemberRepository extends JpaRepository<Member, Long>, CustomMemberRepository {
+
 }
