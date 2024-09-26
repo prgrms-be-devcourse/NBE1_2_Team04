@@ -14,6 +14,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.client.RestTemplate;
 import team4.footwithme.member.jwt.JwtTokenFilter;
+import team4.footwithme.member.jwt.JwtTokenUtil;
 
 @Configuration
 @EnableWebSecurity
@@ -21,6 +22,7 @@ import team4.footwithme.member.jwt.JwtTokenFilter;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    private final JwtTokenUtil jwtTokenUtil;
     private final RedisTemplate redisTemplate;
 
     @Bean
@@ -40,7 +42,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
                         .requestMatchers("/api/v1/members/**").permitAll()
                 )
-                .addFilterBefore(new JwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtTokenFilter(jwtTokenUtil,redisTemplate), UsernamePasswordAuthenticationFilter.class);
 
         return httpSecurity.build();
     }
