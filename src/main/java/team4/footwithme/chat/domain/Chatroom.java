@@ -14,7 +14,7 @@ import org.hibernate.annotations.SQLDelete;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@SQLDelete(sql = "UPDATE chatroom SET is_deleted = true WHERE chatroom_id = ?")
+@SQLDelete(sql = "UPDATE chatroom SET is_deleted = 'true' WHERE chatroom_id = ?")
 public class Chatroom extends BaseEntity {
 
     @Id
