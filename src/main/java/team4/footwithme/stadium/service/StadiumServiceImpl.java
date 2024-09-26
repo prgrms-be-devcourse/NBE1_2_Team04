@@ -6,8 +6,8 @@ import org.locationtech.jts.geom.Point;
 import org.springframework.stereotype.Service;
 import team4.footwithme.global.util.PositionUtil;
 import team4.footwithme.stadium.exception.StadiumExceptionMessage;
-import team4.footwithme.stadium.api.response.StadiumDetailResponse;
-import team4.footwithme.stadium.api.response.StadiumsResponse;
+import team4.footwithme.stadium.service.response.StadiumDetailResponse;
+import team4.footwithme.stadium.service.response.StadiumsResponse;
 import team4.footwithme.stadium.domain.Stadium;
 import team4.footwithme.stadium.repository.StadiumRepository;
 

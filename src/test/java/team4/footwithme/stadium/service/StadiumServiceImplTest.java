@@ -10,8 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 import team4.footwithme.global.util.PositionUtil;
 import team4.footwithme.member.domain.*;
 import team4.footwithme.member.repository.MemberRepository;
-import team4.footwithme.stadium.api.response.StadiumDetailResponse;
-import team4.footwithme.stadium.api.response.StadiumsResponse;
+import team4.footwithme.stadium.service.response.StadiumDetailResponse;
+import team4.footwithme.stadium.service.response.StadiumsResponse;
 import team4.footwithme.stadium.domain.Stadium;
 import team4.footwithme.stadium.repository.StadiumRepository;
 

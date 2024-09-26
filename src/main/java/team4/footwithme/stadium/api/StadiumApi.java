@@ -2,14 +2,12 @@ package team4.footwithme.stadium.api;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import team4.footwithme.global.api.ApiResponse;
 import team4.footwithme.stadium.api.request.StadiumSearchByLocationRequest;
-import team4.footwithme.stadium.api.response.StadiumDetailResponse;
-import team4.footwithme.stadium.api.response.StadiumsResponse;
-import team4.footwithme.stadium.domain.Stadium;
+import team4.footwithme.stadium.service.response.StadiumDetailResponse;
+import team4.footwithme.stadium.service.response.StadiumsResponse;
 import team4.footwithme.stadium.service.StadiumService;
 
 import java.util.List;

@@ -1,7 +1,7 @@
 package team4.footwithme.stadium.service;
 
-import team4.footwithme.stadium.api.response.StadiumDetailResponse;
-import team4.footwithme.stadium.api.response.StadiumsResponse;
+import team4.footwithme.stadium.service.response.StadiumDetailResponse;
+import team4.footwithme.stadium.service.response.StadiumsResponse;
 import team4.footwithme.stadium.domain.Stadium;
 
 import java.util.List;
