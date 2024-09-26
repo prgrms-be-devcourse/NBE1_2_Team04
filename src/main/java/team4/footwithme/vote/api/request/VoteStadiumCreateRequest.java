@@ -4,12 +4,12 @@ import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import team4.footwithme.vote.api.request.annotation.Duplicate;
-import team4.footwithme.vote.service.request.VoteCreateServiceRequest;
+import team4.footwithme.vote.service.request.VoteStadiumCreateServiceRequest;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-public record VoteCreateRequest(
+public record VoteStadiumCreateRequest(
     @NotBlank(message = "제목은 필수입니다.")
     @Size(max = 50, message = "제목은 50자 이하여야 합니다.")
     String title,
@@ -19,8 +19,8 @@ public record VoteCreateRequest(
     @Duplicate(message = "중복된 구장은 포함 할 수 없습니다.")
     List<StadiumChoices> choices
 ) {
-    public VoteCreateServiceRequest toServiceRequest() {
-        return new VoteCreateServiceRequest(
+    public VoteStadiumCreateServiceRequest toServiceRequest() {
+        return new VoteStadiumCreateServiceRequest(
             title,
             endAt,
             choices.stream()

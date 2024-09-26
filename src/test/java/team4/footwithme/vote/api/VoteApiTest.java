@@ -1,22 +1,18 @@
 package team4.footwithme.vote.api;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.BDDMockito;
 import org.springframework.http.MediaType;
 import team4.footwithme.ApiTestSupport;
 import team4.footwithme.vote.api.request.StadiumChoices;
-import team4.footwithme.vote.api.request.VoteCreateRequest;
-import team4.footwithme.vote.service.request.VoteCreateServiceRequest;
+import team4.footwithme.vote.api.request.VoteStadiumCreateRequest;
+import team4.footwithme.vote.service.request.VoteStadiumCreateServiceRequest;
 import team4.footwithme.vote.service.response.VoteItemResponse;
 import team4.footwithme.vote.service.response.VoteResponse;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
@@ -34,7 +30,7 @@ class VoteApiTest extends ApiTestSupport {
         LocalDateTime endAt = LocalDateTime.now().plusDays(1);
         StadiumChoices stadiumChoices1 = new StadiumChoices(1L);
         StadiumChoices stadiumChoices2 = new StadiumChoices(2L);
-        VoteCreateRequest request = new VoteCreateRequest("연말 행사 투표", endAt, List.of(stadiumChoices1, stadiumChoices2));
+        VoteStadiumCreateRequest request = new VoteStadiumCreateRequest("연말 행사 투표", endAt, List.of(stadiumChoices1, stadiumChoices2));
 
 
         VoteResponse response = new VoteResponse(
@@ -46,7 +42,7 @@ class VoteApiTest extends ApiTestSupport {
             )
         );
 
-        given(voteService.createStadiumVote(any(VoteCreateServiceRequest.class), eq(1L), any(String.class)))
+        given(voteService.createStadiumVote(any(VoteStadiumCreateServiceRequest.class), eq(1L), any(String.class)))
             .willReturn(response);
 
         mockMvc.perform(post("/api/v1/votes/stadiums/{teamId}", 1L)
@@ -78,9 +74,9 @@ class VoteApiTest extends ApiTestSupport {
         LocalDateTime endAt = LocalDateTime.now().plusDays(1);
         StadiumChoices stadiumChoices1 = new StadiumChoices(1L);
         StadiumChoices stadiumChoices2 = new StadiumChoices(2L);
-        VoteCreateRequest request = new VoteCreateRequest(null, endAt, List.of(stadiumChoices1, stadiumChoices2));
+        VoteStadiumCreateRequest request = new VoteStadiumCreateRequest(null, endAt, List.of(stadiumChoices1, stadiumChoices2));
 
-        given(voteService.createStadiumVote(any(VoteCreateServiceRequest.class), eq(1L), any(String.class)))
+        given(voteService.createStadiumVote(any(VoteStadiumCreateServiceRequest.class), eq(1L), any(String.class)))
             .willReturn(new VoteResponse(
                 1L,
                 "연말 행사 투표",
@@ -109,9 +105,9 @@ class VoteApiTest extends ApiTestSupport {
         LocalDateTime endAt = LocalDateTime.now().plusDays(1);
         StadiumChoices stadiumChoices1 = new StadiumChoices(1L);
         StadiumChoices stadiumChoices2 = new StadiumChoices(2L);
-        VoteCreateRequest request = new VoteCreateRequest("a".repeat(51), endAt, List.of(stadiumChoices1, stadiumChoices2));
+        VoteStadiumCreateRequest request = new VoteStadiumCreateRequest("a".repeat(51), endAt, List.of(stadiumChoices1, stadiumChoices2));
 
-        given(voteService.createStadiumVote(any(VoteCreateServiceRequest.class), eq(1L), any(String.class)))
+        given(voteService.createStadiumVote(any(VoteStadiumCreateServiceRequest.class), eq(1L), any(String.class)))
             .willReturn(new VoteResponse(
                 1L,
                 "연말 행사 투표",
@@ -140,9 +136,9 @@ class VoteApiTest extends ApiTestSupport {
         LocalDateTime endAt = LocalDateTime.now().minusDays(1);
         StadiumChoices stadiumChoices1 = new StadiumChoices(1L);
         StadiumChoices stadiumChoices2 = new StadiumChoices(2L);
-        VoteCreateRequest request = new VoteCreateRequest("연말 행사 투표", endAt, List.of(stadiumChoices1, stadiumChoices2));
+        VoteStadiumCreateRequest request = new VoteStadiumCreateRequest("연말 행사 투표", endAt, List.of(stadiumChoices1, stadiumChoices2));
 
-        given(voteService.createStadiumVote(any(VoteCreateServiceRequest.class), eq(1L), any(String.class)))
+        given(voteService.createStadiumVote(any(VoteStadiumCreateServiceRequest.class), eq(1L), any(String.class)))
             .willReturn(new VoteResponse(
                 1L,
                 "연말 행사 투표",
@@ -169,9 +165,9 @@ class VoteApiTest extends ApiTestSupport {
     void createLocateVoteWhenStadiumIsNullThenThrowException() throws Exception {
         //given
         LocalDateTime endAt = LocalDateTime.now().plusDays(1);
-        VoteCreateRequest request = new VoteCreateRequest("연말 행사 투표", endAt, List.of());
+        VoteStadiumCreateRequest request = new VoteStadiumCreateRequest("연말 행사 투표", endAt, List.of());
 
-        given(voteService.createStadiumVote(any(VoteCreateServiceRequest.class), eq(1L), any(String.class)))
+        given(voteService.createStadiumVote(any(VoteStadiumCreateServiceRequest.class), eq(1L), any(String.class)))
             .willReturn(new VoteResponse(
                 1L,
                 "연말 행사 투표",
@@ -200,9 +196,9 @@ class VoteApiTest extends ApiTestSupport {
         LocalDateTime endAt = LocalDateTime.now().plusDays(1);
         StadiumChoices stadiumChoices1 = new StadiumChoices(1L);
         StadiumChoices stadiumChoices2 = new StadiumChoices(1L);
-        VoteCreateRequest request = new VoteCreateRequest("연말 행사 투표", endAt, List.of(stadiumChoices1, stadiumChoices2));
+        VoteStadiumCreateRequest request = new VoteStadiumCreateRequest("연말 행사 투표", endAt, List.of(stadiumChoices1, stadiumChoices2));
 
-        given(voteService.createStadiumVote(any(VoteCreateServiceRequest.class), eq(1L), any(String.class)))
+        given(voteService.createStadiumVote(any(VoteStadiumCreateServiceRequest.class), eq(1L), any(String.class)))
             .willReturn(new VoteResponse(
                 1L,
                 "연말 행사 투표",

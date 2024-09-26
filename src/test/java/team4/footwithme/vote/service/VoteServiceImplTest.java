@@ -15,7 +15,7 @@ import team4.footwithme.vote.domain.Vote;
 import team4.footwithme.vote.domain.VoteItem;
 import team4.footwithme.vote.repository.VoteItemRepository;
 import team4.footwithme.vote.repository.VoteRepository;
-import team4.footwithme.vote.service.request.VoteCreateServiceRequest;
+import team4.footwithme.vote.service.request.VoteStadiumCreateServiceRequest;
 import team4.footwithme.vote.service.response.VoteResponse;
 
 import java.time.LocalDateTime;
@@ -63,7 +63,7 @@ class VoteServiceImplTest extends IntegrationTestSupport {
         Team team = Team.create(givenStadium1, 1L, "팀이름", "팀 설명", 1, 1, 1, "서울");
         Team savedTeam = teamRepository.save(team);
 
-        VoteCreateServiceRequest request = new VoteCreateServiceRequest("9월4주차 구장 투표", endAt, stadiumIds);
+        VoteStadiumCreateServiceRequest request = new VoteStadiumCreateServiceRequest("9월4주차 구장 투표", endAt, stadiumIds);
 
         //when
         VoteResponse response = voteService.createStadiumVote(request, savedTeam.getTeamId(), "test@gmail.com");
@@ -110,7 +110,7 @@ class VoteServiceImplTest extends IntegrationTestSupport {
         Member givenMember = Member.create("test@gmail.com", "1234", "test", "010-1234-5678", LoginProvider.ORIGINAL, "test", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE);
         Member savedMember = memberRepository.save(givenMember);
 
-        VoteCreateServiceRequest request = new VoteCreateServiceRequest("9월4주차 구장 투표", endAt, stadiumIds);
+        VoteStadiumCreateServiceRequest request = new VoteStadiumCreateServiceRequest("9월4주차 구장 투표", endAt, stadiumIds);
 
         //when
         //then
@@ -129,7 +129,7 @@ class VoteServiceImplTest extends IntegrationTestSupport {
         Member givenMember = Member.create("test@gmail.com", "1234", "test", "010-1234-5678", LoginProvider.ORIGINAL, "test", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE);
         Member savedMember = memberRepository.save(givenMember);
 
-        VoteCreateServiceRequest request = new VoteCreateServiceRequest("9월4주차 구장 투표", endAt, stadiumIds);
+        VoteStadiumCreateServiceRequest request = new VoteStadiumCreateServiceRequest("9월4주차 구장 투표", endAt, stadiumIds);
 
         //when
         //then
@@ -156,7 +156,7 @@ class VoteServiceImplTest extends IntegrationTestSupport {
         Team team = Team.create(givenStadium1, 1L, "팀이름", "팀 설명", 1, 1, 1, "서울");
         Team savedTeam = teamRepository.save(team);
 
-        VoteCreateServiceRequest request = new VoteCreateServiceRequest("9월4주차 구장 투표", endAt, stadiumIds);
+        VoteStadiumCreateServiceRequest request = new VoteStadiumCreateServiceRequest("9월4주차 구장 투표", endAt, stadiumIds);
 
         //when
         //then
