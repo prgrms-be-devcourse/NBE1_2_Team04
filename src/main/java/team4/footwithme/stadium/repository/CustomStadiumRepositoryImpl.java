@@ -22,4 +22,12 @@ public class CustomStadiumRepositoryImpl implements CustomStadiumRepository {
             .fetch();
     }
 
+    @Override
+    public Long countStadiumByStadiumIds(List<Long> stadiumIds) {
+        return queryFactory.select(stadium.count())
+            .from(stadium)
+            .where(stadium.stadiumId.in(stadiumIds)
+                .and(stadium.isDeleted.eq(IsDeleted.FALSE)))
+            .fetchOne();
+    }
 }

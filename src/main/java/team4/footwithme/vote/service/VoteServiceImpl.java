@@ -69,7 +69,7 @@ public class VoteServiceImpl implements VoteService {
     }
 
     private void validateStadiumIds(List<Long> requestStadiumIds) {
-        if (stadiumRepository.findAllById(requestStadiumIds).size() != requestStadiumIds.size()) {
+        if (stadiumRepository.countStadiumByStadiumIds(requestStadiumIds) != requestStadiumIds.size()) {
             throw new IllegalArgumentException("존재하지 않는 구장이 포함되어 있습니다.");
         }
     }
