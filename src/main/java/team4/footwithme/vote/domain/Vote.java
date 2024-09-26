@@ -15,7 +15,7 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLDelete(sql = "UPDATE vote SET is_deleted = TRUE WHERE vote_id = ?")
+@SQLDelete(sql = "UPDATE vote SET is_deleted = 'TRUE' WHERE vote_id = ?")
 @Entity
 public class Vote extends BaseEntity {
 
