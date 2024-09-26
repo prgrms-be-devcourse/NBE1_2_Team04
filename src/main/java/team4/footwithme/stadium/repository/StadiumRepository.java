@@ -10,4 +10,5 @@ import java.util.List;
 public interface StadiumRepository extends JpaRepository<Stadium,Long> {
 
     List<Stadium> findByNameContainingIgnoreCase(String query);
+    List<Stadium> findByAddressContainingIgnoreCase(String address);
 }

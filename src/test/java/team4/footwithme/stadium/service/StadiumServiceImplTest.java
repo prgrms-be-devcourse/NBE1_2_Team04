@@ -119,8 +119,8 @@ class StadiumServiceImplTest {
 
     @Test
     @DisplayName("검색어로 구장 자동완성 리스트를 정상적으로 반환해야 한다")
-    void getAutocompleteSuggestions() {
-        List<StadiumsResponse> result = stadiumService.getAutocompleteSuggestions("2");
+    void searchStadiumByName() {
+        List<StadiumsResponse> result = stadiumService.searchStadiumByName("2");
 
         assertThat(result).hasSize(1);
         assertThat(result.get(0).name()).isEqualTo("Stadium2");

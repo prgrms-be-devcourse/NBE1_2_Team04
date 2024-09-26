@@ -3,8 +3,7 @@ package team4.footwithme.stadium.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import team4.footwithme.global.exception.Stadium.StadiumException;
-import team4.footwithme.global.exception.Stadium.StadiumExceptionMessage;
+import team4.footwithme.stadium.exception.StadiumExceptionMessage;
 import team4.footwithme.stadium.api.response.StadiumDetailResponse;
 import team4.footwithme.stadium.api.response.StadiumsResponse;
 import team4.footwithme.stadium.domain.Stadium;
@@ -27,7 +26,7 @@ public class StadiumServiceImpl implements StadiumService {
                 .toList();
     }
 
-
+    // 구장 상세 정보 조회
     public StadiumDetailResponse getStadiumDetail(Long id) {
         Stadium stadium = findByIdOrThrowException(id);
 
@@ -42,15 +41,21 @@ public class StadiumServiceImpl implements StadiumService {
         );
     }
 
-
-    public List<StadiumsResponse> getAutocompleteSuggestions(String query) {
+    // 이름으로 구장 검색
+    public List<StadiumsResponse> searchStadiumByName(String query) {
         List<Stadium> stadiums = stadiumRepository.findByNameContainingIgnoreCase(query);
         return stadiums.stream()
                 .map(stadium -> new StadiumsResponse(stadium.getStadiumId(), stadium.getName(), stadium.getAddress()))
                 .collect(Collectors.toList());
     }
 
-
+    // 주소로 구장 검색
+    public List<StadiumsResponse> searchStadiumByAddress(String address) {
+        List<Stadium> stadiums = stadiumRepository.findByAddressContainingIgnoreCase(address);
+        return stadiums.stream()
+                .map(stadium -> new StadiumsResponse(stadium.getStadiumId(), stadium.getName(), stadium.getAddress()))
+                .collect(Collectors.toList());
+    }
 
     // 구장 조회 예외처리
     public Stadium findByIdOrThrowException(long id) {

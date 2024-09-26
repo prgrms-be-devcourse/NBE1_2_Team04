@@ -1,4 +1,4 @@
-package team4.footwithme.global.exception.Stadium;
+package team4.footwithme.stadium.exception;
 
 import team4.footwithme.global.exception.CustomException;
 

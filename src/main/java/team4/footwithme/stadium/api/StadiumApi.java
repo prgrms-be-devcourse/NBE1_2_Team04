@@ -19,13 +19,11 @@ public class StadiumApi {
 
     private final StadiumService stadiumService;
 
-
     @GetMapping("/stadiums")
     public ApiResponse<List<StadiumsResponse>> stadiums() {
         List<StadiumsResponse> stadiumList = stadiumService.getStadiumList();
         return ApiResponse.ok(stadiumList);
     }
-
 
     @GetMapping("/stadiums/{stadiumId}/detail")
     public ApiResponse<StadiumDetailResponse> getStadiumDetailById(@PathVariable Long stadiumId) {
@@ -33,9 +31,11 @@ public class StadiumApi {
         return ApiResponse.ok(stadiumDetailResponse);
     }
 
-    @GetMapping("/autocomplete")
+    @GetMapping("/stadiums/search/name")
     public ApiResponse<List<StadiumsResponse>> autocomplete(@RequestParam String query) {
-        List<StadiumsResponse> stadiums = stadiumService.getAutocompleteSuggestions(query);
+        List<StadiumsResponse> stadiums = stadiumService.searchStadiumByName(query);
         return ApiResponse.ok(stadiums);
     }
+
+
 }
