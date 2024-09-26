@@ -52,14 +52,8 @@ public class VoteServiceImpl implements VoteService {
 
         List<String> stadiumNames = getStadiumNames(savedVoteItems);
 
-        return VoteResponse.of(savedVote, savedVoteItems.stream()
-            .map(voteItem -> {
-                Long voteItemId = voteItem.getVoteItemId();
-                String contents = stadiumNames.get(savedVoteItems.indexOf(voteItem));
-                return VoteItemResponse.of(voteItemId, contents, 0L);
-            })
-            .toList()
-        );
+        List<VoteItemResponse> voteItemResponse = getVoteItemResponse(savedVoteItems, stadiumNames);
+        return VoteResponse.of(vote, voteItemResponse);
     }
 
     private void validateTeamId(Long teamId) {
@@ -91,20 +85,23 @@ public class VoteServiceImpl implements VoteService {
     @Override
     public VoteResponse getStadiumVote(long voteId) {
         Vote vote = getVote(voteId);
-
         List<VoteItemLocate> voteItems = voteItemRepository.findByVoteVoteId(voteId);
-
         List<String> stadiumNames = getStadiumNames(voteItems);
+        List<VoteItemResponse> voteItemResponse = getVoteItemResponse(voteItems, stadiumNames);
+        return VoteResponse.of(vote, voteItemResponse);
+    }
 
-        return VoteResponse.of(vote, voteItems.stream()
-            .map(voteItem -> {
-                Long voteItemId = voteItem.getVoteItemId();
-                Long voteCount = choiceRepository.countByVoteItemId(voteItemId);
-                String contents = stadiumNames.get(voteItems.indexOf(voteItem));
-                return VoteItemResponse.of(voteItemId, contents, voteCount);
-            })
-            .toList()
-        );
+    private List<VoteItemResponse> getVoteItemResponse(List<VoteItemLocate> voteItems, List<String> stadiumNames) {
+        return voteItems.stream()
+            .map(voteItem -> createVoteItemResponse(voteItems, stadiumNames, voteItem))
+            .toList();
+    }
+
+    private VoteItemResponse createVoteItemResponse(List<VoteItemLocate> voteItems, List<String> stadiumNames, VoteItemLocate voteItem) {
+        Long voteItemId = voteItem.getVoteItemId();
+        Long voteCount = choiceRepository.countByVoteItemId(voteItemId);
+        String contents = stadiumNames.get(voteItems.indexOf(voteItem));
+        return VoteItemResponse.of(voteItemId, contents, voteCount);
     }
 
     private Vote getVote(long voteId) {
