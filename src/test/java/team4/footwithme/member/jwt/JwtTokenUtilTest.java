@@ -25,20 +25,7 @@ class JwtTokenUtilTest {
 
     @BeforeEach
     void setUp(){
-        testMember = Member.builder()
-                .email("test@naver.com")
-                .password("password")
-                .name("Test User")
-                .phoneNumber("010-1234-5678")
-                .loginType(LoginType.builder()
-                        .loginProvider(LoginProvider.ORIGINAL)
-                        .snsId("example@naver.com")
-                        .build())
-                .gender(Gender.MALE)
-                .memberRole(MemberRole.USER)
-                .termsAgreed(TermsAgreed.AGREE)
-                .build();
-
+        testMember = Member.create("test@naver.com", "password", "Test user", "010-1234-1234", LoginProvider.ORIGINAL, "test", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE);
         memberRepository.save(testMember);
     }
 
