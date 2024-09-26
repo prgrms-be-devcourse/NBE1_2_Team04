@@ -1,6 +1,5 @@
 package team4.footwithme.member.repository;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,8 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import team4.footwithme.IntegrationTestSupport;
 import team4.footwithme.member.domain.*;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Transactional
 class CustomMemberRepositoryImplTest extends IntegrationTestSupport {

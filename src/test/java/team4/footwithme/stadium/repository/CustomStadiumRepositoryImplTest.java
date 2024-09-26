@@ -12,8 +12,6 @@ import team4.footwithme.stadium.domain.Stadium;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @Transactional
 class CustomStadiumRepositoryImplTest extends IntegrationTestSupport {
 

@@ -6,8 +6,6 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class VoteTest {
 
     @DisplayName("투표 생성")
