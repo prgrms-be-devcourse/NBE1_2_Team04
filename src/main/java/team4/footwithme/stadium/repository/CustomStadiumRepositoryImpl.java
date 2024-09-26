@@ -2,6 +2,7 @@ package team4.footwithme.stadium.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import team4.footwithme.global.domain.IsDeleted;
 
 import java.util.List;
 
@@ -16,7 +17,8 @@ public class CustomStadiumRepositoryImpl implements CustomStadiumRepository {
     public List<String> findStadiumNamesByStadiumIds(List<Long> stadiumIdList) {
         return queryFactory.select(stadium.name)
             .from(stadium)
-            .where(stadium.stadiumId.in(stadiumIdList))
+            .where(stadium.stadiumId.in(stadiumIdList)
+                .and(stadium.isDeleted.eq(IsDeleted.FALSE)))
             .fetch();
     }
 
