@@ -21,9 +21,8 @@ public class Team extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long teamId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "stadium_id", nullable = false)
-    private Stadium stadium;
+    @Column(nullable = true)
+    private Long stadiumId;
 
     @NotNull
     private Long chatRoomId;
@@ -42,9 +41,9 @@ public class Team extends BaseEntity {
     private String location;
 
     @Builder
-    private Team(Long teamId, Stadium stadium, Long chatRoomId, String name, String description, TotalRecord totalRecord, String location) {
+    private Team(Long teamId, Long stadiumId, Long chatRoomId, String name, String description, TotalRecord totalRecord, String location) {
         this.teamId = teamId;
-        this.stadium = stadium;
+        this.stadiumId = stadiumId;
         this.chatRoomId = chatRoomId;
         this.name = name;
         this.description = description;
@@ -52,9 +51,9 @@ public class Team extends BaseEntity {
         this.location = location;
     }
 
-    public static Team create(Stadium stadium, Long chatRoomId, String name, String description, int winCount, int drawCount, int loseCount, String location) {
+    public static Team create(Long stadiumId, Long chatRoomId, String name, String description, int winCount, int drawCount, int loseCount, String location) {
         return Team.builder()
-            .stadium(stadium)
+            .stadiumId(stadiumId)
             .chatRoomId(chatRoomId)
             .name(name)
             .description(description)

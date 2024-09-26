@@ -20,8 +20,7 @@ public class TeamApi {
 
     @PostMapping("/create")
     public ApiResponse<TeamCreatedResponse> createTeam(@RequestBody TeamAddResponse dto) {
-        Stadium stadium = null;
-        TeamCreatedResponse teamCreatedResponse = teamService.createTeam(stadium,dto);
+        TeamCreatedResponse teamCreatedResponse = teamService.createTeam(dto);
         return ApiResponse.created(teamCreatedResponse);
     }
 }

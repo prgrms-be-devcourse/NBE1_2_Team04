@@ -18,16 +18,13 @@ public class TeamServiceImpl implements TeamService{
 
     @Override
     @Transactional
-    public TeamCreatedResponse createTeam(Stadium stadium, TeamAddResponse dto) {
+    public TeamCreatedResponse createTeam(TeamAddResponse dto) {
         /**
          * # 1.
-         * StadiumID가 null이면 Team생성이 안되는데,
-         * 선호구장이 선택되지 않은 사용자 어떻게 처리할지 모르겠음
-         *
-         * # 2.
          * chatRoomId는 일단 가짜 id 넣어놓고,
          * 채팅방 생기면 해당 id 적용
          */
+        Long stadiumId = null;
         Long chatRoomId = 100000L;
         //TotalRecord 초반 셋팅: count 0
         TotalRecord totalRecord = TotalRecord.builder()
@@ -38,7 +35,7 @@ public class TeamServiceImpl implements TeamService{
 
         //dto -> entity
         Team entity = Team.create(
-                stadium,
+                stadiumId,
                 chatRoomId,
                 dto.name(),
                 dto.description(),
@@ -51,7 +48,7 @@ public class TeamServiceImpl implements TeamService{
 
         return new TeamCreatedResponse(
                 createdTeam.getTeamId(),
-                createdTeam.getStadium().getStadiumId(),
+                createdTeam.getStadiumId(),
                 createdTeam.getChatRoomId(),
                 createdTeam.getName(),
                 createdTeam.getDescription(),
@@ -64,6 +61,15 @@ public class TeamServiceImpl implements TeamService{
 
     @Override
     public Team getTeamInfo(Long teamId) {
+        /**
+         * 팀이름
+         * 팀지역
+         * 팀전적
+         * 팀 평가
+         * 팀 평균나이
+         * 팀 성별
+         */
+        //teamRepository.findById(teamId).stream().;
         return null;
     }
 }
