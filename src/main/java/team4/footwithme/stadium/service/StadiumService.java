@@ -16,5 +16,5 @@ public interface StadiumService {
 
 
 
-    Stadium findByIdOrThrowStadiumException(long id);
+    Stadium findByIdOrThrowException(long id);
 }

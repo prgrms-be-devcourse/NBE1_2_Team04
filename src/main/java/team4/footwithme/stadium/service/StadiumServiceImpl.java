@@ -29,7 +29,7 @@ public class StadiumServiceImpl implements StadiumService {
 
 
     public StadiumDetailResponse getStadiumDetail(Long id) {
-        Stadium stadium = findByIdOrThrowStadiumException(id);
+        Stadium stadium = findByIdOrThrowException(id);
 
         return new StadiumDetailResponse(
                 stadium.getMember().getMemberId(),
@@ -53,11 +53,11 @@ public class StadiumServiceImpl implements StadiumService {
 
 
     // 구장 조회 예외처리
-    public Stadium findByIdOrThrowStadiumException(long id) {
+    public Stadium findByIdOrThrowException(long id) {
         return stadiumRepository.findById(id)
                 .orElseThrow(() -> {
                     log.warn(">>>> {} : {} <<<<", id, StadiumExceptionMessage.STADIUM_NOT_FOUND);
-                    return new StadiumException(StadiumExceptionMessage.STADIUM_NOT_FOUND);
+                    return new IllegalArgumentException(StadiumExceptionMessage.STADIUM_NOT_FOUND.getText());
                 });
     }
 }
