@@ -6,12 +6,15 @@ import org.locationtech.jts.geom.Point;
 import org.springframework.stereotype.Service;
 import team4.footwithme.global.util.PositionUtil;
 import team4.footwithme.stadium.exception.StadiumExceptionMessage;
+import team4.footwithme.stadium.service.request.StadiumSearchByLocationServiceRequest;
 import team4.footwithme.stadium.service.response.StadiumDetailResponse;
 import team4.footwithme.stadium.service.response.StadiumsResponse;
 import team4.footwithme.stadium.domain.Stadium;
 import team4.footwithme.stadium.repository.StadiumRepository;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -33,38 +36,34 @@ public class StadiumServiceImpl implements StadiumService {
         Stadium stadium = findByIdOrThrowException(id);
         Point position = stadium.getPosition();
 
-        return new StadiumDetailResponse(
-                stadium.getMember().getMemberId(),
-                stadium.getName(),
-                stadium.getAddress(),
-                stadium.getPhoneNumber(),
-                stadium.getDescription(),
-                position.getY(),
-                position.getX()
-        );
+        return StadiumDetailResponse.of(stadium, position);
     }
 
     // 이름으로 구장 검색
     public List<StadiumsResponse> getStadiumsByName(String query) {
         List<Stadium> stadiums = stadiumRepository.findByNameContainingIgnoreCase(query);
-        return stadiums.stream()
-                .map(stadium -> new StadiumsResponse(stadium.getStadiumId(), stadium.getName(), stadium.getAddress()))
+        return Optional.ofNullable(stadiums)
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(stadium -> StadiumsResponse.of(stadium))
                 .collect(Collectors.toList());
     }
 
     // 주소로 구장 검색
     public List<StadiumsResponse> getStadiumsByAddress(String address) {
         List<Stadium> stadiums = stadiumRepository.findByAddressContainingIgnoreCase(address);
-        return stadiums.stream()
-                .map(stadium -> new StadiumsResponse(stadium.getStadiumId(), stadium.getName(), stadium.getAddress()))
+        return Optional.ofNullable(stadiums)
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(stadium -> StadiumsResponse.of(stadium))  // of 메서드 사용
                 .collect(Collectors.toList());
     }
 
     // 위도, 경도의 일정 거리 내의 구장 목록 반환
-    public List<StadiumsResponse> getStadiumsWithinDistance(Double latitude, Double longitude, Double distance) {
-        Point point = PositionUtil.createPoint(latitude, longitude);
+    public List<StadiumsResponse> getStadiumsWithinDistance(StadiumSearchByLocationServiceRequest request) {
+        Point point = PositionUtil.createPoint(request.latitude(), request.longitude());
         String wktPoint = String.format("POINT(%s %s)", point.getY(), point.getX());
-        List<Stadium> stadiums = stadiumRepository.findStadiumsByLocation(wktPoint, distance);
+        List<Stadium> stadiums = stadiumRepository.findStadiumsByLocation(wktPoint, request.distance());
         return stadiums.stream()
                 .map(stadium -> new StadiumsResponse(stadium.getStadiumId(), stadium.getName(), stadium.getAddress()))
                 .collect(Collectors.toList());

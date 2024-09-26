@@ -6,6 +6,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import team4.footwithme.global.api.ApiResponse;
 import team4.footwithme.stadium.api.request.StadiumSearchByLocationRequest;
+import team4.footwithme.stadium.service.request.StadiumSearchByLocationServiceRequest;
 import team4.footwithme.stadium.service.response.StadiumDetailResponse;
 import team4.footwithme.stadium.service.response.StadiumsResponse;
 import team4.footwithme.stadium.service.StadiumService;
@@ -46,8 +47,12 @@ public class StadiumApi {
 
     @PostMapping("/stadiums/search/location")
     public ApiResponse<List<StadiumsResponse>> getStadiumsByLocation(@Validated @RequestBody StadiumSearchByLocationRequest request) {
-        List<StadiumsResponse> stadiums = stadiumService.getStadiumsWithinDistance(
-                request.latitude(), request.longitude(), request.distance());
+        StadiumSearchByLocationServiceRequest serviceRequest = new StadiumSearchByLocationServiceRequest(
+                request.latitude(),
+                request.longitude(),
+                request.distance()
+        );
+        List<StadiumsResponse> stadiums = stadiumService.getStadiumsWithinDistance(serviceRequest);
         return ApiResponse.ok(stadiums);
     }
 }

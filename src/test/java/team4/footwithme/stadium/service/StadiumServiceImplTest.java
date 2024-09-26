@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import team4.footwithme.global.util.PositionUtil;
 import team4.footwithme.member.domain.*;
 import team4.footwithme.member.repository.MemberRepository;
+import team4.footwithme.stadium.service.request.StadiumSearchByLocationServiceRequest;
 import team4.footwithme.stadium.service.response.StadiumDetailResponse;
 import team4.footwithme.stadium.service.response.StadiumsResponse;
 import team4.footwithme.stadium.domain.Stadium;
@@ -20,7 +21,6 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SpringBootTest
 @Transactional
 class StadiumServiceImplTest {
 
@@ -149,7 +149,13 @@ class StadiumServiceImplTest {
         Double searchLongitude = 126.9780;
         Double distance = 100.0;
 
-        List<StadiumsResponse> result = stadiumService.getStadiumsWithinDistance(searchLatitude, searchLongitude, distance);
+        StadiumSearchByLocationServiceRequest request = new StadiumSearchByLocationServiceRequest(
+                searchLatitude,
+                searchLongitude,
+                distance
+        );
+
+        List<StadiumsResponse> result = stadiumService.getStadiumsWithinDistance(request);
 
         assertThat(result).hasSize(1);
         assertThat(result.get(0).name()).isEqualTo("Stadium1");
@@ -161,8 +167,13 @@ class StadiumServiceImplTest {
         Double searchLatitude = 33.450701;
         Double searchLongitude = 126.570667;
         Double distance = 1.0;
+        StadiumSearchByLocationServiceRequest request = new StadiumSearchByLocationServiceRequest(
+                searchLatitude,
+                searchLongitude,
+                distance
+        );
 
-        List<StadiumsResponse> result = stadiumService.getStadiumsWithinDistance(searchLatitude, searchLongitude, distance);
+        List<StadiumsResponse> result = stadiumService.getStadiumsWithinDistance(request);
 
         assertThat(result).isEmpty();
     }
