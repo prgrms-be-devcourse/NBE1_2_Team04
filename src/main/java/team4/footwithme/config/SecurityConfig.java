@@ -22,8 +22,8 @@ import team4.footwithme.member.jwt.JwtTokenUtil;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final JwtTokenUtil jwtTokenUtil;
-    private final RedisTemplate redisTemplate;
+    private final JwtTokenFilter jwtTokenFilter;
+
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() { return new BCryptPasswordEncoder(); }
@@ -42,7 +42,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
                         .requestMatchers("/api/v1/members/**").permitAll()
                 )
-                .addFilterBefore(new JwtTokenFilter(jwtTokenUtil,redisTemplate), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
 
         return httpSecurity.build();
     }
