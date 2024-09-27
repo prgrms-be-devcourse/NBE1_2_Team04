@@ -4,10 +4,11 @@ spring:
       on-profile: test
 
   datasource:
-    url: jdbc:h2:mem:~/footwitme;INIT=runscript from 'classpath:init.sql'
+    url: jdbc:h2:mem:~/footwitme
     driver-class-name: org.h2.Driver
     username: sa
     password:
+
   jpa:
     hibernate:
       ddl-auto: create-drop
@@ -15,7 +16,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
-        dialect: org.hibernate.spatial.dialect.h2gis.H2GisDialect
+
   h2:
     console:
       enabled: true

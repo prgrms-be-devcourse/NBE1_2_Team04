@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import team4.footwithme.global.util.PositionUtil;
 import team4.footwithme.member.domain.*;
 import team4.footwithme.member.repository.MemberRepository;
+import team4.footwithme.stadium.domain.Position;
 import team4.footwithme.stadium.service.request.StadiumSearchByLocationServiceRequest;
 import team4.footwithme.stadium.service.response.StadiumDetailResponse;
 import team4.footwithme.stadium.service.response.StadiumsResponse;
@@ -21,6 +22,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@SpringBootTest
 @Transactional
 class StadiumServiceImplTest {
 
@@ -52,9 +54,20 @@ class StadiumServiceImplTest {
                 .build();
         memberRepository.save(testMember);
 
-        Point position1 = PositionUtil.createPoint(37.5642135, 127.0016985);
-        Point position2 = PositionUtil.createPoint(35.1379222, 129.05562775);
-        Point position3 = PositionUtil.createPoint(36.3504119, 127.3845475);
+        Position position1 = Position.builder()
+                .latitude(37.5642135)
+                .longitude(127.0016985)
+                .build();
+
+        Position position2 = Position.builder()
+                .latitude(35.1379222)
+                .longitude(129.05562775)
+                .build();
+
+        Position position3 = Position.builder()
+                .latitude(36.3504119)
+                .longitude(127.3845475)
+                .build();
 
         Stadium stadium1 = Stadium.builder()
                 .name("Stadium1")
@@ -103,7 +116,10 @@ class StadiumServiceImplTest {
     @DisplayName("구장 이름이 매우 긴 경우에도 정상적으로 저장되고 반환되어야 한다")
     void getStadiumList_withLongStadiumName() {
         String longName = "A".repeat(255);
-        Point position = PositionUtil.createPoint(37.5665, 126.9780);
+        Position position = Position.builder()
+                .latitude(37.5665)
+                .longitude(126.9780)
+                .build();
         Stadium stadium = Stadium.builder()
                 .name(longName)
                 .address("LongNameAddress")
@@ -127,7 +143,7 @@ class StadiumServiceImplTest {
 
         assertThat(response).isNotNull();
         assertThat(response.name()).isEqualTo("Stadium1");
-        assertThat(response.address()).isEqualTo("Address1");
+        assertThat(response.address()).isEqualTo("seoul");
         assertThat(response.phoneNumber()).isEqualTo("123-4567");
         assertThat(response.latitude()).isEqualTo(37.5642135);
         assertThat(response.longitude()).isEqualTo(127.0016985);

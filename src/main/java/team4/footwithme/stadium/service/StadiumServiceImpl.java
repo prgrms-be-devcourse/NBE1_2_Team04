@@ -34,9 +34,8 @@ public class StadiumServiceImpl implements StadiumService {
     // 구장 상세 정보 조회
     public StadiumDetailResponse getStadiumDetail(Long id) {
         Stadium stadium = findByIdOrThrowException(id);
-        Point position = stadium.getPosition();
 
-        return StadiumDetailResponse.of(stadium, position);
+        return StadiumDetailResponse.of(stadium);
     }
 
     // 이름으로 구장 검색
@@ -61,9 +60,10 @@ public class StadiumServiceImpl implements StadiumService {
 
     // 위도, 경도의 일정 거리 내의 구장 목록 반환
     public List<StadiumsResponse> getStadiumsWithinDistance(StadiumSearchByLocationServiceRequest request) {
-        Point point = PositionUtil.createPoint(request.latitude(), request.longitude());
-        String wktPoint = String.format("POINT(%s %s)", point.getY(), point.getX());
-        List<Stadium> stadiums = stadiumRepository.findStadiumsByLocation(wktPoint, request.distance());
+        System.out.println(request.latitude());
+        System.out.println(request.longitude());
+        System.out.println(request.distance());
+        List<Stadium> stadiums = stadiumRepository.findStadiumsByLocation(request.latitude(), request.longitude(), request.distance());
         return stadiums.stream()
                 .map(stadium -> new StadiumsResponse(stadium.getStadiumId(), stadium.getName(), stadium.getAddress()))
                 .collect(Collectors.toList());

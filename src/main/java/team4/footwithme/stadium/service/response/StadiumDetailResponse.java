@@ -12,15 +12,15 @@ public record StadiumDetailResponse(
         Double latitude,
         Double longitude
 ) {
-    public static StadiumDetailResponse of(Stadium stadium, Point position) {
+    public static StadiumDetailResponse of(Stadium stadium) {
         return new StadiumDetailResponse(
                 stadium.getMember().getMemberId(),
                 stadium.getName(),
                 stadium.getAddress(),
                 stadium.getPhoneNumber(),
                 stadium.getDescription(),
-                position.getY(),
-                position.getX()
+                stadium.getPosition().getLatitude(),
+                stadium.getPosition().getLongitude()
         );
     }
 }
