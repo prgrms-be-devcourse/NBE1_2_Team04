@@ -42,3 +42,5 @@ out/
 
 ## Resources
 /src/main/resources
+
+/src/test/resources/application-test.yaml
