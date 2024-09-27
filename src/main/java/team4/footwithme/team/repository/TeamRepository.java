@@ -6,4 +6,5 @@ import team4.footwithme.team.domain.Team;
 
 @Repository
 public interface TeamRepository extends JpaRepository<Team, Long> {
+    Team findByTeamId(Long teamId);
 }

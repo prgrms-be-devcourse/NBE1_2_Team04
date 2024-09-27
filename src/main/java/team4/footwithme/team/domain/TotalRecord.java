@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Embeddable
 public class TotalRecord {
 
@@ -21,10 +20,13 @@ public class TotalRecord {
     @NotNull
     private int loseCount;
 
+    /**
+     * 이 부분 질문
+     */
     @Builder
-    private TotalRecord(int winCount, int drawCount, int loseCount) {
-        this.winCount = winCount;
-        this.drawCount = drawCount;
-        this.loseCount = loseCount;
+    public TotalRecord() {
+        this.winCount = 0;
+        this.drawCount = 0;
+        this.loseCount = 0;
     }
 }
