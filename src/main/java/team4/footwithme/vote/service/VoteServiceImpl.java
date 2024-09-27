@@ -6,15 +6,19 @@ import org.springframework.transaction.annotation.Transactional;
 import team4.footwithme.member.repository.MemberRepository;
 import team4.footwithme.stadium.repository.StadiumRepository;
 import team4.footwithme.team.repository.TeamRepository;
+import team4.footwithme.vote.domain.VoteItem;
+import team4.footwithme.vote.domain.VoteItemDate;
 import team4.footwithme.vote.domain.VoteItemLocate;
 import team4.footwithme.vote.domain.Vote;
 import team4.footwithme.vote.repository.ChoiceRepository;
 import team4.footwithme.vote.repository.VoteItemRepository;
 import team4.footwithme.vote.repository.VoteRepository;
+import team4.footwithme.vote.service.request.VoteDateCreateServiceRequest;
 import team4.footwithme.vote.service.request.VoteStadiumCreateServiceRequest;
 import team4.footwithme.vote.service.response.VoteItemResponse;
 import team4.footwithme.vote.service.response.VoteResponse;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -52,7 +56,7 @@ public class VoteServiceImpl implements VoteService {
 
         List<String> stadiumNames = getStadiumNames(savedVoteItems);
 
-        List<VoteItemResponse> voteItemResponse = getVoteItemResponse(savedVoteItems, stadiumNames);
+        List<VoteItemResponse> voteItemResponse = getVoteItemLocateResponse(savedVoteItems, stadiumNames);
         return VoteResponse.of(vote, voteItemResponse);
     }
 
@@ -87,17 +91,17 @@ public class VoteServiceImpl implements VoteService {
         Vote vote = getVote(voteId);
         List<VoteItemLocate> voteItems = voteItemRepository.findByVoteVoteId(voteId);
         List<String> stadiumNames = getStadiumNames(voteItems);
-        List<VoteItemResponse> voteItemResponse = getVoteItemResponse(voteItems, stadiumNames);
+        List<VoteItemResponse> voteItemResponse = getVoteItemLocateResponse(voteItems, stadiumNames);
         return VoteResponse.of(vote, voteItemResponse);
     }
 
-    private List<VoteItemResponse> getVoteItemResponse(List<VoteItemLocate> voteItems, List<String> stadiumNames) {
+    private List<VoteItemResponse> getVoteItemLocateResponse(List<VoteItemLocate> voteItems, List<String> stadiumNames) {
         return voteItems.stream()
-            .map(voteItem -> createVoteItemResponse(voteItems, stadiumNames, voteItem))
+            .map(voteItem -> createVoteItemLocateResponse(voteItems, stadiumNames, voteItem))
             .toList();
     }
 
-    private VoteItemResponse createVoteItemResponse(List<VoteItemLocate> voteItems, List<String> stadiumNames, VoteItemLocate voteItem) {
+    private VoteItemResponse createVoteItemLocateResponse(List<VoteItemLocate> voteItems, List<String> stadiumNames, VoteItemLocate voteItem) {
         Long voteItemId = voteItem.getVoteItemId();
         Long voteCount = choiceRepository.countByVoteItemId(voteItemId);
         String contents = stadiumNames.get(voteItems.indexOf(voteItem));
@@ -107,6 +111,32 @@ public class VoteServiceImpl implements VoteService {
     private Vote getVote(long voteId) {
         return voteRepository.findById(voteId)
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 투표입니다."));
+    }
+
+    @Transactional
+    @Override
+    public VoteResponse createDateVote(VoteDateCreateServiceRequest request, Long teamId, String email) {
+        Long memberId = getMemberId(email);
+        validateTeamId(teamId);
+
+        Vote vote = Vote.create(memberId, teamId, request.title(), request.endAt());
+        Vote savedVote = voteRepository.save(vote);
+
+        List<LocalDateTime> choices = request.choices().stream()
+            .toList();
+
+        List<VoteItemDate> voteItems = voteItemRepository.saveAll(choices.stream()
+            .map(choice -> VoteItemDate.create(savedVote, choice))
+            .toList());
+
+        List<VoteItemResponse> voteItemResponse = getVoteItemDateResponse(voteItems);
+        return VoteResponse.of(savedVote, voteItemResponse);
+    }
+
+    private List<VoteItemResponse> getVoteItemDateResponse(List<VoteItemDate> voteItems) {
+        return voteItems.stream()
+            .map(voteItem -> VoteItemResponse.of(voteItem.getVoteItemId(), voteItem.getTime().toString(), 0L))
+            .toList();
     }
 
 }

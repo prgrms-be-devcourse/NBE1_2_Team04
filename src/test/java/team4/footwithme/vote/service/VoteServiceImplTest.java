@@ -12,6 +12,7 @@ import team4.footwithme.stadium.domain.Stadium;
 import team4.footwithme.stadium.repository.StadiumRepository;
 import team4.footwithme.team.domain.Team;
 import team4.footwithme.team.repository.TeamRepository;
+import team4.footwithme.vote.api.request.DateChoices;
 import team4.footwithme.vote.domain.Choice;
 import team4.footwithme.vote.domain.Vote;
 import team4.footwithme.vote.domain.VoteItem;
@@ -19,6 +20,7 @@ import team4.footwithme.vote.domain.VoteItemLocate;
 import team4.footwithme.vote.repository.ChoiceRepository;
 import team4.footwithme.vote.repository.VoteItemRepository;
 import team4.footwithme.vote.repository.VoteRepository;
+import team4.footwithme.vote.service.request.VoteDateCreateServiceRequest;
 import team4.footwithme.vote.service.request.VoteStadiumCreateServiceRequest;
 import team4.footwithme.vote.service.response.VoteResponse;
 
@@ -51,7 +53,7 @@ class VoteServiceImplTest extends IntegrationTestSupport {
     @Autowired
     private ChoiceRepository choiceRepository;
 
-    @DisplayName("새로운 구장 투표를 생성한다")
+    @DisplayName("새로운 구장 투표를 생성한다.")
     @Test
     void createStadiumVote() {
         //given
@@ -221,6 +223,64 @@ class VoteServiceImplTest extends IntegrationTestSupport {
                 tuple(savedVoteItems.get(0).getVoteItemId(), "최강 풋살장", 2L),
                 tuple(savedVoteItems.get(1).getVoteItemId(), "열정 풋살장", 1L),
                 tuple(savedVoteItems.get(2).getVoteItemId(), "우주 풋살장", 0L)
+            );
+    }
+
+    @DisplayName("새로운 일정 투표를 생성한다.")
+    @Test
+    void createDateVote() {
+        //given
+        LocalDateTime endAt = LocalDateTime.now().plusDays(1);
+
+        LocalDateTime choice1 = LocalDateTime.now().plusHours(1);
+        LocalDateTime choice2 = LocalDateTime.now().plusDays(1);
+        LocalDateTime choice3 = LocalDateTime.now().plusDays(2);
+
+        Member givenMember = Member.create("test@gmail.com", "1234", "test", "010-1234-5678", LoginProvider.ORIGINAL, "test", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE);
+        Member savedMember = memberRepository.save(givenMember);
+
+        Stadium givenStadium1 = Stadium.create(savedMember, "최강 풋살장", "서울시 강남구 어딘가", "01010101010", "최고임", 54.123, 10.123);
+        Stadium savedStadium = stadiumRepository.save(givenStadium1);
+        Team team = Team.create(savedStadium.getStadiumId(), 1L, "팀이름", "팀 설명", 1, 1, 1, "서울");
+        Team savedTeam = teamRepository.save(team);
+
+        VoteDateCreateServiceRequest request = new VoteDateCreateServiceRequest("연말 경기 투표", endAt, List.of(choice1, choice2, choice3));
+
+
+        //when
+        VoteResponse response = voteService.createDateVote(request, savedTeam.getTeamId(), "test@gmail.com");
+
+        List<Vote> votes = voteRepository.findAll();
+        List<VoteItem> voteItems = voteItemRepository.findAll();
+        //then
+
+        Assertions.assertThat(votes).hasSize(1)
+            .extracting("title", "endAt", "memberId", "teamId", "voteId")
+            .containsExactlyInAnyOrder(
+                tuple("연말 경기 투표", endAt, savedMember.getMemberId(), savedTeam.getTeamId(), votes.get(0).getVoteId())
+            );
+
+        Assertions.assertThat(voteItems).hasSize(3)
+            .extracting("vote.voteId", "voteItemId", "time")
+            .containsExactlyInAnyOrder(
+                tuple(votes.get(0).getVoteId(), voteItems.get(0).getVoteItemId(), choice1),
+                tuple(votes.get(0).getVoteId(), voteItems.get(1).getVoteItemId(), choice2),
+                tuple(votes.get(0).getVoteId(), voteItems.get(2).getVoteItemId(), choice3)
+            );
+
+        Assertions.assertThat(response).isNotNull()
+            .extracting("voteId", "title", "endAt")
+            .containsExactlyInAnyOrder(
+                votes.get(0).getVoteId(), "연말 경기 투표", endAt
+            );
+
+        Assertions.assertThat(response.choices())
+            .hasSize(3)
+            .extracting("voteItemId", "content", "voteCount")
+            .containsExactlyInAnyOrder(
+                tuple(voteItems.get(0).getVoteItemId(), choice1.toString(), 0L),
+                tuple(voteItems.get(1).getVoteItemId(), choice2.toString(), 0L),
+                tuple(voteItems.get(2).getVoteItemId(), choice3.toString(), 0L)
             );
     }
 
