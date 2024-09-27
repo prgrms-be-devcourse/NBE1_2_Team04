@@ -5,6 +5,6 @@ import org.springframework.stereotype.Repository;
 import team4.footwithme.resevation.domain.Game;
 
 @Repository
-public interface MatchRepository extends JpaRepository<Game, Long> {
+public interface GameRepository extends JpaRepository<Game, Long> {
 
 }

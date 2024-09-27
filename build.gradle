@@ -52,6 +52,10 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation 'org.orbisgis:h2gis:2.2.0'
+
+
+
 
     // RestDocs
     asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
@@ -62,6 +66,16 @@ dependencies {
     annotationProcessor("com.querydsl:querydsl-apt:5.0.0:jakarta")
     annotationProcessor("jakarta.persistence:jakarta.persistence-api")
     annotationProcessor("jakarta.annotation:jakarta.annotation-api")
+
+    // JTS
+    implementation group: 'org.locationtech.jts', name: 'jts-core', version: '1.19.0'
+    implementation 'org.hibernate.orm:hibernate-spatial:6.5.3.Final'
+
+    // WebSocket
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+    // redis
+    compileOnly group: 'it.ozimov', name: 'embedded-redis', version: '0.7.2'
 }
 
 tasks.named('test') {
