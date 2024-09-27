@@ -52,15 +52,46 @@ public class Stadium extends BaseEntity {
 
     public static Stadium create(Member member, String name, String address, String phoneNumber, String description, double latitude, double longitude) {
         return Stadium.builder()
-            .member(member)
-            .name(name)
-            .address(address)
-            .phoneNumber(phoneNumber)
-            .description(description)
-            .position(Position.builder()
-                .latitude(latitude)
-                .longitude(longitude)
-                .build())
-            .build();
+                .member(member)
+                .name(name)
+                .address(address)
+                .phoneNumber(phoneNumber)
+                .description(description)
+                .position(Position.builder()
+                        .latitude(latitude)
+                        .longitude(longitude)
+                        .build())
+                .build();
     }
 }
+
+
+
+
+
+//    @NotNull
+//    @Column(columnDefinition = "POINT")
+//    private Point position;
+
+
+//    @Builder
+//    public Stadium(Member member, String name, String address, String phoneNumber, String description, Point position) {
+//        this.member = member;
+//        this.name = name;
+//        this.address = address;
+//        this.phoneNumber = phoneNumber;
+//        this.description = description;
+//        this.position = position;
+//    }
+//
+//    public static Stadium create(Member member, String name, String address, String phoneNumber, String description, double latitude, double longitude) {
+//        Point position = PositionUtil.createPoint(latitude, longitude);
+//        return Stadium.builder()
+//                .member(member)
+//                .name(name)
+//                .address(address)
+//                .phoneNumber(phoneNumber)
+//                .description(description)
+//                .position(position)
+//                .build();
+//    }
