@@ -10,7 +10,7 @@ import team4.footwithme.member.domain.MemberRole;
 import team4.footwithme.member.domain.TermsAgreed;
 import team4.footwithme.member.service.request.JoinCreateServiceRequest;
 
-public record JoinReq(
+public record JoinRequest(
         @NotBlank(message = "이메일은 필수입니다.")
         @Email(message = "형식이 이메일이어야 합니다.")
         String email,
