@@ -3,11 +3,11 @@ package team4.footwithme.team.service;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+import team4.footwithme.IntegrationTestSupport;
 import team4.footwithme.member.domain.*;
 import team4.footwithme.member.repository.MemberRepository;
-import team4.footwithme.team.api.request.TeamAddResquest;
+import team4.footwithme.team.api.request.TeamCreateRequest;
 import team4.footwithme.team.domain.Team;
 import team4.footwithme.team.domain.TeamMember;
 import team4.footwithme.team.domain.TeamMemberRole;
@@ -15,13 +15,15 @@ import team4.footwithme.team.domain.TeamRate;
 import team4.footwithme.team.repository.TeamMemberRepository;
 import team4.footwithme.team.repository.TeamRateRepository;
 import team4.footwithme.team.repository.TeamRepository;
+import team4.footwithme.team.service.request.TeamCreateServiceRequest;
 import team4.footwithme.team.service.response.TeamCreatedResponse;
 import team4.footwithme.team.service.response.TeamInfoResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
-class TeamServiceImplTest {
+
+@Transactional
+class TeamServiceImplTest extends IntegrationTestSupport {
     @Autowired
     private TeamServiceImpl teamService;
 
@@ -36,11 +38,11 @@ class TeamServiceImplTest {
     private TeamMemberRepository teamMemberRepository;
 
     @Test
-    @Transactional
     @DisplayName("팀 생성")
     void createTeam() {
         //given
-        TeamAddResquest dto = new TeamAddResquest("팀명", "팀 설명", "선호지역");
+        TeamCreateRequest request = new TeamCreateRequest("팀명", "팀 설명", "선호지역");
+        TeamCreateServiceRequest dto = request.toServiceRequest();
         teamService.createTeam(dto);
 
         //when
@@ -50,39 +52,31 @@ class TeamServiceImplTest {
         assertThat(count).isEqualTo(1);
     }
 
-    // 멤버를 생성하는 팩토리 메소드
-    private Member createMember(String email, String password, String name, String phoneNumber, LoginType loginType, Gender gender) {
-        return Member.builder()
-                .email(email)
-                .password(password)
-                .name(name)
-                .phoneNumber(phoneNumber)
-                .loginType(loginType)
-                .gender(gender)
-                .memberRole(MemberRole.USER)
-                .termsAgreed(TermsAgreed.AGREE)
-                .build();
-    }
-
     @Test
-    @Transactional
     @DisplayName("팀 정보 조회")
     void getTeamInfo(){
         // Given
-        TeamAddResquest dto = new TeamAddResquest("팀명", "팀 설명", "선호지역");
+        TeamCreateRequest request = new TeamCreateRequest("팀명", "팀 설명", "선호지역");
+        TeamCreateServiceRequest dto = request.toServiceRequest();
         TeamCreatedResponse teamCreatedResponse = teamService.createTeam(dto);
         Long teamId = teamCreatedResponse.teamId();
         Team team = teamRepository.findByTeamId(teamId);
 
         // 멤버 생성 및 저장
-        Member member01 = memberRepository.save(createMember("member01@gmail.com", "123456", "남남남", "010-1111-1111",
-                LoginType.builder().loginProvider(LoginProvider.KAKAO).snsId("member01@kakao.com").build(), Gender.MALE));
+        Member member01 = memberRepository.save(
+                Member.create("member01@gmail.com", "123456", "남남남", "010-1111-1111",
+                LoginProvider.ORIGINAL,"test", Gender.MALE, MemberRole.USER,TermsAgreed.AGREE)
+        );
 
-        Member member02 = memberRepository.save(createMember("member02@gmail.com", "123", "남남2", "010-1231-1111",
-                LoginType.builder().loginProvider(LoginProvider.GOOGLE).snsId("member02@google.com").build(), Gender.MALE));
+        Member member02 = memberRepository.save(
+                Member.create("member02@gmail.com", "123456", "남남남", "010-1111-1111",
+                LoginProvider.ORIGINAL,"test", Gender.MALE, MemberRole.USER,TermsAgreed.AGREE)
+        );
 
-        Member member03 = memberRepository.save(createMember("member03@gmail.com", "6548", "여여여", "010-1111-9871",
-                LoginType.builder().loginProvider(LoginProvider.KAKAO).snsId("member03@kakao.com").build(), Gender.FEMALE));
+        Member member03 = memberRepository.save(
+                Member.create("member03@gmail.com", "123456", "남남남", "010-1111-1111",
+                LoginProvider.ORIGINAL,"test", Gender.FEMALE, MemberRole.USER,TermsAgreed.AGREE)
+        );
 
         // 팀 멤버 등록
         teamMemberRepository.save(TeamMember.create(team, member01, TeamMemberRole.MEMBER));
