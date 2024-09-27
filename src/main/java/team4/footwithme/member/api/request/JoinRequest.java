@@ -8,7 +8,7 @@ import team4.footwithme.member.domain.Gender;
 import team4.footwithme.member.domain.LoginProvider;
 import team4.footwithme.member.domain.MemberRole;
 import team4.footwithme.member.domain.TermsAgreed;
-import team4.footwithme.member.service.request.JoinCreateServiceRequest;
+import team4.footwithme.member.service.request.JoinServiceRequest;
 
 public record JoinRequest(
         @NotBlank(message = "이메일은 필수입니다.")
@@ -33,9 +33,9 @@ public record JoinRequest(
         TermsAgreed termsAgree
 )
 {
-        public JoinCreateServiceRequest toServiceRequest() {
+        public JoinServiceRequest toServiceRequest() {
                 checkPassword();
-                return new JoinCreateServiceRequest(
+                return new JoinServiceRequest(
                         email,
                         password,
                         name,
