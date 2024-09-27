@@ -4,7 +4,7 @@ spring:
       on-profile: test
 
   datasource:
-    url: jdbc:h2:mem:~/gcCafe
+    url: jdbc:h2:mem:~/footwitme
     driver-class-name: org.h2.Driver
     username: sa
     password:
