@@ -67,7 +67,7 @@ class VoteServiceImplTest extends IntegrationTestSupport {
         List<Stadium> savedStadiums = stadiumRepository.saveAll(List.of(givenStadium1, givenStadium2, givenStadium4));
         List<Long> stadiumIds = List.of(savedStadiums.get(0).getStadiumId(), savedStadiums.get(1).getStadiumId(), savedStadiums.get(2).getStadiumId());
 
-        Team team = Team.create(givenStadium1, 1L, "팀이름", "팀 설명", 1, 1, 1, "서울");
+        Team team = Team.create(givenStadium1.getStadiumId(), 1L, "팀이름", "팀 설명", 1, 1, 1, "서울");
         Team savedTeam = teamRepository.save(team);
 
         VoteStadiumCreateServiceRequest request = new VoteStadiumCreateServiceRequest("9월4주차 구장 투표", endAt, stadiumIds);
@@ -160,7 +160,7 @@ class VoteServiceImplTest extends IntegrationTestSupport {
 
         List<Stadium> savedStadiums = stadiumRepository.saveAll(List.of(givenStadium1, givenStadium2, givenStadium3));
 
-        Team team = Team.create(givenStadium1, 1L, "팀이름", "팀 설명", 1, 1, 1, "서울");
+        Team team = Team.create(givenStadium1.getStadiumId(), 1L, "팀이름", "팀 설명", 1, 1, 1, "서울");
         Team savedTeam = teamRepository.save(team);
 
         VoteStadiumCreateServiceRequest request = new VoteStadiumCreateServiceRequest("9월4주차 구장 투표", endAt, stadiumIds);
