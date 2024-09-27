@@ -11,13 +11,13 @@ import team4.footwithme.global.domain.BaseEntity;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLDelete(sql = "UPDATE game SET is_deleted = TRUE WHERE game_id = ?")
+@SQLDelete(sql = "UPDATE match SET is_deleted = 'TRUE' WHERE match_id = ?")
 @Entity
 public class Game extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long gameId;
+    private Long matchId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "first_team_reservation_id", nullable = false)
