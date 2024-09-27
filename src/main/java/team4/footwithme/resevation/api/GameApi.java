@@ -7,5 +7,5 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping
-public class MatchApi {
+public class GameApi {
 }

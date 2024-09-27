@@ -19,7 +19,7 @@ public class RedisChatroomRepository {
     private final RedisMessageListenerContainer container;
     private final RedisSubscriber redisSubscriber;
 
-    private final RedisTemplate<String, Object> redisChatTemplate;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     private HashOperations<String, Long, Chatroom> opsHashChatRoom;
     // 채팅방의 대화 메시지를 발행하기 위한 redis topic 정보. 서버별로 채팅방에 매치되는 topic정보를 Map에 넣어 roomId로 찾을수 있도록 한다.
@@ -29,7 +29,7 @@ public class RedisChatroomRepository {
 
     @PostConstruct
     private void init() {
-        opsHashChatRoom = redisChatTemplate.opsForHash();
+        opsHashChatRoom = redisTemplate.opsForHash();
         topics = new HashMap<>();
     }
 

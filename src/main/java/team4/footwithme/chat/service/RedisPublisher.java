@@ -9,9 +9,9 @@ import team4.footwithme.chat.domain.Chat;
 @RequiredArgsConstructor
 @Service
 public class RedisPublisher {
-    private final RedisTemplate<String, Object> redisChatTemplate;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     public void publish(ChannelTopic topic, Chat chat) {
-        redisChatTemplate.convertAndSend(topic.getTopic(), chat);
+        redisTemplate.convertAndSend(topic.getTopic(), chat);
     }
 }

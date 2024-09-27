@@ -9,11 +9,11 @@ import team4.footwithme.member.domain.Member;
 import java.util.Optional;
 
 @Repository
-public interface MemberRepository extends JpaRepository<Member, Long> {
-
-    @Query("select m from Member m where m.isDeleted = 'false' and m.email = :email")
-    Optional<Member> findByEmail(@Param("email") String email);
+public interface MemberRepository extends JpaRepository<Member, Long>, CustomMemberRepository{
 
     @Query("select m from Member m where m.isDeleted = 'false' and m.memberId = :id")
     Optional<Member> findByMemberId(@Param("id")Long memberId);
+
+    Optional<Member> findByEmail(String email);
+
 }
