@@ -10,7 +10,7 @@ import org.hibernate.annotations.SQLDelete;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-//@SQLDelete(sql = "UPDATE member SET is_deleted = 'TRUE' WHERE member_id = ?")
+@SQLDelete(sql = "UPDATE member SET is_deleted = 'TRUE' WHERE member_id = ?")
 @Entity
 public class Member extends BaseEntity {
 
@@ -33,7 +33,7 @@ public class Member extends BaseEntity {
     @Embedded
     private LoginType loginType;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Gender gender;
 
