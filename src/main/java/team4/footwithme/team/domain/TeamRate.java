@@ -27,4 +27,12 @@ public class TeamRate extends BaseEntity {
 
     @Column(length = 100, nullable = true)
     private String evaluation;
+
+    //테스트 용 생성자
+    public TeamRate(Team team, double rating, String evaluation) {
+        this.team = team;
+        this.rating = rating;
+        this.evaluation = evaluation;
+    }
+
 }

@@ -1,4 +1,4 @@
 package team4.footwithme.resevation.service;
 
-public interface MatchService {
+public interface GameService {
 }

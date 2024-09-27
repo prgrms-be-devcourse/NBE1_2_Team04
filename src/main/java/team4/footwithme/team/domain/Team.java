@@ -11,23 +11,23 @@ import team4.footwithme.stadium.domain.Stadium;
 import org.hibernate.annotations.SQLDelete;
 
 @Getter
-@Entity
 @SQLDelete(sql = "UPDATE team SET is_deleted = TRUE WHERE team_id = ?")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Entity
 public class Team extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long teamId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "stadium_id", nullable = false)
-    private Stadium stadium;
+    @Column(nullable = true)
+    private Long stadiumId;
 
     @NotNull
     private Long chatRoomId;
 
     @NotNull
+    @Column(length = 50)
     private String name;
 
     @Column(length = 200, nullable = true)
@@ -36,12 +36,13 @@ public class Team extends BaseEntity {
     @Embedded
     private TotalRecord totalRecord;
 
+    @Column(length = 100, nullable = true)
     private String location;
 
     @Builder
-    private Team(Long teamId, Stadium stadium, Long chatRoomId, String name, String description, TotalRecord totalRecord, String location) {
+    private Team(Long teamId, Long stadiumId, Long chatRoomId, String name, String description, TotalRecord totalRecord, String location) {
         this.teamId = teamId;
-        this.stadium = stadium;
+        this.stadiumId = stadiumId;
         this.chatRoomId = chatRoomId;
         this.name = name;
         this.description = description;
@@ -49,17 +50,13 @@ public class Team extends BaseEntity {
         this.location = location;
     }
 
-    public static Team create(Stadium stadium, Long chatRoomId, String name, String description, int winCount, int drawCount, int loseCount, String location) {
+    public static Team create(Long stadiumId, Long chatRoomId, String name, String description, int winCount, int drawCount, int loseCount, String location) {
         return Team.builder()
-            .stadium(stadium)
+            .stadiumId(stadiumId)
             .chatRoomId(chatRoomId)
             .name(name)
             .description(description)
-            .totalRecord(TotalRecord.builder()
-                .winCount(winCount)
-                .drawCount(drawCount)
-                .loseCount(loseCount)
-                .build())
+            .totalRecord(TotalRecord.builder().build())
             .location(location)
             .build();
     }
