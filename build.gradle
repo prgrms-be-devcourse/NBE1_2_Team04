@@ -71,6 +71,11 @@ dependencies {
     implementation group: 'org.locationtech.jts', name: 'jts-core', version: '1.19.0'
     implementation 'org.hibernate.orm:hibernate-spatial:6.5.3.Final'
 
+    // WebSocket
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+    // redis
+    compileOnly group: 'it.ozimov', name: 'embedded-redis', version: '0.7.2'
 }
 
 tasks.named('test') {

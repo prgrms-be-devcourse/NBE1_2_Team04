@@ -5,5 +5,5 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class GameServiceImpl implements GameService{
+public class GameServiceImpl implements GameService {
 }
