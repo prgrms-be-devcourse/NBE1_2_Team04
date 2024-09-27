@@ -52,7 +52,10 @@ public class JwtTokenUtil {
     }
 
     public String getHeaderToken(HttpServletRequest request, String type) {
-        return type.equals("Access") ? request.getHeader(ACCESS_TOKEN) : request.getHeader(REFRESH_TOKEN);
+        if(type.equals("Access"))
+            return request.getHeader(ACCESS_TOKEN);
+
+        return request.getHeader(REFRESH_TOKEN);
     }
 
     public TokenResponse createToken(String email){
@@ -131,9 +134,8 @@ public class JwtTokenUtil {
         if(StringUtils.hasText(token)) {
             if(token.startsWith(BEARER_PREFIX)) {
                 return token.substring(7).trim();
-            } else {
-                return token;
             }
+                return token;
         }
 
         return null;
