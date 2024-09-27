@@ -1,5 +1,6 @@
 package team4.footwithme.member.api;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -7,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import team4.footwithme.global.api.ApiResponse;
-import team4.footwithme.member.api.request.JoinReq;
-import team4.footwithme.member.service.CookieService;
+import team4.footwithme.member.api.request.JoinRequest;
+import team4.footwithme.member.api.request.LoginRequest;
 import team4.footwithme.member.service.MemberService;
 import team4.footwithme.member.service.response.MemberResponse;
 
@@ -20,8 +21,13 @@ public class MemberApi {
     private final MemberService memberService;
 
     @PostMapping("/join")
-    public ApiResponse<MemberResponse> join(@RequestBody @Valid JoinReq request){
+    public ApiResponse<MemberResponse> join(@RequestBody @Valid JoinRequest request){
         return ApiResponse.created(memberService.join(request.toServiceRequest()));
+    }
+
+    @PostMapping("/login")
+    public ApiResponse<?> login(@RequestBody @Valid LoginRequest request, HttpServletResponse response){
+        return ApiResponse.ok(memberService.login(request.toServiceRequest(), response));
     }
 
 }

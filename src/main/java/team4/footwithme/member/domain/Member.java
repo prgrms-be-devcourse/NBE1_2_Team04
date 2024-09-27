@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import team4.footwithme.global.domain.BaseEntity;
 import org.hibernate.annotations.SQLDelete;
 
@@ -71,5 +72,9 @@ public class Member extends BaseEntity {
             .memberRole(memberRole)
             .termsAgreed(termsAgreed)
             .build();
+    }
+
+    public void encodePassword(PasswordEncoder passwordEncoder){
+        password = passwordEncoder.encode(password);
     }
 }
