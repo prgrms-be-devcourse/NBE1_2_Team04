@@ -5,5 +5,5 @@ import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
-public class ChoiceServiceImpl implements ChoiceService{
+public class VoteItemServiceImpl implements VoteItemService {
 }

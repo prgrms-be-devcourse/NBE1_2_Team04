@@ -1,15 +1,16 @@
 package team4.footwithme.vote.domain;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import team4.footwithme.member.domain.Member;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn
 @Entity
 public class Choice {
 
@@ -17,8 +18,21 @@ public class Choice {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long choiceId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false)
-    private Member member;
+    private Long memberId;
+
+    private Long voteItemId;
+
+    @Builder
+    private Choice(Long memberId, Long voteItemId) {
+        this.memberId = memberId;
+        this.voteItemId = voteItemId;
+    }
+
+    public static Choice create(Long memberId, Long voteItemId) {
+        return Choice.builder()
+            .memberId(memberId)
+            .voteItemId(voteItemId)
+            .build();
+    }
 
 }

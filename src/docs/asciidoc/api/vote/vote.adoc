@@ -1,0 +1,21 @@
+[[vote-stadium-create]]
+=== Vote Stadium 생성
+
+==== HTTP Request
+include::{snippets}/vote-stadium-create/http-request.adoc[]
+include::{snippets}/vote-stadium-create/request-fields.adoc[]
+include::{snippets}/vote-stadium-create/path-parameters.adoc[]
+
+==== HTTP Response
+include::{snippets}/vote-stadium-create/http-response.adoc[]
+include::{snippets}/vote-stadium-create/response-fields.adoc[]
+
+[[vote-stadium-get]]
+=== Vote Stadium 단건 조회
+
+==== HTTP Request
+include::{snippets}/vote-stadium-get/http-request.adoc[]
+
+==== HTTP Response
+include::{snippets}/vote-stadium-get/http-response.adoc[]
+include::{snippets}/vote-stadium-get/response-fields.adoc[]

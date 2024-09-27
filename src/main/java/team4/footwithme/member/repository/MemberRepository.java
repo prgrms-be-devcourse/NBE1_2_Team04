@@ -6,7 +6,7 @@ import team4.footwithme.member.domain.Member;
 
 import java.util.Optional;
 
-@Repository
-public interface MemberRepository extends JpaRepository<Member, Long> {
+
+public interface MemberRepository extends JpaRepository<Member, Long>, CustomMemberRepository {
     Optional<Member> findByEmail(String email);
 }

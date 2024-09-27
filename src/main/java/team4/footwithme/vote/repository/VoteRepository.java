@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import team4.footwithme.vote.domain.Vote;
 
 @Repository
-public interface VoteRepository extends JpaRepository<Vote, Long> {
+public interface VoteRepository extends JpaRepository<Vote, Long>, CustomVoteRepository {
 }
