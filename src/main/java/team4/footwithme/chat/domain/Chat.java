@@ -6,15 +6,21 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
 import team4.footwithme.global.domain.BaseEntity;
 import team4.footwithme.member.domain.Member;
-import org.hibernate.annotations.SQLDelete;
+
+import java.io.Serial;
+import java.io.Serializable;
 
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SQLDelete(sql = "UPDATE chat SET is_deleted = 'true' WHERE chat_id = ?")
-public class Chat extends BaseEntity {
+public class Chat extends BaseEntity implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = -2501100146410218751L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
