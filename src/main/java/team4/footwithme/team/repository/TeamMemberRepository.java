@@ -13,8 +13,4 @@ import java.util.List;
 @Repository
 public interface TeamMemberRepository extends JpaRepository<TeamMember, Long> {
     List<TeamMember> findTeamMembersByTeam(Team team);
-
-
-    int countMaleMembersByTeam(Team team);
-    int countFemaleMembers();
 }
