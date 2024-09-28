@@ -101,6 +101,7 @@ class TeamServiceImplTest extends IntegrationTestSupport {
 
     }
 
+    //궁금점.. 수정 쿼리가 아니고 insert쿼리가 날라가도 되는건가?
     @Test
     @DisplayName("팀 정보 수정")
     void updateTeamInfo(){
