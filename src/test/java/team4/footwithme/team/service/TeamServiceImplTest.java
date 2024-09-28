@@ -16,8 +16,10 @@ import team4.footwithme.team.repository.TeamMemberRepository;
 import team4.footwithme.team.repository.TeamRateRepository;
 import team4.footwithme.team.repository.TeamRepository;
 import team4.footwithme.team.service.request.TeamCreateServiceRequest;
+import team4.footwithme.team.service.request.TeamUpdateServiceRequest;
 import team4.footwithme.team.service.response.TeamCreatedResponse;
 import team4.footwithme.team.service.response.TeamInfoResponse;
+import team4.footwithme.team.service.response.TeamUpdateResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -97,5 +99,30 @@ class TeamServiceImplTest extends IntegrationTestSupport {
         assertThat(response.evaluation().size()).isEqualTo(2);
         assertThat(response.maleCount()).isEqualTo(2);
 
+    }
+
+    @Test
+    @DisplayName("팀 정보 수정")
+    void updateTeamInfo(){
+        //given
+        //팀 정보 저장
+        TeamCreateRequest request = new TeamCreateRequest("팀명", "팀 설명", "선호지역");
+        TeamCreateServiceRequest dto = request.toServiceRequest();
+        TeamCreatedResponse beforeEntity = teamService.createTeam(dto);
+
+        //when
+        //팀 정보 수정
+        Long teamId = beforeEntity.teamId();
+        TeamUpdateServiceRequest updateDTO = new TeamUpdateServiceRequest(null, "우리애 월드클래스 아닙니다.", "서울 전역");
+        TeamUpdateResponse result = teamService.updateTeamInfo(teamId, updateDTO);
+
+        //then
+        assertThat(result).isNotNull();
+        //팀 이름 안바꿈
+        assertThat(result.name()).isEqualTo(beforeEntity.name());
+        //팀 설명 바꿈
+        assertThat(result.description()).isEqualTo(updateDTO.description());
+        //선호 지역 바꿈
+        assertThat(result.location()).isEqualTo(updateDTO.location());
     }
 }
