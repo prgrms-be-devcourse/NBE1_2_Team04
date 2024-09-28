@@ -33,4 +33,9 @@ public class VoteApi {
         return ApiResponse.created(voteService.createDateVote(request.toServiceRequest(), teamId, email));
     }
 
+    @GetMapping("/dates/{voteId}")
+    public ApiResponse<VoteResponse> getDateVote(@PathVariable Long voteId) {
+        return ApiResponse.ok(voteService.getDateVote(voteId));
+    }
+
 }

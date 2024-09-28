@@ -20,21 +20,17 @@ import team4.footwithme.vote.service.response.VoteResponse;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @Service
 public class VoteServiceImpl implements VoteService {
 
     private final VoteRepository voteRepository;
-
     private final VoteItemRepository voteItemRepository;
-
     private final MemberRepository memberRepository;
-
     private final StadiumRepository stadiumRepository;
-
     private final TeamRepository teamRepository;
-
     private final ChoiceRepository choiceRepository;
 
     @Transactional
@@ -53,10 +49,11 @@ public class VoteServiceImpl implements VoteService {
             .toList();
 
         List<VoteItemLocate> savedVoteItems = voteItemRepository.saveAll(voteItemLocates);
+        List<VoteItem> voteItems = savedVoteItems.stream().map(voteItem -> (VoteItem) voteItem).toList();
 
-        List<String> stadiumNames = getStadiumNames(savedVoteItems);
+        List<String> stadiumNames = getStadiumNames(voteItems);
 
-        List<VoteItemResponse> voteItemResponse = getVoteItemLocateResponse(savedVoteItems, stadiumNames);
+        List<VoteItemResponse> voteItemResponse = getVoteItemLocateResponse(voteItems, stadiumNames);
         return VoteResponse.of(vote, voteItemResponse);
     }
 
@@ -78,37 +75,40 @@ public class VoteServiceImpl implements VoteService {
         }
     }
 
-    private List<String> getStadiumNames(List<VoteItemLocate> savedVoteItems) {
-        return stadiumRepository.findStadiumNamesByStadiumIds(savedVoteItems.stream()
+    private List<String> getStadiumNames(List<VoteItem> savedVoteItems) {
+        List<Long> stadiumIds = savedVoteItems.stream()
+            .filter(voteItem -> voteItem instanceof VoteItemLocate)
+            .map(voteItem -> (VoteItemLocate) voteItem)
             .map(VoteItemLocate::getStadiumId)
-            .toList()
-        );
+            .toList();
+
+        return stadiumRepository.findStadiumNamesByStadiumIds(stadiumIds);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public VoteResponse getStadiumVote(long voteId) {
+    public VoteResponse getStadiumVote(Long voteId) {
         Vote vote = getVote(voteId);
-        List<VoteItemLocate> voteItems = voteItemRepository.findByVoteVoteId(voteId);
+        List<VoteItem> voteItems = voteItemRepository.findByVoteVoteId(voteId);
         List<String> stadiumNames = getStadiumNames(voteItems);
         List<VoteItemResponse> voteItemResponse = getVoteItemLocateResponse(voteItems, stadiumNames);
         return VoteResponse.of(vote, voteItemResponse);
     }
 
-    private List<VoteItemResponse> getVoteItemLocateResponse(List<VoteItemLocate> voteItems, List<String> stadiumNames) {
+    private List<VoteItemResponse> getVoteItemLocateResponse(List<VoteItem> voteItems, List<String> stadiumNames) {
         return voteItems.stream()
             .map(voteItem -> createVoteItemLocateResponse(voteItems, stadiumNames, voteItem))
             .toList();
     }
 
-    private VoteItemResponse createVoteItemLocateResponse(List<VoteItemLocate> voteItems, List<String> stadiumNames, VoteItemLocate voteItem) {
+    private VoteItemResponse createVoteItemLocateResponse(List<VoteItem> voteItems, List<String> stadiumNames, VoteItem voteItem) {
         Long voteItemId = voteItem.getVoteItemId();
         Long voteCount = choiceRepository.countByVoteItemId(voteItemId);
         String contents = stadiumNames.get(voteItems.indexOf(voteItem));
         return VoteItemResponse.of(voteItemId, contents, voteCount);
     }
 
-    private Vote getVote(long voteId) {
+    private Vote getVote(Long voteId) {
         return voteRepository.findById(voteId)
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 투표입니다."));
     }
@@ -133,10 +133,31 @@ public class VoteServiceImpl implements VoteService {
         return VoteResponse.of(savedVote, voteItemResponse);
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public VoteResponse getDateVote(Long voteId) {
+        Vote vote = getVote(voteId);
+        voteItemRepository.findByVoteVoteId(voteId);
+
+        List<VoteItemDate> voteItems = voteItemRepository.findByVoteVoteId(voteId).stream()
+            .map(voteItem -> (VoteItemDate) voteItem)
+            .toList();
+
+        List<VoteItemResponse> voteItemResponse = getVoteItemDateResponse(voteItems);
+        return VoteResponse.of(vote, voteItemResponse);
+    }
+
     private List<VoteItemResponse> getVoteItemDateResponse(List<VoteItemDate> voteItems) {
         return voteItems.stream()
-            .map(voteItem -> VoteItemResponse.of(voteItem.getVoteItemId(), voteItem.getTime().toString(), 0L))
+            .map(this::mapToVoteItemResponse)
             .toList();
+    }
+
+    private VoteItemResponse mapToVoteItemResponse(VoteItemDate voteItem) {
+        Long voteItemId = voteItem.getVoteItemId();
+        String content = voteItem.getTime().toString();
+        Long count = choiceRepository.countByVoteItemId(voteItemId);
+        return VoteItemResponse.of(voteItemId, content, count);
     }
 
 }

@@ -7,7 +7,9 @@ import team4.footwithme.vote.service.response.VoteResponse;
 public interface VoteService {
     VoteResponse createStadiumVote(VoteStadiumCreateServiceRequest request, Long teamId, String email);
 
-    VoteResponse getStadiumVote(long voteId);
+    VoteResponse getStadiumVote(Long voteId);
 
     VoteResponse createDateVote(VoteDateCreateServiceRequest request, Long teamId, String email);
+
+    VoteResponse getDateVote(Long voteId);
 }

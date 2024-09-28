@@ -15,9 +15,9 @@ public class CustomChoiceRepositoryImpl implements CustomChoiceRepository {
 
     @Override
     public Long countByVoteItemId(Long voteItemId) {
-        return queryFactory.select(choice)
+        return queryFactory.select(choice.count())
             .from(choice)
             .where(choice.voteItemId.eq(voteItemId))
-            .fetchCount();
+            .fetchOne();
     }
 }
