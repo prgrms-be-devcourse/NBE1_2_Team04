@@ -7,6 +7,7 @@ import org.locationtech.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+import team4.footwithme.IntegrationTestSupport;
 import team4.footwithme.global.util.PositionUtil;
 import team4.footwithme.member.domain.*;
 import team4.footwithme.member.repository.MemberRepository;
@@ -22,9 +23,9 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SpringBootTest
+
 @Transactional
-class StadiumServiceImplTest {
+class StadiumServiceImplTest extends IntegrationTestSupport {
 
     @Autowired
     private StadiumServiceImpl stadiumService;

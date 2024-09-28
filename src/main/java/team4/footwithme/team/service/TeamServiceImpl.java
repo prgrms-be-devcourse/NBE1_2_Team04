@@ -12,11 +12,13 @@ import team4.footwithme.team.domain.TeamRate;
 import team4.footwithme.team.repository.TeamMemberRepository;
 import team4.footwithme.team.repository.TeamRateRepository;
 import team4.footwithme.team.service.request.TeamCreateServiceRequest;
+import team4.footwithme.team.service.request.TeamUpdateServiceRequest;
 import team4.footwithme.team.service.response.TeamInfoResponse;
 import team4.footwithme.team.domain.Team;
 import team4.footwithme.team.domain.TotalRecord;
 import team4.footwithme.team.repository.TeamRepository;
 import team4.footwithme.team.service.response.TeamCreatedResponse;
+import team4.footwithme.team.service.response.TeamUpdateResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +62,7 @@ public class TeamServiceImpl implements TeamService{
         return TeamCreatedResponse.of(createdTeam);
     }
 
-    // 한 서비스에서 다 들고오는게 좋은건지 각각의 서비스로 운용해야되는건지 모르겠음
+
     @Override
     public TeamInfoResponse getTeamInfo(Long teamId) {
 
@@ -100,5 +102,31 @@ public class TeamServiceImpl implements TeamService{
                 maleCount,
                 femaleCount
         ) ;
+    }
+
+    @Override
+    public TeamUpdateResponse updateTeamInfo(Long teamId, TeamUpdateServiceRequest dto) {
+        //변경할 팀 id로 검색
+        Team teamEntity = teamRepository.findByTeamId(teamId);
+
+        //팀 정보가 없을 때 예외처리
+        if(teamEntity == null) {
+            throw new IllegalArgumentException("해당 팀이 존재하지 않습니다.");
+        }
+
+        //entity에 수정된 값 적용
+        Team updatedEntity = Team.builder()
+                .teamId(teamEntity.getTeamId())
+                .stadiumId(teamEntity.getStadiumId())
+                .chatRoomId(teamEntity.getChatRoomId())
+                .name(dto.name()!= null ? dto.name():teamEntity.getName())
+                .description(dto.description()!= null ? dto.description():teamEntity.getDescription())
+                .totalRecord(teamEntity.getTotalRecord())
+                .location(dto.location()!= null ? dto.location():teamEntity.getLocation())
+                .build();
+
+        //DB에 저장
+        //바뀐 Team값 반환
+        return TeamUpdateResponse.of(teamRepository.save(updatedEntity));
     }
 }
