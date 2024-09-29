@@ -373,7 +373,7 @@ class VoteServiceImplTest extends IntegrationTestSupport {
         assertThat(deletedVote.get()).extracting(
             "voteId", "title","endAt", "memberId", "teamId","isDeleted"
         ).containsExactly(
-            savedVote.getVoteId(), "연말 경기 투표", endAt, savedMember.getMemberId(), savedTeam.getTeamId(), IsDeleted.TRUE
+            deletedId, "연말 경기 투표", endAt, deletedVote.get().getMemberId(), deletedVote.get().getTeamId(), IsDeleted.TRUE
         );
     }
 

@@ -295,7 +295,7 @@ public class VoteApiDocs extends RestDocsSupport {
                 .contentType(MediaType.APPLICATION_JSON)
             )
             .andExpect(status().isOk())
-            .andDo(document("vote-date-create",
+            .andDo(document("vote-delete",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
                 pathParameters(
