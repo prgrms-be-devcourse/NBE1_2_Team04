@@ -3,6 +3,7 @@ package team4.footwithme.chat.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import team4.footwithme.chat.domain.Chat;
 import team4.footwithme.chat.domain.Chatroom;
 import team4.footwithme.chat.repository.ChatMemberRepository;
@@ -30,6 +31,8 @@ public class ChatServiceImpl implements ChatService{
      * @param request
      * @param email
      */
+    @Override
+    @Transactional
     public void sendMessage(ChatServiceRequest request, String email) {
         Member member = memberRepository.findByEmail(email).orElseThrow(()-> new IllegalArgumentException("Member not found"));
         Chatroom chatroom = chatroomRepository.findByChatroomId(request.ChatroomId()).orElseThrow(()-> new IllegalArgumentException("Chatroom not found"));
