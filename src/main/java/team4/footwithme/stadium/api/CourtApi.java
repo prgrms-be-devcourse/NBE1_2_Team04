@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import team4.footwithme.global.api.ApiResponse;
 import team4.footwithme.stadium.domain.Court;
 import team4.footwithme.stadium.service.CourtService;
+import team4.footwithme.stadium.service.response.CourtDetailResponse;
 import team4.footwithme.stadium.service.response.CourtsResponse;
 import team4.footwithme.stadium.service.response.StadiumsResponse;
 
@@ -34,6 +35,12 @@ public class CourtApi {
     public ApiResponse<List<CourtsResponse>> getCourtsByStadiumId(@PathVariable Long stadiumId) {
         List<CourtsResponse> courts = courtService.getCourtsByStadiumId(stadiumId);
         return ApiResponse.ok(courts);
+    }
+
+    @GetMapping("/{courtId}/detail")
+    public ApiResponse<CourtDetailResponse> getCourtDetailById(@PathVariable Long courtId) {
+        CourtDetailResponse court = courtService.getCourtBycourtId(courtId);
+        return ApiResponse.ok(court);
     }
 
 }

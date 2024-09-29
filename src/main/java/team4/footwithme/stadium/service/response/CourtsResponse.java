@@ -8,10 +8,10 @@ public record CourtsResponse(
         Long stadiumId,
         String name
 ) {
-    public static CourtsResponse of(Stadium stadium, Court court) {
+    public static CourtsResponse from(Court court) {
         return new CourtsResponse(
                 court.getCourtId(),
-                stadium.getStadiumId(),
+                court.getStadium().getStadiumId(),
                 court.getName()
         );
     }
