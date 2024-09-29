@@ -16,6 +16,8 @@ import java.util.Map;
 @Repository
 @RequiredArgsConstructor
 public class RedisChatroomRepository {
+    private final ChatroomRepository chatroomRepository;
+
     private final RedisMessageListenerContainer container;
     private final RedisSubscriber redisSubscriber;
 
@@ -31,6 +33,14 @@ public class RedisChatroomRepository {
     private void init() {
         opsHashChatRoom = redisTemplate.opsForHash();
         topics = new HashMap<>();
+
+        // 서버 재시작 시 embeddedRedis 초기화되기 때문
+        chatroomRepository.findAll().forEach(chatroom -> {
+            if(!topics.containsKey(chatroom.getChatroomId().toString())){
+                createChatRoom(chatroom);
+                enterChatRoom(chatroom.getChatroomId().toString());
+            }
+        });
     }
 
     public Chatroom findChatroomFromRedis(String chatroomId) {
@@ -57,8 +67,7 @@ public class RedisChatroomRepository {
 
     public void leaveChatRoom(String chatroomId) {
         ChannelTopic topic = topics.get(chatroomId);
-        if(topic == null)
-            throw new IllegalArgumentException("Chatroom does not exist");
+
         container.removeMessageListener(redisSubscriber, topic);
         topics.remove(chatroomId);
     }
