@@ -25,8 +25,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -279,6 +278,38 @@ public class VoteApiDocs extends RestDocsSupport {
                         .description("투표 선택지 내용"),
                     fieldWithPath("data.choices[].voteCount").type(JsonFieldType.NUMBER)
                         .description("투표 선택지 투표 수")
+                )
+            ));
+
+    }
+
+    @DisplayName("투표ID를 이용해 투표를 삭제 할 수 있다.")
+    @Test
+    void deleteVote() throws Exception {
+        long voteId = 1L;
+
+        given(voteService.deleteVote(voteId))
+            .willReturn(voteId);
+
+        mockMvc.perform(delete("/api/v1/votes/{voteId}", voteId)
+                .contentType(MediaType.APPLICATION_JSON)
+            )
+            .andExpect(status().isOk())
+            .andDo(document("vote-date-create",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                pathParameters(
+                    parameterWithName("voteId").description("투표 ID")
+                ),
+                responseFields(
+                    fieldWithPath("code").type(JsonFieldType.NUMBER)
+                        .description("코드"),
+                    fieldWithPath("status").type(JsonFieldType.STRING)
+                        .description("상태"),
+                    fieldWithPath("message").type(JsonFieldType.STRING)
+                        .description("메시지"),
+                    fieldWithPath("data").type(JsonFieldType.NUMBER)
+                        .description("응답 데이터 삭제한 ID")
                 )
             ));
 

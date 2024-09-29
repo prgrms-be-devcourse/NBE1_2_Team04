@@ -38,4 +38,9 @@ public class VoteApi {
         return ApiResponse.ok(voteService.getDateVote(voteId));
     }
 
+    @DeleteMapping("{voteId}")
+    public ApiResponse<Long> deleteVote(@PathVariable Long voteId) {
+        return ApiResponse.ok(voteService.deleteVote(voteId));
+    }
+
 }

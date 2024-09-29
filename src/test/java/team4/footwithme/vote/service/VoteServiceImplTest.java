@@ -1,11 +1,13 @@
 package team4.footwithme.vote.service;
 
+import jakarta.persistence.EntityManager;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import team4.footwithme.IntegrationTestSupport;
+import team4.footwithme.global.domain.IsDeleted;
 import team4.footwithme.member.domain.*;
 import team4.footwithme.member.repository.MemberRepository;
 import team4.footwithme.stadium.domain.Stadium;
@@ -23,6 +25,7 @@ import team4.footwithme.vote.service.response.VoteResponse;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -49,6 +52,9 @@ class VoteServiceImplTest extends IntegrationTestSupport {
 
     @Autowired
     private ChoiceRepository choiceRepository;
+
+    @Autowired
+    private EntityManager entityManager;
 
     @DisplayName("새로운 구장 투표를 생성한다.")
     @Test
@@ -326,6 +332,49 @@ class VoteServiceImplTest extends IntegrationTestSupport {
                 tuple(savedVoteItems.get(1).getVoteItemId(), choice2.toString(), 0L),
                 tuple(savedVoteItems.get(2).getVoteItemId(), choice3.toString(), 0L)
             );
+    }
+
+    @DisplayName("투표를 투표 ID로 삭제한다.")
+    @Test
+    void deleteVoteByVoteId() {
+        //given
+        LocalDateTime endAt = LocalDateTime.now().plusDays(1);
+
+        LocalDateTime choice1 = LocalDateTime.now().plusHours(1);
+        LocalDateTime choice2 = LocalDateTime.now().plusDays(1);
+        LocalDateTime choice3 = LocalDateTime.now().plusDays(2);
+
+        Member givenMember = Member.create("test@gmail.com", "1234", "test", "010-1234-5678", LoginProvider.ORIGINAL, "test", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE);
+        Member savedMember = memberRepository.save(givenMember);
+
+        Stadium givenStadium1 = Stadium.create(savedMember, "최강 풋살장", "서울시 강남구 어딘가", "01010101010", "최고임", 54.123, 10.123);
+        Stadium savedStadium = stadiumRepository.save(givenStadium1);
+        Team team = Team.create(savedStadium.getStadiumId(), 1L, "팀이름", "팀 설명", 1, 1, 1, "서울");
+        Team savedTeam = teamRepository.save(team);
+
+        Vote vote = Vote.create(1L, 1L, "연말 경기 투표", endAt);
+        Vote savedVote = voteRepository.save(vote);
+
+        VoteItem voteItem1 = VoteItemDate.create(savedVote, choice1);
+        VoteItem voteItem2 = VoteItemDate.create(savedVote, choice2);
+        VoteItem voteItem3 = VoteItemDate.create(savedVote, choice3);
+
+        List<VoteItem> savedVoteItems = voteItemRepository.saveAll(List.of(voteItem1, voteItem2, voteItem3));
+        //when
+        Long deletedId = voteService.deleteVote(savedVote.getVoteId());
+
+        // @SQLDelete를 사용하면 수동으로 flush 해야함
+        entityManager.flush();
+
+        //then
+        Optional<Vote> deletedVote = voteRepository.findById(deletedId);
+
+        assertThat(deletedVote.isPresent()).isTrue();
+        assertThat(deletedVote.get()).extracting(
+            "voteId", "title","endAt", "memberId", "teamId","isDeleted"
+        ).containsExactly(
+            savedVote.getVoteId(), "연말 경기 투표", endAt, savedMember.getMemberId(), savedTeam.getTeamId(), IsDeleted.TRUE
+        );
     }
 
 }

@@ -12,4 +12,6 @@ public interface VoteService {
     VoteResponse createDateVote(VoteDateCreateServiceRequest request, Long teamId, String email);
 
     VoteResponse getDateVote(Long voteId);
+
+    Long deleteVote(Long voteId);
 }

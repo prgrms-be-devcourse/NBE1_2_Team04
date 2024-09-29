@@ -160,4 +160,10 @@ public class VoteServiceImpl implements VoteService {
         return VoteItemResponse.of(voteItemId, content, count);
     }
 
+    @Transactional
+    @Override
+    public Long deleteVote(Long voteId) {
+        voteRepository.delete(getVote(voteId));
+        return voteId;
+    }
 }
