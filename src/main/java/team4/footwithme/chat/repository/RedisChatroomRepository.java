@@ -2,6 +2,7 @@ package team4.footwithme.chat.repository;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
@@ -15,7 +16,7 @@ import java.util.Map;
 
 @Repository
 @RequiredArgsConstructor
-public class RedisChatroomRepository {
+public class RedisChatroomRepository implements CommandLineRunner {
     private final ChatroomRepository chatroomRepository;
 
     private final RedisMessageListenerContainer container;
@@ -30,10 +31,17 @@ public class RedisChatroomRepository {
     private static final String CHAT_ROOMS = "CHAT_ROOM";
 
     @PostConstruct
-    private void init() {
+    private void start() {
         opsHashChatRoom = redisTemplate.opsForHash();
         topics = new HashMap<>();
+    }
 
+    @Override
+    public void run(String... args) throws Exception {
+        init();
+    }
+
+    private void init() {
         // 서버 재시작 시 embeddedRedis 초기화되기 때문
         chatroomRepository.findAll().forEach(chatroom -> {
             if(!topics.containsKey(chatroom.getChatroomId().toString())){
