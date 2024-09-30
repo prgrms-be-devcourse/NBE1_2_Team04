@@ -18,4 +18,6 @@ public interface VoteService {
     Long deleteVote(Long voteId);
 
     VoteResponse createChoice(ChoiceCreateServiceRequest request, Long voteId, String email);
+
+    VoteResponse deleteChoice(Long voteId, String email);
 }

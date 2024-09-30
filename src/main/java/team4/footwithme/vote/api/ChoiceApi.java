@@ -21,4 +21,10 @@ public class ChoiceApi {
         return ApiResponse.created(voteService.createChoice(request.toServiceRequest(), voteId, email));
     }
 
+    @DeleteMapping("/{voteId}")
+    public ApiResponse<VoteResponse> deleteChoice(@PathVariable Long voteId) {
+        String email = "test@gmail.com";
+        return ApiResponse.ok(voteService.deleteChoice(voteId, email));
+    }
+
 }

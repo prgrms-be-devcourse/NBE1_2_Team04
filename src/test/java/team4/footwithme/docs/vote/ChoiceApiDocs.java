@@ -20,6 +20,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
@@ -99,4 +100,62 @@ public class ChoiceApiDocs extends RestDocsSupport {
             ));
 
     }
+
+    @DisplayName("투표 상세 항목에 투표를 취소 할 수 있다. 단 모든 투표 내용이 취소된다.")
+    @Test
+    void cancelVoteItemChoice() throws Exception {
+        LocalDateTime endAt = LocalDateTime.now().plusDays(1);
+        long voteId = 1L;
+
+        given(voteService.deleteChoice(eq(voteId),any(String.class)))
+            .willReturn(new VoteResponse(
+                voteId,
+                "연말 행사 투표",
+                endAt,
+                List.of(
+                    new VoteItemResponse(1L, "2021-12-25 12:00", 0L),
+                    new VoteItemResponse(2L, "2021-12-26 12:00", 0L),
+                    new VoteItemResponse(3L, "2021-12-27 12:00", 0L)
+                )
+            ));
+
+        mockMvc.perform(delete("/api/v1/choice/{voteId}", voteId)
+                .contentType(MediaType.APPLICATION_JSON)
+            )
+            .andExpect(status().isOk())
+            .andDo(document("choice-delete",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                pathParameters(
+                    parameterWithName("voteId").description("투표 ID")
+                ),
+                responseFields(
+                    fieldWithPath("code").type(JsonFieldType.NUMBER)
+                        .description("코드"),
+                    fieldWithPath("status").type(JsonFieldType.STRING)
+                        .description("상태"),
+                    fieldWithPath("message").type(JsonFieldType.STRING)
+                        .description("메시지"),
+                    fieldWithPath("data").type(JsonFieldType.OBJECT)
+                        .description("응답 데이터"),
+                    fieldWithPath("data.voteId").type(JsonFieldType.NUMBER)
+                        .description("투표 ID"),
+                    fieldWithPath("data.title").type(JsonFieldType.STRING)
+                        .description("투표 제목"),
+                    fieldWithPath("data.endAt").type(JsonFieldType.ARRAY)
+                        .description("투표 종료 시간"),
+                    fieldWithPath("data.choices").type(JsonFieldType.ARRAY)
+                        .description("투표 선택지 목록"),
+                    fieldWithPath("data.choices[].voteItemId").type(JsonFieldType.NUMBER)
+                        .description("투표 선택지 ID"),
+                    fieldWithPath("data.choices[].content").type(JsonFieldType.STRING)
+                        .description("투표 선택지 내용"),
+                    fieldWithPath("data.choices[].voteCount").type(JsonFieldType.NUMBER)
+                        .description("투표 선택지 투표 수")
+                )
+            ));
+
+    }
+
+
 }

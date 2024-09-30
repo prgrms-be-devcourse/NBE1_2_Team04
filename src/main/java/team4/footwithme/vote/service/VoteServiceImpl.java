@@ -170,6 +170,7 @@ public class VoteServiceImpl implements VoteService {
         Long memberId = getMemberIdBy(email);
         Vote vote = getVoteBy(voteId);
 
+        // TODO : 투표 항목 ID가 존재하는지 검증 이걸 vote를 통해서 쓰면 N+1 문제가 발생 할 것으로 보임 그러면 exist를 쓰는게 좋을까? 아니면 fetch join을 쓰는게 좋을까?
         List<Choice> choices = request.voteItemIds().stream()
             .map(voteItemId -> Choice.create(memberId, voteItemId))
             .toList();
@@ -215,5 +216,19 @@ public class VoteServiceImpl implements VoteService {
                 .toList();
         }
         throw new IllegalArgumentException("지원하지 않는 투표 항목입니다.");
+    }
+
+    @Transactional
+    @Override
+    public VoteResponse deleteChoice(Long voteId, String email) {
+        Long memberId = getMemberIdBy(email);
+        Vote vote = getVoteBy(voteId);
+
+        List<Choice> choices = choiceRepository.findByMemberIdAndVoteId(memberId, voteId);
+
+        choiceRepository.deleteAllInBatch(choices);
+        List<VoteItem> voteItems = getVoteItemsBy(voteId);
+        List<VoteItemResponse> voteItemResponse = convertVoteItemResponseFrom(voteItems);
+        return VoteResponse.of(vote, voteItemResponse);
     }
 }
