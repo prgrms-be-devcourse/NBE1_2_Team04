@@ -199,7 +199,7 @@ class StadiumServiceImplTest extends IntegrationTestSupport {
     void findByIdOrThrowException_whenStadiumExists() {
         Stadium stadium = stadiumRepository.findAll().get(0);
 
-        Stadium result = stadiumService.findByIdOrThrowException(stadium.getStadiumId());
+        Stadium result = stadiumService.findStadiumByIdOrThrowException(stadium.getStadiumId());
 
         assertThat(result).isNotNull();
         assertThat(result.getName()).isEqualTo("Stadium1");
@@ -211,9 +211,9 @@ class StadiumServiceImplTest extends IntegrationTestSupport {
         Long invalidId = 999L;
 
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            stadiumService.findByIdOrThrowException(invalidId);
+            stadiumService.findStadiumByIdOrThrowException(invalidId);
         });
 
-        assertThat(exception.getMessage()).isEqualTo("해당 구장을 찾을 수 없습니다.");
+        assertThat(exception.getMessage()).isEqualTo("해당 풋살장을 찾을 수 없습니다.");
     }
 }
