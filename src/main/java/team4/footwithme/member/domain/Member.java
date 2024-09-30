@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import team4.footwithme.global.domain.BaseEntity;
 import org.hibernate.annotations.SQLDelete;
+import team4.footwithme.member.api.request.UpdateRequest;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -74,7 +75,18 @@ public class Member extends BaseEntity {
             .build();
     }
 
+    public void update(UpdateRequest request){
+        if(request.name() != null)
+            this.name = request.name();
+
+        if(request.gender() != null)
+            this.gender = request.gender();
+
+        if(request.phoneNumber() != null)
+            this.phoneNumber = request.phoneNumber();
+    }
+
     public void encodePassword(PasswordEncoder passwordEncoder){
-        password = passwordEncoder.encode(password);
+        this.password = passwordEncoder.encode(password);
     }
 }

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import team4.footwithme.global.api.ApiResponse;
 import team4.footwithme.member.api.request.JoinRequest;
 import team4.footwithme.member.api.request.LoginRequest;
+import team4.footwithme.member.api.request.UpdateRequest;
 import team4.footwithme.member.jwt.JwtTokenUtil;
 import team4.footwithme.member.jwt.PrincipalDetails;
 import team4.footwithme.member.jwt.response.TokenResponse;
@@ -44,12 +45,19 @@ public class MemberApi {
     }
 
     @PostMapping("/reissue")
-    public ApiResponse<?> reissue(HttpServletRequest request, HttpServletResponse response,
-                                  @RequestHeader(name = JwtTokenUtil.REFRESH_TOKEN) String refreshToken){
+    public ApiResponse<TokenResponse> reissue(HttpServletRequest request, HttpServletResponse response,
+                                  @RequestHeader(name = JwtTokenUtil.REFRESH_TOKEN, defaultValue = "") String refreshToken){
         TokenResponse tokenResponse = memberService.reissue(request, refreshToken);
         cookieService.setHeader(response, tokenResponse.refreshToken()); // 쿠키에 refreshToken 저장
 
         return ApiResponse.ok(tokenResponse);
+    }
+
+    @PutMapping("/update")
+    public ApiResponse<MemberResponse> update(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                 @RequestBody @Valid UpdateRequest request){
+
+        return ApiResponse.ok(memberService.update(principalDetails, request));
     }
 
 }
