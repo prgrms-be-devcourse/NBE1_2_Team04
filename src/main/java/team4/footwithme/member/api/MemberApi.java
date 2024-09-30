@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.*;
 import team4.footwithme.global.api.ApiResponse;
 import team4.footwithme.member.api.request.JoinRequest;
 import team4.footwithme.member.api.request.LoginRequest;
+import team4.footwithme.member.api.request.UpdatePasswordRequest;
 import team4.footwithme.member.api.request.UpdateRequest;
+import team4.footwithme.member.domain.Member;
 import team4.footwithme.member.jwt.JwtTokenUtil;
 import team4.footwithme.member.jwt.PrincipalDetails;
 import team4.footwithme.member.jwt.response.TokenResponse;
@@ -57,7 +59,14 @@ public class MemberApi {
     public ApiResponse<MemberResponse> update(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                  @RequestBody @Valid UpdateRequest request){
 
-        return ApiResponse.ok(memberService.update(principalDetails, request));
+        return ApiResponse.ok(memberService.update(principalDetails, request.toServiceRequest()));
+    }
+
+    @PutMapping("/updatePassword")
+    public ApiResponse<String> updatePassword(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                              @RequestBody @Valid UpdatePasswordRequest request){
+
+        return ApiResponse.ok(memberService.updatePassword(principalDetails, request.toServiceRequest()));
     }
 
 }
