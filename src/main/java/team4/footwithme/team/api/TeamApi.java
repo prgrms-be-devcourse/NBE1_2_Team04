@@ -7,8 +7,7 @@ import team4.footwithme.team.api.request.TeamCreateRequest;
 import team4.footwithme.team.api.request.TeamUpdateRequest;
 import team4.footwithme.team.service.response.TeamInfoResponse;
 import team4.footwithme.team.service.TeamService;
-import team4.footwithme.team.service.response.TeamCreatedResponse;
-import team4.footwithme.team.service.response.TeamUpdateResponse;
+import team4.footwithme.team.service.response.TeamDefaultResponse;
 
 @RequiredArgsConstructor
 @RestController
@@ -21,7 +20,7 @@ public class TeamApi {
      * 팀 생성
      */
     @PostMapping("/create")
-    public ApiResponse<TeamCreatedResponse> createTeam(@RequestBody TeamCreateRequest request) {
+    public ApiResponse<TeamDefaultResponse> createTeam(@RequestBody TeamCreateRequest request) {
         return ApiResponse.created(teamService.createTeam(request.toServiceRequest()));
     }
 
@@ -46,15 +45,15 @@ public class TeamApi {
      * 팀 정보 수정
      */
     @PutMapping("/{teamId}/info")
-    public ApiResponse<TeamUpdateResponse> updateTeamInfo(@PathVariable Long teamId, @RequestBody TeamUpdateRequest request) {
-        TeamUpdateResponse teamUpdateResponse = teamService.updateTeamInfo(teamId, request.toServiceRequest());
+    public ApiResponse<TeamDefaultResponse> updateTeamInfo(@PathVariable Long teamId, @RequestBody TeamUpdateRequest request) {
+        TeamDefaultResponse teamUpdateResponse = teamService.updateTeamInfo(teamId, request.toServiceRequest());
         return ApiResponse.ok(teamUpdateResponse);
     }
 
     /**
      * 팀 삭제
      */
-    @DeleteMapping("{teamId}")
+    @DeleteMapping("/{teamId}")
     public ApiResponse<Long> deleteTeam(@PathVariable Long teamId) {
         //요청받은 id리턴
         Long deletedId = teamService.deleteTeam(teamId);

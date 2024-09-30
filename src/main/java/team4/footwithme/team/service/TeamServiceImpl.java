@@ -4,17 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team4.footwithme.member.domain.*;
-import team4.footwithme.member.repository.MemberRepository;
-import team4.footwithme.team.api.request.TeamCreateRequest;
 import team4.footwithme.team.domain.*;
 import team4.footwithme.team.repository.TeamMemberRepository;
 import team4.footwithme.team.repository.TeamRateRepository;
-import team4.footwithme.team.service.request.TeamCreateServiceRequest;
-import team4.footwithme.team.service.request.TeamUpdateServiceRequest;
+import team4.footwithme.team.service.request.TeamDefaultServiceRequest;
 import team4.footwithme.team.service.response.TeamInfoResponse;
 import team4.footwithme.team.repository.TeamRepository;
-import team4.footwithme.team.service.response.TeamCreatedResponse;
-import team4.footwithme.team.service.response.TeamUpdateResponse;
+import team4.footwithme.team.service.response.TeamDefaultResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +25,7 @@ public class TeamServiceImpl implements TeamService{
 
     @Override
     @Transactional
-    public TeamCreatedResponse createTeam(TeamCreateServiceRequest dto) {
+    public TeamDefaultResponse createTeam(TeamDefaultServiceRequest dto) {
         /**
          * # 1.
          * chatRoomId는 일단 가짜 id 넣어놓고,
@@ -54,12 +50,12 @@ public class TeamServiceImpl implements TeamService{
         );
         Team createdTeam = teamRepository.save(entity);
 
-        return TeamCreatedResponse.of(createdTeam);
+        return TeamDefaultResponse.from(createdTeam);
     }
 
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public TeamInfoResponse getTeamInfo(Long teamId) {
 
         //팀 정보
@@ -102,7 +98,7 @@ public class TeamServiceImpl implements TeamService{
 
     @Override
     @Transactional
-    public TeamUpdateResponse updateTeamInfo(Long teamId, TeamUpdateServiceRequest dto) {
+    public TeamDefaultResponse updateTeamInfo(Long teamId, TeamDefaultServiceRequest dto) {
         //변경할 팀 id로 검색
         Team teamEntity = teamRepository.findByTeamId(teamId);
 
@@ -112,19 +108,18 @@ public class TeamServiceImpl implements TeamService{
         }
 
         //entity에 수정된 값 적용
-        Team updatedEntity = Team.builder()
-                .teamId(teamEntity.getTeamId())
-                .stadiumId(teamEntity.getStadiumId())
-                .chatRoomId(teamEntity.getChatRoomId())
-                .name(dto.name()!= null ? dto.name():teamEntity.getName())
-                .description(dto.description()!= null ? dto.description():teamEntity.getDescription())
-                .totalRecord(teamEntity.getTotalRecord())
-                .location(dto.location()!= null ? dto.location():teamEntity.getLocation())
-                .build();
+        if(dto.name() != null){
+            teamEntity.setName(dto.name());
+        }
+        if(dto.description() != null){
+            teamEntity.setDescription(dto.description());
+        }
+        if(dto.location() != null){
+            teamEntity.setLocation(dto.location());
+        }
 
-        //DB에 저장
         //바뀐 Team값 반환
-        return TeamUpdateResponse.of(teamRepository.save(updatedEntity));
+        return TeamDefaultResponse.from(teamEntity);
     }
 
     @Override
