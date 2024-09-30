@@ -2,6 +2,7 @@ package team4.footwithme.member.api.request;
 
 import jakarta.validation.constraints.Pattern;
 import team4.footwithme.member.domain.Gender;
+import team4.footwithme.member.service.request.UpdateServiceRequest;
 
 public record UpdateRequest(
         String name,
@@ -10,4 +11,7 @@ public record UpdateRequest(
         String phoneNumber,
         Gender gender
 ) {
+        public UpdateServiceRequest toServiceRequest(){
+                return new UpdateServiceRequest(name, phoneNumber,gender);
+        }
 }

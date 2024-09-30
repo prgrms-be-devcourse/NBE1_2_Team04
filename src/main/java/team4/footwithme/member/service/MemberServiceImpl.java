@@ -16,6 +16,7 @@ import team4.footwithme.member.jwt.response.TokenResponse;
 import team4.footwithme.member.repository.MemberRepository;
 import team4.footwithme.member.service.request.JoinServiceRequest;
 import team4.footwithme.member.service.request.LoginServiceRequest;
+import team4.footwithme.member.service.request.UpdateServiceRequest;
 import team4.footwithme.member.service.response.LoginResponse;
 import team4.footwithme.member.service.response.MemberResponse;
 
@@ -97,9 +98,9 @@ public class MemberServiceImpl implements MemberService{
 
     @Override
     @Transactional
-    public MemberResponse update(PrincipalDetails principalDetails, UpdateRequest request) {
+    public MemberResponse update(PrincipalDetails principalDetails, UpdateServiceRequest request) {
         Member member = principalDetails.getMember();
-        member.update(request);
+        member.update(request.name(), request.phoneNumber(), request.gender());
 
         return MemberResponse.from(member);
     }

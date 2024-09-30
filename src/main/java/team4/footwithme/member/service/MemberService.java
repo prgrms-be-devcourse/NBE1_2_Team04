@@ -7,6 +7,7 @@ import team4.footwithme.member.jwt.PrincipalDetails;
 import team4.footwithme.member.jwt.response.TokenResponse;
 import team4.footwithme.member.service.request.JoinServiceRequest;
 import team4.footwithme.member.service.request.LoginServiceRequest;
+import team4.footwithme.member.service.request.UpdateServiceRequest;
 import team4.footwithme.member.service.response.LoginResponse;
 import team4.footwithme.member.service.response.MemberResponse;
 
@@ -19,5 +20,5 @@ public interface MemberService {
 
     TokenResponse reissue(HttpServletRequest request, String refreshToken);
 
-    MemberResponse update(PrincipalDetails principalDetails, UpdateRequest request);
+    MemberResponse update(PrincipalDetails principalDetails, UpdateServiceRequest request);
 }

@@ -75,15 +75,15 @@ public class Member extends BaseEntity {
             .build();
     }
 
-    public void update(UpdateRequest request){
-        if(request.name() != null)
-            this.name = request.name();
+    public void update(String name, String phoneNumber, Gender gender){
+        if(name != null)
+            this.name = name;
 
-        if(request.gender() != null)
-            this.gender = request.gender();
+        if(gender != null)
+            this.gender = gender;
 
-        if(request.phoneNumber() != null)
-            this.phoneNumber = request.phoneNumber();
+        if(phoneNumber != null)
+            this.phoneNumber = phoneNumber;
     }
 
     public void encodePassword(PasswordEncoder passwordEncoder){
