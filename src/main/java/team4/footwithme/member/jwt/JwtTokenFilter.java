@@ -65,7 +65,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
-    private String getRefreshTokenByRequest(HttpServletRequest request) {
+    public static String getRefreshTokenByRequest(HttpServletRequest request) {
         Cookie cookies[] = request.getCookies();
 
         if(cookies != null && cookies.length != 0){

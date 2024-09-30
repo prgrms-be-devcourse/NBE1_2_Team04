@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team4.footwithme.config.SecurityConfig;
 import team4.footwithme.member.domain.Member;
+import team4.footwithme.member.jwt.JwtTokenFilter;
 import team4.footwithme.member.jwt.JwtTokenUtil;
 import team4.footwithme.member.jwt.response.TokenResponse;
 import team4.footwithme.member.repository.MemberRepository;
@@ -74,6 +75,22 @@ public class MemberServiceImpl implements MemberService{
         redisTemplate.opsForValue().set(accessToken, "logout", expiration, TimeUnit.MICROSECONDS);
 
         return "Success Logout";
+    }
+
+    @Override
+    public TokenResponse reissue(HttpServletRequest request, String refreshToken) {
+        if(refreshToken == null){
+            refreshToken = JwtTokenFilter.getRefreshTokenByRequest(request); // 헤더에 없을 경우 쿠키에서 꺼내 씀
+        }
+
+        jwtTokenUtil.tokenValidation(refreshToken);
+
+        String newAccessToken = jwtTokenUtil.reCreateAccessToken(refreshToken);
+        long refreshTokenExpirationTime = jwtTokenUtil.getExpiration(refreshToken);
+
+        return TokenResponse.of(newAccessToken,
+                refreshToken,
+                refreshTokenExpirationTime);
     }
 
 

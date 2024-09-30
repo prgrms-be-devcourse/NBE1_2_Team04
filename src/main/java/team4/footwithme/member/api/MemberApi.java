@@ -11,6 +11,7 @@ import team4.footwithme.member.api.request.JoinRequest;
 import team4.footwithme.member.api.request.LoginRequest;
 import team4.footwithme.member.jwt.JwtTokenUtil;
 import team4.footwithme.member.jwt.PrincipalDetails;
+import team4.footwithme.member.jwt.response.TokenResponse;
 import team4.footwithme.member.service.CookieService;
 import team4.footwithme.member.service.MemberService;
 import team4.footwithme.member.service.response.LoginResponse;
@@ -40,6 +41,15 @@ public class MemberApi {
     @DeleteMapping("/logout")
     public ApiResponse<String> logout(HttpServletRequest request, @RequestHeader(name = JwtTokenUtil.REFRESH_TOKEN) String refreshToken) {
         return ApiResponse.ok(memberService.logout(request, refreshToken));
+    }
+
+    @PostMapping("/reissue")
+    public ApiResponse<?> reissue(HttpServletRequest request, HttpServletResponse response,
+                                  @RequestHeader(name = JwtTokenUtil.REFRESH_TOKEN) String refreshToken){
+        TokenResponse tokenResponse = memberService.reissue(request, refreshToken);
+        cookieService.setHeader(response, tokenResponse.refreshToken()); // 쿠키에 refreshToken 저장
+
+        return ApiResponse.ok(tokenResponse);
     }
 
 }

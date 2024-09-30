@@ -2,6 +2,7 @@ package team4.footwithme.member.service;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import team4.footwithme.member.jwt.response.TokenResponse;
 import team4.footwithme.member.service.request.JoinServiceRequest;
 import team4.footwithme.member.service.request.LoginServiceRequest;
 import team4.footwithme.member.service.response.LoginResponse;
@@ -13,4 +14,6 @@ public interface MemberService {
     LoginResponse login(LoginServiceRequest serviceRequest);
 
     String logout(HttpServletRequest request, String refreshToken);
+
+    TokenResponse reissue(HttpServletRequest request, String refreshToken);
 }
