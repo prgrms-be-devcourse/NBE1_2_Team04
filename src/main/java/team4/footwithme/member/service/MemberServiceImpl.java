@@ -1,5 +1,6 @@
 package team4.footwithme.member.service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -24,7 +25,6 @@ public class MemberServiceImpl implements MemberService{
     private final MemberRepository memberRepository;
     private final SecurityConfig jwtSecurityConfig;
     private final JwtTokenUtil jwtTokenUtil;
-    private final CookieService cookieService;
     private final RedisTemplate redisTemplate;
 
     @Override
@@ -43,7 +43,7 @@ public class MemberServiceImpl implements MemberService{
 
     @Override
     @Transactional
-    public LoginResponse login(LoginServiceRequest serviceRequest, HttpServletResponse response) {
+    public LoginResponse login(LoginServiceRequest serviceRequest) {
         Member member = memberRepository.findByEmail(serviceRequest.email())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자 입니다."));
 
@@ -55,9 +55,10 @@ public class MemberServiceImpl implements MemberService{
         redisTemplate.opsForValue().set(member.getEmail(), tokenResponse.refreshToken(), tokenResponse.refreshTokenExpirationTime(), TimeUnit.MICROSECONDS);
         // Redis에 RefreshToken 저장
 
-        cookieService.setHeader(response, tokenResponse.refreshToken());
-        // 쿠키에 refreshToken 저장
-
         return LoginResponse.from(tokenResponse);
     }
+
+
+
+
 }

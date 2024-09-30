@@ -14,6 +14,7 @@ import team4.footwithme.member.domain.Gender;
 import team4.footwithme.member.domain.LoginProvider;
 import team4.footwithme.member.domain.MemberRole;
 import team4.footwithme.member.domain.TermsAgreed;
+import team4.footwithme.member.service.CookieService;
 import team4.footwithme.member.service.MemberService;
 import team4.footwithme.member.service.request.JoinServiceRequest;
 import team4.footwithme.member.service.request.LoginServiceRequest;
@@ -33,10 +34,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class MemberApiDocs extends RestDocsSupport {
     
     private final MemberService memberService = mock(MemberService.class);
+    private final CookieService cookieService = mock(CookieService.class);
 
     @Override
     protected Object initController() {
-        return new MemberApi(memberService);
+        return new MemberApi(memberService, cookieService);
     }
     
     @DisplayName("회원 가입을 진행하는 API")
@@ -95,7 +97,7 @@ public class MemberApiDocs extends RestDocsSupport {
         LoginRequest request = new LoginRequest("test@naver.com", "!test1234");
         LoginResponse response = new LoginResponse("ACCESS_TOKEN", "REFRESH_TOKEN");
 
-        given(memberService.login(any(LoginServiceRequest.class), any(HttpServletResponse.class)))
+        given(memberService.login(any(LoginServiceRequest.class)))
                 .willReturn(response);
 
         mockMvc.perform(post("/api/v1/members/login")

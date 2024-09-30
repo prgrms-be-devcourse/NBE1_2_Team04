@@ -63,9 +63,8 @@ class MemberServiceImplTest extends IntegrationTestSupport {
         memberRepository.save(member);
 
         LoginServiceRequest request = new LoginServiceRequest("test@naver.com", "!test1234");
-        HttpServletResponse httpServletResponse = mock(HttpServletResponse.class);
         //when
-        LoginResponse response = memberService.login(request, httpServletResponse);
+        LoginResponse response = memberService.login(request);
 
         //then
         assertThat(response).isNotNull();
