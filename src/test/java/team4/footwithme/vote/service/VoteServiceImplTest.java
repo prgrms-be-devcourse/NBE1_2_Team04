@@ -237,9 +237,9 @@ class VoteServiceImplTest extends IntegrationTestSupport {
         //given
         LocalDateTime endAt = LocalDateTime.now().plusDays(1);
 
-        LocalDateTime choice1 = LocalDateTime.now().plusHours(1);
-        LocalDateTime choice2 = LocalDateTime.now().plusDays(1);
-        LocalDateTime choice3 = LocalDateTime.now().plusDays(2);
+        LocalDateTime choice1 = LocalDateTime.now().plusDays(2);
+        LocalDateTime choice2 = LocalDateTime.now().plusDays(3);
+        LocalDateTime choice3 = LocalDateTime.now().plusDays(4);
 
         Member givenMember = Member.create("test@gmail.com", "1234", "test", "010-1234-5678", LoginProvider.ORIGINAL, "test", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE);
         Member savedMember = memberRepository.save(givenMember);
@@ -295,9 +295,9 @@ class VoteServiceImplTest extends IntegrationTestSupport {
         //given
         LocalDateTime endAt = LocalDateTime.now().plusDays(1);
 
-        LocalDateTime choice1 = LocalDateTime.now().plusHours(1);
-        LocalDateTime choice2 = LocalDateTime.now().plusDays(1);
-        LocalDateTime choice3 = LocalDateTime.now().plusDays(2);
+        LocalDateTime choice1 = LocalDateTime.now().plusDays(2);
+        LocalDateTime choice2 = LocalDateTime.now().plusDays(3);
+        LocalDateTime choice3 = LocalDateTime.now().plusDays(4);
 
         Member givenMember = Member.create("test@gmail.com", "1234", "test", "010-1234-5678", LoginProvider.ORIGINAL, "test", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE);
         Member savedMember = memberRepository.save(givenMember);
@@ -342,9 +342,9 @@ class VoteServiceImplTest extends IntegrationTestSupport {
         //given
         LocalDateTime endAt = LocalDateTime.now().plusDays(1);
 
-        LocalDateTime choice1 = LocalDateTime.now().plusHours(1);
-        LocalDateTime choice2 = LocalDateTime.now().plusDays(1);
-        LocalDateTime choice3 = LocalDateTime.now().plusDays(2);
+        LocalDateTime choice1 = LocalDateTime.now().plusDays(2);
+        LocalDateTime choice2 = LocalDateTime.now().plusDays(3);
+        LocalDateTime choice3 = LocalDateTime.now().plusDays(4);
 
         Member givenMember = Member.create("test@gmail.com", "1234", "test", "010-1234-5678", LoginProvider.ORIGINAL, "test", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE);
         Member savedMember = memberRepository.save(givenMember);
@@ -385,9 +385,9 @@ class VoteServiceImplTest extends IntegrationTestSupport {
         //given
         LocalDateTime endAt = LocalDateTime.now().plusDays(1);
 
-        LocalDateTime choice1 = LocalDateTime.now().plusHours(1);
-        LocalDateTime choice2 = LocalDateTime.now().plusDays(1);
-        LocalDateTime choice3 = LocalDateTime.now().plusDays(2);
+        LocalDateTime choice1 = LocalDateTime.now().plusDays(2);
+        LocalDateTime choice2 = LocalDateTime.now().plusDays(3);
+        LocalDateTime choice3 = LocalDateTime.now().plusDays(4);
 
         Member givenMember = Member.create("test@gmail.com", "1234", "test", "010-1234-5678", LoginProvider.ORIGINAL, "test", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE);
         Member savedMember = memberRepository.save(givenMember);
@@ -443,9 +443,9 @@ class VoteServiceImplTest extends IntegrationTestSupport {
         //given
         LocalDateTime endAt = LocalDateTime.now().plusDays(1);
 
-        LocalDateTime choice1 = LocalDateTime.now().plusHours(1);
-        LocalDateTime choice2 = LocalDateTime.now().plusDays(1);
-        LocalDateTime choice3 = LocalDateTime.now().plusDays(2);
+        LocalDateTime choice1 = LocalDateTime.now().plusDays(2);
+        LocalDateTime choice2 = LocalDateTime.now().plusDays(3);
+        LocalDateTime choice3 = LocalDateTime.now().plusDays(4);
 
         Member givenMember = Member.create("test@gmail.com", "1234", "test", "010-1234-5678", LoginProvider.ORIGINAL, "test", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE);
         Member savedMember = memberRepository.save(givenMember);
@@ -494,9 +494,9 @@ class VoteServiceImplTest extends IntegrationTestSupport {
         //given
         LocalDateTime endAt = LocalDateTime.now().plusDays(1);
 
-        LocalDateTime choice1 = LocalDateTime.now().plusHours(1);
-        LocalDateTime choice2 = LocalDateTime.now().plusDays(1);
-        LocalDateTime choice3 = LocalDateTime.now().plusDays(2);
+        LocalDateTime choice1 = LocalDateTime.now().plusDays(2);
+        LocalDateTime choice2 = LocalDateTime.now().plusDays(3);
+        LocalDateTime choice3 = LocalDateTime.now().plusDays(4);
 
         Member givenMember = Member.create("test@gmail.com", "1234", "test", "010-1234-5678", LoginProvider.ORIGINAL, "test", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE);
         Member savedMember = memberRepository.save(givenMember);
