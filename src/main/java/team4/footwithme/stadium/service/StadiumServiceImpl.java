@@ -31,7 +31,7 @@ public class StadiumServiceImpl implements StadiumService {
 
     // 구장 목록 조회
     public List<StadiumsResponse> getStadiumList() {
-        return stadiumRepository.findAll().stream()
+        return stadiumRepository.findAllActiveStadiums().stream()
                 .map(stadium -> new StadiumsResponse(stadium.getStadiumId(), stadium.getName(), stadium.getAddress()))
                 .toList();
     }
@@ -74,7 +74,7 @@ public class StadiumServiceImpl implements StadiumService {
                 .collect(Collectors.toList());
     }
 
-
+    // 풋살장 등록
     @Transactional
     public StadiumDetailResponse registerStadium(StadiumRegisterServiceRequest request, Long memberId) {
         Member member = findMemberByIdOrThrowException(memberId);
@@ -94,7 +94,7 @@ public class StadiumServiceImpl implements StadiumService {
         return StadiumDetailResponse.of(stadium);
     }
 
-
+    // 풋살장 정보 수정
     @Transactional
     public StadiumDetailResponse updateStadium(StadiumUpdateServiceRequest request, Long memberId, Long stadiumId) {
         findMemberByIdOrThrowException(memberId);
@@ -106,13 +106,20 @@ public class StadiumServiceImpl implements StadiumService {
         return StadiumDetailResponse.of(stadium);
     }
 
+    // 풋살장 삭제
     @Transactional
-    public void deleteStadium(Long stadiumId) {
+    public void deleteStadium(Long memberId, Long stadiumId) {
+        findMemberByIdOrThrowException(memberId);
+        Stadium stadium = findStadiumByIdOrThrowException(stadiumId);
+        if (!stadium.getMember().getMemberId().equals(memberId)) {
+            throw new IllegalArgumentException(ExceptionMessage.STADIUM_NOT_OWNED_BY_MEMBER.getText());
+        }
+        stadiumRepository.delete(stadium);
     }
 
     // 풋살장 조회 예외처리
     public Stadium findStadiumByIdOrThrowException(long id) {
-        return stadiumRepository.findById(id)
+        return stadiumRepository.findByStadiumId(id)
                 .orElseThrow(() -> {
                     log.warn(">>>> {} : {} <<<<", id, ExceptionMessage.STADIUM_NOT_FOUND);
                     return new IllegalArgumentException(ExceptionMessage.STADIUM_NOT_FOUND.getText());

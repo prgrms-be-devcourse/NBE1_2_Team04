@@ -37,8 +37,9 @@ public class StadiumMerchantApi {
 
 //    @PreAuthorize("hasRole('ROLE_MERCHANT')")
     @DeleteMapping("/{stadiumId}")
-    public ApiResponse<Void> deleteStadium(@PathVariable Long stadiumId) {
-        stadiumService.deleteStadium(stadiumId);
+    public ApiResponse<Void> deleteStadium(@PathVariable Long stadiumId,
+                                           @AuthenticationPrincipal PrincipalDetails currentUser) {
+        stadiumService.deleteStadium(currentUser.getMember().getMemberId(), stadiumId);
         return ApiResponse.ok(null);
     }
 }
