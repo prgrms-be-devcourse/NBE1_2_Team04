@@ -1,8 +1,12 @@
 package team4.footwithme.stadium.repository;
 
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberTemplate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import team4.footwithme.global.domain.IsDeleted;
+import team4.footwithme.stadium.domain.QStadium;
+import team4.footwithme.stadium.domain.Stadium;
 
 import java.util.List;
 
@@ -29,5 +33,18 @@ public class CustomStadiumRepositoryImpl implements CustomStadiumRepository {
             .where(stadium.stadiumId.in(stadiumIds)
                 .and(stadium.isDeleted.eq(IsDeleted.FALSE)))
             .fetchOne();
+    }
+
+    @Override
+    public List<Stadium> findStadiumsByLocation(Double latitude, Double longitude, Double distance) {
+        QStadium stadium = QStadium.stadium;
+        double earthRadius = 6371;
+        NumberTemplate<Double> haversineDistance = Expressions.numberTemplate(Double.class,
+                "(6371 * acos(cos(radians({0})) * cos(radians({1})) * cos(radians({2}) - radians({3})) + sin(radians({0})) * sin(radians({1}))))",
+                latitude, stadium.position.latitude, stadium.position.longitude, longitude);
+        return queryFactory
+                .selectFrom(stadium)
+                .where(haversineDistance.loe(distance))
+                .fetch();
     }
 }
