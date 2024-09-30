@@ -126,4 +126,20 @@ class TeamServiceImplTest extends IntegrationTestSupport {
         //선호 지역 바꿈
         assertThat(result.location()).isEqualTo(updateDTO.location());
     }
+
+    @Test
+    @DisplayName("팀 삭제")
+    void deleteTeam(){
+        //given
+        //팀 정보 저장
+        TeamCreateRequest request = new TeamCreateRequest("팀명", "팀 설명", "선호지역");
+        TeamCreateServiceRequest dto = request.toServiceRequest();
+        TeamCreatedResponse team = teamService.createTeam(dto);
+
+        //when
+        Long deletedTeamId = teamService.deleteTeam(team.teamId());
+
+        //then
+        assertThat(deletedTeamId).isNotNull();
+    }
 }
