@@ -9,26 +9,24 @@ import team4.footwithme.global.api.ApiResponse;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/chat/member")
 public class ChatMemberApi {
     private final ChatMemberService chatMemberService;
 
     /**
      * 채팅방 초대
      */
-    @PostMapping("/chat/member")
+    @PostMapping
     public ApiResponse<String> inviteChatMember(@RequestBody @Valid ChatMemberRequest chatMemberRequest) {
-        String message = chatMemberService.joinChatMember(chatMemberRequest.toServiceRequest());
-        return ApiResponse.created(message);
+        return ApiResponse.created(chatMemberService.joinChatMember(chatMemberRequest.toServiceRequest()));
     }
 
     /**
      * 채팅방 나감
      */
-    @DeleteMapping("/chat/member")
+    @DeleteMapping
     public ApiResponse<String> removeChatMember(@RequestBody @Valid ChatMemberRequest chatMemberRequest) {
-        String message = chatMemberService.leaveChatMember(chatMemberRequest.toServiceRequest());
-        return ApiResponse.ok(message);
+        return ApiResponse.ok(chatMemberService.leaveChatMember(chatMemberRequest.toServiceRequest()));
     }
 
 }

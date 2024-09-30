@@ -10,7 +10,7 @@ import team4.footwithme.global.api.ApiResponse;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/chat/room")
 public class ChatroomApi {
     private final ChatroomService chatroomService;
 
@@ -18,20 +18,17 @@ public class ChatroomApi {
      * 채팅방 생성
      * 팀, 예약 생성시 같이 실행해주기
      */
-    @PostMapping("/chat/room")
+    @PostMapping
     public ApiResponse<ChatroomResponse> createChatroom(@RequestBody @Valid ChatroomRequest chatroomRequest) {
-        ChatroomResponse response = chatroomService.createChatroom(chatroomRequest.toServiceRequest());
-        return ApiResponse.created(response);
+        return ApiResponse.created(chatroomService.createChatroom(chatroomRequest.toServiceRequest()));
     }
 
     /**
      * 채팅방 삭제
      */
-    @DeleteMapping("/chat/room/{chatroomId}")
-    public ApiResponse<Long> deleteChatroom(@PathVariable("chatroomId") @Valid Long chatroomId) {
+    @DeleteMapping("/{chatroomId}")
+    public ApiResponse<Long> deleteChatroom(@PathVariable("chatroomId") Long chatroomId) {
         chatroomService.deleteChatroom(chatroomId);
         return ApiResponse.ok(chatroomId);
     }
-
-
 }
