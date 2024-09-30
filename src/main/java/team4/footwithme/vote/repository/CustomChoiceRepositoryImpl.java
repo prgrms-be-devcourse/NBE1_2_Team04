@@ -7,6 +7,7 @@ import team4.footwithme.vote.domain.QChoice;
 import java.util.List;
 
 import static team4.footwithme.vote.domain.QChoice.*;
+import static team4.footwithme.vote.domain.QVote.vote;
 
 @RequiredArgsConstructor
 public class CustomChoiceRepositoryImpl implements CustomChoiceRepository {

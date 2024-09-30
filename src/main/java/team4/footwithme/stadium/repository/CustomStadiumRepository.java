@@ -6,4 +6,6 @@ public interface CustomStadiumRepository {
     List<String> findStadiumNamesByStadiumIds(List<Long> stadiumIdList);
 
     Long countStadiumByStadiumIds(List<Long> stadiumIds);
+
+    String findStadiumNameById(Long stadiumId);
 }

@@ -19,6 +19,7 @@ import team4.footwithme.vote.domain.*;
 import team4.footwithme.vote.repository.ChoiceRepository;
 import team4.footwithme.vote.repository.VoteItemRepository;
 import team4.footwithme.vote.repository.VoteRepository;
+import team4.footwithme.vote.service.request.ChoiceCreateServiceRequest;
 import team4.footwithme.vote.service.request.VoteDateCreateServiceRequest;
 import team4.footwithme.vote.service.request.VoteStadiumCreateServiceRequest;
 import team4.footwithme.vote.service.response.VoteResponse;
@@ -375,6 +376,64 @@ class VoteServiceImplTest extends IntegrationTestSupport {
         ).containsExactly(
             deletedId, "연말 경기 투표", endAt, deletedVote.get().getMemberId(), deletedVote.get().getTeamId(), IsDeleted.TRUE
         );
+    }
+
+    @DisplayName("투표의 상세 항목을 투표한다.")
+    @Test
+    void createChoice() {
+        //given
+        LocalDateTime endAt = LocalDateTime.now().plusDays(1);
+
+        LocalDateTime choice1 = LocalDateTime.now().plusHours(1);
+        LocalDateTime choice2 = LocalDateTime.now().plusDays(1);
+        LocalDateTime choice3 = LocalDateTime.now().plusDays(2);
+
+        Member givenMember = Member.create("test@gmail.com", "1234", "test", "010-1234-5678", LoginProvider.ORIGINAL, "test", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE);
+        Member savedMember = memberRepository.save(givenMember);
+
+        Stadium givenStadium1 = Stadium.create(savedMember, "최강 풋살장", "서울시 강남구 어딘가", "01010101010", "최고임", 54.123, 10.123);
+        Stadium savedStadium = stadiumRepository.save(givenStadium1);
+        Team team = Team.create(savedStadium.getStadiumId(), 1L, "팀이름", "팀 설명", 1, 1, 1, "서울");
+        Team savedTeam = teamRepository.save(team);
+
+        Vote vote = Vote.create(1L, 1L, "연말 경기 투표", endAt);
+        Vote savedVote = voteRepository.save(vote);
+
+        VoteItem voteItem1 = VoteItemDate.create(savedVote, choice1);
+        VoteItem voteItem2 = VoteItemDate.create(savedVote, choice2);
+        VoteItem voteItem3 = VoteItemDate.create(savedVote, choice3);
+
+        List<VoteItem> savedVoteItems = voteItemRepository.saveAll(List.of(voteItem1, voteItem2, voteItem3));
+
+        ChoiceCreateServiceRequest request = new ChoiceCreateServiceRequest(List.of(savedVoteItems.get(0).getVoteItemId(), savedVoteItems.get(1).getVoteItemId()));
+
+        //when
+        VoteResponse response = voteService.createChoice(request, savedVote.getVoteId(), savedMember.getEmail());
+
+        List<Choice> choices = choiceRepository.findAll();
+
+        //then
+        Assertions.assertThat(response)
+            .extracting("voteId", "title", "endAt")
+            .containsExactlyInAnyOrder(
+                savedVote.getVoteId(), "연말 경기 투표", endAt
+            );
+
+        Assertions.assertThat(response.choices())
+            .hasSize(3)
+            .extracting("voteItemId", "content", "voteCount")
+            .containsExactlyInAnyOrder(
+                tuple(savedVoteItems.get(0).getVoteItemId(), choice1.toString(), 1L),
+                tuple(savedVoteItems.get(1).getVoteItemId(), choice2.toString(), 1L),
+                tuple(savedVoteItems.get(2).getVoteItemId(), choice3.toString(), 0L)
+            );
+
+        Assertions.assertThat(choices)
+            .extracting("memberId", "voteItemId")
+            .containsExactlyInAnyOrder(
+                tuple(savedMember.getMemberId(), savedVoteItems.get(0).getVoteItemId()),
+                tuple(savedMember.getMemberId(), savedVoteItems.get(1).getVoteItemId())
+            );
     }
 
 }

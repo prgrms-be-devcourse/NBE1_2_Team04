@@ -7,10 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import team4.footwithme.docs.RestDocsSupport;
 import team4.footwithme.vote.api.VoteApi;
-import team4.footwithme.vote.api.request.DateChoices;
-import team4.footwithme.vote.api.request.StadiumChoices;
-import team4.footwithme.vote.api.request.VoteDateCreateRequest;
-import team4.footwithme.vote.api.request.VoteStadiumCreateRequest;
+import team4.footwithme.vote.api.request.*;
 import team4.footwithme.vote.service.VoteService;
 import team4.footwithme.vote.service.request.VoteDateCreateServiceRequest;
 import team4.footwithme.vote.service.request.VoteStadiumCreateServiceRequest;
@@ -314,5 +311,7 @@ public class VoteApiDocs extends RestDocsSupport {
             ));
 
     }
+
+
 
 }

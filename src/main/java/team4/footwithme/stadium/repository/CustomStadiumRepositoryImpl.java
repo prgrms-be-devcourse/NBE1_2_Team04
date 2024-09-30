@@ -30,4 +30,13 @@ public class CustomStadiumRepositoryImpl implements CustomStadiumRepository {
                 .and(stadium.isDeleted.eq(IsDeleted.FALSE)))
             .fetchOne();
     }
+
+    @Override
+    public String findStadiumNameById(Long stadiumId) {
+        return queryFactory.select(stadium.name)
+            .from(stadium)
+            .where(stadium.stadiumId.eq(stadiumId)
+                .and(stadium.isDeleted.eq(IsDeleted.FALSE)))
+            .fetchOne();
+    }
 }
