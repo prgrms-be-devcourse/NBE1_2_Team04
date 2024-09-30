@@ -8,15 +8,11 @@ import org.springframework.transaction.annotation.Transactional;
 import team4.footwithme.IntegrationTestSupport;
 import team4.footwithme.member.domain.*;
 import team4.footwithme.member.repository.MemberRepository;
-import team4.footwithme.team.api.request.TeamCreateRequest;
 import team4.footwithme.team.domain.Team;
 import team4.footwithme.team.domain.TeamMemberRole;
-import team4.footwithme.team.repository.TeamMemberRepository;
 import team4.footwithme.team.repository.TeamRepository;
-import team4.footwithme.team.service.request.TeamDefaultServiceRequest;
 import team4.footwithme.team.service.request.TeamMemberServiceRequest;
-import team4.footwithme.team.service.response.TeamDefaultResponse;
-import team4.footwithme.team.service.response.TeamMemberInfoResponse;
+import team4.footwithme.team.service.response.TeamResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +48,7 @@ class TeamMemberServiceImplTest extends IntegrationTestSupport {
                         LoginProvider.ORIGINAL,"test", Gender.MALE, MemberRole.USER,TermsAgreed.AGREE)
         ));
         members.add(memberRepository.save(
-                Member.create("member03@gmail.com", "123456", "남남남", "010-1111-1111",
+                Member.create("member03@gmail.com", "123456", "여여여", "010-1111-1111",
                         LoginProvider.ORIGINAL,"test", Gender.FEMALE, MemberRole.USER,TermsAgreed.AGREE)
         ));
     }
@@ -69,12 +65,27 @@ class TeamMemberServiceImplTest extends IntegrationTestSupport {
         TeamMemberServiceRequest request = new TeamMemberServiceRequest(emails);
 
         //when
-        List<TeamMemberInfoResponse> response = teamMemberService.addTeamMembers(teamId,request);
+        List<TeamResponse> response = teamMemberService.addTeamMembers(teamId,request);
 
         //then
         assertThat(response.size()).isEqualTo(3);
-        assertThat(response.get(0).teamName()).isEqualTo("테스트 팀이름");
-        assertThat(response.get(0).email()).isEqualTo("member01@gmail.com");
+        assertThat(response.get(0).name()).isEqualTo("남남남");
         assertThat(response.get(0).role()).isEqualTo(TeamMemberRole.MEMBER);
+    }
+
+    @Test
+    @DisplayName("팀원 조회")
+    public void getTeamMembers() {
+        //given
+        addTeamMember();
+        Long teamId = team.getTeamId();
+
+        //when
+        List<TeamResponse> response = teamMemberService.getTeamMembers(teamId);
+
+        //then
+        assertThat(response.size()).isEqualTo(3);
+        assertThat(response.get(2).name()).isEqualTo("여여여");
+        assertThat(response.get(2).role()).isEqualTo(TeamMemberRole.MEMBER);
     }
 }
