@@ -51,5 +51,13 @@ public class TeamApi {
         return ApiResponse.ok(teamUpdateResponse);
     }
 
-
+    /**
+     * 팀 삭제
+     */
+    @DeleteMapping("{teamId}")
+    public ApiResponse<Long> deleteTeam(@PathVariable Long teamId) {
+        //요청받은 id리턴
+        Long deletedId = teamService.deleteTeam(teamId);
+        return ApiResponse.ok(deletedId);
+    }
 }

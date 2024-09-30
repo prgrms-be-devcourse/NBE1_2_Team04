@@ -22,4 +22,9 @@ public interface TeamService {
      */
     TeamUpdateResponse updateTeamInfo(Long teamId, TeamUpdateServiceRequest request);
 
+    /**
+     * 팀 삭제
+     */
+    Long deleteTeam(Long teamId);
+
 }

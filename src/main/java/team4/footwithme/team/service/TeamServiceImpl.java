@@ -3,19 +3,15 @@ package team4.footwithme.team.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import team4.footwithme.member.domain.Gender;
-import team4.footwithme.member.domain.Member;
+import team4.footwithme.member.domain.*;
 import team4.footwithme.member.repository.MemberRepository;
 import team4.footwithme.team.api.request.TeamCreateRequest;
-import team4.footwithme.team.domain.TeamMember;
-import team4.footwithme.team.domain.TeamRate;
+import team4.footwithme.team.domain.*;
 import team4.footwithme.team.repository.TeamMemberRepository;
 import team4.footwithme.team.repository.TeamRateRepository;
 import team4.footwithme.team.service.request.TeamCreateServiceRequest;
 import team4.footwithme.team.service.request.TeamUpdateServiceRequest;
 import team4.footwithme.team.service.response.TeamInfoResponse;
-import team4.footwithme.team.domain.Team;
-import team4.footwithme.team.domain.TotalRecord;
 import team4.footwithme.team.repository.TeamRepository;
 import team4.footwithme.team.service.response.TeamCreatedResponse;
 import team4.footwithme.team.service.response.TeamUpdateResponse;
@@ -64,6 +60,7 @@ public class TeamServiceImpl implements TeamService{
 
 
     @Override
+    @Transactional
     public TeamInfoResponse getTeamInfo(Long teamId) {
 
         //팀 정보
@@ -105,6 +102,7 @@ public class TeamServiceImpl implements TeamService{
     }
 
     @Override
+    @Transactional
     public TeamUpdateResponse updateTeamInfo(Long teamId, TeamUpdateServiceRequest dto) {
         //변경할 팀 id로 검색
         Team teamEntity = teamRepository.findByTeamId(teamId);
@@ -129,4 +127,23 @@ public class TeamServiceImpl implements TeamService{
         //바뀐 Team값 반환
         return TeamUpdateResponse.of(teamRepository.save(updatedEntity));
     }
+
+    @Override
+    @Transactional
+    public Long deleteTeam(Long teamId) {
+        //삭제할 팀 탐색
+        Team teamEntity = teamRepository.findByTeamId(teamId);
+
+        //삭제할 팀이 없으면 예외처리
+        if(teamEntity == null) {
+            throw new IllegalArgumentException("해당 팀이 존재하지 않습니다.");
+        }
+
+        teamRepository.delete(teamEntity);
+
+
+        return teamId;
+    }
+
+
 }

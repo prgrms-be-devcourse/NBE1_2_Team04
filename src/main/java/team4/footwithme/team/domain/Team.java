@@ -11,7 +11,7 @@ import team4.footwithme.stadium.domain.Stadium;
 import org.hibernate.annotations.SQLDelete;
 
 @Getter
-@SQLDelete(sql = "UPDATE team SET is_deleted = TRUE WHERE team_id = ?")
+@SQLDelete(sql = "UPDATE team SET is_deleted = 'TRUE' WHERE team_id = ?")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class Team extends BaseEntity {
