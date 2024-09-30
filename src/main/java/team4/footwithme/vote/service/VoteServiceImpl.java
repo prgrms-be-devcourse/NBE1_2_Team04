@@ -13,6 +13,7 @@ import team4.footwithme.vote.repository.VoteRepository;
 import team4.footwithme.vote.service.request.ChoiceCreateServiceRequest;
 import team4.footwithme.vote.service.request.VoteDateCreateServiceRequest;
 import team4.footwithme.vote.service.request.VoteStadiumCreateServiceRequest;
+import team4.footwithme.vote.service.request.VoteUpdateServiceRequest;
 import team4.footwithme.vote.service.response.VoteItemResponse;
 import team4.footwithme.vote.service.response.VoteResponse;
 
@@ -227,6 +228,19 @@ public class VoteServiceImpl implements VoteService {
         List<Choice> choices = choiceRepository.findByMemberIdAndVoteId(memberId, voteId);
 
         choiceRepository.deleteAllInBatch(choices);
+        List<VoteItem> voteItems = getVoteItemsBy(voteId);
+        List<VoteItemResponse> voteItemResponse = convertVoteItemResponseFrom(voteItems);
+        return VoteResponse.of(vote, voteItemResponse);
+    }
+
+    @Transactional
+    @Override
+    public VoteResponse updateVote(VoteUpdateServiceRequest serviceRequest, Long voteId, String email) {
+        Long memberId = getMemberIdBy(email);
+        Vote vote = getVoteBy(voteId);
+
+        vote.update(serviceRequest.title(), serviceRequest.endAt(), memberId);
+
         List<VoteItem> voteItems = getVoteItemsBy(voteId);
         List<VoteItemResponse> voteItemResponse = convertVoteItemResponseFrom(voteItems);
         return VoteResponse.of(vote, voteItemResponse);
