@@ -134,35 +134,40 @@ public class JwtTokenUtil {
         if(StringUtils.hasText(token)) {
             if(token.startsWith(BEARER_PREFIX)) {
                 return token.substring(7).trim();
+                }
+            return token;
             }
-                return token;
+
+            return null;
         }
 
-        return null;
-    }
+        public void tokenValidation(String token) {
+            try {
+                Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
 
-    public void tokenValidation(String token) {
-        try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-
-        } catch (SecurityException | MalformedJwtException e) {
-            throw new IllegalArgumentException("Invalid JWT signature");
-        } catch (ExpiredJwtException e) {
-            throw new IllegalArgumentException("Expired JWT");
-        } catch (UnsupportedJwtException e) {
-            throw new IllegalArgumentException("Unsupported JWT");
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("JWT claims is empty");
-        } catch (Exception e) {
-            throw new IllegalArgumentException(e.getMessage());
-        }
+            } catch (SecurityException | MalformedJwtException e) {
+                throw new IllegalArgumentException("Invalid JWT signature");
+            } catch (ExpiredJwtException e) {
+                throw new IllegalArgumentException("Expired JWT");
+            } catch (UnsupportedJwtException e) {
+                throw new IllegalArgumentException("Unsupported JWT");
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException("JWT claims is empty");
+            } catch (Exception e) {
+                throw new IllegalArgumentException(e.getMessage());
+            }
     }
 
     public void refreshTokenValidation(String refreshToken){
         tokenValidation(refreshToken);
         String email = getEmailFromToken(refreshToken);
+        String redisRefreshToken = null;
 
-        String redisRefreshToken = redisTemplate.opsForValue().get(email).toString();
+        Object redisRefresh = redisTemplate.opsForValue().get(email);
+
+        if(redisRefresh != null)
+            redisRefreshToken = redisRefresh.toString();
+
         if(redisRefreshToken == null)
             throw new IllegalArgumentException("유효하지 않은 JWT 토큰입니다.");
 
