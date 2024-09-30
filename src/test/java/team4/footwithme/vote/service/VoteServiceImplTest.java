@@ -14,7 +14,6 @@ import team4.footwithme.stadium.domain.Stadium;
 import team4.footwithme.stadium.repository.StadiumRepository;
 import team4.footwithme.team.domain.Team;
 import team4.footwithme.team.repository.TeamRepository;
-import team4.footwithme.vote.api.request.DateChoices;
 import team4.footwithme.vote.domain.*;
 import team4.footwithme.vote.repository.ChoiceRepository;
 import team4.footwithme.vote.repository.VoteItemRepository;
@@ -128,7 +127,7 @@ class VoteServiceImplTest extends IntegrationTestSupport {
 
         //when
         //then
-        assertThatThrownBy(()->voteService.createStadiumVote(request, 1L, "error@e.r"))
+        assertThatThrownBy(() -> voteService.createStadiumVote(request, 1L, "error@e.r"))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("존재하지 않는 회원입니다.");
     }
@@ -147,7 +146,7 @@ class VoteServiceImplTest extends IntegrationTestSupport {
 
         //when
         //then
-        assertThatThrownBy(()->voteService.createStadiumVote(request, -1L, "test@gmail.com"))
+        assertThatThrownBy(() -> voteService.createStadiumVote(request, -1L, "test@gmail.com"))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("존재하지 않는 팀입니다.");
     }
@@ -373,7 +372,7 @@ class VoteServiceImplTest extends IntegrationTestSupport {
 
         assertThat(deletedVote.isPresent()).isTrue();
         assertThat(deletedVote.get()).extracting(
-            "voteId", "title","endAt", "memberId", "teamId","isDeleted"
+            "voteId", "title", "endAt", "memberId", "teamId", "isDeleted"
         ).containsExactly(
             deletedId, "연말 경기 투표", endAt, deletedVote.get().getMemberId(), deletedVote.get().getTeamId(), IsDeleted.TRUE
         );

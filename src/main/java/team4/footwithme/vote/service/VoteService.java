@@ -1,6 +1,5 @@
 package team4.footwithme.vote.service;
 
-import team4.footwithme.vote.api.request.ChoiceCreateRequest;
 import team4.footwithme.vote.service.request.ChoiceCreateServiceRequest;
 import team4.footwithme.vote.service.request.VoteDateCreateServiceRequest;
 import team4.footwithme.vote.service.request.VoteStadiumCreateServiceRequest;

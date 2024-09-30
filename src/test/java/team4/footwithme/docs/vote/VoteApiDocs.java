@@ -1,6 +1,5 @@
 package team4.footwithme.docs.vote;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -25,7 +24,6 @@ import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
@@ -119,8 +117,8 @@ public class VoteApiDocs extends RestDocsSupport {
                 )
             ));
 
-        mockMvc.perform(get("/api/v1/votes/{voteId}",voteId)
-            .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/api/v1/votes/{voteId}", voteId)
+                .contentType(MediaType.APPLICATION_JSON))
             .andDo(document("vote-stadium-get",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
@@ -164,7 +162,7 @@ public class VoteApiDocs extends RestDocsSupport {
 
         VoteDateCreateRequest request = new VoteDateCreateRequest("연말 행사 투표", endAt, List.of(choice1, choice2, choice3));
 
-        given(voteService.createDateVote(any(VoteDateCreateServiceRequest.class),eq(1L),any(String.class)))
+        given(voteService.createDateVote(any(VoteDateCreateServiceRequest.class), eq(1L), any(String.class)))
             .willReturn(
                 new VoteResponse(
                     1L,
@@ -179,9 +177,9 @@ public class VoteApiDocs extends RestDocsSupport {
             );
 
         mockMvc.perform(post("/api/v1/votes/dates/{teamId}", 1L)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(request))
-        )
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request))
+            )
             .andExpect(status().isOk())
             .andDo(document("vote-date-create",
                 preprocessRequest(prettyPrint()),
@@ -318,7 +316,7 @@ public class VoteApiDocs extends RestDocsSupport {
     void updateVote() throws Exception {
         LocalDateTime endAt = LocalDateTime.now().plusDays(5);
 
-        VoteUpdateRequest request = new VoteUpdateRequest("10월 행사 투표",endAt);
+        VoteUpdateRequest request = new VoteUpdateRequest("10월 행사 투표", endAt);
 
         given(voteService.updateVote(any(VoteUpdateServiceRequest.class), eq(1L), any(String.class)))
             .willReturn(
@@ -375,7 +373,6 @@ public class VoteApiDocs extends RestDocsSupport {
                 )
             ));
     }
-
 
 
 }

@@ -3,11 +3,10 @@ package team4.footwithme.vote.repository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import team4.footwithme.vote.domain.Choice;
-import team4.footwithme.vote.domain.QChoice;
 
 import java.util.List;
 
-import static team4.footwithme.vote.domain.QChoice.*;
+import static team4.footwithme.vote.domain.QChoice.choice;
 import static team4.footwithme.vote.domain.QVote.vote;
 import static team4.footwithme.vote.domain.QVoteItem.voteItem;
 

@@ -1,6 +1,5 @@
 package team4.footwithme.vote.domain;
 
-import org.assertj.core.api.Assert;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,7 +30,7 @@ class VoteTest {
 
         //when
         //then
-        Assertions.assertThatThrownBy(()->Vote.create(1L,1L,"투표 제목",pastDateTime))
+        Assertions.assertThatThrownBy(() -> Vote.create(1L, 1L, "투표 제목", pastDateTime))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("투표 종료일은 현재 시간 이후여야 합니다.");
     }
@@ -49,7 +48,7 @@ class VoteTest {
         LocalDateTime tomorrowDateTime = LocalDateTime.now().plusDays(2);
 
         //when
-        vote.update("수정된 투표", tomorrowDateTime,1L);
+        vote.update("수정된 투표", tomorrowDateTime, 1L);
         //then
         Assertions.assertThat(vote)
             .extracting("title", "endAt")
@@ -71,7 +70,7 @@ class VoteTest {
         //when
         //then
         Assertions.assertThatIllegalArgumentException()
-            .isThrownBy(()->vote.update("수정된 투표", tomorrowDateTime,2L))
+            .isThrownBy(() -> vote.update("수정된 투표", tomorrowDateTime, 2L))
             .withMessage("투표 작성자만 수정할 수 있습니다.");
     }
 

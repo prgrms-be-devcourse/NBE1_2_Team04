@@ -17,8 +17,6 @@ import team4.footwithme.vote.domain.VoteItemLocate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @Transactional
 class VoteItemRepositoryTest extends IntegrationTestSupport {
 

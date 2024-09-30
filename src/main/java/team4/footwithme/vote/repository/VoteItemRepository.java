@@ -3,7 +3,6 @@ package team4.footwithme.vote.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import team4.footwithme.vote.domain.VoteItem;
-import team4.footwithme.vote.domain.VoteItemLocate;
 
 import java.util.List;
 

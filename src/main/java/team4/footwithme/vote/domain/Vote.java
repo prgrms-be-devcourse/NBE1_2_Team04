@@ -67,7 +67,7 @@ public class Vote extends BaseEntity {
         this.voteItems.add(voteItem);
     }
 
-    public void update(String updateTitle, LocalDateTime updateEndAt,Long memberId) {
+    public void update(String updateTitle, LocalDateTime updateEndAt, Long memberId) {
         checkWriterFrom(memberId);
         this.title = updateTitle;
         this.endAt = updateEndAt;
