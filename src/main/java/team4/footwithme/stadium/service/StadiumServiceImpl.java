@@ -69,7 +69,7 @@ public class StadiumServiceImpl implements StadiumService {
                 .collect(Collectors.toList());
     }
 
-    // 구장 조회 예외처리
+    // 풋살장 조회 예외처리
     public Stadium findByIdOrThrowException(long id) {
         return stadiumRepository.findById(id)
                 .orElseThrow(() -> {

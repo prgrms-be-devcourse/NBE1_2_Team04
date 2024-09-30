@@ -15,7 +15,7 @@ import team4.footwithme.member.repository.MemberRepository;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Transactional
-class MemberRepositoryTest extends IntegrationTestSupport{
+class JwtTokenUtilTest extends IntegrationTestSupport{
 
     @Autowired
     private MemberRepository memberRepository;

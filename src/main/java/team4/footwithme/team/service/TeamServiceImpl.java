@@ -3,20 +3,14 @@ package team4.footwithme.team.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import team4.footwithme.member.domain.Gender;
-import team4.footwithme.member.domain.Member;
-import team4.footwithme.member.repository.MemberRepository;
-import team4.footwithme.team.api.request.TeamCreateRequest;
-import team4.footwithme.team.domain.TeamMember;
-import team4.footwithme.team.domain.TeamRate;
+import team4.footwithme.member.domain.*;
+import team4.footwithme.team.domain.*;
 import team4.footwithme.team.repository.TeamMemberRepository;
 import team4.footwithme.team.repository.TeamRateRepository;
-import team4.footwithme.team.service.request.TeamCreateServiceRequest;
+import team4.footwithme.team.service.request.TeamDefaultServiceRequest;
 import team4.footwithme.team.service.response.TeamInfoResponse;
-import team4.footwithme.team.domain.Team;
-import team4.footwithme.team.domain.TotalRecord;
 import team4.footwithme.team.repository.TeamRepository;
-import team4.footwithme.team.service.response.TeamCreatedResponse;
+import team4.footwithme.team.service.response.TeamDefaultResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,11 +22,10 @@ public class TeamServiceImpl implements TeamService{
     private final TeamRepository teamRepository;
     private final TeamRateRepository teamRateRepository;
     private final TeamMemberRepository teamMemberRepository;
-    private final MemberRepository memberRepository;
 
     @Override
     @Transactional
-    public TeamCreatedResponse createTeam(TeamCreateServiceRequest dto) {
+    public TeamDefaultResponse createTeam(TeamDefaultServiceRequest dto) {
         /**
          * # 1.
          * chatRoomId는 일단 가짜 id 넣어놓고,
@@ -57,11 +50,12 @@ public class TeamServiceImpl implements TeamService{
         );
         Team createdTeam = teamRepository.save(entity);
 
-        return TeamCreatedResponse.of(createdTeam);
+        return TeamDefaultResponse.from(createdTeam);
     }
 
-    // 한 서비스에서 다 들고오는게 좋은건지 각각의 서비스로 운용해야되는건지 모르겠음
+
     @Override
+    @Transactional(readOnly = true)
     public TeamInfoResponse getTeamInfo(Long teamId) {
 
         //팀 정보
@@ -101,4 +95,49 @@ public class TeamServiceImpl implements TeamService{
                 femaleCount
         ) ;
     }
+
+    @Override
+    @Transactional
+    public TeamDefaultResponse updateTeamInfo(Long teamId, TeamDefaultServiceRequest dto) {
+        //변경할 팀 id로 검색
+        Team teamEntity = teamRepository.findByTeamId(teamId);
+
+        //팀 정보가 없을 때 예외처리
+        if(teamEntity == null) {
+            throw new IllegalArgumentException("해당 팀이 존재하지 않습니다.");
+        }
+
+        //entity에 수정된 값 적용
+        if(dto.name() != null){
+            teamEntity.setName(dto.name());
+        }
+        if(dto.description() != null){
+            teamEntity.setDescription(dto.description());
+        }
+        if(dto.location() != null){
+            teamEntity.setLocation(dto.location());
+        }
+
+        //바뀐 Team값 반환
+        return TeamDefaultResponse.from(teamEntity);
+    }
+
+    @Override
+    @Transactional
+    public Long deleteTeam(Long teamId) {
+        //삭제할 팀 탐색
+        Team teamEntity = teamRepository.findByTeamId(teamId);
+
+        //삭제할 팀이 없으면 예외처리
+        if(teamEntity == null) {
+            throw new IllegalArgumentException("해당 팀이 존재하지 않습니다.");
+        }
+
+        teamRepository.delete(teamEntity);
+
+
+        return teamId;
+    }
+
+
 }

@@ -19,4 +19,15 @@ public class CustomMemberRepositoryImpl implements CustomMemberRepository {
                 .and(member.isDeleted.eq(IsDeleted.FALSE)))
             .fetchOne();
     }
+
+    @Override
+    public Boolean existByEmail(String email) {
+        Integer count = queryFactory
+                .selectOne()
+                .from(member)
+                .where(member.email.eq(email))
+                .fetchFirst();
+
+        return count != null;
+    }
 }
