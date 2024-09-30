@@ -2,17 +2,14 @@ package team4.footwithme.stadium.api;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import team4.footwithme.global.api.ApiResponse;
-import team4.footwithme.stadium.domain.Court;
 import team4.footwithme.stadium.service.CourtService;
 import team4.footwithme.stadium.service.response.CourtDetailResponse;
 import team4.footwithme.stadium.service.response.CourtsResponse;
-import team4.footwithme.stadium.service.response.StadiumsResponse;
 
 import java.util.List;
 
@@ -39,7 +36,7 @@ public class CourtApi {
 
     @GetMapping("/{courtId}/detail")
     public ApiResponse<CourtDetailResponse> getCourtDetailById(@PathVariable Long courtId) {
-        CourtDetailResponse court = courtService.getCourtBycourtId(courtId);
+        CourtDetailResponse court = courtService.getCourtByCourtId(courtId);
         return ApiResponse.ok(court);
     }
 

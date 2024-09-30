@@ -6,9 +6,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import team4.footwithme.global.domain.BaseEntity;
-import team4.footwithme.stadium.domain.Stadium;
 import org.hibernate.annotations.SQLDelete;
+import team4.footwithme.global.domain.BaseEntity;
 
 @Getter
 @SQLDelete(sql = "UPDATE team SET is_deleted = 'TRUE' WHERE team_id = ?")

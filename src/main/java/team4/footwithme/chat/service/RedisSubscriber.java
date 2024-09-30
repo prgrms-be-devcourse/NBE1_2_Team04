@@ -12,6 +12,7 @@ import team4.footwithme.chat.domain.Chat;
 import team4.footwithme.chat.service.response.ChatResponse;
 
 import java.nio.charset.StandardCharsets;
+
 @Service
 @RequiredArgsConstructor
 public class RedisSubscriber implements MessageListener {

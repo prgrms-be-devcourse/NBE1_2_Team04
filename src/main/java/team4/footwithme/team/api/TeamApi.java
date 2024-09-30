@@ -5,9 +5,9 @@ import org.springframework.web.bind.annotation.*;
 import team4.footwithme.global.api.ApiResponse;
 import team4.footwithme.team.api.request.TeamCreateRequest;
 import team4.footwithme.team.api.request.TeamUpdateRequest;
-import team4.footwithme.team.service.response.TeamInfoResponse;
 import team4.footwithme.team.service.TeamService;
 import team4.footwithme.team.service.response.TeamDefaultResponse;
+import team4.footwithme.team.service.response.TeamInfoResponse;
 
 @RequiredArgsConstructor
 @RestController
@@ -28,7 +28,7 @@ public class TeamApi {
      * 경기 일정(날짜만) 조회
      */
     @GetMapping("/{teamId}")
-    public ApiResponse<?> getTeamReservationInfo(@PathVariable Long teamId){
+    public ApiResponse<?> getTeamReservationInfo(@PathVariable Long teamId) {
         return null;
     }
 

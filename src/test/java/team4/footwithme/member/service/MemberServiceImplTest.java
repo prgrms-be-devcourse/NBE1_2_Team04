@@ -15,7 +15,6 @@ import team4.footwithme.member.service.response.LoginResponse;
 import team4.footwithme.member.service.response.MemberResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.tuple;
 import static org.mockito.Mockito.mock;
 
 @Transactional
@@ -34,7 +33,7 @@ class MemberServiceImplTest extends IntegrationTestSupport {
     @Test
     void join() {
         //given
-        JoinServiceRequest request = new JoinServiceRequest("test@naver.com", "!test1234", "test", "010-1234-1234", LoginProvider.ORIGINAL, "",  Gender.MALE, MemberRole.USER, TermsAgreed.AGREE);
+        JoinServiceRequest request = new JoinServiceRequest("test@naver.com", "!test1234", "test", "010-1234-1234", LoginProvider.ORIGINAL, "", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE);
 
         //when
         MemberResponse memberResponse = memberService.join(request);
@@ -42,23 +41,23 @@ class MemberServiceImplTest extends IntegrationTestSupport {
 
         //then
         assertThat(member).isNotNull()
-                        .extracting( "email" ,"name", "phoneNumber", "gender", "memberRole", "termsAgreed")
-                                .containsExactlyInAnyOrder(
-                                        request.email(), request.name(), request.phoneNumber(), request.gender(), request.memberRole(), request.termsAgree()
-                                );
+            .extracting("email", "name", "phoneNumber", "gender", "memberRole", "termsAgreed")
+            .containsExactlyInAnyOrder(
+                request.email(), request.name(), request.phoneNumber(), request.gender(), request.memberRole(), request.termsAgree()
+            );
 
         assertThat(memberResponse).isNotNull()
-                .extracting(  "memberId", "email", "name", "phoneNumber", "gender", "memberRole", "termsAgreed")
-                .containsExactlyInAnyOrder(
-                        member.getMemberId(), member.getEmail(), member.getName(), member.getPhoneNumber(), member.getGender(), member.getMemberRole(), member.getTermsAgreed()
-                );
+            .extracting("memberId", "email", "name", "phoneNumber", "gender", "memberRole", "termsAgreed")
+            .containsExactlyInAnyOrder(
+                member.getMemberId(), member.getEmail(), member.getName(), member.getPhoneNumber(), member.getGender(), member.getMemberRole(), member.getTermsAgreed()
+            );
     }
 
     @DisplayName("로그인을 진행한다.")
     @Test
     void login() {
         //given
-        Member member = Member.create("test@naver.com", "!test1234", "test", "010-1234-1234", LoginProvider.ORIGINAL, "",  Gender.MALE, MemberRole.USER, TermsAgreed.AGREE);
+        Member member = Member.create("test@naver.com", "!test1234", "test", "010-1234-1234", LoginProvider.ORIGINAL, "", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE);
         member.encodePassword(securityConfig.passwordEncoder());
         memberRepository.save(member);
 

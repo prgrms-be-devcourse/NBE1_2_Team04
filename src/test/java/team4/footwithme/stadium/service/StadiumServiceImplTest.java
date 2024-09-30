@@ -3,20 +3,17 @@ package team4.footwithme.stadium.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.locationtech.jts.geom.Point;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import team4.footwithme.IntegrationTestSupport;
-import team4.footwithme.global.util.PositionUtil;
 import team4.footwithme.member.domain.*;
 import team4.footwithme.member.repository.MemberRepository;
 import team4.footwithme.stadium.domain.Position;
+import team4.footwithme.stadium.domain.Stadium;
+import team4.footwithme.stadium.repository.StadiumRepository;
 import team4.footwithme.stadium.service.request.StadiumSearchByLocationServiceRequest;
 import team4.footwithme.stadium.service.response.StadiumDetailResponse;
 import team4.footwithme.stadium.service.response.StadiumsResponse;
-import team4.footwithme.stadium.domain.Stadium;
-import team4.footwithme.stadium.repository.StadiumRepository;
 
 import java.util.List;
 
@@ -40,61 +37,61 @@ class StadiumServiceImplTest extends IntegrationTestSupport {
     @BeforeEach
     void setUp() {
         testMember = Member.builder()
-                .email("test@example.com")
-                .password("password")
-                .name("Test User")
-                .phoneNumber("010-1234-5678")
-                .loginType(LoginType.builder()
-                        .loginProvider(LoginProvider.ORIGINAL)
-                        .snsId("example@example.com")
-                        .build())
-                .gender(Gender.MALE)
-                .memberRole(MemberRole.USER)
-                .termsAgreed(TermsAgreed.AGREE)
-                .build();
+            .email("test@example.com")
+            .password("password")
+            .name("Test User")
+            .phoneNumber("010-1234-5678")
+            .loginType(LoginType.builder()
+                .loginProvider(LoginProvider.ORIGINAL)
+                .snsId("example@example.com")
+                .build())
+            .gender(Gender.MALE)
+            .memberRole(MemberRole.USER)
+            .termsAgreed(TermsAgreed.AGREE)
+            .build();
         memberRepository.save(testMember);
 
         Position position1 = Position.builder()
-                .latitude(37.5642135)
-                .longitude(127.0016985)
-                .build();
+            .latitude(37.5642135)
+            .longitude(127.0016985)
+            .build();
 
         Position position2 = Position.builder()
-                .latitude(35.1379222)
-                .longitude(129.05562775)
-                .build();
+            .latitude(35.1379222)
+            .longitude(129.05562775)
+            .build();
 
         Position position3 = Position.builder()
-                .latitude(36.3504119)
-                .longitude(127.3845475)
-                .build();
+            .latitude(36.3504119)
+            .longitude(127.3845475)
+            .build();
 
         Stadium stadium1 = Stadium.builder()
-                .name("Stadium1")
-                .address("seoul")
-                .phoneNumber("123-4567")
-                .description("Description1")
-                .position(position1)
-                .member(testMember)
-                .build();
+            .name("Stadium1")
+            .address("seoul")
+            .phoneNumber("123-4567")
+            .description("Description1")
+            .position(position1)
+            .member(testMember)
+            .build();
 
         Stadium stadium2 = Stadium.builder()
-                .name("Stadium2")
-                .address("busan")
-                .phoneNumber("890-1234")
-                .description("Description2")
-                .position(position2)
-                .member(testMember)
-                .build();
+            .name("Stadium2")
+            .address("busan")
+            .phoneNumber("890-1234")
+            .description("Description2")
+            .position(position2)
+            .member(testMember)
+            .build();
 
         Stadium stadium3 = Stadium.builder()
-                .name("Stadium3")
-                .address("daegu")
-                .phoneNumber("321-6547")
-                .description("Description3")
-                .position(position3)
-                .member(testMember)
-                .build();
+            .name("Stadium3")
+            .address("daegu")
+            .phoneNumber("321-6547")
+            .description("Description3")
+            .position(position3)
+            .member(testMember)
+            .build();
 
         stadiumRepository.save(stadium1);
         stadiumRepository.save(stadium2);
@@ -117,16 +114,16 @@ class StadiumServiceImplTest extends IntegrationTestSupport {
     void getStadiumList_withLongStadiumName() {
         String longName = "A".repeat(255);
         Position position = Position.builder()
-                .latitude(37.5665)
-                .longitude(126.9780)
-                .build();
+            .latitude(37.5665)
+            .longitude(126.9780)
+            .build();
         Stadium stadium = Stadium.builder()
-                .name(longName)
-                .address("LongNameAddress")
-                .phoneNumber("123-4567")
-                .position(position)
-                .member(testMember)
-                .build();
+            .name(longName)
+            .address("LongNameAddress")
+            .phoneNumber("123-4567")
+            .position(position)
+            .member(testMember)
+            .build();
         stadiumRepository.save(stadium);
 
         List<StadiumsResponse> result = stadiumService.getStadiumList();
@@ -166,9 +163,9 @@ class StadiumServiceImplTest extends IntegrationTestSupport {
         Double distance = 100.0;
 
         StadiumSearchByLocationServiceRequest request = new StadiumSearchByLocationServiceRequest(
-                searchLatitude,
-                searchLongitude,
-                distance
+            searchLatitude,
+            searchLongitude,
+            distance
         );
 
         List<StadiumsResponse> result = stadiumService.getStadiumsWithinDistance(request);
@@ -184,9 +181,9 @@ class StadiumServiceImplTest extends IntegrationTestSupport {
         Double searchLongitude = 126.570667;
         Double distance = 1.0;
         StadiumSearchByLocationServiceRequest request = new StadiumSearchByLocationServiceRequest(
-                searchLatitude,
-                searchLongitude,
-                distance
+            searchLatitude,
+            searchLongitude,
+            distance
         );
 
         List<StadiumsResponse> result = stadiumService.getStadiumsWithinDistance(request);

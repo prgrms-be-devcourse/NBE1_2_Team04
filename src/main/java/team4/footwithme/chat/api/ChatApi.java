@@ -30,15 +30,16 @@ public class ChatApi {
 
     /**
      * 채팅 조회
+     *
      * @param chatroomId 채팅방 ID
-     * @param page 현재 페이지
-     * @param size 한페이지에 나타날 갯수
+     * @param page       현재 페이지
+     * @param size       한페이지에 나타날 갯수
      * @return
      */
     @GetMapping("/{chatroomId}")
     public ApiResponse<Slice<ChatResponse>> getChatting(@PathVariable Long chatroomId, @RequestParam int page, @RequestParam int size) {
         String email = "a@a.com";
-        PageRequest pageRequest = PageRequest.of(page-1, size, Sort.by("createdAt").descending());
+        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("createdAt").descending());
         return ApiResponse.ok(chatService.getChatList(chatroomId, pageRequest, email));
     }
 }
