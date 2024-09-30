@@ -13,7 +13,7 @@ public interface MemberService {
 
     LoginResponse login(LoginServiceRequest serviceRequest);
 
-    String logout(HttpServletRequest request, String refreshToken);
+    String logout(HttpServletRequest request);
 
     TokenResponse reissue(HttpServletRequest request, String refreshToken);
 }

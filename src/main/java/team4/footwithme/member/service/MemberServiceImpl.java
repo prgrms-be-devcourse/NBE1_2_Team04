@@ -61,9 +61,9 @@ public class MemberServiceImpl implements MemberService{
 
     @Override
     @Transactional
-    public String logout(HttpServletRequest request, String refreshToken) {
+    public String logout(HttpServletRequest request) {
         String accessToken = jwtTokenUtil.resolveToken(request);
-        String email = jwtTokenUtil.getEmailFromToken(refreshToken);
+        String email = jwtTokenUtil.getEmailFromToken(accessToken);
 
         jwtTokenUtil.tokenValidation(accessToken);
 
