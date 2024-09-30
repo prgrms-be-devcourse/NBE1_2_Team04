@@ -59,15 +59,17 @@ public class JwtTokenUtil {
     }
 
     public TokenResponse createToken(String email){
-        String accessToken = createAccessToken(email);
-        String refreshToken = createRefreshToken(email);
+        MemberRole role = getRoleFromEmail(email);
+
+        String accessToken = createAccessToken(email, role);
+        String refreshToken = createRefreshToken(email, role);
 
         return TokenResponse.of(accessToken, refreshToken, REFRESH_TIME);
     }
 
-    public String createAccessToken(String email) {
+    public String createAccessToken(String email, MemberRole role) {
         Date date = new Date();
-        MemberRole role = getRoleFromEmail(email);
+
 
         return Jwts.builder()
                 .setSubject(email)
@@ -92,7 +94,7 @@ public class JwtTokenUtil {
                 .compact();
     }
 
-    public String createRefreshToken(String email){
+    public String createRefreshToken(String email, MemberRole role){
         Date date = new Date();
 
         String refreshToken = Jwts.builder()
