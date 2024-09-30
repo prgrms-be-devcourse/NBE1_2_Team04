@@ -11,6 +11,7 @@ import team4.footwithme.member.repository.MemberRepository;
 import team4.footwithme.stadium.domain.Stadium;
 import team4.footwithme.stadium.repository.StadiumRepository;
 import team4.footwithme.vote.domain.Vote;
+import team4.footwithme.vote.domain.VoteItem;
 import team4.footwithme.vote.domain.VoteItemLocate;
 
 import java.time.LocalDateTime;
@@ -60,7 +61,7 @@ class VoteItemRepositoryTest extends IntegrationTestSupport {
         List<VoteItemLocate> savedVoteItems = voteItemRepository.saveAll(voteItemLocates);
 
         //when
-        List<VoteItemLocate> findVoteItems = voteItemRepository.findByVoteVoteId(savedVote.getVoteId());
+        List<VoteItem> findVoteItems = voteItemRepository.findByVoteVoteId(savedVote.getVoteId());
 
         //then
         Assertions.assertThat(findVoteItems).hasSize(3)

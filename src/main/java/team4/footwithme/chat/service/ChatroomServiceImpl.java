@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import team4.footwithme.chat.domain.Chatroom;
 import team4.footwithme.chat.repository.ChatroomRepository;
 import team4.footwithme.chat.repository.RedisChatroomRepository;
+import team4.footwithme.chat.service.request.ChatroomServiceRequest;
 import team4.footwithme.chat.service.response.ChatroomResponse;
 
 @RequiredArgsConstructor
@@ -18,13 +19,16 @@ public class ChatroomServiceImpl implements ChatroomService{
     /**
      * 채팅방 생성
      * 채팅방을 만든 사람은 자동으로 채팅방 초대
-     * @param name 채팅방 이름 ( 팀 or 예약 만들어질 때 이름 넣어서 보내주기 )
+     * @param request 채팅방 이름 ( 팀 or 예약 만들어질 때 이름 넣어서 보내주기 )
      * @return
      */
     @Transactional
-    public ChatroomResponse createChatroom(String name) {
+    @Override
+    public ChatroomResponse createChatroom(ChatroomServiceRequest request) {
 
-        Chatroom chatroom = chatroomRepository.save(Chatroom.create(name));
+        Chatroom chatroom = chatroomRepository.save(Chatroom.create(request.name()));
+        System.out.println(request.name());
+        System.out.println(chatroom.getName());
 
         // redis Hash에 저장
         redisChatroomRepository.createChatRoom(chatroom);
@@ -39,6 +43,7 @@ public class ChatroomServiceImpl implements ChatroomService{
      * @return
      */
     @Transactional
+    @Override
     public String deleteChatroom(Long chatroomId){
         // 채팅방 인원 삭제는 ChatMemberRepository에 있음
         chatroomRepository.deleteById(chatroomId);

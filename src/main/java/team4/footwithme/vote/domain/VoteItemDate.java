@@ -14,14 +14,18 @@ import java.time.LocalDateTime;
 @Entity
 public class VoteItemDate extends VoteItem {
 
-    @NotNull
-    private LocalDateTime endAt;
-
+    private LocalDateTime time;
 
     @Builder
-    private VoteItemDate(Vote vote, LocalDateTime endAt) {
+    private VoteItemDate(Vote vote, LocalDateTime time) {
         super(vote);
-        this.endAt = endAt;
+        this.time = time;
     }
 
+    public static VoteItemDate create(Vote vote, LocalDateTime time) {
+        return VoteItemDate.builder()
+            .vote(vote)
+            .time(time)
+            .build();
+    }
 }

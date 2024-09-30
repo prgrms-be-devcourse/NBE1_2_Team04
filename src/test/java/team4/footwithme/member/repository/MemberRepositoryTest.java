@@ -11,6 +11,7 @@ import team4.footwithme.member.domain.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
+@Transactional
 class MemberRepositoryTest extends IntegrationTestSupport  {
 
     @Autowired

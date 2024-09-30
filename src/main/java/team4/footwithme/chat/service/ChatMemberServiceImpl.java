@@ -29,6 +29,7 @@ public class ChatMemberServiceImpl implements ChatMemberService{
      * @param request
      * @return
      */
+    @Override
     @Transactional
     public String joinChatMember(ChatMemberServiceRequest request) {
         Member member = memberRepository.findByMemberId(request.memberId())
@@ -47,6 +48,7 @@ public class ChatMemberServiceImpl implements ChatMemberService{
      * @param chatroomId
      * @return
      */
+    @Override
     @Transactional
     public String joinChatTeam(List<TeamMember> teamMembers, Long chatroomId) {
         List<Member> members = teamMembers.stream().map(TeamMember::getMember).collect(Collectors.toList());
@@ -71,6 +73,7 @@ public class ChatMemberServiceImpl implements ChatMemberService{
      * @param chatroomId
      * @return
      */
+    @Override
     @Transactional
     public String joinChatGame(List<Participant> gameMembers, Long chatroomId) {
         List<Member> members = gameMembers.stream().map(Participant::getMember).collect(Collectors.toList());
@@ -94,6 +97,7 @@ public class ChatMemberServiceImpl implements ChatMemberService{
      * @param request
      * @return
      */
+    @Override
     @Transactional
     public String leaveChatMember(ChatMemberServiceRequest request) {
         Member member = memberRepository.findByMemberId(request.memberId())
@@ -110,6 +114,7 @@ public class ChatMemberServiceImpl implements ChatMemberService{
      * @param chatroomId 채팅방 ID
      * @return
      */
+    @Override
     @Transactional
     public String leaveChatRoom(Long chatroomId) {
         Chatroom chatroom = chatroomRepository.findByChatroomId(chatroomId)

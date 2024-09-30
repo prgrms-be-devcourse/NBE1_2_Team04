@@ -7,7 +7,7 @@ import team4.footwithme.stadium.domain.Stadium;
 import java.util.List;
 
 @Repository
-public interface StadiumRepository extends JpaRepository<Stadium,Long>, CustomStadiumRepository, StadiumRepositoryCustom  {
+public interface StadiumRepository extends JpaRepository<Stadium,Long>, CustomStadiumRepository {
     List<Stadium> findByNameContainingIgnoreCase(String query);
     List<Stadium> findByAddressContainingIgnoreCase(String address);
 //    @Query(value = "SELECT * FROM stadium WHERE ST_Distance_Sphere(position, ST_GeomFromText(:point, 4326)) <= :distance * 1000", nativeQuery = true)

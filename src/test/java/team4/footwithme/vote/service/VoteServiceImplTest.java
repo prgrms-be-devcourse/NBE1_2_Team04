@@ -1,29 +1,31 @@
 package team4.footwithme.vote.service;
 
+import jakarta.persistence.EntityManager;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import team4.footwithme.IntegrationTestSupport;
+import team4.footwithme.global.domain.IsDeleted;
 import team4.footwithme.member.domain.*;
 import team4.footwithme.member.repository.MemberRepository;
 import team4.footwithme.stadium.domain.Stadium;
 import team4.footwithme.stadium.repository.StadiumRepository;
 import team4.footwithme.team.domain.Team;
 import team4.footwithme.team.repository.TeamRepository;
-import team4.footwithme.vote.domain.Choice;
-import team4.footwithme.vote.domain.Vote;
-import team4.footwithme.vote.domain.VoteItem;
-import team4.footwithme.vote.domain.VoteItemLocate;
+import team4.footwithme.vote.api.request.DateChoices;
+import team4.footwithme.vote.domain.*;
 import team4.footwithme.vote.repository.ChoiceRepository;
 import team4.footwithme.vote.repository.VoteItemRepository;
 import team4.footwithme.vote.repository.VoteRepository;
+import team4.footwithme.vote.service.request.VoteDateCreateServiceRequest;
 import team4.footwithme.vote.service.request.VoteStadiumCreateServiceRequest;
 import team4.footwithme.vote.service.response.VoteResponse;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -51,7 +53,10 @@ class VoteServiceImplTest extends IntegrationTestSupport {
     @Autowired
     private ChoiceRepository choiceRepository;
 
-    @DisplayName("새로운 구장 투표를 생성한다")
+    @Autowired
+    private EntityManager entityManager;
+
+    @DisplayName("새로운 구장 투표를 생성한다.")
     @Test
     void createStadiumVote() {
         //given
@@ -222,6 +227,154 @@ class VoteServiceImplTest extends IntegrationTestSupport {
                 tuple(savedVoteItems.get(1).getVoteItemId(), "열정 풋살장", 1L),
                 tuple(savedVoteItems.get(2).getVoteItemId(), "우주 풋살장", 0L)
             );
+    }
+
+    @DisplayName("새로운 일정 투표를 생성한다.")
+    @Test
+    void createDateVote() {
+        //given
+        LocalDateTime endAt = LocalDateTime.now().plusDays(1);
+
+        LocalDateTime choice1 = LocalDateTime.now().plusHours(1);
+        LocalDateTime choice2 = LocalDateTime.now().plusDays(1);
+        LocalDateTime choice3 = LocalDateTime.now().plusDays(2);
+
+        Member givenMember = Member.create("test@gmail.com", "1234", "test", "010-1234-5678", LoginProvider.ORIGINAL, "test", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE);
+        Member savedMember = memberRepository.save(givenMember);
+
+        Stadium givenStadium1 = Stadium.create(savedMember, "최강 풋살장", "서울시 강남구 어딘가", "01010101010", "최고임", 54.123, 10.123);
+        Stadium savedStadium = stadiumRepository.save(givenStadium1);
+        Team team = Team.create(savedStadium.getStadiumId(), 1L, "팀이름", "팀 설명", 1, 1, 1, "서울");
+        Team savedTeam = teamRepository.save(team);
+
+        VoteDateCreateServiceRequest request = new VoteDateCreateServiceRequest("연말 경기 투표", endAt, List.of(choice1, choice2, choice3));
+
+
+        //when
+        VoteResponse response = voteService.createDateVote(request, savedTeam.getTeamId(), "test@gmail.com");
+
+        List<Vote> votes = voteRepository.findAll();
+        List<VoteItem> voteItems = voteItemRepository.findAll();
+        //then
+
+        Assertions.assertThat(votes).hasSize(1)
+            .extracting("title", "endAt", "memberId", "teamId", "voteId")
+            .containsExactlyInAnyOrder(
+                tuple("연말 경기 투표", endAt, savedMember.getMemberId(), savedTeam.getTeamId(), votes.get(0).getVoteId())
+            );
+
+        Assertions.assertThat(voteItems).hasSize(3)
+            .extracting("vote.voteId", "voteItemId", "time")
+            .containsExactlyInAnyOrder(
+                tuple(votes.get(0).getVoteId(), voteItems.get(0).getVoteItemId(), choice1),
+                tuple(votes.get(0).getVoteId(), voteItems.get(1).getVoteItemId(), choice2),
+                tuple(votes.get(0).getVoteId(), voteItems.get(2).getVoteItemId(), choice3)
+            );
+
+        Assertions.assertThat(response).isNotNull()
+            .extracting("voteId", "title", "endAt")
+            .containsExactlyInAnyOrder(
+                votes.get(0).getVoteId(), "연말 경기 투표", endAt
+            );
+
+        Assertions.assertThat(response.choices())
+            .hasSize(3)
+            .extracting("voteItemId", "content", "voteCount")
+            .containsExactlyInAnyOrder(
+                tuple(voteItems.get(0).getVoteItemId(), choice1.toString(), 0L),
+                tuple(voteItems.get(1).getVoteItemId(), choice2.toString(), 0L),
+                tuple(voteItems.get(2).getVoteItemId(), choice3.toString(), 0L)
+            );
+    }
+
+    @DisplayName("일정 투표를 투표 ID로 조회한다.")
+    @Test
+    void getDateVoteByVoteId() {
+        //given
+        LocalDateTime endAt = LocalDateTime.now().plusDays(1);
+
+        LocalDateTime choice1 = LocalDateTime.now().plusHours(1);
+        LocalDateTime choice2 = LocalDateTime.now().plusDays(1);
+        LocalDateTime choice3 = LocalDateTime.now().plusDays(2);
+
+        Member givenMember = Member.create("test@gmail.com", "1234", "test", "010-1234-5678", LoginProvider.ORIGINAL, "test", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE);
+        Member savedMember = memberRepository.save(givenMember);
+
+        Stadium givenStadium1 = Stadium.create(savedMember, "최강 풋살장", "서울시 강남구 어딘가", "01010101010", "최고임", 54.123, 10.123);
+        Stadium savedStadium = stadiumRepository.save(givenStadium1);
+        Team team = Team.create(savedStadium.getStadiumId(), 1L, "팀이름", "팀 설명", 1, 1, 1, "서울");
+        Team savedTeam = teamRepository.save(team);
+
+        Vote vote = Vote.create(1L, 1L, "연말 경기 투표", endAt);
+        Vote savedVote = voteRepository.save(vote);
+
+        VoteItem voteItem1 = VoteItemDate.create(savedVote, choice1);
+        VoteItem voteItem2 = VoteItemDate.create(savedVote, choice2);
+        VoteItem voteItem3 = VoteItemDate.create(savedVote, choice3);
+
+        List<VoteItem> savedVoteItems = voteItemRepository.saveAll(List.of(voteItem1, voteItem2, voteItem3));
+
+        //when
+        VoteResponse response = voteService.getDateVote(savedVote.getVoteId());
+
+        //then
+        Assertions.assertThat(response).isNotNull()
+            .extracting("voteId", "title", "endAt")
+            .containsExactlyInAnyOrder(
+                savedVote.getVoteId(), "연말 경기 투표", endAt
+            );
+
+        Assertions.assertThat(response.choices())
+            .hasSize(3)
+            .extracting("voteItemId", "content", "voteCount")
+            .containsExactlyInAnyOrder(
+                tuple(savedVoteItems.get(0).getVoteItemId(), choice1.toString(), 0L),
+                tuple(savedVoteItems.get(1).getVoteItemId(), choice2.toString(), 0L),
+                tuple(savedVoteItems.get(2).getVoteItemId(), choice3.toString(), 0L)
+            );
+    }
+
+    @DisplayName("투표를 투표 ID로 삭제한다.")
+    @Test
+    void deleteVoteByVoteId() {
+        //given
+        LocalDateTime endAt = LocalDateTime.now().plusDays(1);
+
+        LocalDateTime choice1 = LocalDateTime.now().plusHours(1);
+        LocalDateTime choice2 = LocalDateTime.now().plusDays(1);
+        LocalDateTime choice3 = LocalDateTime.now().plusDays(2);
+
+        Member givenMember = Member.create("test@gmail.com", "1234", "test", "010-1234-5678", LoginProvider.ORIGINAL, "test", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE);
+        Member savedMember = memberRepository.save(givenMember);
+
+        Stadium givenStadium1 = Stadium.create(savedMember, "최강 풋살장", "서울시 강남구 어딘가", "01010101010", "최고임", 54.123, 10.123);
+        Stadium savedStadium = stadiumRepository.save(givenStadium1);
+        Team team = Team.create(savedStadium.getStadiumId(), 1L, "팀이름", "팀 설명", 1, 1, 1, "서울");
+        Team savedTeam = teamRepository.save(team);
+
+        Vote vote = Vote.create(1L, 1L, "연말 경기 투표", endAt);
+        Vote savedVote = voteRepository.save(vote);
+
+        VoteItem voteItem1 = VoteItemDate.create(savedVote, choice1);
+        VoteItem voteItem2 = VoteItemDate.create(savedVote, choice2);
+        VoteItem voteItem3 = VoteItemDate.create(savedVote, choice3);
+
+        List<VoteItem> savedVoteItems = voteItemRepository.saveAll(List.of(voteItem1, voteItem2, voteItem3));
+        //when
+        Long deletedId = voteService.deleteVote(savedVote.getVoteId());
+
+        // @SQLDelete를 사용하면 수동으로 flush 해야함
+        entityManager.flush();
+
+        //then
+        Optional<Vote> deletedVote = voteRepository.findById(deletedId);
+
+        assertThat(deletedVote.isPresent()).isTrue();
+        assertThat(deletedVote.get()).extracting(
+            "voteId", "title","endAt", "memberId", "teamId","isDeleted"
+        ).containsExactly(
+            deletedId, "연말 경기 투표", endAt, deletedVote.get().getMemberId(), deletedVote.get().getTeamId(), IsDeleted.TRUE
+        );
     }
 
 }

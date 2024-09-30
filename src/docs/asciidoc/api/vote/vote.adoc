@@ -19,3 +19,37 @@ include::{snippets}/vote-stadium-get/http-request.adoc[]
 ==== HTTP Response
 include::{snippets}/vote-stadium-get/http-response.adoc[]
 include::{snippets}/vote-stadium-get/response-fields.adoc[]
+
+[[vote-date-create]]
+=== Vote Date 생성
+
+==== HTTP Request
+include::{snippets}/vote-date-create/http-request.adoc[]
+include::{snippets}/vote-date-create/request-fields.adoc[]
+include::{snippets}/vote-date-create/path-parameters.adoc[]
+
+==== HTTP Response
+include::{snippets}/vote-date-create/http-response.adoc[]
+include::{snippets}/vote-date-create/response-fields.adoc[]
+
+[[vote-date-get]]
+=== Vote Date 단건 조회
+
+==== HTTP Request
+include::{snippets}/vote-date-get/http-request.adoc[]
+include::{snippets}/vote-date-get/path-parameters.adoc[]
+
+==== HTTP Response
+include::{snippets}/vote-date-get/http-response.adoc[]
+include::{snippets}/vote-date-get/response-fields.adoc[]
+
+[[vote-delete]]
+=== Vote 삭제
+
+==== HTTP Request
+include::{snippets}/vote-delete/http-request.adoc[]
+include::{snippets}/vote-delete/path-parameters.adoc[]
+
+==== HTTP Response
+include::{snippets}/vote-delete/http-response.adoc[]
+include::{snippets}/vote-delete/response-fields.adoc[]

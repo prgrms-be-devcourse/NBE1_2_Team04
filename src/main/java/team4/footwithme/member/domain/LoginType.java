@@ -17,7 +17,7 @@ public class LoginType {
     @Enumerated(EnumType.STRING)
     private LoginProvider loginProvider;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String snsId;
 
     @Builder
