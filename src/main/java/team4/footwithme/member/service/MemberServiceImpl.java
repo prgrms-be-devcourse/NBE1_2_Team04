@@ -42,6 +42,7 @@ public class MemberServiceImpl implements MemberService{
     }
 
     @Override
+    @Transactional
     public LoginResponse login(LoginServiceRequest serviceRequest, HttpServletResponse response) {
         Member member = memberRepository.findByEmail(serviceRequest.email())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자 입니다."));

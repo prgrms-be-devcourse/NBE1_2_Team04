@@ -11,6 +11,7 @@ import team4.footwithme.global.api.ApiResponse;
 import team4.footwithme.member.api.request.JoinRequest;
 import team4.footwithme.member.api.request.LoginRequest;
 import team4.footwithme.member.service.MemberService;
+import team4.footwithme.member.service.response.LoginResponse;
 import team4.footwithme.member.service.response.MemberResponse;
 
 @RestController
@@ -26,7 +27,7 @@ public class MemberApi {
     }
 
     @PostMapping("/login")
-    public ApiResponse<?> login(@RequestBody @Valid LoginRequest request, HttpServletResponse response){
+    public ApiResponse<LoginResponse> login(@RequestBody @Valid LoginRequest request, HttpServletResponse response){
         return ApiResponse.ok(memberService.login(request.toServiceRequest(), response));
     }
 
