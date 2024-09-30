@@ -37,6 +37,9 @@ public class MemberApi {
         return ApiResponse.ok(loginResponse);
     }
 
-
+    @DeleteMapping("/logout")
+    public ApiResponse<String> logout(HttpServletRequest request, @RequestHeader(name = JwtTokenUtil.REFRESH_TOKEN) String refreshToken) {
+        return ApiResponse.ok(memberService.logout(request, refreshToken));
+    }
 
 }

@@ -12,5 +12,5 @@ public interface MemberService {
 
     LoginResponse login(LoginServiceRequest serviceRequest);
 
-
+    String logout(HttpServletRequest request, String refreshToken);
 }

@@ -58,7 +58,23 @@ public class MemberServiceImpl implements MemberService{
         return LoginResponse.from(tokenResponse);
     }
 
+    @Override
+    @Transactional
+    public String logout(HttpServletRequest request, String refreshToken) {
+        String accessToken = jwtTokenUtil.resolveToken(request);
+        String email = jwtTokenUtil.getEmailFromToken(refreshToken);
 
+        jwtTokenUtil.tokenValidation(accessToken);
+
+        if(redisTemplate.opsForValue().get(email) != null){
+            redisTemplate.delete(email);
+        }
+
+        long expiration = jwtTokenUtil.getExpiration(accessToken);
+        redisTemplate.opsForValue().set(accessToken, "logout", expiration, TimeUnit.MICROSECONDS);
+
+        return "Success Logout";
+    }
 
 
 }
