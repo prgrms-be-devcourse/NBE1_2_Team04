@@ -10,7 +10,7 @@ import team4.footwithme.team.domain.TeamMemberRole;
 import team4.footwithme.team.repository.TeamMemberRepository;
 import team4.footwithme.team.repository.TeamRepository;
 import team4.footwithme.team.service.request.TeamMemberServiceRequest;
-import team4.footwithme.team.service.response.TeamMemberInfoResponse;
+import team4.footwithme.team.service.response.TeamResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,26 +24,47 @@ public class TeamMemberServiceImpl implements TeamMemberService{
     private final TeamRepository teamRepository;
     private final TeamMemberRepository teamMemberRepository;
 
-    //teamMemberRepository.save(TeamMember.create(team, member01, TeamMemberRole.MEMBER));
     @Override
-    public List<TeamMemberInfoResponse> addTeamMembers(Long teamId, TeamMemberServiceRequest request) {
+    public List<TeamResponse> addTeamMembers(Long teamId, TeamMemberServiceRequest request) {
         //팀원 추가할 팀 찾기
         Team team = teamRepository.findByTeamId(teamId);
+
+        //팀 정보가 없을 때 예외처리
+        if(team == null) {
+            throw new IllegalArgumentException("해당 팀이 존재하지 않습니다.");
+        }
 
         //받은 requset에서 email로 각 멤버들의 정보 받아오기
         List<String> emails = request.emails();
 
         //return할 DTO
-        List<TeamMemberInfoResponse> members = new ArrayList<>();
+        List<TeamResponse> members = new ArrayList<>();
         //member 추가
         for(String email : emails){
-            System.out.println(email);
             Member member = memberRepository.findByEmail(email)
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자 입니다."));
-            TeamMember teamMember =  teamMemberRepository.save(TeamMember.create(team, member, TeamMemberRole.MEMBER));
-            members.add(TeamMemberInfoResponse.of(team,teamMember.getTeamMemberId(),member, teamMember.getRole()));
-        }
 
+            TeamMember teamMember =  teamMemberRepository.save(TeamMember.create(team, member, TeamMemberRole.MEMBER));
+
+            members.add(TeamResponse.of(teamMember));
+        }
+        return members;
+    }
+
+    @Override
+    public List<TeamResponse> getTeamMembers(Long teamId) {
+        //팀 찾기
+        Team team = teamRepository.findByTeamId(teamId);
+
+        //팀 정보가 없을 때 예외처리
+        if(team == null) {
+            throw new IllegalArgumentException("해당 팀이 존재하지 않습니다.");
+        }
+        List<TeamMember> teamMembers = teamMemberRepository.findTeamMembersByTeam(team);
+        List<TeamResponse> members = new ArrayList<>();
+        for(TeamMember teamMember : teamMembers){
+            members.add(TeamResponse.of(teamMember));
+        }
         return members;
     }
 }

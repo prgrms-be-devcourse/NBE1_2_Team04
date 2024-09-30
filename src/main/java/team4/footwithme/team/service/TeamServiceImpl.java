@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team4.footwithme.member.domain.*;
+import team4.footwithme.member.repository.MemberRepository;
 import team4.footwithme.team.domain.*;
 import team4.footwithme.team.repository.TeamMemberRepository;
 import team4.footwithme.team.repository.TeamRateRepository;
@@ -22,6 +23,7 @@ public class TeamServiceImpl implements TeamService{
     private final TeamRepository teamRepository;
     private final TeamRateRepository teamRateRepository;
     private final TeamMemberRepository teamMemberRepository;
+    private final MemberRepository memberRepository;
 
     @Override
     @Transactional
