@@ -63,10 +63,15 @@ public class Stadium extends BaseEntity {
                         .build())
                 .build();
     }
+
+    public void updateStadium(String name, String address, String phoneNumber, String description, Double latitude, Double longitude) {
+        this.name = name;
+        this.address = address;
+        this.phoneNumber = phoneNumber;
+        this.description = description;
+        this.position.updatePosition(latitude, longitude);
+    }
 }
-
-
-
 
 
 //    @NotNull

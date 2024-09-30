@@ -3,15 +3,13 @@ package team4.footwithme.stadium.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import team4.footwithme.global.exception.ExceptionMessage;
 import team4.footwithme.stadium.domain.Court;
 import team4.footwithme.stadium.domain.Stadium;
-import team4.footwithme.stadium.exception.CourtExceptionMessage;
-import team4.footwithme.stadium.exception.StadiumExceptionMessage;
 import team4.footwithme.stadium.repository.CourtRepository;
 import team4.footwithme.stadium.repository.StadiumRepository;
 import team4.footwithme.stadium.service.response.CourtDetailResponse;
 import team4.footwithme.stadium.service.response.CourtsResponse;
-import team4.footwithme.stadium.service.response.StadiumsResponse;
 
 import java.util.Collections;
 import java.util.List;
@@ -55,8 +53,8 @@ public class CourtServiceImpl implements CourtService{
     public Court findCourtByIdOrThrowException(long id) {
         return courtRepository.findById(id)
                 .orElseThrow(() -> {
-                    log.warn(">>>> {} : {} <<<<", id, CourtExceptionMessage.COURT_NOT_FOUND);
-                    return new IllegalArgumentException(CourtExceptionMessage.COURT_NOT_FOUND.getText());
+                    log.warn(">>>> {} : {} <<<<", id, ExceptionMessage.COURT_NOT_FOUND);
+                    return new IllegalArgumentException(ExceptionMessage.COURT_NOT_FOUND.getText());
                 });
     }
 
@@ -64,8 +62,8 @@ public class CourtServiceImpl implements CourtService{
     public Stadium findStadiumByIdOrThrowException(long id) {
         return stadiumRepository.findById(id)
                 .orElseThrow(() -> {
-                    log.warn(">>>> {} : {} <<<<", id, StadiumExceptionMessage.STADIUM_NOT_FOUND);
-                    return new IllegalArgumentException(StadiumExceptionMessage.STADIUM_NOT_FOUND.getText());
+                    log.warn(">>>> {} : {} <<<<", id, ExceptionMessage.STADIUM_NOT_FOUND);
+                    return new IllegalArgumentException(ExceptionMessage.STADIUM_NOT_FOUND.getText());
                 });
     }
 }

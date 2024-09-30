@@ -3,16 +3,17 @@ package team4.footwithme.stadium.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import team4.footwithme.global.exception.ExceptionMessage;
 import team4.footwithme.member.domain.Member;
 import team4.footwithme.member.repository.MemberRepository;
-import team4.footwithme.stadium.service.request.StadiumRegisterServiceRequest;
-import team4.footwithme.stadium.service.request.StadiumUpdateServiceRequest;
-import team4.footwithme.stadium.exception.StadiumExceptionMessage;
-import team4.footwithme.stadium.service.request.StadiumSearchByLocationServiceRequest;
-import team4.footwithme.stadium.service.response.StadiumDetailResponse;
-import team4.footwithme.stadium.service.response.StadiumsResponse;
 import team4.footwithme.stadium.domain.Stadium;
 import team4.footwithme.stadium.repository.StadiumRepository;
+import team4.footwithme.stadium.service.request.StadiumRegisterServiceRequest;
+import team4.footwithme.stadium.service.request.StadiumSearchByLocationServiceRequest;
+import team4.footwithme.stadium.service.request.StadiumUpdateServiceRequest;
+import team4.footwithme.stadium.service.response.StadiumDetailResponse;
+import team4.footwithme.stadium.service.response.StadiumsResponse;
 
 import java.util.Collections;
 import java.util.List;
@@ -58,7 +59,7 @@ public class StadiumServiceImpl implements StadiumService {
         return Optional.ofNullable(stadiums)
                 .orElse(Collections.emptyList())
                 .stream()
-                .map(stadium -> StadiumsResponse.of(stadium))  // of 메서드 사용
+                .map(stadium -> StadiumsResponse.of(stadium))
                 .collect(Collectors.toList());
     }
 
@@ -74,10 +75,10 @@ public class StadiumServiceImpl implements StadiumService {
     }
 
 
+    @Transactional
     public StadiumDetailResponse registerStadium(StadiumRegisterServiceRequest request, Long memberId) {
         Member member = findMemberByIdOrThrowException(memberId);
 
-        // Stadium 엔티티 생성
         Stadium stadium = Stadium.create(
                 member,
                 request.name(),
@@ -88,29 +89,33 @@ public class StadiumServiceImpl implements StadiumService {
                 request.longitude()
         );
 
-        // Stadium 저장
         stadiumRepository.save(stadium);
 
-        // StadiumDetailResponse로 변환하여 반환
         return StadiumDetailResponse.of(stadium);
     }
 
 
-    public StadiumDetailResponse updateStadium(Long stadiumId, StadiumUpdateServiceRequest request) {
-        return null;
+    @Transactional
+    public StadiumDetailResponse updateStadium(StadiumUpdateServiceRequest request, Long memberId, Long stadiumId) {
+        findMemberByIdOrThrowException(memberId);
+        Stadium stadium = findStadiumByIdOrThrowException(stadiumId);
+        if (!stadium.getMember().getMemberId().equals(memberId)) {
+            throw new IllegalArgumentException(ExceptionMessage.STADIUM_NOT_OWNED_BY_MEMBER.getText());
+        }
+        stadium.updateStadium(request.name(), request.address(), request.phoneNumber(), request.description(), request.latitude(), request.longitude());
+        return StadiumDetailResponse.of(stadium);
     }
 
-
+    @Transactional
     public void deleteStadium(Long stadiumId) {
-
     }
 
     // 풋살장 조회 예외처리
     public Stadium findStadiumByIdOrThrowException(long id) {
         return stadiumRepository.findById(id)
                 .orElseThrow(() -> {
-                    log.warn(">>>> {} : {} <<<<", id, StadiumExceptionMessage.STADIUM_NOT_FOUND);
-                    return new IllegalArgumentException(StadiumExceptionMessage.STADIUM_NOT_FOUND.getText());
+                    log.warn(">>>> {} : {} <<<<", id, ExceptionMessage.STADIUM_NOT_FOUND);
+                    return new IllegalArgumentException(ExceptionMessage.STADIUM_NOT_FOUND.getText());
                 });
     }
 
@@ -118,8 +123,8 @@ public class StadiumServiceImpl implements StadiumService {
     public Member findMemberByIdOrThrowException(long id) {
         return memberRepository.findByMemberId(id)
                 .orElseThrow(()-> {
-                    log.warn(">>>> {} : {} <<<<", id, "없는 맴버입니다.");
-                    return new IllegalArgumentException("없는 맴버입니다.");
+                    log.warn(">>>> {} : {} <<<<", id, ExceptionMessage.MEMBER_NOT_FOUND);
+                    return new IllegalArgumentException(ExceptionMessage.MEMBER_NOT_FOUND.getText());
                 });
     }
 }

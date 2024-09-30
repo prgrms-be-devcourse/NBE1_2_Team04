@@ -16,6 +16,6 @@ public interface StadiumService {
     List<StadiumsResponse> getStadiumsByAddress(String address);
     List<StadiumsResponse> getStadiumsWithinDistance(StadiumSearchByLocationServiceRequest request);
     StadiumDetailResponse registerStadium(StadiumRegisterServiceRequest request, Long memberId);
-    StadiumDetailResponse updateStadium(Long stadiumId, StadiumUpdateServiceRequest request);
+    StadiumDetailResponse updateStadium(StadiumUpdateServiceRequest request, Long memberId, Long stadiumId);
     void deleteStadium(Long stadiumId);
 }

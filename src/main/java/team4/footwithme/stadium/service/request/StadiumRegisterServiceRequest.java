@@ -7,4 +7,5 @@ public record StadiumRegisterServiceRequest(
         String description,
         Double latitude,
         Double longitude
-) {}
+) {
+}
