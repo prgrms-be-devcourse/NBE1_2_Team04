@@ -5,12 +5,13 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import team4.footwithme.global.domain.BaseEntity;
 import org.hibernate.annotations.SQLDelete;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-//@SQLDelete(sql = "UPDATE member SET is_deleted = 'TRUE' WHERE member_id = ?")
+@SQLDelete(sql = "UPDATE member SET is_deleted = 'TRUE' WHERE member_id = ?")
 @Entity
 public class Member extends BaseEntity {
 
@@ -33,7 +34,7 @@ public class Member extends BaseEntity {
     @Embedded
     private LoginType loginType;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Gender gender;
 
@@ -71,5 +72,9 @@ public class Member extends BaseEntity {
             .memberRole(memberRole)
             .termsAgreed(termsAgreed)
             .build();
+    }
+
+    public void encodePassword(PasswordEncoder passwordEncoder){
+        password = passwordEncoder.encode(password);
     }
 }
