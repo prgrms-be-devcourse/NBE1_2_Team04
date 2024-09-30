@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import team4.footwithme.global.domain.BaseEntity;
-import org.hibernate.annotations.SQLDelete;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
