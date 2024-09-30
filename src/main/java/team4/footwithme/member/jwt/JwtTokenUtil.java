@@ -146,15 +146,15 @@ public class JwtTokenUtil {
                 Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
 
             } catch (SecurityException | MalformedJwtException e) {
-                throw new IllegalArgumentException("Invalid JWT signature");
+                throw new JwtException("유효하지 않은 JWT 토큰입니다.");
             } catch (ExpiredJwtException e) {
-                throw new IllegalArgumentException("Expired JWT");
+                throw new JwtException ("만료된 JWT 입니다.");
             } catch (UnsupportedJwtException e) {
-                throw new IllegalArgumentException("Unsupported JWT");
+                throw new JwtException ("지원하지 않은 JWT 입니다.");
             } catch (IllegalArgumentException e) {
-                throw new IllegalArgumentException("JWT claims is empty");
+                throw new JwtException ("JWT 값이 비어있습니다.");
             } catch (Exception e) {
-                throw new IllegalArgumentException(e.getMessage());
+                throw new RuntimeException(e.getMessage());
             }
     }
 
@@ -169,7 +169,7 @@ public class JwtTokenUtil {
             redisRefreshToken = redisRefresh.toString();
 
         if(redisRefreshToken == null)
-            throw new IllegalArgumentException("유효하지 않은 JWT 토큰입니다.");
+            throw new JwtException("유효하지 않은 JWT 토큰입니다.");
 
     }
 

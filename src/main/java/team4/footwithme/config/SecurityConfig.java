@@ -14,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.client.RestTemplate;
+import team4.footwithme.global.exception.ExceptionHandlerFilter;
 import team4.footwithme.member.jwt.JwtTokenFilter;
 import team4.footwithme.member.jwt.JwtTokenUtil;
 
@@ -24,6 +25,7 @@ import team4.footwithme.member.jwt.JwtTokenUtil;
 public class SecurityConfig {
 
     private final JwtTokenFilter jwtTokenFilter;
+    private final ExceptionHandlerFilter exceptionHandlerFilter;
 
 
     @Bean
@@ -51,7 +53,8 @@ public class SecurityConfig {
                 headerConfig.frameOptions((HeadersConfigurer.FrameOptionsConfig::sameOrigin)
                 )
             )
-            .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
+            .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(exceptionHandlerFilter, JwtTokenFilter.class);
 
         return httpSecurity.build();
     }

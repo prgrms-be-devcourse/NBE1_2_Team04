@@ -1,5 +1,6 @@
 package team4.footwithme.member.jwt;
 
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -41,23 +42,24 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
-
     }
 
-    private void processSecurity(String accessToken, String refreshToken, HttpServletResponse response){
-        if(accessToken != null){
+    private void processSecurity(String accessToken, String refreshToken, HttpServletResponse response) throws ServletException {
+
+        if (accessToken != null) {
             jwtTokenUtil.tokenValidation(accessToken);
 
             String isLogout = (String) redisTemplate.opsForValue().get(accessToken);
 
-            if(ObjectUtils.isEmpty(isLogout)){
+            if (ObjectUtils.isEmpty(isLogout)) {
                 setAuthentication(jwtTokenUtil.getEmailFromToken(accessToken));
             }
         }
-        if(accessToken == null && refreshToken != null){
+        if (accessToken == null && refreshToken != null) {
             jwtTokenUtil.refreshTokenValidation(refreshToken);
             setAuthentication(jwtTokenUtil.getEmailFromToken(refreshToken));
         }
+
     }
 
     public void setAuthentication(String email) {
