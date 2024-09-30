@@ -10,4 +10,6 @@ public interface CustomStadiumRepository {
     Long countStadiumByStadiumIds(List<Long> stadiumIds);
 
     List<Stadium> findStadiumsByLocation(Double latitude, Double longitude, Double distance);
+
+    String findStadiumNameById(Long stadiumId);
 }

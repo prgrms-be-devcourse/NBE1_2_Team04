@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 import team4.footwithme.global.exception.ExceptionMessage;
 import team4.footwithme.stadium.domain.Court;
 import team4.footwithme.stadium.domain.Stadium;
+import team4.footwithme.stadium.exception.CourtExceptionMessage;
 import team4.footwithme.stadium.repository.CourtRepository;
-import team4.footwithme.stadium.repository.StadiumRepository;
 import team4.footwithme.stadium.service.response.CourtDetailResponse;
 import team4.footwithme.stadium.service.response.CourtsResponse;
 
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class CourtServiceImpl implements CourtService{
+public class CourtServiceImpl implements CourtService {
 
     private final CourtRepository courtRepository;
 
@@ -29,22 +29,22 @@ public class CourtServiceImpl implements CourtService{
         findStadiumByIdOrThrowException(stadiumId);
         List<Court> courts = courtRepository.findByStadium_StadiumId(stadiumId);
         return Optional.ofNullable(courts)
-                .orElse(Collections.emptyList())
-                .stream()
-                .map(CourtsResponse::from)
-                .collect(Collectors.toList());
+            .orElse(Collections.emptyList())
+            .stream()
+            .map(CourtsResponse::from)
+            .collect(Collectors.toList());
     }
 
     public List<CourtsResponse> getAllCourts() {
         List<Court> courts = courtRepository.findAll();
         return Optional.of(courts)
-                .orElse(Collections.emptyList())
-                .stream()
-                .map(CourtsResponse::from)
-                .collect(Collectors.toList());
+            .orElse(Collections.emptyList())
+            .stream()
+            .map(CourtsResponse::from)
+            .collect(Collectors.toList());
     }
 
-    public CourtDetailResponse getCourtBycourtId(Long courtId){
+    public CourtDetailResponse getCourtBycourtId(Long courtId) {
         Court court = findCourtByIdOrThrowException(courtId);
         return CourtDetailResponse.from(court);
     }
@@ -60,7 +60,7 @@ public class CourtServiceImpl implements CourtService{
 
     // 풋살장 조회 예외처리
     public Stadium findStadiumByIdOrThrowException(long id) {
-        return stadiumRepository.findById(id)
+        return stadiumRepository.findByStadiumId(id)
                 .orElseThrow(() -> {
                     log.warn(">>>> {} : {} <<<<", id, ExceptionMessage.STADIUM_NOT_FOUND);
                     return new IllegalArgumentException(ExceptionMessage.STADIUM_NOT_FOUND.getText());

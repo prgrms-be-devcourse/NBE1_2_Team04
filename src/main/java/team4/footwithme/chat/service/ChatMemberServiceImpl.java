@@ -19,22 +19,24 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
-public class ChatMemberServiceImpl implements ChatMemberService{
+public class ChatMemberServiceImpl implements ChatMemberService {
     private final ChatMemberRepository chatMemberRepository;
     private final MemberRepository memberRepository;
     private final ChatroomRepository chatroomRepository;
 
     /**
      * 개인 채팅방 초대
+     *
      * @param request
      * @return
      */
+    @Override
     @Transactional
     public String joinChatMember(ChatMemberServiceRequest request) {
         Member member = memberRepository.findByMemberId(request.memberId())
-                .orElseThrow(()->new IllegalArgumentException("Member not found"));
+            .orElseThrow(() -> new IllegalArgumentException("Member not found"));
         Chatroom chatroom = chatroomRepository.findByChatroomId(request.chatroomId())
-                .orElseThrow(()->new IllegalArgumentException("Chatroom not found"));
+            .orElseThrow(() -> new IllegalArgumentException("Chatroom not found"));
 
         chatMemberRepository.save(ChatMember.create(member, chatroom));
 
@@ -43,20 +45,22 @@ public class ChatMemberServiceImpl implements ChatMemberService{
 
     /**
      * 팀원 채팅방 초대
+     *
      * @param teamMembers
      * @param chatroomId
      * @return
      */
+    @Override
     @Transactional
     public String joinChatTeam(List<TeamMember> teamMembers, Long chatroomId) {
         List<Member> members = teamMembers.stream().map(TeamMember::getMember).collect(Collectors.toList());
 
         Chatroom chatroom = chatroomRepository.findByChatroomId(chatroomId)
-                .orElseThrow(()->new IllegalArgumentException("Chatroom not found"));
+            .orElseThrow(() -> new IllegalArgumentException("Chatroom not found"));
 
         List<ChatMember> chatMembers = new ArrayList<>();
 
-        for(Member member : members) {
+        for (Member member : members) {
             chatMembers.add(ChatMember.create(member, chatroom));
         }
 
@@ -67,20 +71,22 @@ public class ChatMemberServiceImpl implements ChatMemberService{
 
     /**
      * 게임 참여 인원 채팅방 초대
+     *
      * @param gameMembers
      * @param chatroomId
      * @return
      */
+    @Override
     @Transactional
     public String joinChatGame(List<Participant> gameMembers, Long chatroomId) {
         List<Member> members = gameMembers.stream().map(Participant::getMember).collect(Collectors.toList());
 
         Chatroom chatroom = chatroomRepository.findByChatroomId(chatroomId)
-                .orElseThrow(()->new IllegalArgumentException("Chatroom not found"));
+            .orElseThrow(() -> new IllegalArgumentException("Chatroom not found"));
 
         List<ChatMember> chatMembers = new ArrayList<>();
 
-        for(Member member : members) {
+        for (Member member : members) {
             chatMembers.add(ChatMember.create(member, chatroom));
         }
 
@@ -91,29 +97,33 @@ public class ChatMemberServiceImpl implements ChatMemberService{
 
     /**
      * 개인 인원 채팅방 나가기
+     *
      * @param request
      * @return
      */
+    @Override
     @Transactional
     public String leaveChatMember(ChatMemberServiceRequest request) {
         Member member = memberRepository.findByMemberId(request.memberId())
-                .orElseThrow(()->new IllegalArgumentException("Member not found"));
+            .orElseThrow(() -> new IllegalArgumentException("Member not found"));
         Chatroom chatroom = chatroomRepository.findByChatroomId(request.chatroomId())
-                .orElseThrow(()->new IllegalArgumentException("Chatroom not found"));
+            .orElseThrow(() -> new IllegalArgumentException("Chatroom not found"));
 
-        chatMemberRepository.deleteByMemberAndChatRoom(member,chatroom);
+        chatMemberRepository.deleteByMemberAndChatRoom(member, chatroom);
         return "Successfully left chat";
     }
 
     /**
      * 채팅방이 삭제됐을 때 채팅방에 참가한 사람들 연관관계 삭제
+     *
      * @param chatroomId 채팅방 ID
      * @return
      */
+    @Override
     @Transactional
     public String leaveChatRoom(Long chatroomId) {
         Chatroom chatroom = chatroomRepository.findByChatroomId(chatroomId)
-                .orElseThrow(()->new IllegalArgumentException("Chatroom not found"));
+            .orElseThrow(() -> new IllegalArgumentException("Chatroom not found"));
 
         chatMemberRepository.deleteByChatRoom(chatroom);
         return "Successfully leaving the chatroom";

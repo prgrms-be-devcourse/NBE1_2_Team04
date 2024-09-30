@@ -47,10 +47,10 @@ public class StadiumServiceImpl implements StadiumService {
     public List<StadiumsResponse> getStadiumsByName(String query) {
         List<Stadium> stadiums = stadiumRepository.findByNameContainingIgnoreCase(query);
         return Optional.ofNullable(stadiums)
-                .orElse(Collections.emptyList())
-                .stream()
-                .map(stadium -> StadiumsResponse.of(stadium))
-                .collect(Collectors.toList());
+            .orElse(Collections.emptyList())
+            .stream()
+            .map(StadiumsResponse::of)
+            .collect(Collectors.toList());
     }
 
     // 주소로 구장 검색
@@ -70,8 +70,8 @@ public class StadiumServiceImpl implements StadiumService {
         System.out.println(request.distance());
         List<Stadium> stadiums = stadiumRepository.findStadiumsByLocation(request.latitude(), request.longitude(), request.distance());
         return stadiums.stream()
-                .map(stadium -> new StadiumsResponse(stadium.getStadiumId(), stadium.getName(), stadium.getAddress()))
-                .collect(Collectors.toList());
+            .map(stadium -> new StadiumsResponse(stadium.getStadiumId(), stadium.getName(), stadium.getAddress()))
+            .collect(Collectors.toList());
     }
 
     // 풋살장 등록
