@@ -1,7 +1,9 @@
 package team4.footwithme.vote.service;
 
+import team4.footwithme.vote.service.request.ChoiceCreateServiceRequest;
 import team4.footwithme.vote.service.request.VoteDateCreateServiceRequest;
 import team4.footwithme.vote.service.request.VoteStadiumCreateServiceRequest;
+import team4.footwithme.vote.service.request.VoteUpdateServiceRequest;
 import team4.footwithme.vote.service.response.VoteResponse;
 
 public interface VoteService {
@@ -14,4 +16,10 @@ public interface VoteService {
     VoteResponse getDateVote(Long voteId);
 
     Long deleteVote(Long voteId);
+
+    VoteResponse createChoice(ChoiceCreateServiceRequest request, Long voteId, String email);
+
+    VoteResponse deleteChoice(Long voteId, String email);
+
+    VoteResponse updateVote(VoteUpdateServiceRequest serviceRequest, Long voteId, String email);
 }

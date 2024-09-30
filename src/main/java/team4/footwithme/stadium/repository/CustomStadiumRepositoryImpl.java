@@ -40,11 +40,20 @@ public class CustomStadiumRepositoryImpl implements CustomStadiumRepository {
         QStadium stadium = QStadium.stadium;
         double earthRadius = 6371;
         NumberTemplate<Double> haversineDistance = Expressions.numberTemplate(Double.class,
-                "(6371 * acos(cos(radians({0})) * cos(radians({1})) * cos(radians({2}) - radians({3})) + sin(radians({0})) * sin(radians({1}))))",
-                latitude, stadium.position.latitude, stadium.position.longitude, longitude);
+            "(6371 * acos(cos(radians({0})) * cos(radians({1})) * cos(radians({2}) - radians({3})) + sin(radians({0})) * sin(radians({1}))))",
+            latitude, stadium.position.latitude, stadium.position.longitude, longitude);
         return queryFactory
-                .selectFrom(stadium)
-                .where(haversineDistance.loe(distance))
-                .fetch();
+            .selectFrom(stadium)
+            .where(haversineDistance.loe(distance))
+            .fetch();
+    }
+
+    @Override
+    public String findStadiumNameById(Long stadiumId) {
+        return queryFactory.select(stadium.name)
+            .from(stadium)
+            .where(stadium.stadiumId.eq(stadiumId)
+                .and(stadium.isDeleted.eq(IsDeleted.FALSE)))
+            .fetchOne();
     }
 }
