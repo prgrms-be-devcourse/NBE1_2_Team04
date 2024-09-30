@@ -28,7 +28,6 @@ public class ChatServiceImpl implements ChatService{
     private final RedisChatroomRepository redisChatroomRepository;
     private final RedisPublisher redisPublisher;
 
-
     /**
      * 메세지 보내기
      * @param request
@@ -37,18 +36,14 @@ public class ChatServiceImpl implements ChatService{
     @Override
     @Transactional
     public void sendMessage(ChatServiceRequest request, String email) {
-        Member member = memberRepository.findByEmail(email).orElseThrow(()-> new IllegalArgumentException("Member not found"));
-        Chatroom chatroom = chatroomRepository.findByChatroomId(request.ChatroomId()).orElseThrow(()-> new IllegalArgumentException("Chatroom not found"));
-
         // 채팅방에 참여한 멤버인지 검증
-        checkMember(member, chatroom);
-
-        Chat chat = Chat.create(chatroom, member, request.message());
+        Member member = checkMember(email);
+        Chatroom chatroom = checkChatroom(request.ChatroomId());
+        checkMemberInChatroom(member, chatroom);
 
         // 메시지를 데이터베이스에 저장
+        Chat chat = Chat.create(chatroom, member, request.message());
         chatRepository.save(chat);
-
-        //ChatResponse chatResponse = new ChatResponse(chat);
 
         // Redis에 메시지 발행
         ChannelTopic topic = redisChatroomRepository.getTopic(chatroom.getChatroomId().toString());
@@ -62,10 +57,10 @@ public class ChatServiceImpl implements ChatService{
      */
     @Transactional(readOnly = true)
     public Slice<ChatResponse> getChatList(Long chatroomId, PageRequest pageRequest, String email) {
-        Member member = memberRepository.findByEmail(email).orElseThrow(()-> new IllegalArgumentException("Member not found"));
-        Chatroom chatroom = chatroomRepository.findByChatroomId(chatroomId).orElseThrow(()-> new IllegalArgumentException("Chatroom not found"));
-
-        checkMember(member, chatroom);
+        // 채팅방에 참여한 멤버인지 검증
+        Member member = checkMember(email);
+        Chatroom chatroom = checkChatroom(chatroomId);
+        checkMemberInChatroom(member, chatroom);
 
         return chatRepository.findChatByChatroom(chatroom, pageRequest);
     }
@@ -73,9 +68,17 @@ public class ChatServiceImpl implements ChatService{
     /**
      * 채팅방에 소속된 멤버인지 검증하는 메소드
      */
-    public void checkMember(Member member, Chatroom chatroom) {
+    public void checkMemberInChatroom(Member member, Chatroom chatroom) {
         if(!chatMemberRepository.existsByMemberAndChatRoom(member, chatroom)) {
             throw new IllegalArgumentException("Invalid member");
         }
+    }
+
+    public Member checkMember(String email) {
+        return memberRepository.findByEmail(email).orElseThrow(()-> new IllegalArgumentException("Member not found"));
+    }
+
+    public Chatroom checkChatroom(Long chatroomId) {
+        return chatroomRepository.findByChatroomId(chatroomId).orElseThrow(()-> new IllegalArgumentException("Chatroom not found"));
     }
 }
