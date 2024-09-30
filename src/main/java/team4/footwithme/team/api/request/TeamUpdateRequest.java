@@ -1,11 +1,10 @@
 package team4.footwithme.team.api.request;
 
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Null;
 import team4.footwithme.team.service.request.TeamDefaultServiceRequest;
 
-public record TeamCreateRequest(
-        @NotNull(message = "팀 명은 필수입니다.")
+public record TeamUpdateRequest(
+        @Null
         String name,
         @Null
         String description,
@@ -14,7 +13,7 @@ public record TeamCreateRequest(
 ) {
     public TeamDefaultServiceRequest toServiceRequest() {
         return new TeamDefaultServiceRequest(
-            name, description, location
+                name, description, location
         );
     }
 }

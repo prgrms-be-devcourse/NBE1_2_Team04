@@ -1,9 +1,8 @@
 package team4.footwithme.team.service.response;
 
-import team4.footwithme.stadium.domain.Stadium;
 import team4.footwithme.team.domain.Team;
 
-public record TeamCreatedResponse(
+public record TeamDefaultResponse(
         Long teamId,
         Long stadiumId,
         Long chatRoomId,
@@ -14,8 +13,8 @@ public record TeamCreatedResponse(
         int loseCount,
         String location
 ) {
-        public static TeamCreatedResponse of(Team team) {
-                return new TeamCreatedResponse(
+        public static TeamDefaultResponse from(Team team) {
+                return new TeamDefaultResponse(
                         team.getTeamId(),
                         team.getStadiumId(),
                         team.getChatRoomId(),
