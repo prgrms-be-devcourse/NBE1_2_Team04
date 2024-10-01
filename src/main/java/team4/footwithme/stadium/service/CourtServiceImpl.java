@@ -3,11 +3,16 @@ package team4.footwithme.stadium.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import team4.footwithme.global.exception.ExceptionMessage;
+import team4.footwithme.member.domain.Member;
+import team4.footwithme.member.repository.MemberRepository;
 import team4.footwithme.stadium.domain.Court;
 import team4.footwithme.stadium.domain.Stadium;
 import team4.footwithme.stadium.repository.CourtRepository;
 import team4.footwithme.stadium.repository.StadiumRepository;
+import team4.footwithme.stadium.service.request.CourtRegisterServiceRequest;
+import team4.footwithme.stadium.service.request.CourtUpdateServiceRequest;
 import team4.footwithme.stadium.service.response.CourtDetailResponse;
 import team4.footwithme.stadium.service.response.CourtsResponse;
 
@@ -24,6 +29,8 @@ public class CourtServiceImpl implements CourtService {
     private final CourtRepository courtRepository;
 
     private final StadiumRepository stadiumRepository;
+
+    private final MemberRepository memberRepository;
 
     public List<CourtsResponse> getCourtsByStadiumId(Long stadiumId) {
         findStadiumByIdOrThrowException(stadiumId);
@@ -49,6 +56,40 @@ public class CourtServiceImpl implements CourtService {
         return CourtDetailResponse.from(court);
     }
 
+    @Transactional
+    public CourtDetailResponse registerCourt(CourtRegisterServiceRequest request, Long memberId) {
+        findMemberByIdOrThrowException(memberId);
+        Stadium stadium = findStadiumByIdOrThrowException(request.stadiumId());
+        if (!stadium.getMember().getMemberId().equals(memberId)) {
+            throw new IllegalArgumentException(ExceptionMessage.STADIUM_NOT_OWNED_BY_MEMBER.getText());
+        }
+
+        Court court = Court.create(
+                stadium,
+                request.name(),
+                request.description(),
+                request.price_per_hour()
+        );
+
+        courtRepository.save(court);
+
+        return CourtDetailResponse.from(court);
+    }
+
+    @Transactional
+    public CourtDetailResponse updateCourt(CourtUpdateServiceRequest request, Long memberId, Long courtId) {
+        findMemberByIdOrThrowException(memberId);
+        Stadium stadium = findStadiumByIdOrThrowException(request.stadiumId());
+        if (!stadium.getMember().getMemberId().equals(memberId)) {
+            throw new IllegalArgumentException(ExceptionMessage.STADIUM_NOT_OWNED_BY_MEMBER.getText());
+        }
+    }
+
+    @Transactional
+    public void deleteCourt(Long memberId, Long courtId) {
+
+    }
+
     // 구장 조회 예외처리
     public Court findCourtByIdOrThrowException(long id) {
         return courtRepository.findById(id)
@@ -64,6 +105,15 @@ public class CourtServiceImpl implements CourtService {
                 .orElseThrow(() -> {
                     log.warn(">>>> {} : {} <<<<", id, ExceptionMessage.STADIUM_NOT_FOUND);
                     return new IllegalArgumentException(ExceptionMessage.STADIUM_NOT_FOUND.getText());
+                });
+    }
+
+    //맴버 조회 예외처리
+    public Member findMemberByIdOrThrowException(long id) {
+        return memberRepository.findByMemberId(id)
+                .orElseThrow(()-> {
+                    log.warn(">>>> {} : {} <<<<", id, ExceptionMessage.MEMBER_NOT_FOUND);
+                    return new IllegalArgumentException(ExceptionMessage.MEMBER_NOT_FOUND.getText());
                 });
     }
 }

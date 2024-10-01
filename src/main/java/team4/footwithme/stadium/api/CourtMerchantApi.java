@@ -27,21 +27,22 @@ public class CourtMerchantApi {
     public ApiResponse<CourtDetailResponse> registerCourt(@Validated @RequestBody CourtRegisterRequest request,
                                                           @AuthenticationPrincipal PrincipalDetails currentUser) {
 
-        return ApiResponse.created();
+        return ApiResponse.created(courtService.registerCourt(request.toServiceRequest(), currentUser.getMember().getMemberId()));
     }
 
 //    @PreAuthorize("hasRole('ROLE_MERCHANT')")
     @PutMapping("/{courtId}")
-    public ApiResponse<CourtDetailResponse> updateCourt(@PathVariable Long courtId, @Validated @RequestBody CourtRegisterRequest request,
+    public ApiResponse<CourtDetailResponse> updateCourt(@PathVariable Long courtId, @Validated @RequestBody CourtUpdateRequest request,
                                                       @AuthenticationPrincipal PrincipalDetails currentUser) {
 
-        return ApiResponse.ok();
+        return ApiResponse.ok(courtService.updateCourt(request.toServiceRequest(), currentUser.getMember().getMemberId(), courtId));
     }
 
 //    @PreAuthorize("hasRole('ROLE_MERCHANT')")
     @DeleteMapping("/{courtId}")
     public ApiResponse<Void> deleteCourt(@PathVariable Long courtId,
                                          @AuthenticationPrincipal PrincipalDetails currentUser) {
+        courtService.deleteCourt(courtId, currentUser.getMember().getMemberId());
         return ApiResponse.ok(null);
     }
 }
