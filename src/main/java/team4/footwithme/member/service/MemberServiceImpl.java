@@ -85,7 +85,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public TokenResponse reissue(HttpServletRequest request, String refreshToken) {
-        if(refreshToken.isEmpty()){
+        if(refreshToken == null || refreshToken.isEmpty()){
             refreshToken = JwtTokenFilter.getRefreshTokenByRequest(request); // 헤더에 없을 경우 쿠키에서 꺼내 씀
         }
 
