@@ -73,19 +73,12 @@ public class TeamServiceImpl implements TeamService{
         //팀 멤버 -> List로 불러와서 서비스단에서 성별 count
         List<TeamMember> teamMembers = teamMemberRepository.findTeamMembersByTeam(teamEntity);
 
-        int maleCount = 0;
-        int femaleCount = 0;
-
-        //쿼리로 받아오는 방법 추후에 수정
-        // TODO:: 쿼리로
         for(TeamMember teamMember : teamMembers){
-            Member member = teamMember.getMember();
-            //성별 count
-            if(member.getGender().equals(Gender.MALE))
-                maleCount += 1;
-            else if(member.getGender().equals(Gender.FEMALE))
-                femaleCount += 1;
+            System.out.println(teamMember.toString());
         }
+
+        Long maleCount = teamRepository.countMaleByMemberId(teamMembers);
+        Long femaleCount = teamRepository.countFemaleByMemberId(teamMembers);
 
         return TeamInfoResponse.of(
                 teamEntity,

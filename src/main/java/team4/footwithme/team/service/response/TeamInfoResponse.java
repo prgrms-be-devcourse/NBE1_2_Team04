@@ -13,11 +13,11 @@ public record TeamInfoResponse(
         int loseCount,
         int drawCount,
         List<String> evaluation,
-        int maleCount,
-        int femaleCount
+        Long maleCount,
+        Long femaleCount
 ) {
 
-    public static TeamInfoResponse of(Team team, List<String> evaluation, int maleCount, int femaleCount){
+    public static TeamInfoResponse of(Team team, List<String> evaluation, Long maleCount, Long femaleCount){
         return new TeamInfoResponse(
                 team.getName(),
                 team.getDescription(),
