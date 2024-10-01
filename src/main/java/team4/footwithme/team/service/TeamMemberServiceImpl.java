@@ -2,6 +2,7 @@ package team4.footwithme.team.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import team4.footwithme.member.domain.Member;
 import team4.footwithme.member.repository.MemberRepository;
 import team4.footwithme.team.domain.Team;
@@ -25,6 +26,7 @@ public class TeamMemberServiceImpl implements TeamMemberService{
     private final TeamMemberRepository teamMemberRepository;
 
     @Override
+    @Transactional
     public List<TeamResponse> addTeamMembers(Long teamId, TeamMemberServiceRequest request) {
         //팀원 추가할 팀 찾기
         Team team = teamRepository.findByTeamId(teamId);
@@ -52,6 +54,7 @@ public class TeamMemberServiceImpl implements TeamMemberService{
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<TeamResponse> getTeamMembers(Long teamId) {
         //팀 찾기
         Team team = teamRepository.findByTeamId(teamId);
@@ -66,5 +69,19 @@ public class TeamMemberServiceImpl implements TeamMemberService{
             members.add(TeamResponse.of(teamMember));
         }
         return members;
+    }
+
+    @Override
+    @Transactional
+    public Long deleteTeamMembers(Long teamMemberId) {
+        //팀 멤버 찾기
+        TeamMember teamMember = teamMemberRepository.findByTeamMemberId(teamMemberId);
+
+        if(teamMember == null) {
+            throw new IllegalArgumentException("존재하지 않는 팀원입니다.");
+        }
+
+        teamMemberRepository.delete(teamMember);
+        return teamMemberId;
     }
 }

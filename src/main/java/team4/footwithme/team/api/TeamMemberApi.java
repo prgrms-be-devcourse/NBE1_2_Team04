@@ -11,7 +11,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/team")
+@RequestMapping("/api/v1/team_member")
 public class TeamMemberApi {
     private final TeamMemberService teamMemberService;
 
@@ -39,7 +39,11 @@ public class TeamMemberApi {
     /**
      * 팀 멤버 삭제
      */
-
+    @DeleteMapping("/{teamMemberId}")
+    public ApiResponse<Long> deleteTeamMember(@PathVariable Long teamMemberId){
+        teamMemberService.deleteTeamMembers(teamMemberId);
+        return ApiResponse.ok(teamMemberId);
+    }
 
 
 }

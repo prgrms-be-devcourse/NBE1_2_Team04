@@ -12,5 +12,9 @@ import java.util.List;
 
 @Repository
 public interface TeamMemberRepository extends JpaRepository<TeamMember, Long> {
+    @Query("select tm from TeamMember tm where tm.isDeleted = 'false'")
     List<TeamMember> findTeamMembersByTeam(Team team);
+
+    @Query("select tm from TeamMember tm where tm.isDeleted = 'false' and tm.teamMemberId = :id")
+    TeamMember findByTeamMemberId(@Param("id")Long teamMemberId);
 }
