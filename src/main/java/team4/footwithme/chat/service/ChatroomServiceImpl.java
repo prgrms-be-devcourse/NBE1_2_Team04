@@ -45,7 +45,7 @@ public class ChatroomServiceImpl implements ChatroomService {
     @Transactional
     @Override
     public Long deleteChatroom(Long chatroomId){
-        checkChatroom(chatroomId);
+        getChatroom(chatroomId);
 
         redisChatroomRepository.deleteChatroomFromRedis(chatroomId.toString());
 
@@ -60,14 +60,15 @@ public class ChatroomServiceImpl implements ChatroomService {
     @Transactional
     @Override
     public ChatroomResponse updateChatroom(Long chatroomId, ChatroomServiceRequest request) {
-        Chatroom chatroom = checkChatroom(chatroomId);
+        Chatroom chatroom = getChatroom(chatroomId);
 
         chatroom.updateName(request.name());
 
         return new ChatroomResponse(chatroom);
     }
 
-    public Chatroom checkChatroom(Long chatroomId) {
-        return chatroomRepository.findByChatroomId(chatroomId).orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.CHATROOM_NOT_FOUND.getText()));
+    private Chatroom getChatroom(Long chatroomId) {
+        return chatroomRepository.findByChatroomId(chatroomId)
+                .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.CHATROOM_NOT_FOUND.getText()));
     }
 }

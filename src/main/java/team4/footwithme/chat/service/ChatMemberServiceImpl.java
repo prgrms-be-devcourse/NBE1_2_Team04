@@ -41,8 +41,8 @@ public class ChatMemberServiceImpl implements ChatMemberService {
     @Override
     @Transactional
     public ChatMemberResponse joinChatMember(ChatMemberServiceRequest request) {
-        Member member = checkMember(request.memberId());
-        Chatroom chatroom = checkChatroom(request.chatroomId());
+        Member member = getMember(request.memberId());
+        Chatroom chatroom = getChatroom(request.chatroomId());
 
         checkMemberNotInChatroom(member, chatroom);
 
@@ -96,7 +96,7 @@ public class ChatMemberServiceImpl implements ChatMemberService {
     @Override
     @Transactional
     public String joinChatMembers(List<Member> members, Long chatroomId){
-        Chatroom chatroom = checkChatroom(chatroomId);
+        Chatroom chatroom = getChatroom(chatroomId);
 
         List<ChatMember> chatMembers = new ArrayList<>();
 
@@ -126,8 +126,8 @@ public class ChatMemberServiceImpl implements ChatMemberService {
     @Override
     @Transactional
     public ChatMemberResponse leaveChatMember(ChatMemberServiceRequest request) {
-        Member member = checkMember(request.memberId());
-        Chatroom chatroom = checkChatroom(request.chatroomId());
+        Member member = getMember(request.memberId());
+        Chatroom chatroom = getChatroom(request.chatroomId());
 
         checkMemberInChatroom(member, chatroom);
 
@@ -150,30 +150,30 @@ public class ChatMemberServiceImpl implements ChatMemberService {
     @Override
     @Transactional
     public String leaveChatRoom(Long chatroomId) {
-        Chatroom chatroom = checkChatroom(chatroomId);
+        Chatroom chatroom = getChatroom(chatroomId);
 
         chatMemberRepository.deleteByChatRoom(chatroom);
         return "Successfully leaving the chatroom";
     }
 
-    public void checkMemberInChatroom(Member member, Chatroom chatroom) {
+    private void checkMemberInChatroom(Member member, Chatroom chatroom) {
         if(!chatMemberRepository.existByMemberAndChatroom(member, chatroom)) {
             throw new IllegalArgumentException(ExceptionMessage.MEMBER_NOT_IN_CHATROOM.getText());
         }
     }
 
-    public void checkMemberNotInChatroom(Member member, Chatroom chatroom) {
+    private void checkMemberNotInChatroom(Member member, Chatroom chatroom) {
         if(chatMemberRepository.existByMemberAndChatroom(member, chatroom)) {
             throw new IllegalArgumentException(ExceptionMessage.MEMBER_IN_CHATROOM.getText());
         }
     }
 
-    public Member checkMember(Long memberId) {
+    private Member getMember(Long memberId) {
         return memberRepository.findByMemberId(memberId)
                 .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.MEMBER_NOT_FOUND.getText()));
     }
 
-    public Chatroom checkChatroom(Long chatroomId) {
+    private Chatroom getChatroom(Long chatroomId) {
         return chatroomRepository.findByChatroomId(chatroomId)
                 .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.CHATROOM_NOT_FOUND.getText()));
     }
