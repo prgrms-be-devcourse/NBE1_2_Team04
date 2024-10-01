@@ -75,11 +75,15 @@ public class Vote extends BaseEntity {
 
     private void checkWriterFrom(Long memberId) {
         if (!isWriter(memberId)) {
-            throw new IllegalArgumentException("투표 작성자만 수정할 수 있습니다.");
+            throw new IllegalArgumentException("투표 작성자만 수정,삭제할 수 있습니다.");
         }
     }
 
     private boolean isWriter(Long memberId) {
         return this.memberId.equals(memberId);
+    }
+
+    public void delete(Long memberId) {
+        checkWriterFrom(memberId);
     }
 }
