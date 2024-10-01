@@ -44,10 +44,23 @@ public class ChatroomServiceImpl implements ChatroomService{
      */
     @Transactional
     @Override
-    public String deleteChatroom(Long chatroomId){
+    public Long deleteChatroom(Long chatroomId){
         // 채팅방 인원 삭제는 ChatMemberRepository에 있음
         chatroomRepository.deleteById(chatroomId);
         redisChatroomRepository.leaveChatRoom(chatroomId.toString());
-        return "Chatroom deleted";
+        return chatroomId;
+    }
+
+    /**
+     * 채팅방 수정
+     */
+    @Transactional
+    @Override
+    public ChatroomResponse updateChatroom(Long chatroomId, ChatroomServiceRequest request) {
+        Chatroom chatroom = chatroomRepository.findById(chatroomId).orElseThrow(()->new IllegalArgumentException("Chatroom not found"));
+
+        chatroom.updateName(request.name());
+
+        return new ChatroomResponse(chatroom);
     }
 }
