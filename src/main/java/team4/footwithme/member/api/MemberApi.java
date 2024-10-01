@@ -62,7 +62,7 @@ public class MemberApi {
         return ApiResponse.ok(memberService.update(principalDetails, request.toServiceRequest()));
     }
 
-    @PutMapping("/updatePassword")
+    @PutMapping("/update-password")
     public ApiResponse<String> updatePassword(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                               @RequestBody @Valid UpdatePasswordRequest request){
 
