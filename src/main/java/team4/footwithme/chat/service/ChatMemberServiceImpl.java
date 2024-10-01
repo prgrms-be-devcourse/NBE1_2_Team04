@@ -97,10 +97,13 @@ public class ChatMemberServiceImpl implements ChatMemberService {
     public String joinChatMembers(List<Member> members, Long chatroomId){
         Chatroom chatroom = getChatroom(chatroomId);
 
+        List<Long> oldMembersId = chatMemberRepository.findByChatroom(chatroom)
+                .stream().map(chatMember -> chatMember.getMember().getMemberId()).collect(Collectors.toList());
+
         List<ChatMember> chatMembers = new ArrayList<>();
 
         for (Member member : members) {
-            if(chatMemberRepository.existByMemberAndChatroom(member, chatroom)) {
+            if(oldMembersId.contains(member.getMemberId())) {
                 continue;
             }
             chatMembers.add(ChatMember.create(member, chatroom));
