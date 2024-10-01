@@ -2,8 +2,9 @@ package team4.footwithme.stadium.api.request;
 
 import jakarta.validation.constraints.*;
 import team4.footwithme.stadium.service.request.StadiumRegisterServiceRequest;
+import team4.footwithme.stadium.service.request.StadiumUpdateServiceRequest;
 
-public record StadiumRegisterRequest(
+public record StadiumUpdateRequest(
         @NotBlank(message = "풋살장 이름은 필수입니다.")
         @Size(max = 100, message = "풋살장 이름은 최대 100자까지 가능합니다.")
         String name,
@@ -28,7 +29,7 @@ public record StadiumRegisterRequest(
         @Max(value = 180, message = "경도 값은 180도 이하이어야 합니다.")
         Double longitude
 ) {
-        public StadiumRegisterServiceRequest toServiceRequest() {
-                return new StadiumRegisterServiceRequest(name, address, phoneNumber, description, latitude, longitude);
-        }
+    public StadiumUpdateServiceRequest toServiceRequest() {
+        return new StadiumUpdateServiceRequest(name, address, phoneNumber, description, latitude, longitude);
+    }
 }
