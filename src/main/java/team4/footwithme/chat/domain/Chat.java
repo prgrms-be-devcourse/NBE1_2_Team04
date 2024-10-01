@@ -12,6 +12,7 @@ import team4.footwithme.member.domain.Member;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.List;
 
 @Getter
 @Entity
@@ -55,6 +56,42 @@ public class Chat extends BaseEntity implements Serializable {
                 .member(member)
                 .chatType(chatType)
                 .text(text)
+                .build();
+    }
+
+    public static Chat createTalkChat(Chatroom chatRoom, Member member, String text){
+        return Chat.builder()
+                .chatRoom(chatRoom)
+                .member(member)
+                .chatType(ChatType.TALK)
+                .text(text)
+                .build();
+    }
+
+    public static Chat createEnterChat(Chatroom chatRoom, Member member, String name){
+        return Chat.builder()
+                .chatRoom(chatRoom)
+                .member(member)
+                .chatType(ChatType.ENTER)
+                .text(name + "님이 입장했습니다.")
+                .build();
+    }
+
+    public static Chat createGroupEnterChat(Chatroom chatRoom, List<ChatMember> chatMembers){
+        return Chat.builder()
+                .chatRoom(chatRoom)
+                .member(chatMembers.get(0).getMember())
+                .chatType(ChatType.ENTER)
+                .text(chatMembers.get(0).getMember().getName() + "님 등 " + chatMembers.size() + "명이 입장했습니다.")
+                .build();
+    }
+
+    public static Chat createQuitChat(Chatroom chatRoom, Member member, String name){
+        return Chat.builder()
+                .chatRoom(chatRoom)
+                .member(member)
+                .chatType(ChatType.QUIT)
+                .text(name + "님이 채팅방을 떠났습니다.")
                 .build();
     }
 

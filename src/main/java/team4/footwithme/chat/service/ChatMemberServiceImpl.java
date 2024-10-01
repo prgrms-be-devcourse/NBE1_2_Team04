@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team4.footwithme.chat.domain.Chat;
 import team4.footwithme.chat.domain.ChatMember;
-import team4.footwithme.chat.domain.ChatType;
 import team4.footwithme.chat.domain.Chatroom;
 import team4.footwithme.chat.repository.ChatMemberRepository;
 import team4.footwithme.chat.repository.ChatRepository;
@@ -48,7 +47,7 @@ public class ChatMemberServiceImpl implements ChatMemberService {
 
         ChatMember chatMember = chatMemberRepository.save(ChatMember.create(member, chatroom));
 
-        Chat chat = Chat.create(chatroom, member, ChatType.ENTER, member.getName() + "님이 입장했습니다.");
+        Chat chat = Chat.createEnterChat(chatroom, member, member.getName() + "님이 입장했습니다.");
         chatRepository.save(chat);
 
         redisPublisher.publish(chat);
@@ -109,7 +108,7 @@ public class ChatMemberServiceImpl implements ChatMemberService {
 
         chatMemberRepository.saveAll(chatMembers);
 
-        Chat chat = Chat.create(chatroom, members.get(0), ChatType.ENTER, chatMembers.get(0).getMember().getName() + "님 등 " + chatMembers.size() + "명이 입장했습니다.");
+        Chat chat = Chat.createGroupEnterChat(chatroom, chatMembers);
         chatRepository.save(chat);
 
         redisPublisher.publish(chat);
@@ -133,7 +132,7 @@ public class ChatMemberServiceImpl implements ChatMemberService {
 
         chatMemberRepository.deleteByMemberAndChatRoom(member, chatroom);
 
-        Chat chat = Chat.create(chatroom, member, ChatType.QUIT, member.getName() + "님이 채팅방을 떠났습니다.");
+        Chat chat = Chat.createQuitChat(chatroom, member, member.getName());
         chatRepository.save(chat);
 
         redisPublisher.publish(chat);
