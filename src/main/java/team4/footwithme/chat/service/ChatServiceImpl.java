@@ -15,6 +15,7 @@ import team4.footwithme.chat.repository.RedisChatroomRepository;
 import team4.footwithme.chat.service.request.ChatServiceRequest;
 import team4.footwithme.chat.service.response.ChatResponse;
 import team4.footwithme.member.domain.Member;
+import team4.footwithme.member.jwt.JwtTokenUtil;
 import team4.footwithme.member.repository.MemberRepository;
 
 @RequiredArgsConstructor
@@ -27,17 +28,20 @@ public class ChatServiceImpl implements ChatService {
 
     private final RedisChatroomRepository redisChatroomRepository;
     private final RedisPublisher redisPublisher;
+    private final JwtTokenUtil jwtTokenUtil;
 
     /**
      * 메세지 보내기
      *
      * @param request
-     * @param email
      */
     @Override
     @Transactional
-    public void sendMessage(ChatServiceRequest request, String email) {
+    public void sendMessage(ChatServiceRequest request, String token) {
         // 채팅방에 참여한 멤버인지 검증
+        String accessToken = token.substring(7).trim();
+        String email = jwtTokenUtil.getEmailFromToken(accessToken);
+
         Member member = checkMember(email);
         Chatroom chatroom = checkChatroom(request.ChatroomId());
         checkMemberInChatroom(member, chatroom);
@@ -56,6 +60,7 @@ public class ChatServiceImpl implements ChatService {
      * 페이지네이션
      * 채팅방 메세지를 보려면 채팅방에 소속된 멤버여야 함
      */
+    @Override
     @Transactional(readOnly = true)
     public Slice<ChatResponse> getChatList(Long chatroomId, PageRequest pageRequest, String email) {
         // 채팅방에 참여한 멤버인지 검증
@@ -67,10 +72,58 @@ public class ChatServiceImpl implements ChatService {
     }
 
     /**
+     * 채팅 수정
+     * @param request
+     * @param email 채팅을 작성한 사람만 수정할 수 있음
+     * @param chatId
+     * @return
+     */
+    @Transactional
+    @Override
+    public ChatResponse updateChat(ChatServiceRequest request, String email, Long chatId) {
+        Member member = checkMember(email);
+        Chat chat = checkChat(chatId);
+
+        checkChatByMember(member, chat);
+
+        chat.updateMessage(request.message());
+
+        return new ChatResponse(chat);
+    }
+
+    /**
+     * 채팅 삭제
+     * @param email
+     */
+    @Transactional
+    @Override
+    public Long deleteChat(String email, Long chatId) {
+        Member member = checkMember(email);
+        Chat chat = checkChat(chatId);
+
+        checkChatByMember(member, chat);
+
+        chatRepository.delete(chat);
+
+        return chatId;
+    }
+
+    /**
      * 채팅방에 소속된 멤버인지 검증하는 메소드
      */
     public void checkMemberInChatroom(Member member, Chatroom chatroom) {
-        if (!chatMemberRepository.existsByMemberAndChatRoom(member, chatroom)) {
+        if(!chatMemberRepository.existByMemberAndChatroom(member, chatroom)) {
+            throw new IllegalArgumentException("Invalid member");
+        }
+    }
+
+    /**
+     * 채팅을 작성한 멤버인지 검증하는 메소드
+     * @param member
+     * @param chat
+     */
+    public void checkChatByMember(Member member, Chat chat){
+        if(!chat.getMember().equals(member)){
             throw new IllegalArgumentException("Invalid member");
         }
     }
@@ -81,5 +134,9 @@ public class ChatServiceImpl implements ChatService {
 
     public Chatroom checkChatroom(Long chatroomId) {
         return chatroomRepository.findByChatroomId(chatroomId).orElseThrow(() -> new IllegalArgumentException("Chatroom not found"));
+    }
+
+    public Chat checkChat(Long chatId) {
+        return chatRepository.findByChatId(chatId).orElseThrow(()-> new IllegalArgumentException("Chat not found"));
     }
 }
