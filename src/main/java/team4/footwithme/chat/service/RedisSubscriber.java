@@ -9,8 +9,10 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 import team4.footwithme.chat.domain.Chat;
+import team4.footwithme.chat.service.response.ChatResponse;
 
 import java.nio.charset.StandardCharsets;
+
 @Service
 @RequiredArgsConstructor
 public class RedisSubscriber implements MessageListener {
@@ -27,8 +29,9 @@ public class RedisSubscriber implements MessageListener {
             String channel = new String(pattern, StandardCharsets.UTF_8);
             // ChatMessage 객채로 맵핑
             Chat chat = objectMapper.readValue(publishMessage, Chat.class);
+
             // Websocket 구독자에게 채팅 메시지 Send
-            messagingTemplate.convertAndSend("/sub/api/v1/chat/room/" + chat.getChatRoom().getChatroomId(), chat);
+            messagingTemplate.convertAndSend("/sub/api/v1/chat/room/" + chat.getChatRoom().getChatroomId(), new ChatResponse(chat));
         } catch (JsonProcessingException e) {
             e.printStackTrace();
             throw new IllegalArgumentException("메세지 수신 오류입니다.");

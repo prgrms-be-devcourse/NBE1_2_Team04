@@ -15,8 +15,8 @@ import team4.footwithme.team.domain.TeamRate;
 import team4.footwithme.team.repository.TeamMemberRepository;
 import team4.footwithme.team.repository.TeamRateRepository;
 import team4.footwithme.team.repository.TeamRepository;
-import team4.footwithme.team.service.request.TeamCreateServiceRequest;
-import team4.footwithme.team.service.response.TeamCreatedResponse;
+import team4.footwithme.team.service.request.TeamDefaultServiceRequest;
+import team4.footwithme.team.service.response.TeamDefaultResponse;
 import team4.footwithme.team.service.response.TeamInfoResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -42,7 +42,7 @@ class TeamServiceImplTest extends IntegrationTestSupport {
     void createTeam() {
         //given
         TeamCreateRequest request = new TeamCreateRequest("팀명", "팀 설명", "선호지역");
-        TeamCreateServiceRequest dto = request.toServiceRequest();
+        TeamDefaultServiceRequest dto = request.toServiceRequest();
         teamService.createTeam(dto);
 
         //when
@@ -57,9 +57,9 @@ class TeamServiceImplTest extends IntegrationTestSupport {
     void getTeamInfo(){
         // Given
         TeamCreateRequest request = new TeamCreateRequest("팀명", "팀 설명", "선호지역");
-        TeamCreateServiceRequest dto = request.toServiceRequest();
-        TeamCreatedResponse teamCreatedResponse = teamService.createTeam(dto);
-        Long teamId = teamCreatedResponse.teamId();
+        TeamDefaultServiceRequest dto = request.toServiceRequest();
+        TeamDefaultResponse teamDefaultResponse = teamService.createTeam(dto);
+        Long teamId = teamDefaultResponse.teamId();
         Team team = teamRepository.findByTeamId(teamId);
 
         // 멤버 생성 및 저장
@@ -97,5 +97,47 @@ class TeamServiceImplTest extends IntegrationTestSupport {
         assertThat(response.evaluation().size()).isEqualTo(2);
         assertThat(response.maleCount()).isEqualTo(2);
 
+    }
+
+    //궁금점.. 수정 쿼리가 아니고 insert쿼리가 날라가도 되는건가?
+    @Test
+    @DisplayName("팀 정보 수정")
+    void updateTeamInfo(){
+        //given
+        //팀 정보 저장
+        TeamCreateRequest request = new TeamCreateRequest("팀명", "팀 설명", "선호지역");
+        TeamDefaultServiceRequest dto = request.toServiceRequest();
+        TeamDefaultResponse beforeEntity = teamService.createTeam(dto);
+
+        //when
+        //팀 정보 수정
+        Long teamId = beforeEntity.teamId();
+        TeamDefaultServiceRequest updateDTO = new TeamDefaultServiceRequest(null, "우리애 월드클래스 아닙니다.", "서울 전역");
+        TeamDefaultResponse result = teamService.updateTeamInfo(teamId, updateDTO);
+
+        //then
+        assertThat(result).isNotNull();
+        //팀 이름 안바꿈
+        assertThat(result.name()).isEqualTo(beforeEntity.name());
+        //팀 설명 바꿈
+        assertThat(result.description()).isEqualTo(updateDTO.description());
+        //선호 지역 바꿈
+        assertThat(result.location()).isEqualTo(updateDTO.location());
+    }
+
+    @Test
+    @DisplayName("팀 삭제")
+    void deleteTeam(){
+        //given
+        //팀 정보 저장
+        TeamCreateRequest request = new TeamCreateRequest("팀명", "팀 설명", "선호지역");
+        TeamDefaultServiceRequest dto = request.toServiceRequest();
+        TeamDefaultResponse team = teamService.createTeam(dto);
+
+        //when
+        Long deletedTeamId = teamService.deleteTeam(team.teamId());
+
+        //then
+        assertThat(deletedTeamId).isNotNull();
     }
 }

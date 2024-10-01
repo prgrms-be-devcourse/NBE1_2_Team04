@@ -6,12 +6,11 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import team4.footwithme.global.domain.BaseEntity;
-import team4.footwithme.stadium.domain.Stadium;
 import org.hibernate.annotations.SQLDelete;
+import team4.footwithme.global.domain.BaseEntity;
 
 @Getter
-@SQLDelete(sql = "UPDATE team SET is_deleted = TRUE WHERE team_id = ?")
+@SQLDelete(sql = "UPDATE team SET is_deleted = 'TRUE' WHERE team_id = ?")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class Team extends BaseEntity {
@@ -61,4 +60,15 @@ public class Team extends BaseEntity {
             .build();
     }
 
+    public void setName(@NotNull String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
 }

@@ -76,6 +76,10 @@ dependencies {
 
     // redis
     compileOnly group: 'it.ozimov', name: 'embedded-redis', version: '0.7.2'
+
+    //json
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
 }
 
 tasks.named('test') {
