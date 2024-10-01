@@ -8,6 +8,7 @@ import team4.footwithme.chat.repository.ChatroomRepository;
 import team4.footwithme.chat.repository.RedisChatroomRepository;
 import team4.footwithme.chat.service.request.ChatroomServiceRequest;
 import team4.footwithme.chat.service.response.ChatroomResponse;
+import team4.footwithme.global.exception.ExceptionMessage;
 
 @RequiredArgsConstructor
 @Service
@@ -67,6 +68,6 @@ public class ChatroomServiceImpl implements ChatroomService {
     }
 
     public Chatroom checkChatroom(Long chatroomId) {
-        return chatroomRepository.findByChatroomId(chatroomId).orElseThrow(() -> new IllegalArgumentException("Chatroom not found"));
+        return chatroomRepository.findByChatroomId(chatroomId).orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.CHATROOM_NOT_FOUND.getText()));
     }
 }

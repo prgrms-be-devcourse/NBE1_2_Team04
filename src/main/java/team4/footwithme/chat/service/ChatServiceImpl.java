@@ -14,6 +14,7 @@ import team4.footwithme.chat.repository.ChatroomRepository;
 import team4.footwithme.chat.service.request.ChatServiceRequest;
 import team4.footwithme.chat.service.request.ChatUpdateServiceRequest;
 import team4.footwithme.chat.service.response.ChatResponse;
+import team4.footwithme.global.exception.ExceptionMessage;
 import team4.footwithme.member.domain.Member;
 import team4.footwithme.member.jwt.JwtTokenUtil;
 import team4.footwithme.member.repository.MemberRepository;
@@ -111,7 +112,7 @@ public class ChatServiceImpl implements ChatService {
      */
     public void checkMemberInChatroom(Member member, Chatroom chatroom) {
         if(!chatMemberRepository.existByMemberAndChatroom(member, chatroom)) {
-            throw new IllegalArgumentException("Invalid member");
+            throw new IllegalArgumentException(ExceptionMessage.MEMBER_NOT_IN_CHATROOM.getText());
         }
     }
 
@@ -122,19 +123,19 @@ public class ChatServiceImpl implements ChatService {
      */
     public void checkChatByMember(Member member, Chat chat){
         if(!chat.getMember().equals(member)){
-            throw new IllegalArgumentException("Invalid member");
+            throw new IllegalArgumentException(ExceptionMessage.UNAUTHORIZED_MESSAGE_EDIT.getText());
         }
     }
 
     public Member checkMember(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("Member not found"));
+        return memberRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.MEMBER_NOT_FOUND.getText()));
     }
 
     public Chatroom checkChatroom(Long chatroomId) {
-        return chatroomRepository.findByChatroomId(chatroomId).orElseThrow(() -> new IllegalArgumentException("Chatroom not found"));
+        return chatroomRepository.findByChatroomId(chatroomId).orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.CHATROOM_NOT_FOUND.getText()));
     }
 
     public Chat checkChat(Long chatId) {
-        return chatRepository.findByChatId(chatId).orElseThrow(()-> new IllegalArgumentException("Chat not found"));
+        return chatRepository.findByChatId(chatId).orElseThrow(()-> new IllegalArgumentException(ExceptionMessage.CHAT_NOT_FOUND.getText()));
     }
 }

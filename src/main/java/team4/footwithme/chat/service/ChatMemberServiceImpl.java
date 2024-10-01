@@ -12,6 +12,7 @@ import team4.footwithme.chat.repository.ChatRepository;
 import team4.footwithme.chat.repository.ChatroomRepository;
 import team4.footwithme.chat.service.request.ChatMemberServiceRequest;
 import team4.footwithme.chat.service.response.ChatMemberResponse;
+import team4.footwithme.global.exception.ExceptionMessage;
 import team4.footwithme.member.domain.Member;
 import team4.footwithme.member.repository.MemberRepository;
 import team4.footwithme.resevation.domain.Participant;
@@ -157,23 +158,23 @@ public class ChatMemberServiceImpl implements ChatMemberService {
 
     public void checkMemberInChatroom(Member member, Chatroom chatroom) {
         if(!chatMemberRepository.existByMemberAndChatroom(member, chatroom)) {
-            throw new IllegalArgumentException("Invalid member");
+            throw new IllegalArgumentException(ExceptionMessage.MEMBER_NOT_IN_CHATROOM.getText());
         }
     }
 
     public void checkMemberNotInChatroom(Member member, Chatroom chatroom) {
         if(chatMemberRepository.existByMemberAndChatroom(member, chatroom)) {
-            throw new IllegalArgumentException("채팅방에 해당 회원이 존재합니다.");
+            throw new IllegalArgumentException(ExceptionMessage.MEMBER_IN_CHATROOM.getText());
         }
     }
 
     public Member checkMember(Long memberId) {
         return memberRepository.findByMemberId(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("Member not found"));
+                .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.MEMBER_NOT_FOUND.getText()));
     }
 
     public Chatroom checkChatroom(Long chatroomId) {
         return chatroomRepository.findByChatroomId(chatroomId)
-                .orElseThrow(() -> new IllegalArgumentException("Chatroom not found"));
+                .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.CHATROOM_NOT_FOUND.getText()));
     }
 }
