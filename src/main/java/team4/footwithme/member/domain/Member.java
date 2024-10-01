@@ -79,14 +79,17 @@ public class Member extends BaseEntity {
 
 
     public void update(String name, String phoneNumber, Gender gender){
-        if(name != null)
+        if(name != null) {
             this.name = name;
+        }
 
-        if(gender != null)
+        if(gender != null) {
             this.gender = gender;
+        }
 
-        if(phoneNumber != null)
+        if(phoneNumber != null) {
             this.phoneNumber = phoneNumber;
+        }
     }
 
     public void encodePassword(PasswordEncoder passwordEncoder){
