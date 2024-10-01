@@ -1,9 +1,6 @@
 package team4.footwithme.stadium.api.request;
 
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import team4.footwithme.stadium.service.request.CourtRegisterServiceRequest;
 
 import java.math.BigDecimal;

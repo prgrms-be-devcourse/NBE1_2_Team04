@@ -33,6 +33,7 @@ public class CourtServiceImpl implements CourtService {
 
     private final MemberRepository memberRepository;
 
+    @Override
     public List<CourtsResponse> getCourtsByStadiumId(Long stadiumId) {
         findStadiumByIdOrThrowException(stadiumId);
         List<Court> courts = courtRepository.findByStadium_StadiumId(stadiumId);
@@ -43,6 +44,7 @@ public class CourtServiceImpl implements CourtService {
                 .collect(Collectors.toList());
     }
 
+    @Override
     public List<CourtsResponse> getAllCourts() {
         List<Court> courts = courtRepository.findAllActive();
         return Optional.of(courts)
@@ -52,12 +54,14 @@ public class CourtServiceImpl implements CourtService {
                 .collect(Collectors.toList());
     }
 
+    @Override
     public CourtDetailResponse getCourtByCourtId(Long courtId) {
         Court court = findCourtByIdOrThrowException(courtId);
         return CourtDetailResponse.from(court);
     }
 
     // TODO : 중복 코드가 좀 많아서 나중에 리펙토링 할 것
+    @Override
     @Transactional
     public CourtDetailResponse registerCourt(CourtRegisterServiceRequest request, Long memberId) {
         findMemberByIdOrThrowException(memberId);
@@ -78,6 +82,7 @@ public class CourtServiceImpl implements CourtService {
         return CourtDetailResponse.from(court);
     }
 
+    @Override
     @Transactional
     public CourtDetailResponse updateCourt(CourtUpdateServiceRequest request, Long memberId, Long courtId) {
         findMemberByIdOrThrowException(memberId);
@@ -90,6 +95,7 @@ public class CourtServiceImpl implements CourtService {
         return CourtDetailResponse.from(court);
     }
 
+    @Override
     @Transactional
     public void deleteCourt(CourtDeleteServiceRequest request, Long memberId, Long courtId) {
         findMemberByIdOrThrowException(memberId);

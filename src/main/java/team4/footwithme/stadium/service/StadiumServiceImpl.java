@@ -30,6 +30,7 @@ public class StadiumServiceImpl implements StadiumService {
     private final MemberRepository memberRepository;
 
     // 구장 목록 조회
+    @Override
     public List<StadiumsResponse> getStadiumList() {
         return stadiumRepository.findAllActiveStadiums().stream()
                 .map(stadium -> new StadiumsResponse(stadium.getStadiumId(), stadium.getName(), stadium.getAddress()))
@@ -37,6 +38,7 @@ public class StadiumServiceImpl implements StadiumService {
     }
 
     // 구장 상세 정보 조회
+    @Override
     public StadiumDetailResponse getStadiumDetail(Long id) {
         Stadium stadium = findStadiumByIdOrThrowException(id);
 
@@ -44,6 +46,7 @@ public class StadiumServiceImpl implements StadiumService {
     }
 
     // 이름으로 구장 검색
+    @Override
     public List<StadiumsResponse> getStadiumsByName(String query) {
         List<Stadium> stadiums = stadiumRepository.findByNameContainingIgnoreCase(query);
         return Optional.ofNullable(stadiums)
@@ -54,6 +57,7 @@ public class StadiumServiceImpl implements StadiumService {
     }
 
     // 주소로 구장 검색
+    @Override
     public List<StadiumsResponse> getStadiumsByAddress(String address) {
         List<Stadium> stadiums = stadiumRepository.findByAddressContainingIgnoreCase(address);
         return Optional.ofNullable(stadiums)
@@ -64,6 +68,7 @@ public class StadiumServiceImpl implements StadiumService {
     }
 
     // 위도, 경도의 일정 거리 내의 구장 목록 반환
+    @Override
     public List<StadiumsResponse> getStadiumsWithinDistance(StadiumSearchByLocationServiceRequest request) {
         System.out.println(request.latitude());
         System.out.println(request.longitude());
@@ -75,6 +80,7 @@ public class StadiumServiceImpl implements StadiumService {
     }
 
     // 풋살장 등록
+    @Override
     @Transactional
     public StadiumDetailResponse registerStadium(StadiumRegisterServiceRequest request, Long memberId) {
         Member member = findMemberByIdOrThrowException(memberId);
@@ -96,6 +102,7 @@ public class StadiumServiceImpl implements StadiumService {
 
     // TODO : 중복 코드가 좀 많아서 나중에 리펙토링 할 것
     // 풋살장 정보 수정
+    @Override
     @Transactional
     public StadiumDetailResponse updateStadium(StadiumUpdateServiceRequest request, Long memberId, Long stadiumId) {
         findMemberByIdOrThrowException(memberId);
@@ -108,6 +115,7 @@ public class StadiumServiceImpl implements StadiumService {
     }
 
     // 풋살장 삭제
+    @Override
     @Transactional
     public void deleteStadium(Long memberId, Long stadiumId) {
         findMemberByIdOrThrowException(memberId);
