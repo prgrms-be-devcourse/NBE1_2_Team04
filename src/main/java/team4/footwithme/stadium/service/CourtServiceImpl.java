@@ -92,7 +92,6 @@ public class CourtServiceImpl implements CourtService {
 
     @Transactional
     public void deleteCourt(CourtDeleteServiceRequest request, Long memberId, Long courtId) {
-        System.out.println(memberId);
         findMemberByIdOrThrowException(memberId);
         Stadium stadium = findStadiumByIdOrThrowException(request.StadiumId());
         if (!stadium.getMember().getMemberId().equals(memberId)) {
