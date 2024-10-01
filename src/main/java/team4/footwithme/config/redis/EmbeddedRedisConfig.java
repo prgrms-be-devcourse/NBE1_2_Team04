@@ -26,11 +26,16 @@ public class EmbeddedRedisConfig {
 
     @PostConstruct
     public void redisServer() {
-        if(isArmMac()) {
-            redisServer = new RedisServer(getRedisServerExecutable(), redisPort);
-        } else {
-            redisServer = new RedisServer(redisPort);
-            redisServer.start();
+        if(redisServer==null||!redisServer.isActive()) {
+            if(isArmMac()) {
+                redisServer = new RedisServer(getRedisServerExecutable(), redisPort);
+            } else {
+                redisServer = RedisServer.builder()
+                        .port(redisPort)
+                        .setting("maxmemory 128M")
+                        .build();
+                redisServer.start();
+            }
         }
     }
 
