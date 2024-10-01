@@ -64,6 +64,7 @@ public class Stadium extends BaseEntity {
                 .build();
     }
 
+    // TODO : 검증에 대한 책임 한번 생각해보자
     public void updateStadium(String name, String address, String phoneNumber, String description, Double latitude, Double longitude) {
         this.name = name;
         this.address = address;

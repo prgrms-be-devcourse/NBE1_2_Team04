@@ -94,6 +94,7 @@ public class StadiumServiceImpl implements StadiumService {
         return StadiumDetailResponse.of(stadium);
     }
 
+    // TODO : 중복 코드가 좀 많아서 나중에 리펙토링 할 것
     // 풋살장 정보 수정
     @Transactional
     public StadiumDetailResponse updateStadium(StadiumUpdateServiceRequest request, Long memberId, Long stadiumId) {

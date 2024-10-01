@@ -50,5 +50,11 @@ public class Court extends BaseEntity {
             .pricePerHour(pricePerHour)
             .build();
     }
+    // TODO : 검증에 대한 책임 한번 생각해보자
+    public void updateCourt(String name, String description, BigDecimal pricePerHour) {
+        this.name = name;
+        this.description = description;
+        this.pricePerHour = pricePerHour;
+    }
 
 }

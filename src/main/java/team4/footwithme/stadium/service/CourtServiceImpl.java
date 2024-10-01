@@ -56,6 +56,7 @@ public class CourtServiceImpl implements CourtService {
         return CourtDetailResponse.from(court);
     }
 
+    // TODO : 중복 코드가 좀 많아서 나중에 리펙토링 할 것
     @Transactional
     public CourtDetailResponse registerCourt(CourtRegisterServiceRequest request, Long memberId) {
         findMemberByIdOrThrowException(memberId);
@@ -83,6 +84,9 @@ public class CourtServiceImpl implements CourtService {
         if (!stadium.getMember().getMemberId().equals(memberId)) {
             throw new IllegalArgumentException(ExceptionMessage.STADIUM_NOT_OWNED_BY_MEMBER.getText());
         }
+        Court court = findCourtByIdOrThrowException(courtId);
+        court.updateCourt(request.name(), request.description(), request.price_per_hour());
+        return CourtDetailResponse.from(court);
     }
 
     @Transactional

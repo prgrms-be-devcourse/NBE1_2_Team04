@@ -9,6 +9,9 @@ import team4.footwithme.stadium.service.request.CourtUpdateServiceRequest;
 import java.math.BigDecimal;
 
 public record CourtUpdateRequest(
+        @NotNull(message = "풋살장 아이디는 필수입니다.")
+        Long stadiumId,
+
         @NotBlank(message = "구장 이름은 필수입니다.")
         @Size(max = 100, message = "구장 이름은 최대 100자까지 가능합니다.")
         String name,
@@ -20,6 +23,6 @@ public record CourtUpdateRequest(
         BigDecimal price_per_hour
 ) {
     public CourtUpdateServiceRequest toServiceRequest() {
-        return new CourtUpdateServiceRequest(name, description, price_per_hour);
+        return new CourtUpdateServiceRequest(stadiumId, name, description, price_per_hour);
     }
 }
