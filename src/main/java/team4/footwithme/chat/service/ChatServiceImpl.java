@@ -3,7 +3,6 @@ package team4.footwithme.chat.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
-import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team4.footwithme.chat.domain.Chat;
@@ -11,7 +10,6 @@ import team4.footwithme.chat.domain.Chatroom;
 import team4.footwithme.chat.repository.ChatMemberRepository;
 import team4.footwithme.chat.repository.ChatRepository;
 import team4.footwithme.chat.repository.ChatroomRepository;
-import team4.footwithme.chat.repository.RedisChatroomRepository;
 import team4.footwithme.chat.service.request.ChatServiceRequest;
 import team4.footwithme.chat.service.request.ChatUpdateServiceRequest;
 import team4.footwithme.chat.service.response.ChatResponse;
@@ -27,7 +25,6 @@ public class ChatServiceImpl implements ChatService {
     private final MemberRepository memberRepository;
     private final ChatMemberRepository chatMemberRepository;
 
-    private final RedisChatroomRepository redisChatroomRepository;
     private final RedisPublisher redisPublisher;
     private final JwtTokenUtil jwtTokenUtil;
 
@@ -52,8 +49,7 @@ public class ChatServiceImpl implements ChatService {
         chatRepository.save(chat);
 
         // Redis에 메시지 발행
-        ChannelTopic topic = redisChatroomRepository.getTopic(chatroom.getChatroomId().toString());
-        redisPublisher.publish(topic, chat);
+        redisPublisher.publish(chat);
     }
 
     /**

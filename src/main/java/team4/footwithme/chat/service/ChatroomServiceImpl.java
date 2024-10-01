@@ -33,7 +33,6 @@ public class ChatroomServiceImpl implements ChatroomService {
 
         // redis Hash에 저장
         redisChatroomRepository.createChatRoom(chatroom);
-        redisChatroomRepository.enterChatRoom(chatroom.getChatroomId().toString());
 
         return new ChatroomResponse(chatroom);
     }
@@ -47,9 +46,11 @@ public class ChatroomServiceImpl implements ChatroomService {
     @Transactional
     @Override
     public Long deleteChatroom(Long chatroomId){
+
+        redisChatroomRepository.deleteChatroomFromRedis(chatroomId.toString());
+
         // 채팅방 인원 삭제는 ChatMemberRepository에 있음
         chatroomRepository.deleteById(chatroomId);
-        redisChatroomRepository.leaveChatRoom(chatroomId.toString());
         return chatroomId;
     }
 
