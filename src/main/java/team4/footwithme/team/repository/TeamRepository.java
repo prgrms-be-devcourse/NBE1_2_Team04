@@ -5,9 +5,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import team4.footwithme.team.domain.Team;
+import team4.footwithme.team.domain.TeamMember;
+
+import java.util.List;
 
 @Repository
-public interface TeamRepository extends JpaRepository<Team, Long> {
+public interface TeamRepository extends JpaRepository<Team, Long>, CustomTeamRepository{
     @Query("select t from Team t where t.isDeleted = 'false' and t.teamId = :id")
     Team findByTeamId(@Param("id")Long teamId);
+
 }

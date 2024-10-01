@@ -12,7 +12,7 @@ import team4.footwithme.member.domain.Member;
 
 @Getter
 @Entity
-@SQLDelete(sql = "UPDATE team_member SET is_deleted = TRUE WHERE team_member_id = ?")
+@SQLDelete(sql = "UPDATE team_member SET is_deleted = 'TRUE' WHERE team_member_id = ?")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TeamMember extends BaseEntity {
 
