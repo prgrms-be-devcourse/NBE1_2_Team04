@@ -13,6 +13,7 @@ import team4.footwithme.chat.repository.ChatRepository;
 import team4.footwithme.chat.repository.ChatroomRepository;
 import team4.footwithme.chat.repository.RedisChatroomRepository;
 import team4.footwithme.chat.service.request.ChatServiceRequest;
+import team4.footwithme.chat.service.request.ChatUpdateServiceRequest;
 import team4.footwithme.chat.service.response.ChatResponse;
 import team4.footwithme.member.domain.Member;
 import team4.footwithme.member.jwt.JwtTokenUtil;
@@ -80,7 +81,7 @@ public class ChatServiceImpl implements ChatService {
      */
     @Transactional
     @Override
-    public ChatResponse updateChat(ChatServiceRequest request, String email, Long chatId) {
+    public ChatResponse updateChat(ChatUpdateServiceRequest request, String email, Long chatId) {
         Member member = checkMember(email);
         Chat chat = checkChat(chatId);
 
