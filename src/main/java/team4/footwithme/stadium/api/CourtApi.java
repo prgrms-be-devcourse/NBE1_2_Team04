@@ -2,6 +2,8 @@ package team4.footwithme.stadium.api;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,15 +24,15 @@ public class CourtApi {
     private final CourtService courtService;
 
     @GetMapping("/")
-    public ApiResponse<List<CourtsResponse>> getAllCourts() {
-        List<CourtsResponse> courts = courtService.getAllCourts();
+    public ApiResponse<Slice<CourtsResponse>> getAllCourts(Pageable pageable) {
+        Slice<CourtsResponse> courts = courtService.getAllCourts(pageable);
         return ApiResponse.ok(courts);
     }
 
 
     @GetMapping("/{stadiumId}/courts")
-    public ApiResponse<List<CourtsResponse>> getCourtsByStadiumId(@PathVariable Long stadiumId) {
-        List<CourtsResponse> courts = courtService.getCourtsByStadiumId(stadiumId);
+    public ApiResponse<Slice<CourtsResponse>> getCourtsByStadiumId(@PathVariable Long stadiumId, Pageable pageable) {
+        Slice<CourtsResponse> courts = courtService.getCourtsByStadiumId(stadiumId, pageable);
         return ApiResponse.ok(courts);
     }
 
