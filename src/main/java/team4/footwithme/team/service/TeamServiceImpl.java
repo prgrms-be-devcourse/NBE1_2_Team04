@@ -61,16 +61,12 @@ public class TeamServiceImpl implements TeamService{
     public TeamInfoResponse getTeamInfo(Long teamId) {
 
         //팀 정보
-        Team teamEntity = teamRepository.findByTeamId(teamId);
-
-        //팀 정보가 없을 때 예외처리
-        if(teamEntity == null) {
-            throw new IllegalArgumentException("해당 팀이 존재하지 않습니다.");
-        }
+        Team teamEntity = findTeamByIdOrThrowException(teamId);
 
         //팀 평가 ->  List
         List<TeamRate> teamRates = teamRateRepository.findEvaluationsByTeam(teamEntity);
         List<String> evaluations = new ArrayList<>();
+
         for(TeamRate teamRate : teamRates){
             evaluations.add(teamRate.getEvaluation());
         }
@@ -81,6 +77,7 @@ public class TeamServiceImpl implements TeamService{
         int femaleCount = 0;
 
         //쿼리로 받아오는 방법 추후에 수정
+        // TODO:: 쿼리로
         for(TeamMember teamMember : teamMembers){
             Member member = teamMember.getMember();
             //성별 count
@@ -102,12 +99,7 @@ public class TeamServiceImpl implements TeamService{
     @Transactional
     public TeamDefaultResponse updateTeamInfo(Long teamId, TeamDefaultServiceRequest dto) {
         //변경할 팀 id로 검색
-        Team teamEntity = teamRepository.findByTeamId(teamId);
-
-        //팀 정보가 없을 때 예외처리
-        if(teamEntity == null) {
-            throw new IllegalArgumentException("해당 팀이 존재하지 않습니다.");
-        }
+        Team teamEntity = findTeamByIdOrThrowException(teamId);
 
         //entity에 수정된 값 적용
         if(dto.name() != null){
@@ -128,18 +120,18 @@ public class TeamServiceImpl implements TeamService{
     @Transactional
     public Long deleteTeam(Long teamId) {
         //삭제할 팀 탐색
-        Team teamEntity = teamRepository.findByTeamId(teamId);
-
-        //삭제할 팀이 없으면 예외처리
-        if(teamEntity == null) {
-            throw new IllegalArgumentException("해당 팀이 존재하지 않습니다.");
-        }
-
+        Team teamEntity = findTeamByIdOrThrowException(teamId);
         teamRepository.delete(teamEntity);
-
-
         return teamId;
     }
 
+    public Team findTeamByIdOrThrowException(long id){
+        Team team = teamRepository.findByTeamId(id);
+        if(team == null) {
+            throw new IllegalArgumentException("해당 팀이 존재하지 않습니다.");
+        }else{
+            return team;
+        }
+    }
 
 }
