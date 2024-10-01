@@ -3,21 +3,25 @@ package team4.footwithme.team.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import team4.footwithme.member.domain.*;
-import team4.footwithme.team.domain.*;
+import team4.footwithme.member.domain.Gender;
+import team4.footwithme.member.domain.Member;
+import team4.footwithme.team.domain.Team;
+import team4.footwithme.team.domain.TeamMember;
+import team4.footwithme.team.domain.TeamRate;
+import team4.footwithme.team.domain.TotalRecord;
 import team4.footwithme.team.repository.TeamMemberRepository;
 import team4.footwithme.team.repository.TeamRateRepository;
-import team4.footwithme.team.service.request.TeamDefaultServiceRequest;
-import team4.footwithme.team.service.response.TeamInfoResponse;
 import team4.footwithme.team.repository.TeamRepository;
+import team4.footwithme.team.service.request.TeamDefaultServiceRequest;
 import team4.footwithme.team.service.response.TeamDefaultResponse;
+import team4.footwithme.team.service.response.TeamInfoResponse;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
 @Service
-public class TeamServiceImpl implements TeamService{
+public class TeamServiceImpl implements TeamService {
 
     private final TeamRepository teamRepository;
     private final TeamRateRepository teamRateRepository;
@@ -39,14 +43,14 @@ public class TeamServiceImpl implements TeamService{
 
         //dto -> entity
         Team entity = Team.create(
-                stadiumId,
-                chatRoomId,
-                dto.name(),
-                dto.description(),
-                totalRecord.getWinCount(),
-                totalRecord.getDrawCount(),
-                totalRecord.getLoseCount(),
-                dto.location()
+            stadiumId,
+            chatRoomId,
+            dto.name(),
+            dto.description(),
+            totalRecord.getWinCount(),
+            totalRecord.getDrawCount(),
+            totalRecord.getLoseCount(),
+            dto.location()
         );
         Team createdTeam = teamRepository.save(entity);
 
@@ -62,14 +66,14 @@ public class TeamServiceImpl implements TeamService{
         Team teamEntity = teamRepository.findByTeamId(teamId);
 
         //팀 정보가 없을 때 예외처리
-        if(teamEntity == null) {
+        if (teamEntity == null) {
             throw new IllegalArgumentException("해당 팀이 존재하지 않습니다.");
         }
 
         //팀 평가 ->  List
         List<TeamRate> teamRates = teamRateRepository.findEvaluationsByTeam(teamEntity);
         List<String> evaluations = new ArrayList<>();
-        for(TeamRate teamRate : teamRates){
+        for (TeamRate teamRate : teamRates) {
             evaluations.add(teamRate.getEvaluation());
         }
         //팀 멤버 -> List로 불러와서 서비스단에서 성별 count
@@ -79,21 +83,21 @@ public class TeamServiceImpl implements TeamService{
         int femaleCount = 0;
 
         //쿼리로 받아오는 방법 추후에 수정
-        for(TeamMember teamMember : teamMembers){
+        for (TeamMember teamMember : teamMembers) {
             Member member = teamMember.getMember();
             //성별 count
-            if(member.getGender().equals(Gender.MALE))
+            if (member.getGender().equals(Gender.MALE))
                 maleCount += 1;
-            else if(member.getGender().equals(Gender.FEMALE))
+            else if (member.getGender().equals(Gender.FEMALE))
                 femaleCount += 1;
         }
 
         return TeamInfoResponse.of(
-                teamEntity,
-                evaluations,
-                maleCount,
-                femaleCount
-        ) ;
+            teamEntity,
+            evaluations,
+            maleCount,
+            femaleCount
+        );
     }
 
     @Override
@@ -103,18 +107,18 @@ public class TeamServiceImpl implements TeamService{
         Team teamEntity = teamRepository.findByTeamId(teamId);
 
         //팀 정보가 없을 때 예외처리
-        if(teamEntity == null) {
+        if (teamEntity == null) {
             throw new IllegalArgumentException("해당 팀이 존재하지 않습니다.");
         }
 
         //entity에 수정된 값 적용
-        if(dto.name() != null){
+        if (dto.name() != null) {
             teamEntity.setName(dto.name());
         }
-        if(dto.description() != null){
+        if (dto.description() != null) {
             teamEntity.setDescription(dto.description());
         }
-        if(dto.location() != null){
+        if (dto.location() != null) {
             teamEntity.setLocation(dto.location());
         }
 
@@ -129,7 +133,7 @@ public class TeamServiceImpl implements TeamService{
         Team teamEntity = teamRepository.findByTeamId(teamId);
 
         //삭제할 팀이 없으면 예외처리
-        if(teamEntity == null) {
+        if (teamEntity == null) {
             throw new IllegalArgumentException("해당 팀이 존재하지 않습니다.");
         }
 

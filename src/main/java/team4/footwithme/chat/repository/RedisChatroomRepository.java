@@ -44,7 +44,7 @@ public class RedisChatroomRepository implements CommandLineRunner {
     private void init() {
         // 서버 재시작 시 embeddedRedis 초기화되기 때문
         chatroomRepository.findAll().forEach(chatroom -> {
-            if(!topics.containsKey(chatroom.getChatroomId().toString())){
+            if (!topics.containsKey(chatroom.getChatroomId().toString())) {
                 createChatRoom(chatroom);
                 enterChatRoom(chatroom.getChatroomId().toString());
             }

@@ -4,12 +4,14 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import team4.footwithme.member.api.request.validation.PasswordMatches;
 import team4.footwithme.member.domain.Gender;
 import team4.footwithme.member.domain.LoginProvider;
 import team4.footwithme.member.domain.MemberRole;
 import team4.footwithme.member.domain.TermsAgreed;
 import team4.footwithme.member.service.request.JoinServiceRequest;
 
+@PasswordMatches(passwordField = "password", passwordConfirmField = "passwordConfirm")
 public record JoinRequest(
         @NotBlank(message = "이메일은 필수입니다.")
         @Email(message = "형식이 이메일이어야 합니다.")
@@ -34,7 +36,6 @@ public record JoinRequest(
 )
 {
         public JoinServiceRequest toServiceRequest() {
-                checkPassword();
                 return new JoinServiceRequest(
                         email,
                         password,

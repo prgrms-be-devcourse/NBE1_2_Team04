@@ -20,7 +20,7 @@ import team4.footwithme.member.repository.MemberRepository;
 
 @RequiredArgsConstructor
 @Service
-public class ChatServiceImpl implements ChatService{
+public class ChatServiceImpl implements ChatService {
     private final ChatRepository chatRepository;
     private final ChatroomRepository chatroomRepository;
     private final MemberRepository memberRepository;
@@ -32,6 +32,7 @@ public class ChatServiceImpl implements ChatService{
 
     /**
      * 메세지 보내기
+     *
      * @param request
      */
     @Override
@@ -128,11 +129,11 @@ public class ChatServiceImpl implements ChatService{
     }
 
     public Member checkMember(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(()-> new IllegalArgumentException("Member not found"));
+        return memberRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("Member not found"));
     }
 
     public Chatroom checkChatroom(Long chatroomId) {
-        return chatroomRepository.findByChatroomId(chatroomId).orElseThrow(()-> new IllegalArgumentException("Chatroom not found"));
+        return chatroomRepository.findByChatroomId(chatroomId).orElseThrow(() -> new IllegalArgumentException("Chatroom not found"));
     }
 
     public Chat checkChat(Long chatId) {

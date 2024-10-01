@@ -33,9 +33,10 @@ public class ChatApi {
 
     /**
      * 채팅 조회
+     *
      * @param chatroomId 채팅방 ID
-     * @param page 현재 페이지
-     * @param size 한페이지에 나타날 갯수
+     * @param page       현재 페이지
+     * @param size       한페이지에 나타날 갯수
      * @return
      */
     @GetMapping("/{chatroomId}")
