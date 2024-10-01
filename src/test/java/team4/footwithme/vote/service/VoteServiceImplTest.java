@@ -353,7 +353,7 @@ class VoteServiceImplTest extends IntegrationTestSupport {
         Team team = Team.create(savedStadium.getStadiumId(), 1L, "팀이름", "팀 설명", 1, 1, 1, "서울");
         Team savedTeam = teamRepository.save(team);
 
-        Vote vote = Vote.create(1L, 1L, "연말 경기 투표", endAt);
+        Vote vote = Vote.create(savedMember.getMemberId(), 1L, "연말 경기 투표", endAt);
         Vote savedVote = voteRepository.save(vote);
 
         VoteItem voteItem1 = VoteItemDate.create(savedVote, choice1);
@@ -362,7 +362,7 @@ class VoteServiceImplTest extends IntegrationTestSupport {
 
         List<VoteItem> savedVoteItems = voteItemRepository.saveAll(List.of(voteItem1, voteItem2, voteItem3));
         //when
-        Long deletedId = voteService.deleteVote(savedVote.getVoteId());
+        Long deletedId = voteService.deleteVote(savedVote.getVoteId(),savedMember.getEmail());
 
         // @SQLDelete를 사용하면 수동으로 flush 해야함
         entityManager.flush();
