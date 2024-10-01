@@ -88,4 +88,21 @@ class TeamMemberServiceImplTest extends IntegrationTestSupport {
         assertThat(response.get(2).name()).isEqualTo("여여여");
         assertThat(response.get(2).role()).isEqualTo(TeamMemberRole.MEMBER);
     }
+
+    @Test
+    @DisplayName("팀원 삭제")
+    public void deleteTeamMember(){
+        //given
+        addTeamMember();
+        Long teamId = team.getTeamId();
+        List<TeamResponse> teamMembers = teamMemberService.getTeamMembers(teamId);
+        Long deletedMember = teamMembers.get(1).teamMemberId();
+
+        //when
+        Long result = teamMemberService.deleteTeamMembers(deletedMember);
+
+        //then
+        assertThat(result).isEqualTo(deletedMember);
+        assertThat(teamMemberService.getTeamMembers(teamId).size()).isEqualTo(2);
+    }
 }
