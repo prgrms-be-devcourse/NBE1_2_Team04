@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface StadiumRepository extends JpaRepository<Stadium,Long>, CustomStadiumRepository {
+public interface StadiumRepository extends JpaRepository<Stadium, Long>, CustomStadiumRepository {
 
 
     @Query("SELECT s FROM Stadium s WHERE s.isDeleted = 'false' AND s.stadiumId = :id")
@@ -24,11 +24,6 @@ public interface StadiumRepository extends JpaRepository<Stadium,Long>, CustomSt
 
     @Query("SELECT s FROM Stadium s WHERE s.isDeleted = 'false' AND LOWER(s.address) LIKE LOWER(CONCAT('%', :address, '%'))")
     List<Stadium> findByAddressContainingIgnoreCase(@Param("address") String address);
-
-
-
-
-
 
 
 //    @Query(value = "SELECT * FROM stadium WHERE ST_Distance_Sphere(position, ST_GeomFromText(:point, 4326)) <= :distance * 1000", nativeQuery = true)

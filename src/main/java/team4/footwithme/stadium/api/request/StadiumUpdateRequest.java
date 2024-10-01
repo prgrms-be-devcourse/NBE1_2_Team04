@@ -1,7 +1,6 @@
 package team4.footwithme.stadium.api.request;
 
 import jakarta.validation.constraints.*;
-import team4.footwithme.stadium.service.request.StadiumRegisterServiceRequest;
 import team4.footwithme.stadium.service.request.StadiumUpdateServiceRequest;
 
 public record StadiumUpdateRequest(

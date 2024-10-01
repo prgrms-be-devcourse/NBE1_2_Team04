@@ -18,4 +18,5 @@ public record StadiumSearchByLocationRequest(
         @NotNull(message = "거리 값은 필수 입력 항목입니다.")
         @Min(value = 0, message = "거리는 0 이상이어야 합니다.")
         Double distance
-) {}
+) {
+}
