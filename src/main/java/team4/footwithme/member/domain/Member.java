@@ -5,10 +5,12 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import team4.footwithme.global.domain.BaseEntity;
 import org.hibernate.annotations.SQLDelete;
 import team4.footwithme.member.api.request.UpdateRequest;
+
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -75,6 +77,7 @@ public class Member extends BaseEntity {
             .build();
     }
 
+
     public void update(String name, String phoneNumber, Gender gender){
         if(name != null)
             this.name = name;
@@ -92,5 +95,6 @@ public class Member extends BaseEntity {
 
     public void changePassword(String password){
         this.password = password;
+
     }
 }

@@ -17,8 +17,6 @@ import team4.footwithme.vote.domain.VoteItemLocate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @Transactional
 class VoteItemRepositoryTest extends IntegrationTestSupport {
 
@@ -37,7 +35,7 @@ class VoteItemRepositoryTest extends IntegrationTestSupport {
 
     @DisplayName("투표 ID로 장소 투표 조회")
     @Test
-    void test() {
+    void findS() {
         //given
         LocalDateTime endAt = LocalDateTime.now().plusDays(1);
         Member givenMember = Member.create("test@gmail.com", "1234", "test", "010-1234-5678", LoginProvider.ORIGINAL, "test", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE);

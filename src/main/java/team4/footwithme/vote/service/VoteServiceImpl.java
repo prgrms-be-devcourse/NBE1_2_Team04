@@ -6,21 +6,19 @@ import org.springframework.transaction.annotation.Transactional;
 import team4.footwithme.member.repository.MemberRepository;
 import team4.footwithme.stadium.repository.StadiumRepository;
 import team4.footwithme.team.repository.TeamRepository;
-import team4.footwithme.vote.domain.VoteItem;
-import team4.footwithme.vote.domain.VoteItemDate;
-import team4.footwithme.vote.domain.VoteItemLocate;
-import team4.footwithme.vote.domain.Vote;
+import team4.footwithme.vote.domain.*;
 import team4.footwithme.vote.repository.ChoiceRepository;
 import team4.footwithme.vote.repository.VoteItemRepository;
 import team4.footwithme.vote.repository.VoteRepository;
+import team4.footwithme.vote.service.request.ChoiceCreateServiceRequest;
 import team4.footwithme.vote.service.request.VoteDateCreateServiceRequest;
 import team4.footwithme.vote.service.request.VoteStadiumCreateServiceRequest;
+import team4.footwithme.vote.service.request.VoteUpdateServiceRequest;
 import team4.footwithme.vote.service.response.VoteItemResponse;
 import team4.footwithme.vote.service.response.VoteResponse;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 
 @RequiredArgsConstructor
 @Service
@@ -36,7 +34,7 @@ public class VoteServiceImpl implements VoteService {
     @Transactional
     @Override
     public VoteResponse createStadiumVote(VoteStadiumCreateServiceRequest request, Long teamId, String email) {
-        Long memberId = getMemberId(email);
+        Long memberId = getMemberIdBy(email);
         validateTeamId(teamId);
         List<Long> stadiumIds = request.stadiumIds();
         validateStadiumIds(stadiumIds);
@@ -61,7 +59,7 @@ public class VoteServiceImpl implements VoteService {
         teamRepository.findById(teamId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 팀입니다."));
     }
 
-    private Long getMemberId(String email) {
+    private Long getMemberIdBy(String email) {
         Long memberId = memberRepository.findMemberIdByMemberEmail(email);
         if (memberId == null) {
             throw new IllegalArgumentException("존재하지 않는 회원입니다.");
@@ -88,8 +86,8 @@ public class VoteServiceImpl implements VoteService {
     @Transactional(readOnly = true)
     @Override
     public VoteResponse getStadiumVote(Long voteId) {
-        Vote vote = getVote(voteId);
-        List<VoteItem> voteItems = voteItemRepository.findByVoteVoteId(voteId);
+        Vote vote = getVoteBy(voteId);
+        List<VoteItem> voteItems = getVoteItemsBy(voteId);
         List<String> stadiumNames = getStadiumNames(voteItems);
         List<VoteItemResponse> voteItemResponse = getVoteItemLocateResponse(voteItems, stadiumNames);
         return VoteResponse.of(vote, voteItemResponse);
@@ -108,7 +106,7 @@ public class VoteServiceImpl implements VoteService {
         return VoteItemResponse.of(voteItemId, contents, voteCount);
     }
 
-    private Vote getVote(Long voteId) {
+    private Vote getVoteBy(Long voteId) {
         return voteRepository.findById(voteId)
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 투표입니다."));
     }
@@ -116,7 +114,7 @@ public class VoteServiceImpl implements VoteService {
     @Transactional
     @Override
     public VoteResponse createDateVote(VoteDateCreateServiceRequest request, Long teamId, String email) {
-        Long memberId = getMemberId(email);
+        Long memberId = getMemberIdBy(email);
         validateTeamId(teamId);
 
         Vote vote = Vote.create(memberId, teamId, request.title(), request.endAt());
@@ -136,7 +134,7 @@ public class VoteServiceImpl implements VoteService {
     @Transactional(readOnly = true)
     @Override
     public VoteResponse getDateVote(Long voteId) {
-        Vote vote = getVote(voteId);
+        Vote vote = getVoteBy(voteId);
         voteItemRepository.findByVoteVoteId(voteId);
 
         List<VoteItemDate> voteItems = voteItemRepository.findByVoteVoteId(voteId).stream()
@@ -163,7 +161,88 @@ public class VoteServiceImpl implements VoteService {
     @Transactional
     @Override
     public Long deleteVote(Long voteId) {
-        voteRepository.delete(getVote(voteId));
+        voteRepository.delete(getVoteBy(voteId));
         return voteId;
+    }
+
+    @Transactional
+    @Override
+    public VoteResponse createChoice(ChoiceCreateServiceRequest request, Long voteId, String email) {
+        Long memberId = getMemberIdBy(email);
+        Vote vote = getVoteBy(voteId);
+
+        // TODO : 투표 항목 ID가 존재하는지 검증 이걸 vote를 통해서 쓰면 N+1 문제가 발생 할 것으로 보임 그러면 exist를 쓰는게 좋을까? 아니면 fetch join을 쓰는게 좋을까?
+        List<Choice> choices = request.voteItemIds().stream()
+            .map(voteItemId -> Choice.create(memberId, voteItemId))
+            .toList();
+
+        choiceRepository.saveAll(choices);
+        List<VoteItem> voteItems = getVoteItemsBy(voteId);
+
+        List<VoteItemResponse> voteItemResponse = convertVoteItemResponseFrom(voteItems);
+
+        return VoteResponse.of(vote, voteItemResponse);
+    }
+
+    private List<VoteItem> getVoteItemsBy(Long voteId) {
+        List<VoteItem> voteItems = voteItemRepository.findByVoteVoteId(voteId);
+        if(voteItems.isEmpty()) {
+            throw new IllegalArgumentException("투표 항목이 존재하지 않습니다.");
+        }
+        return voteItems;
+    }
+
+    private List<VoteItemResponse> convertVoteItemResponseFrom(List<VoteItem> voteItems) {
+        if (voteItems.get(0) instanceof VoteItemLocate) {
+            return voteItems.stream()
+                .filter(voteItem -> voteItem instanceof VoteItemLocate)
+                .map(voteItem -> (VoteItemLocate) voteItem)
+                .map(voteItemLocate ->
+                    VoteItemResponse.of(
+                        voteItemLocate.getVoteItemId(),
+                        stadiumRepository.findStadiumNameById(voteItemLocate.getStadiumId()),
+                        choiceRepository.countByVoteItemId(voteItemLocate.getVoteItemId())))
+                .toList();
+        }
+
+        if (voteItems.get(0) instanceof VoteItemDate) {
+            return voteItems.stream()
+                .filter(voteItem -> voteItem instanceof VoteItemDate)
+                .map(voteItem -> (VoteItemDate) voteItem)
+                .map(voteItemDate ->
+                    VoteItemResponse.of(
+                        voteItemDate.getVoteItemId(),
+                        voteItemDate.getTime().toString(),
+                        choiceRepository.countByVoteItemId(voteItemDate.getVoteItemId())))
+                .toList();
+        }
+        throw new IllegalArgumentException("지원하지 않는 투표 항목입니다.");
+    }
+
+    @Transactional
+    @Override
+    public VoteResponse deleteChoice(Long voteId, String email) {
+        Long memberId = getMemberIdBy(email);
+        Vote vote = getVoteBy(voteId);
+
+        List<Choice> choices = choiceRepository.findByMemberIdAndVoteId(memberId, voteId);
+
+        choiceRepository.deleteAllInBatch(choices);
+        List<VoteItem> voteItems = getVoteItemsBy(voteId);
+        List<VoteItemResponse> voteItemResponse = convertVoteItemResponseFrom(voteItems);
+        return VoteResponse.of(vote, voteItemResponse);
+    }
+
+    @Transactional
+    @Override
+    public VoteResponse updateVote(VoteUpdateServiceRequest serviceRequest, Long voteId, String email) {
+        Long memberId = getMemberIdBy(email);
+        Vote vote = getVoteBy(voteId);
+
+        vote.update(serviceRequest.title(), serviceRequest.endAt(), memberId);
+
+        List<VoteItem> voteItems = getVoteItemsBy(voteId);
+        List<VoteItemResponse> voteItemResponse = convertVoteItemResponseFrom(voteItems);
+        return VoteResponse.of(vote, voteItemResponse);
     }
 }

@@ -1,11 +1,8 @@
 package team4.footwithme.member.jwt;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import team4.footwithme.IntegrationTestSupport;
 import team4.footwithme.member.domain.*;
@@ -15,7 +12,7 @@ import team4.footwithme.member.repository.MemberRepository;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Transactional
-class JwtTokenUtilTest extends IntegrationTestSupport{
+class JwtTokenUtilTest extends IntegrationTestSupport {
 
     @Autowired
     private MemberRepository memberRepository;
@@ -71,7 +68,7 @@ class JwtTokenUtilTest extends IntegrationTestSupport{
         assertThat(reCreateAccessToken).isNotNull();
     }
 
-    private void saveMember(String email){
+    private void saveMember(String email) {
         testMember = Member.create(email, "password", "Test user", "010-1234-1234", LoginProvider.ORIGINAL, "test", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE);
         memberRepository.save(testMember);
     }

@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import team4.footwithme.global.api.ApiResponse;
 import team4.footwithme.vote.api.request.VoteDateCreateRequest;
 import team4.footwithme.vote.api.request.VoteStadiumCreateRequest;
+import team4.footwithme.vote.api.request.VoteUpdateRequest;
 import team4.footwithme.vote.service.VoteService;
 import team4.footwithme.vote.service.response.VoteResponse;
 
@@ -41,6 +42,12 @@ public class VoteApi {
     @DeleteMapping("{voteId}")
     public ApiResponse<Long> deleteVote(@PathVariable Long voteId) {
         return ApiResponse.ok(voteService.deleteVote(voteId));
+    }
+
+    @PutMapping("{voteId}")
+    public ApiResponse<VoteResponse> updateVote(@Valid @RequestBody VoteUpdateRequest request, @PathVariable Long voteId) {
+        String email = "email@test.com";
+        return ApiResponse.ok(voteService.updateVote(request.toServiceRequest(), voteId, email));
     }
 
 }

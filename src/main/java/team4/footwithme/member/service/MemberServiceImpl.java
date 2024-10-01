@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
-public class MemberServiceImpl implements MemberService{
+public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
     private final SecurityConfig jwtSecurityConfig;
@@ -37,7 +37,7 @@ public class MemberServiceImpl implements MemberService{
     @Override
     @Transactional
     public MemberResponse join(JoinServiceRequest serviceRequest) {
-        if(memberRepository.existByEmail(serviceRequest.email()))
+        if (memberRepository.existByEmail(serviceRequest.email()))
             throw new IllegalArgumentException("이미 존재하는 이메일 입니다.");
 
         Member member = serviceRequest.toEntity();
@@ -52,9 +52,9 @@ public class MemberServiceImpl implements MemberService{
     @Transactional
     public LoginResponse login(LoginServiceRequest serviceRequest) {
         Member member = memberRepository.findByEmail(serviceRequest.email())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자 입니다."));
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자 입니다."));
 
-        if(!jwtSecurityConfig.passwordEncoder().matches(serviceRequest.password(), member.getPassword())) {
+        if (!jwtSecurityConfig.passwordEncoder().matches(serviceRequest.password(), member.getPassword())) {
             throw new IllegalArgumentException("패스워드가 일치하지 않습니다.");
         }
 
