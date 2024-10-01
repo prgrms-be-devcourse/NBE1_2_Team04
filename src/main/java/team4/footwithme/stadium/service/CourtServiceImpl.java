@@ -37,19 +37,19 @@ public class CourtServiceImpl implements CourtService {
         findStadiumByIdOrThrowException(stadiumId);
         List<Court> courts = courtRepository.findByStadium_StadiumId(stadiumId);
         return Optional.ofNullable(courts)
-            .orElse(Collections.emptyList())
-            .stream()
-            .map(CourtsResponse::from)
-            .collect(Collectors.toList());
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(CourtsResponse::from)
+                .collect(Collectors.toList());
     }
 
     public List<CourtsResponse> getAllCourts() {
-        List<Court> courts = courtRepository.findAll();
+        List<Court> courts = courtRepository.findAllActive();
         return Optional.of(courts)
-            .orElse(Collections.emptyList())
-            .stream()
-            .map(CourtsResponse::from)
-            .collect(Collectors.toList());
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(CourtsResponse::from)
+                .collect(Collectors.toList());
     }
 
     public CourtDetailResponse getCourtByCourtId(Long courtId) {
@@ -92,6 +92,7 @@ public class CourtServiceImpl implements CourtService {
 
     @Transactional
     public void deleteCourt(CourtDeleteServiceRequest request, Long memberId, Long courtId) {
+        System.out.println(memberId);
         findMemberByIdOrThrowException(memberId);
         Stadium stadium = findStadiumByIdOrThrowException(request.StadiumId());
         if (!stadium.getMember().getMemberId().equals(memberId)) {
@@ -103,7 +104,7 @@ public class CourtServiceImpl implements CourtService {
 
     // 구장 조회 예외처리
     public Court findCourtByIdOrThrowException(long id) {
-        return courtRepository.findById(id)
+        return courtRepository.findByCourtId(id)
                 .orElseThrow(() -> {
                     log.warn(">>>> {} : {} <<<<", id, ExceptionMessage.COURT_NOT_FOUND);
                     return new IllegalArgumentException(ExceptionMessage.COURT_NOT_FOUND.getText());
@@ -122,7 +123,7 @@ public class CourtServiceImpl implements CourtService {
     //맴버 조회 예외처리
     public Member findMemberByIdOrThrowException(long id) {
         return memberRepository.findByMemberId(id)
-                .orElseThrow(()-> {
+                .orElseThrow(() -> {
                     log.warn(">>>> {} : {} <<<<", id, ExceptionMessage.MEMBER_NOT_FOUND);
                     return new IllegalArgumentException(ExceptionMessage.MEMBER_NOT_FOUND.getText());
                 });

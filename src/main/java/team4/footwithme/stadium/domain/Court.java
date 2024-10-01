@@ -44,12 +44,13 @@ public class Court extends BaseEntity {
 
     public static Court create(Stadium stadium, String name, String description, BigDecimal pricePerHour) {
         return Court.builder()
-            .stadium(stadium)
-            .name(name)
-            .description(description)
-            .pricePerHour(pricePerHour)
-            .build();
+                .stadium(stadium)
+                .name(name)
+                .description(description)
+                .pricePerHour(pricePerHour)
+                .build();
     }
+
     // TODO : 검증에 대한 책임 한번 생각해보자
     public void updateCourt(String name, String description, BigDecimal pricePerHour) {
         this.name = name;
