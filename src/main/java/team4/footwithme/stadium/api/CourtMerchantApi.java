@@ -8,6 +8,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import team4.footwithme.global.api.ApiResponse;
 import team4.footwithme.member.jwt.PrincipalDetails;
+import team4.footwithme.stadium.api.request.CourtDeleteRequest;
 import team4.footwithme.stadium.api.request.CourtRegisterRequest;
 import team4.footwithme.stadium.api.request.CourtUpdateRequest;
 import team4.footwithme.stadium.domain.Court;
@@ -40,9 +41,9 @@ public class CourtMerchantApi {
 
 //    @PreAuthorize("hasRole('ROLE_MERCHANT')")
     @DeleteMapping("/{courtId}")
-    public ApiResponse<Void> deleteCourt(@PathVariable Long courtId,
+    public ApiResponse<Void> deleteCourt(@PathVariable Long courtId, @Validated @RequestBody CourtDeleteRequest request,
                                          @AuthenticationPrincipal PrincipalDetails currentUser) {
-        courtService.deleteCourt(courtId, currentUser.getMember().getMemberId());
+        courtService.deleteCourt(request.toServiceRequest(), courtId, currentUser.getMember().getMemberId());
         return ApiResponse.ok(null);
     }
 }

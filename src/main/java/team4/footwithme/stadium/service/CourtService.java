@@ -1,5 +1,6 @@
 package team4.footwithme.stadium.service;
 
+import team4.footwithme.stadium.service.request.CourtDeleteServiceRequest;
 import team4.footwithme.stadium.service.request.CourtRegisterServiceRequest;
 import team4.footwithme.stadium.service.request.CourtUpdateServiceRequest;
 import team4.footwithme.stadium.service.response.CourtDetailResponse;
@@ -18,5 +19,5 @@ public interface CourtService {
 
     CourtDetailResponse updateCourt(CourtUpdateServiceRequest request, Long memberId, Long courtId);
 
-    void deleteCourt(Long memberId, Long courtId);
+    void deleteCourt(CourtDeleteServiceRequest request, Long memberId, Long courtId);
 }

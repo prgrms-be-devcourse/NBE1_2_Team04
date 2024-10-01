@@ -11,6 +11,7 @@ import team4.footwithme.stadium.domain.Court;
 import team4.footwithme.stadium.domain.Stadium;
 import team4.footwithme.stadium.repository.CourtRepository;
 import team4.footwithme.stadium.repository.StadiumRepository;
+import team4.footwithme.stadium.service.request.CourtDeleteServiceRequest;
 import team4.footwithme.stadium.service.request.CourtRegisterServiceRequest;
 import team4.footwithme.stadium.service.request.CourtUpdateServiceRequest;
 import team4.footwithme.stadium.service.response.CourtDetailResponse;
@@ -90,8 +91,14 @@ public class CourtServiceImpl implements CourtService {
     }
 
     @Transactional
-    public void deleteCourt(Long memberId, Long courtId) {
-
+    public void deleteCourt(CourtDeleteServiceRequest request, Long memberId, Long courtId) {
+        findMemberByIdOrThrowException(memberId);
+        Stadium stadium = findStadiumByIdOrThrowException(request.StadiumId());
+        if (!stadium.getMember().getMemberId().equals(memberId)) {
+            throw new IllegalArgumentException(ExceptionMessage.STADIUM_NOT_OWNED_BY_MEMBER.getText());
+        }
+        Court court = findCourtByIdOrThrowException(courtId);
+        courtRepository.delete(court);
     }
 
     // 구장 조회 예외처리
