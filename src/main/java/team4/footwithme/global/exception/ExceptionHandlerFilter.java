@@ -36,7 +36,7 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
                 HttpStatus.UNAUTHORIZED,
                 ex.getMessage(),
                 null
-        );;
+        );
         try{
             String jsonResponse = objectMapper.writeValueAsString(apiResponse);
             response.setCharacterEncoding("UTF-8");
