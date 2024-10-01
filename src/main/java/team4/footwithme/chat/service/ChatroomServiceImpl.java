@@ -28,8 +28,6 @@ public class ChatroomServiceImpl implements ChatroomService {
     public ChatroomResponse createChatroom(ChatroomServiceRequest request) {
 
         Chatroom chatroom = chatroomRepository.save(Chatroom.create(request.name()));
-        System.out.println(request.name());
-        System.out.println(chatroom.getName());
 
         // redis Hash에 저장
         redisChatroomRepository.createChatRoom(chatroom);
@@ -46,6 +44,7 @@ public class ChatroomServiceImpl implements ChatroomService {
     @Transactional
     @Override
     public Long deleteChatroom(Long chatroomId){
+        checkChatroom(chatroomId);
 
         redisChatroomRepository.deleteChatroomFromRedis(chatroomId.toString());
 
@@ -60,10 +59,14 @@ public class ChatroomServiceImpl implements ChatroomService {
     @Transactional
     @Override
     public ChatroomResponse updateChatroom(Long chatroomId, ChatroomServiceRequest request) {
-        Chatroom chatroom = chatroomRepository.findById(chatroomId).orElseThrow(()->new IllegalArgumentException("Chatroom not found"));
+        Chatroom chatroom = checkChatroom(chatroomId);
 
         chatroom.updateName(request.name());
 
         return new ChatroomResponse(chatroom);
+    }
+
+    public Chatroom checkChatroom(Long chatroomId) {
+        return chatroomRepository.findByChatroomId(chatroomId).orElseThrow(() -> new IllegalArgumentException("Chatroom not found"));
     }
 }

@@ -3,6 +3,7 @@ package team4.footwithme.chat.repository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import team4.footwithme.chat.domain.Chatroom;
+import team4.footwithme.global.domain.IsDeleted;
 import team4.footwithme.member.domain.Member;
 
 import static team4.footwithme.chat.domain.QChatMember.chatMember;
@@ -15,8 +16,9 @@ public class CustomChatMemberRepositoryImpl implements CustomChatMemberRepositor
         Integer count = queryFactory
                 .selectOne()
                 .from(chatMember)
-                .where(chatMember.member.eq(member)
-                        .and(chatMember.chatRoom.eq(chatroom)))
+                .where(chatMember.isDeleted.eq(IsDeleted.FALSE)
+                        .and(chatMember.chatRoom.eq(chatroom))
+                        .and(chatMember.member.eq(member)))
                 .fetchFirst();
 
         return count != null;
