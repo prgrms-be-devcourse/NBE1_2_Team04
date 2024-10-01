@@ -3,9 +3,12 @@ package team4.footwithme.chat.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import team4.footwithme.chat.domain.Chat;
 import team4.footwithme.chat.domain.ChatMember;
+import team4.footwithme.chat.domain.ChatType;
 import team4.footwithme.chat.domain.Chatroom;
 import team4.footwithme.chat.repository.ChatMemberRepository;
+import team4.footwithme.chat.repository.ChatRepository;
 import team4.footwithme.chat.repository.ChatroomRepository;
 import team4.footwithme.chat.service.request.ChatMemberServiceRequest;
 import team4.footwithme.member.domain.Member;
@@ -23,6 +26,9 @@ public class ChatMemberServiceImpl implements ChatMemberService {
     private final ChatMemberRepository chatMemberRepository;
     private final MemberRepository memberRepository;
     private final ChatroomRepository chatroomRepository;
+    private final ChatRepository chatRepository;
+
+    private final RedisPublisher redisPublisher;
 
     /**
      * 개인 채팅방 초대
@@ -33,12 +39,15 @@ public class ChatMemberServiceImpl implements ChatMemberService {
     @Override
     @Transactional
     public String joinChatMember(ChatMemberServiceRequest request) {
-        Member member = memberRepository.findByMemberId(request.memberId())
-            .orElseThrow(() -> new IllegalArgumentException("Member not found"));
-        Chatroom chatroom = chatroomRepository.findByChatroomId(request.chatroomId())
-            .orElseThrow(() -> new IllegalArgumentException("Chatroom not found"));
+        Member member = checkMember(request.memberId());
+        Chatroom chatroom = checkChatroom(request.chatroomId());
 
         chatMemberRepository.save(ChatMember.create(member, chatroom));
+
+        Chat chat = Chat.create(chatroom, member, ChatType.ENTER, member.getName() + "님이 입장했습니다.");
+        chatRepository.save(chat);
+
+        redisPublisher.publish(chat);
 
         return "Successfully joined chat";
     }
@@ -55,8 +64,7 @@ public class ChatMemberServiceImpl implements ChatMemberService {
     public String joinChatTeam(List<TeamMember> teamMembers, Long chatroomId) {
         List<Member> members = teamMembers.stream().map(TeamMember::getMember).collect(Collectors.toList());
 
-        Chatroom chatroom = chatroomRepository.findByChatroomId(chatroomId)
-            .orElseThrow(() -> new IllegalArgumentException("Chatroom not found"));
+        Chatroom chatroom = checkChatroom(chatroomId);
 
         List<ChatMember> chatMembers = new ArrayList<>();
 
@@ -65,6 +73,11 @@ public class ChatMemberServiceImpl implements ChatMemberService {
         }
 
         chatMemberRepository.saveAll(chatMembers);
+
+        Chat chat = Chat.create(chatroom, members.get(0), ChatType.ENTER, members.get(0).getName() + "님 등 " + members.size() + "명이 입장했습니다.");
+        chatRepository.save(chat);
+
+        redisPublisher.publish(chat);
 
         return "Successfully joined chat";
     }
@@ -81,8 +94,7 @@ public class ChatMemberServiceImpl implements ChatMemberService {
     public String joinChatGame(List<Participant> gameMembers, Long chatroomId) {
         List<Member> members = gameMembers.stream().map(Participant::getMember).collect(Collectors.toList());
 
-        Chatroom chatroom = chatroomRepository.findByChatroomId(chatroomId)
-            .orElseThrow(() -> new IllegalArgumentException("Chatroom not found"));
+        Chatroom chatroom = checkChatroom(chatroomId);
 
         List<ChatMember> chatMembers = new ArrayList<>();
 
@@ -91,6 +103,11 @@ public class ChatMemberServiceImpl implements ChatMemberService {
         }
 
         chatMemberRepository.saveAll(chatMembers);
+
+        Chat chat = Chat.create(chatroom, members.get(0), ChatType.ENTER, members.get(0).getName() + "님 등 " + members.size() + "명이 입장했습니다.");
+        chatRepository.save(chat);
+
+        redisPublisher.publish(chat);
 
         return "Successfully joined chat";
     }
@@ -104,12 +121,16 @@ public class ChatMemberServiceImpl implements ChatMemberService {
     @Override
     @Transactional
     public String leaveChatMember(ChatMemberServiceRequest request) {
-        Member member = memberRepository.findByMemberId(request.memberId())
-            .orElseThrow(() -> new IllegalArgumentException("Member not found"));
-        Chatroom chatroom = chatroomRepository.findByChatroomId(request.chatroomId())
-            .orElseThrow(() -> new IllegalArgumentException("Chatroom not found"));
+        Member member = checkMember(request.memberId());
+        Chatroom chatroom = checkChatroom(request.chatroomId());
 
         chatMemberRepository.deleteByMemberAndChatRoom(member, chatroom);
+
+        Chat chat = Chat.create(chatroom, member, ChatType.QUIT, member.getName() + "님이 채팅방을 떠났습니다.");
+        chatRepository.save(chat);
+
+        redisPublisher.publish(chat);
+
         return "Successfully left chat";
     }
 
@@ -127,5 +148,15 @@ public class ChatMemberServiceImpl implements ChatMemberService {
 
         chatMemberRepository.deleteByChatRoom(chatroom);
         return "Successfully leaving the chatroom";
+    }
+
+    public Member checkMember(Long memberId) {
+        return memberRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("Member not found"));
+    }
+
+    public Chatroom checkChatroom(Long chatroomId) {
+        return chatroomRepository.findByChatroomId(chatroomId)
+                .orElseThrow(() -> new IllegalArgumentException("Chatroom not found"));
     }
 }

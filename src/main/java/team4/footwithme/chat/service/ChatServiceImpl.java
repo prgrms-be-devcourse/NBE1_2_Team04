@@ -6,6 +6,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team4.footwithme.chat.domain.Chat;
+import team4.footwithme.chat.domain.ChatType;
 import team4.footwithme.chat.domain.Chatroom;
 import team4.footwithme.chat.repository.ChatMemberRepository;
 import team4.footwithme.chat.repository.ChatRepository;
@@ -45,7 +46,7 @@ public class ChatServiceImpl implements ChatService {
         checkMemberInChatroom(member, chatroom);
 
         // 메시지를 데이터베이스에 저장
-        Chat chat = Chat.create(chatroom, member, request.message());
+        Chat chat = Chat.create(chatroom, member, ChatType.TALK, request.message());
         chatRepository.save(chat);
 
         // Redis에 메시지 발행

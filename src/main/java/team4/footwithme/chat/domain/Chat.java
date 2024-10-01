@@ -37,19 +37,25 @@ public class Chat extends BaseEntity implements Serializable {
     @NotNull
     private String text;
 
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private ChatType chatType;
+
     @Builder
-    private Chat(Chatroom chatRoom, Member member, String text) {
+    private Chat(Chatroom chatRoom, Member member, ChatType chatType, String text) {
         this.chatRoom = chatRoom;
         this.member = member;
+        this.chatType = chatType;
         this.text = text;
     }
 
-    public static Chat create(Chatroom chatRoom, Member member, String text) {
+    public static Chat create(Chatroom chatRoom, Member member, ChatType chatType, String text) {
         return Chat.builder()
-            .chatRoom(chatRoom)
-            .member(member)
-            .text(text)
-            .build();
+                .chatRoom(chatRoom)
+                .member(member)
+                .chatType(chatType)
+                .text(text)
+                .build();
     }
 
     public void updateMessage(String message) {
