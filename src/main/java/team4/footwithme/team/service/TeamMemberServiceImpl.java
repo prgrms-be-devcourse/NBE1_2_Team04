@@ -36,8 +36,11 @@ public class TeamMemberServiceImpl implements TeamMemberService{
 
         //member 추가
         for(String email : request.emails()){
-            Member member = memberRepository.findByEmail(email)
-                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자 입니다."));
+            Member member = memberRepository.findByEmail(email).orElse(null);
+
+            if(member == null){
+                continue;
+            }
 
             TeamMember teamMember =  teamMemberRepository.save(TeamMember.create(team, member, TeamMemberRole.MEMBER));
 
@@ -75,17 +78,15 @@ public class TeamMemberServiceImpl implements TeamMemberService{
         Team team = teamRepository.findByTeamId(id);
         if(team == null) {
             throw new IllegalArgumentException("해당 팀이 존재하지 않습니다.");
-        }else{
-            return team;
         }
+        return team;
     }
 
     public TeamMember findTeamMemberByIdOrThrowException(long id){
         TeamMember teamMember = teamMemberRepository.findByTeamMemberId(id);
         if(teamMember == null) {
             throw new IllegalArgumentException("존재하지 않는 팀원입니다.");
-        }else{
-            return teamMember;
         }
+        return teamMember;
     }
 }

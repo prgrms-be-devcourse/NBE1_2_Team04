@@ -6,10 +6,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import team4.footwithme.IntegrationTestSupport;
+import team4.footwithme.global.domain.IsDeleted;
 import team4.footwithme.member.domain.*;
 import team4.footwithme.member.repository.MemberRepository;
 import team4.footwithme.team.domain.Team;
+import team4.footwithme.team.domain.TeamMember;
 import team4.footwithme.team.domain.TeamMemberRole;
+import team4.footwithme.team.repository.TeamMemberRepository;
 import team4.footwithme.team.repository.TeamRepository;
 import team4.footwithme.team.service.request.TeamMemberServiceRequest;
 import team4.footwithme.team.service.response.TeamResponse;
@@ -30,8 +33,10 @@ class TeamMemberServiceImplTest extends IntegrationTestSupport {
     @Autowired
     private MemberRepository memberRepository;
 
+    @Autowired
+    private TeamMemberRepository teamMemberRepository;
+
     private Team team;
-    private List<Member> members = new ArrayList<>();
 
     @BeforeEach
     void setUp() {
@@ -39,18 +44,18 @@ class TeamMemberServiceImplTest extends IntegrationTestSupport {
         team = Team.create(null, 111L, "테스트 팀이름", "테스트 팀 설명", 0, 0, 0, "서울");
         teamRepository.saveAndFlush(team);
         // 멤버 생성
-        members.add(memberRepository.save(
+        memberRepository.save(
                 Member.create("member01@gmail.com", "123456", "남남남", "010-1111-1111",
                         LoginProvider.ORIGINAL,"test", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE)
-        ));
-        members.add(memberRepository.save(
+        );
+       memberRepository.save(
                 Member.create("member02@gmail.com", "123456", "남남남", "010-1111-1111",
                         LoginProvider.ORIGINAL,"test", Gender.MALE, MemberRole.USER,TermsAgreed.AGREE)
-        ));
-        members.add(memberRepository.save(
+        );
+        memberRepository.save(
                 Member.create("member03@gmail.com", "123456", "여여여", "010-1111-1111",
                         LoginProvider.ORIGINAL,"test", Gender.FEMALE, MemberRole.USER,TermsAgreed.AGREE)
-        ));
+        );
     }
 
     @Test
@@ -59,6 +64,7 @@ class TeamMemberServiceImplTest extends IntegrationTestSupport {
         //given
         Long teamId = team.getTeamId();
         List<String> emails = new ArrayList<>();
+        List<Member> members = memberRepository.findAll();
         for(Member member : members) {
             emails.add(member.getEmail());
         }
@@ -100,9 +106,10 @@ class TeamMemberServiceImplTest extends IntegrationTestSupport {
 
         //when
         Long result = teamMemberService.deleteTeamMembers(deletedMember);
+        List<TeamMember> list = teamMemberRepository.findAll();
 
         //then
         assertThat(result).isEqualTo(deletedMember);
-        assertThat(teamMemberService.getTeamMembers(teamId).size()).isEqualTo(2);
+        assertThat(list.get(1).getIsDeleted()).isEqualTo(IsDeleted.TRUE);
     }
 }

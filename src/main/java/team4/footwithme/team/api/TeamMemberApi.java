@@ -11,7 +11,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/team_member")
+@RequestMapping("/api/v1/team-member")
 public class TeamMemberApi {
     private final TeamMemberService teamMemberService;
 
@@ -20,8 +20,7 @@ public class TeamMemberApi {
      */
     @PostMapping("/{teamId}/members")
     public ApiResponse<List<TeamResponse>> addTeamMembers(@PathVariable Long teamId, @RequestBody TeamMemberRequest request){
-        List<TeamResponse> members = teamMemberService.addTeamMembers(teamId, request.toServiceRequest());
-        return ApiResponse.ok(members);
+        return ApiResponse.ok(teamMemberService.addTeamMembers(teamId, request.toServiceRequest()));
     }
 
     /**
@@ -29,8 +28,7 @@ public class TeamMemberApi {
      */
     @GetMapping("/{teamId}/members")
     public ApiResponse<List<TeamResponse>> getTeamMembers(@PathVariable Long teamId){
-        List<TeamResponse> members = teamMemberService.getTeamMembers(teamId);
-        return ApiResponse.ok(members);
+        return ApiResponse.ok(teamMemberService.getTeamMembers(teamId));
     }
     /**
      * 팀 멤버 수정 - role

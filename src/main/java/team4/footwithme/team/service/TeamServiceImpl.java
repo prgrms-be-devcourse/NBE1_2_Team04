@@ -70,15 +70,9 @@ public class TeamServiceImpl implements TeamService{
         for(TeamRate teamRate : teamRates){
             evaluations.add(teamRate.getEvaluation());
         }
-        //팀 멤버 -> List로 불러와서 서비스단에서 성별 count
-        List<TeamMember> teamMembers = teamMemberRepository.findTeamMembersByTeam(teamEntity);
 
-        for(TeamMember teamMember : teamMembers){
-            System.out.println(teamMember.toString());
-        }
-
-        Long maleCount = teamRepository.countMaleByMemberId(teamMembers);
-        Long femaleCount = teamRepository.countFemaleByMemberId(teamMembers);
+        Long maleCount = teamRepository.countMaleByMemberId();
+        Long femaleCount = teamRepository.countFemaleByMemberId();
 
         return TeamInfoResponse.of(
                 teamEntity,

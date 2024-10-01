@@ -5,8 +5,8 @@ import lombok.RequiredArgsConstructor;
 import team4.footwithme.global.domain.IsDeleted;
 import team4.footwithme.member.domain.Gender;
 import team4.footwithme.member.domain.QMember;
-import team4.footwithme.team.domain.QTeamMember;
-import team4.footwithme.team.domain.TeamMember;
+import static team4.footwithme.team.domain.QTeamMember.teamMember;
+import static team4.footwithme.member.domain.QMember.member;
 
 import java.util.List;
 
@@ -16,10 +16,7 @@ public class CustomTeamRepositoryImpl implements CustomTeamRepository {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Long countMaleByMemberId(List<TeamMember> teamMembers) {
-        QTeamMember teamMember = QTeamMember.teamMember;
-        QMember member  = QMember.member;
-
+    public Long countMaleByMemberId() {
         return queryFactory
                 .select(teamMember.count())
                 .from(teamMember).join(member).on(teamMember.member.memberId.eq(member.memberId))
@@ -28,10 +25,7 @@ public class CustomTeamRepositoryImpl implements CustomTeamRepository {
     }
 
     @Override
-    public Long countFemaleByMemberId(List<TeamMember> teamMembers) {
-        QTeamMember teamMember = QTeamMember.teamMember;
-        QMember member  = QMember.member;
-
+    public Long countFemaleByMemberId() {
         return queryFactory
                 .select(teamMember.count())
                 .from(teamMember).join(member).on(teamMember.member.memberId.eq(member.memberId))
