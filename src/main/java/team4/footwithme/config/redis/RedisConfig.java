@@ -1,7 +1,6 @@
 package team4.footwithme.config.redis;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -19,11 +18,6 @@ import team4.footwithme.chat.service.RedisSubscriber;
 @EnableRedisRepositories
 @RequiredArgsConstructor
 public class RedisConfig {
-
-    @Value("${spring.data.redis.host}")
-    private String redisHostName;
-    @Value("${spring.data.redis.port}")
-    private int redisPort;
 
     private static final String CHAT_ROOMS = "CHAT_ROOM";
 
@@ -60,13 +54,4 @@ public class RedisConfig {
         redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(String.class));
         return redisTemplate;
     }
-
-//    @Bean
-//    public RedisConnectionFactory redisConnectionFactory() {
-//        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
-//        redisStandaloneConfiguration.setHostName(redisHostName);
-//        redisStandaloneConfiguration.setPort(redisPort);
-//
-//        return new LettuceConnectionFactory(redisStandaloneConfiguration);
-//    }
 }
