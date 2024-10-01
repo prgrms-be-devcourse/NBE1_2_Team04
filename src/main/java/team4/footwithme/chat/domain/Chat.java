@@ -52,4 +52,8 @@ public class Chat extends BaseEntity implements Serializable {
             .build();
     }
 
+    public void updateMessage(String message) {
+        this.text = message;
+    }
+
 }

@@ -7,7 +7,11 @@ import team4.footwithme.chat.service.response.ChatResponse;
 
 public interface ChatService {
 
-    void sendMessage(ChatServiceRequest request, String email);
+    void sendMessage(ChatServiceRequest request, String token);
 
     Slice<ChatResponse> getChatList(Long chatroomId, PageRequest pageRequest, String email);
+
+    ChatResponse updateChat(ChatServiceRequest request, String email, Long chatId);
+
+    Long deleteChat(String email, Long chatId);
 }

@@ -3,6 +3,7 @@ package team4.footwithme.member.jwt;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import team4.footwithme.member.domain.Member;
+import team4.footwithme.member.domain.MemberRole;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,6 +16,8 @@ public class PrincipalDetails implements UserDetails {
     public void setMember(Member member) {this.member = member;}
 
     public Member getMember() { return this.member; }
+
+    public MemberRole getMemberRole() { return member.getMemberRole(); }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -35,4 +38,6 @@ public class PrincipalDetails implements UserDetails {
     public String getUsername() {
         return member.getEmail();
     }
+
+
 }

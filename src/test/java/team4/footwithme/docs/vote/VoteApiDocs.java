@@ -284,7 +284,7 @@ public class VoteApiDocs extends RestDocsSupport {
     void deleteVote() throws Exception {
         long voteId = 1L;
 
-        given(voteService.deleteVote(voteId))
+        given(voteService.deleteVote(voteId,""))
             .willReturn(voteId);
 
         mockMvc.perform(delete("/api/v1/votes/{voteId}", voteId)

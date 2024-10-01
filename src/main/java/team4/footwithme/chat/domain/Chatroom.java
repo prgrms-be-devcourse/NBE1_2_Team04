@@ -41,4 +41,8 @@ public class Chatroom extends BaseEntity implements Serializable {
             .name(name)
             .build();
     }
+
+    public void updateName(String name) {
+        this.name = name;
+    }
 }

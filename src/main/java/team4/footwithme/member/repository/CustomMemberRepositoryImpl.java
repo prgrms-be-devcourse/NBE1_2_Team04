@@ -25,7 +25,8 @@ public class CustomMemberRepositoryImpl implements CustomMemberRepository {
         Integer count = queryFactory
                 .selectOne()
                 .from(member)
-                .where(member.email.eq(email))
+                .where(member.email.eq(email)
+                        .and(member.isDeleted.eq(IsDeleted.FALSE)))
                 .fetchFirst();
 
         return count != null;

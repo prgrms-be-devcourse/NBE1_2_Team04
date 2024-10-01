@@ -71,7 +71,7 @@ class VoteTest {
         //then
         Assertions.assertThatIllegalArgumentException()
             .isThrownBy(() -> vote.update("수정된 투표", tomorrowDateTime, 2L))
-            .withMessage("투표 작성자만 수정할 수 있습니다.");
+            .withMessage("투표 작성자만 수정,삭제할 수 있습니다.");
     }
 
 }

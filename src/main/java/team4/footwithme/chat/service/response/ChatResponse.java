@@ -8,7 +8,7 @@ public record ChatResponse(
         Long chatId,
         LocalDateTime createdAt,
         LocalDateTime updatedAt,
-        ChatroomInfo chatRoomInfo,
+        ChatroomResponse chatroomResponse,
         ChatMemberInfo memberInfo,
         String text) {
 
@@ -17,7 +17,7 @@ public record ChatResponse(
                 chat.getChatId(),
                 chat.getCreatedAt(),
                 chat.getUpdatedAt(),
-                new ChatroomInfo(chat.getChatRoom()),
+                new ChatroomResponse(chat.getChatRoom()),
                 new ChatMemberInfo(chat.getMember()),
                 chat.getText()
         );
