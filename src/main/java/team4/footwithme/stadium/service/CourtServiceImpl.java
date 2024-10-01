@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 import team4.footwithme.global.exception.ExceptionMessage;
 import team4.footwithme.stadium.domain.Court;
 import team4.footwithme.stadium.domain.Stadium;
-import team4.footwithme.stadium.exception.CourtExceptionMessage;
 import team4.footwithme.stadium.repository.CourtRepository;
+import team4.footwithme.stadium.repository.StadiumRepository;
 import team4.footwithme.stadium.service.response.CourtDetailResponse;
 import team4.footwithme.stadium.service.response.CourtsResponse;
 
@@ -44,7 +44,7 @@ public class CourtServiceImpl implements CourtService {
             .collect(Collectors.toList());
     }
 
-    public CourtDetailResponse getCourtBycourtId(Long courtId) {
+    public CourtDetailResponse getCourtByCourtId(Long courtId) {
         Court court = findCourtByIdOrThrowException(courtId);
         return CourtDetailResponse.from(court);
     }
