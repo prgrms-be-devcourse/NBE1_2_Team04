@@ -24,4 +24,9 @@ public class Position {
         this.longitude = longitude;
     }
 
+    public void updatePosition(Double latitude, Double longitude) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
 }

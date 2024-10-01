@@ -30,8 +30,48 @@ class VoteTest {
 
         //when
         //then
-        Assertions.assertThatThrownBy(()->Vote.create(1L,1L,"투표 제목",pastDateTime))
+        Assertions.assertThatThrownBy(() -> Vote.create(1L, 1L, "투표 제목", pastDateTime))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("투표 종료일은 현재 시간 이후여야 합니다.");
     }
+
+    @DisplayName("투표 수정시 제목과 종료일이 변경된다.")
+    @Test
+    void updateVote() {
+        //given
+        Vote vote = Vote.builder()
+            .memberId(1L)
+            .teamId(1L)
+            .title("투표 제목")
+            .endAt(LocalDateTime.now().plusDays(1))
+            .build();
+        LocalDateTime tomorrowDateTime = LocalDateTime.now().plusDays(2);
+
+        //when
+        vote.update("수정된 투표", tomorrowDateTime, 1L);
+        //then
+        Assertions.assertThat(vote)
+            .extracting("title", "endAt")
+            .containsExactly("수정된 투표", tomorrowDateTime);
+    }
+
+    @DisplayName("투표 수정시 투표 생성자가 아니면 투표를 변경 할 수 없다.")
+    @Test
+    void updateVoteWhenMemberIdNotEqualThrowException() {
+        //given
+        Vote vote = Vote.builder()
+            .memberId(1L)
+            .teamId(1L)
+            .title("투표 제목")
+            .endAt(LocalDateTime.now().plusDays(1))
+            .build();
+        LocalDateTime tomorrowDateTime = LocalDateTime.now().plusDays(2);
+
+        //when
+        //then
+        Assertions.assertThatIllegalArgumentException()
+            .isThrownBy(() -> vote.update("수정된 투표", tomorrowDateTime, 2L))
+            .withMessage("투표 작성자만 수정,삭제할 수 있습니다.");
+    }
+
 }

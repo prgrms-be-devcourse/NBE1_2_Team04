@@ -67,4 +67,23 @@ public class Vote extends BaseEntity {
         this.voteItems.add(voteItem);
     }
 
+    public void update(String updateTitle, LocalDateTime updateEndAt, Long memberId) {
+        checkWriterFrom(memberId);
+        this.title = updateTitle;
+        this.endAt = updateEndAt;
+    }
+
+    private void checkWriterFrom(Long memberId) {
+        if (!isWriter(memberId)) {
+            throw new IllegalArgumentException("투표 작성자만 수정,삭제할 수 있습니다.");
+        }
+    }
+
+    private boolean isWriter(Long memberId) {
+        return this.memberId.equals(memberId);
+    }
+
+    public void delete(Long memberId) {
+        checkWriterFrom(memberId);
+    }
 }

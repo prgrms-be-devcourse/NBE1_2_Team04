@@ -20,31 +20,41 @@ public class CustomStadiumRepositoryImpl implements CustomStadiumRepository {
     @Override
     public List<String> findStadiumNamesByStadiumIds(List<Long> stadiumIdList) {
         return queryFactory.select(stadium.name)
-            .from(stadium)
-            .where(stadium.stadiumId.in(stadiumIdList)
-                .and(stadium.isDeleted.eq(IsDeleted.FALSE)))
-            .fetch();
+                .from(stadium)
+                .where(stadium.stadiumId.in(stadiumIdList)
+                        .and(stadium.isDeleted.eq(IsDeleted.FALSE)))
+                .fetch();
     }
 
     @Override
     public Long countStadiumByStadiumIds(List<Long> stadiumIds) {
         return queryFactory.select(stadium.count())
-            .from(stadium)
-            .where(stadium.stadiumId.in(stadiumIds)
-                .and(stadium.isDeleted.eq(IsDeleted.FALSE)))
-            .fetchOne();
+                .from(stadium)
+                .where(stadium.stadiumId.in(stadiumIds)
+                        .and(stadium.isDeleted.eq(IsDeleted.FALSE)))
+                .fetchOne();
     }
 
     @Override
     public List<Stadium> findStadiumsByLocation(Double latitude, Double longitude, Double distance) {
         QStadium stadium = QStadium.stadium;
-        double earthRadius = 6371;
         NumberTemplate<Double> haversineDistance = Expressions.numberTemplate(Double.class,
                 "(6371 * acos(cos(radians({0})) * cos(radians({1})) * cos(radians({2}) - radians({3})) + sin(radians({0})) * sin(radians({1}))))",
                 latitude, stadium.position.latitude, stadium.position.longitude, longitude);
         return queryFactory
                 .selectFrom(stadium)
-                .where(haversineDistance.loe(distance))
+                .where(haversineDistance.loe(distance)
+                        .and(stadium.isDeleted.eq(IsDeleted.FALSE))) // isDeleted 조건 유지
                 .fetch();
+    }
+
+    @Override
+    public String findStadiumNameById(Long stadiumId) {
+        QStadium stadium = QStadium.stadium;
+        return queryFactory.select(stadium.name)
+                .from(stadium)
+                .where(stadium.stadiumId.eq(stadiumId)
+                        .and(stadium.isDeleted.eq(IsDeleted.FALSE))) // isDeleted 조건 추가
+                .fetchOne();
     }
 }

@@ -11,7 +11,7 @@ import team4.footwithme.chat.service.response.ChatroomResponse;
 
 @RequiredArgsConstructor
 @Service
-public class ChatroomServiceImpl implements ChatroomService{
+public class ChatroomServiceImpl implements ChatroomService {
     private final ChatroomRepository chatroomRepository;
 
     private final RedisChatroomRepository redisChatroomRepository;
@@ -19,6 +19,7 @@ public class ChatroomServiceImpl implements ChatroomService{
     /**
      * 채팅방 생성
      * 채팅방을 만든 사람은 자동으로 채팅방 초대
+     *
      * @param request 채팅방 이름 ( 팀 or 예약 만들어질 때 이름 넣어서 보내주기 )
      * @return
      */
@@ -39,15 +40,29 @@ public class ChatroomServiceImpl implements ChatroomService{
 
     /**
      * 채팅방 삭제 ( 채팅방 인원 삭제도 같이 진행해야 함 )
+     *
      * @param chatroomId
      * @return
      */
     @Transactional
     @Override
-    public String deleteChatroom(Long chatroomId){
+    public Long deleteChatroom(Long chatroomId){
         // 채팅방 인원 삭제는 ChatMemberRepository에 있음
         chatroomRepository.deleteById(chatroomId);
         redisChatroomRepository.leaveChatRoom(chatroomId.toString());
-        return "Chatroom deleted";
+        return chatroomId;
+    }
+
+    /**
+     * 채팅방 수정
+     */
+    @Transactional
+    @Override
+    public ChatroomResponse updateChatroom(Long chatroomId, ChatroomServiceRequest request) {
+        Chatroom chatroom = chatroomRepository.findById(chatroomId).orElseThrow(()->new IllegalArgumentException("Chatroom not found"));
+
+        chatroom.updateName(request.name());
+
+        return new ChatroomResponse(chatroom);
     }
 }

@@ -59,15 +59,17 @@ public class JwtTokenUtil {
     }
 
     public TokenResponse createToken(String email){
-        String accessToken = createAccessToken(email);
-        String refreshToken = createRefreshToken(email);
+        MemberRole role = getRoleFromEmail(email);
+
+        String accessToken = createAccessToken(email, role);
+        String refreshToken = createRefreshToken(email, role);
 
         return TokenResponse.of(accessToken, refreshToken, REFRESH_TIME);
     }
 
-    public String createAccessToken(String email) {
+    public String createAccessToken(String email, MemberRole role) {
         Date date = new Date();
-        MemberRole role = getRoleFromEmail(email);
+
 
         return Jwts.builder()
                 .setSubject(email)
@@ -92,7 +94,7 @@ public class JwtTokenUtil {
                 .compact();
     }
 
-    public String createRefreshToken(String email){
+    public String createRefreshToken(String email, MemberRole role){
         Date date = new Date();
 
         String refreshToken = Jwts.builder()
@@ -134,37 +136,42 @@ public class JwtTokenUtil {
         if(StringUtils.hasText(token)) {
             if(token.startsWith(BEARER_PREFIX)) {
                 return token.substring(7).trim();
+                }
+            return token;
             }
-                return token;
+
+            return null;
         }
 
-        return null;
-    }
+        public void tokenValidation(String token) {
+            try {
+                Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
 
-    public void tokenValidation(String token) {
-        try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-
-        } catch (SecurityException | MalformedJwtException e) {
-            throw new IllegalArgumentException("Invalid JWT signature");
-        } catch (ExpiredJwtException e) {
-            throw new IllegalArgumentException("Expired JWT");
-        } catch (UnsupportedJwtException e) {
-            throw new IllegalArgumentException("Unsupported JWT");
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("JWT claims is empty");
-        } catch (Exception e) {
-            throw new IllegalArgumentException(e.getMessage());
-        }
+            } catch (SecurityException | MalformedJwtException e) {
+                throw new JwtException("유효하지 않은 JWT 토큰입니다.");
+            } catch (ExpiredJwtException e) {
+                throw new JwtException ("만료된 JWT 입니다.");
+            } catch (UnsupportedJwtException e) {
+                throw new JwtException ("지원하지 않은 JWT 입니다.");
+            } catch (IllegalArgumentException e) {
+                throw new JwtException ("JWT 값이 비어있습니다.");
+            } catch (Exception e) {
+                throw new RuntimeException(e.getMessage());
+            }
     }
 
     public void refreshTokenValidation(String refreshToken){
         tokenValidation(refreshToken);
         String email = getEmailFromToken(refreshToken);
+        String redisRefreshToken = null;
 
-        String redisRefreshToken = redisTemplate.opsForValue().get(email).toString();
+        Object redisRefresh = redisTemplate.opsForValue().get(email);
+
+        if(redisRefresh != null)
+            redisRefreshToken = redisRefresh.toString();
+
         if(redisRefreshToken == null)
-            throw new IllegalArgumentException("유효하지 않은 JWT 토큰입니다.");
+            throw new JwtException("유효하지 않은 JWT 토큰입니다.");
 
     }
 

@@ -15,7 +15,7 @@ import java.util.List;
 import static team4.footwithme.chat.domain.QChat.chat;
 
 @RequiredArgsConstructor
-public class CustomChatRepositoryImpl implements CustomChatRepository{
+public class CustomChatRepositoryImpl implements CustomChatRepository {
     private final JPAQueryFactory queryFactory;
 
 
@@ -29,25 +29,25 @@ public class CustomChatRepositoryImpl implements CustomChatRepository{
     //Page<> 형태로 반환할 때 PageImpl에 사용
     private Long getCount(Chatroom chatroom) {
         return queryFactory
-                .select(chat.count())
-                .from(chat)
-                .where(chat.isDeleted.eq(IsDeleted.FALSE)
-                        .and(chat.chatRoom.eq(chatroom))
-                )
-                .fetchOne();
+            .select(chat.count())
+            .from(chat)
+            .where(chat.isDeleted.eq(IsDeleted.FALSE)
+                .and(chat.chatRoom.eq(chatroom))
+            )
+            .fetchOne();
     }
 
     private List<Chat> getChatList(Chatroom chatroom, Pageable pageable) {
         return queryFactory
-                .select(chat)
-                .from(chat)
-                .where(chat.isDeleted.eq(IsDeleted.FALSE)
-                        .and(chat.chatRoom.eq(chatroom))
-                )
-                .orderBy(chat.createdAt.desc())
-                .offset(pageable.getOffset())   // 페이지 번호
-                .limit(pageable.getPageSize())  // 페이지 사이즈
-                .fetch();
+            .select(chat)
+            .from(chat)
+            .where(chat.isDeleted.eq(IsDeleted.FALSE)
+                .and(chat.chatRoom.eq(chatroom))
+            )
+            .orderBy(chat.createdAt.desc())
+            .offset(pageable.getOffset())   // 페이지 번호
+            .limit(pageable.getPageSize())  // 페이지 사이즈
+            .fetch();
     }
 
 }

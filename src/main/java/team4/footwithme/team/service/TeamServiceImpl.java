@@ -18,7 +18,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Service
-public class TeamServiceImpl implements TeamService{
+public class TeamServiceImpl implements TeamService {
 
     private final TeamRepository teamRepository;
     private final TeamRateRepository teamRateRepository;
@@ -41,14 +41,14 @@ public class TeamServiceImpl implements TeamService{
 
         //dto -> entity
         Team entity = Team.create(
-                stadiumId,
-                chatRoomId,
-                dto.name(),
-                dto.description(),
-                totalRecord.getWinCount(),
-                totalRecord.getDrawCount(),
-                totalRecord.getLoseCount(),
-                dto.location()
+            stadiumId,
+            chatRoomId,
+            dto.name(),
+            dto.description(),
+            totalRecord.getWinCount(),
+            totalRecord.getDrawCount(),
+            totalRecord.getLoseCount(),
+            dto.location()
         );
         Team createdTeam = teamRepository.save(entity);
 
@@ -75,11 +75,11 @@ public class TeamServiceImpl implements TeamService{
         Long femaleCount = teamRepository.countFemaleByMemberId();
 
         return TeamInfoResponse.of(
-                teamEntity,
-                evaluations,
-                maleCount,
-                femaleCount
-        ) ;
+            teamEntity,
+            evaluations,
+            maleCount,
+            femaleCount
+        );
     }
 
     @Override
@@ -89,13 +89,13 @@ public class TeamServiceImpl implements TeamService{
         Team teamEntity = findTeamByIdOrThrowException(teamId);
 
         //entity에 수정된 값 적용
-        if(dto.name() != null){
+        if (dto.name() != null) {
             teamEntity.setName(dto.name());
         }
-        if(dto.description() != null){
+        if (dto.description() != null) {
             teamEntity.setDescription(dto.description());
         }
-        if(dto.location() != null){
+        if (dto.location() != null) {
             teamEntity.setLocation(dto.location());
         }
 

@@ -6,5 +6,7 @@ import team4.footwithme.chat.service.response.ChatroomResponse;
 public interface ChatroomService {
     ChatroomResponse createChatroom(ChatroomServiceRequest request);
 
-    String deleteChatroom(Long chatroomId);
+    Long deleteChatroom(Long chatroomId);
+
+    ChatroomResponse updateChatroom(Long chatroomId, ChatroomServiceRequest request);
 }
