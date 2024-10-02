@@ -2,8 +2,10 @@ package team4.footwithme.stadium.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team4.footwithme.global.exception.ExceptionMessage;
@@ -17,6 +19,7 @@ import team4.footwithme.stadium.service.request.StadiumSearchByLocationServiceRe
 import team4.footwithme.stadium.service.request.StadiumUpdateServiceRequest;
 import team4.footwithme.stadium.service.response.StadiumDetailResponse;
 import team4.footwithme.stadium.service.response.StadiumsResponse;
+import team4.footwithme.stadium.util.SortFieldMapper;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -28,7 +31,8 @@ public class StadiumServiceImpl implements StadiumService {
     private final MemberRepository memberRepository;
 
     @Override
-    public Slice<StadiumsResponse> getStadiumList(Pageable pageable) {
+    public Slice<StadiumsResponse> getStadiumList(Integer page, String sort) {
+        Pageable pageable = PageRequest.of(page, 10, Sort.by(SortFieldMapper.getDatabaseField(sort)));
         return stadiumRepository.findAllActiveStadiums(pageable).map(StadiumsResponse::from);
     }
 
@@ -38,17 +42,20 @@ public class StadiumServiceImpl implements StadiumService {
     }
 
     @Override
-    public Slice<StadiumsResponse> getStadiumsByName(String query, Pageable pageable) {
+    public Slice<StadiumsResponse> getStadiumsByName(String query, Integer page, String sort) {
+        Pageable pageable = PageRequest.of(page, 10, Sort.by(SortFieldMapper.getDatabaseField(sort)));
         return stadiumRepository.findByNameContainingIgnoreCase(query, pageable).map(StadiumsResponse::from);
     }
 
     @Override
-    public Slice<StadiumsResponse> getStadiumsByAddress(String address, Pageable pageable) {
+    public Slice<StadiumsResponse> getStadiumsByAddress(String address, Integer page, String sort) {
+        Pageable pageable = PageRequest.of(page, 10, Sort.by(SortFieldMapper.getDatabaseField(sort)));
         return stadiumRepository.findByAddressContainingIgnoreCase(address, pageable).map(StadiumsResponse::from);
     }
 
     @Override
-    public Slice<StadiumsResponse> getStadiumsWithinDistance(StadiumSearchByLocationServiceRequest request, Pageable pageable) {
+    public Slice<StadiumsResponse> getStadiumsWithinDistance(StadiumSearchByLocationServiceRequest request, Integer page, String sort) {
+        Pageable pageable = PageRequest.of(page, 10, Sort.by(SortFieldMapper.getDatabaseField(sort)));
         return stadiumRepository.findStadiumsByLocation(request.latitude(), request.longitude(), request.distance(), pageable)
                 .map(StadiumsResponse::from);
     }

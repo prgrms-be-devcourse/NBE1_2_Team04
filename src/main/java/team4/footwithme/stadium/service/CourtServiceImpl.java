@@ -2,8 +2,10 @@ package team4.footwithme.stadium.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team4.footwithme.global.exception.ExceptionMessage;
@@ -18,6 +20,7 @@ import team4.footwithme.stadium.service.request.CourtRegisterServiceRequest;
 import team4.footwithme.stadium.service.request.CourtUpdateServiceRequest;
 import team4.footwithme.stadium.service.response.CourtDetailResponse;
 import team4.footwithme.stadium.service.response.CourtsResponse;
+import team4.footwithme.stadium.util.SortFieldMapper;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -31,14 +34,16 @@ public class CourtServiceImpl implements CourtService {
     private final MemberRepository memberRepository;
 
     @Override
-    public Slice<CourtsResponse> getCourtsByStadiumId(Long stadiumId, Pageable pageable) {
+    public Slice<CourtsResponse> getCourtsByStadiumId(Long stadiumId, Integer page, String sort) {
         findEntityByIdOrThrowException(stadiumRepository, stadiumId, ExceptionMessage.STADIUM_NOT_FOUND);
+        Pageable pageable = PageRequest.of(page, 10, Sort.by(SortFieldMapper.getDatabaseField(sort)));
         Slice<Court> courts = courtRepository.findByStadium_StadiumId(stadiumId, pageable);
         return courts.map(CourtsResponse::from);
     }
 
     @Override
-    public Slice<CourtsResponse> getAllCourts(Pageable pageable) {
+    public Slice<CourtsResponse> getAllCourts(Integer page, String sort) {
+        Pageable pageable = PageRequest.of(page, 10, Sort.by(SortFieldMapper.getDatabaseField(sort)));
         Slice<Court> courts = courtRepository.findAllActive(pageable);
         return courts.map(CourtsResponse::from);
     }
