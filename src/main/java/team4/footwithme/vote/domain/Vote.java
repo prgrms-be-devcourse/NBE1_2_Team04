@@ -7,11 +7,16 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
+import org.springframework.transaction.annotation.Transactional;
 import team4.footwithme.global.domain.BaseEntity;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+
+import static team4.footwithme.vote.domain.VoteStatus.*;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -36,6 +41,10 @@ public class Vote extends BaseEntity {
     @NotNull
     private LocalDateTime endAt;
 
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private VoteStatus voteStatus;
+
     @OneToMany(mappedBy = "vote")
     private List<VoteItem> voteItems = new ArrayList<>();
 
@@ -45,6 +54,7 @@ public class Vote extends BaseEntity {
         this.teamId = teamId;
         this.title = title;
         this.endAt = endAt;
+        this.voteStatus = OPENED;
     }
 
     public static Vote create(Long memberId, Long teamId, String title, LocalDateTime endAt) {
@@ -67,6 +77,14 @@ public class Vote extends BaseEntity {
         this.voteItems.add(voteItem);
     }
 
+    public void delete(Long memberId) {
+        checkWriterFrom(memberId);
+    }
+
+    public void updateVoteStatusToClose() {
+        this.voteStatus = CLOSED;
+    }
+
     public void update(String updateTitle, LocalDateTime updateEndAt, Long memberId) {
         checkWriterFrom(memberId);
         this.title = updateTitle;
@@ -83,7 +101,7 @@ public class Vote extends BaseEntity {
         return this.memberId.equals(memberId);
     }
 
-    public void delete(Long memberId) {
-        checkWriterFrom(memberId);
+    public Instant getInstantEndAt() {
+        return endAt.atZone(ZoneId.systemDefault()).toInstant();
     }
 }
