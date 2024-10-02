@@ -1,7 +1,6 @@
 package team4.footwithme.config.redis;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -20,29 +19,29 @@ import team4.footwithme.chat.service.RedisSubscriber;
 @RequiredArgsConstructor
 public class RedisConfig {
 
-    @Value("${spring.data.redis.host}")
-    private String redisHostName;
-    @Value("${spring.data.redis.port}")
-    private int redisPort;
+    private static final String CHAT_ROOMS = "CHAT_ROOM";
 
     //redis pub/sub 사용할 때의 chatting Topic
     @Bean
     public ChannelTopic channelTopic() {
-        return new ChannelTopic("chatroom");
+        return new ChannelTopic(CHAT_ROOMS);
     }
 
     @Bean
     public RedisMessageListenerContainer redisMessageListenerContainer(
-            RedisConnectionFactory connectionFactory
+            RedisConnectionFactory connectionFactory,
+            MessageListenerAdapter listenerAdapter,
+            ChannelTopic channelTopic
     ) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
+        container.addMessageListener(listenerAdapter, channelTopic);
         return container;
     }
 
     @Bean
     public MessageListenerAdapter listenerAdapter(RedisSubscriber subscriber) {
-        return new MessageListenerAdapter(subscriber, "onMessage");
+        return new MessageListenerAdapter(subscriber, "sendMessage");
     }
 
     @Primary
@@ -55,13 +54,4 @@ public class RedisConfig {
         redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(String.class));
         return redisTemplate;
     }
-
-//    @Bean
-//    public RedisConnectionFactory redisConnectionFactory() {
-//        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
-//        redisStandaloneConfiguration.setHostName(redisHostName);
-//        redisStandaloneConfiguration.setPort(redisPort);
-//
-//        return new LettuceConnectionFactory(redisStandaloneConfiguration);
-//    }
 }

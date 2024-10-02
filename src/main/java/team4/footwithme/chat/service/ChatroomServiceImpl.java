@@ -8,6 +8,7 @@ import team4.footwithme.chat.repository.ChatroomRepository;
 import team4.footwithme.chat.repository.RedisChatroomRepository;
 import team4.footwithme.chat.service.request.ChatroomServiceRequest;
 import team4.footwithme.chat.service.response.ChatroomResponse;
+import team4.footwithme.global.exception.ExceptionMessage;
 
 @RequiredArgsConstructor
 @Service
@@ -28,12 +29,9 @@ public class ChatroomServiceImpl implements ChatroomService {
     public ChatroomResponse createChatroom(ChatroomServiceRequest request) {
 
         Chatroom chatroom = chatroomRepository.save(Chatroom.create(request.name()));
-        System.out.println(request.name());
-        System.out.println(chatroom.getName());
 
         // redis Hash에 저장
         redisChatroomRepository.createChatRoom(chatroom);
-        redisChatroomRepository.enterChatRoom(chatroom.getChatroomId().toString());
 
         return new ChatroomResponse(chatroom);
     }
@@ -47,9 +45,12 @@ public class ChatroomServiceImpl implements ChatroomService {
     @Transactional
     @Override
     public Long deleteChatroom(Long chatroomId){
+        getChatroom(chatroomId);
+
+        redisChatroomRepository.deleteChatroomFromRedis(chatroomId.toString());
+
         // 채팅방 인원 삭제는 ChatMemberRepository에 있음
         chatroomRepository.deleteById(chatroomId);
-        redisChatroomRepository.leaveChatRoom(chatroomId.toString());
         return chatroomId;
     }
 
@@ -59,10 +60,15 @@ public class ChatroomServiceImpl implements ChatroomService {
     @Transactional
     @Override
     public ChatroomResponse updateChatroom(Long chatroomId, ChatroomServiceRequest request) {
-        Chatroom chatroom = chatroomRepository.findById(chatroomId).orElseThrow(()->new IllegalArgumentException("Chatroom not found"));
+        Chatroom chatroom = getChatroom(chatroomId);
 
         chatroom.updateName(request.name());
 
         return new ChatroomResponse(chatroom);
+    }
+
+    private Chatroom getChatroom(Long chatroomId) {
+        return chatroomRepository.findByChatroomId(chatroomId)
+                .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.CHATROOM_NOT_FOUND.getText()));
     }
 }
