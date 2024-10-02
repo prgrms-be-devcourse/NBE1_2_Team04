@@ -57,7 +57,7 @@ public class CourtServiceImpl implements CourtService {
     @Override
     @Transactional
     public CourtDetailResponse registerCourt(CourtRegisterServiceRequest request, Long memberId) {
-        validateStadiumOwnership(request.stadiumId(), memberId);
+        validateStadiumOwnership(request.stadiumId(), memberId).createCourt(memberId);
         Court court = Court.create(
                 (Stadium) findEntityByIdOrThrowException(stadiumRepository, request.stadiumId(), ExceptionMessage.STADIUM_NOT_FOUND),
                 request.name(),
@@ -73,7 +73,7 @@ public class CourtServiceImpl implements CourtService {
     public CourtDetailResponse updateCourt(CourtUpdateServiceRequest request, Long memberId, Long courtId) {
         validateStadiumOwnership(request.stadiumId(), memberId);
         Court court = (Court) findEntityByIdOrThrowException(courtRepository, courtId, ExceptionMessage.COURT_NOT_FOUND);
-        court.updateCourt(request.name(), request.description(), request.price_per_hour());
+        court.updateCourt(request.stadiumId(), memberId, request.name(), request.description(), request.price_per_hour());
         return CourtDetailResponse.from(court);
     }
 
@@ -82,15 +82,13 @@ public class CourtServiceImpl implements CourtService {
     public void deleteCourt(CourtDeleteServiceRequest request, Long memberId, Long courtId) {
         validateStadiumOwnership(request.stadiumId(), memberId);
         Court court = (Court) findEntityByIdOrThrowException(courtRepository, courtId, ExceptionMessage.COURT_NOT_FOUND);
+        court.deleteCourt(request.stadiumId(), memberId);
         courtRepository.delete(court);
     }
 
-    private void validateStadiumOwnership(Long stadiumId, Long memberId) {
+    private Stadium validateStadiumOwnership(Long stadiumId, Long memberId) {
         findEntityByIdOrThrowException(memberRepository, memberId, ExceptionMessage.MEMBER_NOT_FOUND);
-        Stadium stadium = (Stadium) findEntityByIdOrThrowException(stadiumRepository, stadiumId, ExceptionMessage.STADIUM_NOT_FOUND);
-        if (!stadium.getMember().getMemberId().equals(memberId)) {
-            throw new IllegalArgumentException(ExceptionMessage.STADIUM_NOT_OWNED_BY_MEMBER.getText());
-        }
+        return (Stadium) findEntityByIdOrThrowException(stadiumRepository, stadiumId, ExceptionMessage.STADIUM_NOT_FOUND);
     }
 
     private <T> T findEntityByIdOrThrowException(CustomGlobalRepository<T> repository, Long id, ExceptionMessage exceptionMessage) {

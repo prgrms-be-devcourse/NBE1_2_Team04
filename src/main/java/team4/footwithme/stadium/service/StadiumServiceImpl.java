@@ -75,7 +75,7 @@ public class StadiumServiceImpl implements StadiumService {
     @Transactional
     public StadiumDetailResponse updateStadium(StadiumUpdateServiceRequest request, Long memberId, Long stadiumId) {
         Stadium stadium = validateStadiumOwnership(memberId, stadiumId);
-        stadium.updateStadium(request.name(), request.address(), request.phoneNumber(), request.description(),
+        stadium.updateStadium(memberId, request.name(), request.address(), request.phoneNumber(), request.description(),
                 request.latitude(), request.longitude());
         return StadiumDetailResponse.from(stadium);
     }
@@ -84,16 +84,13 @@ public class StadiumServiceImpl implements StadiumService {
     @Transactional
     public void deleteStadium(Long memberId, Long stadiumId) {
         Stadium stadium = validateStadiumOwnership(memberId, stadiumId);
+        stadium.deleteStadium(memberId);
         stadiumRepository.delete(stadium);
     }
 
     private Stadium validateStadiumOwnership(Long memberId, Long stadiumId) {
         findEntityByIdOrThrowException(memberRepository, memberId, ExceptionMessage.MEMBER_NOT_FOUND);
-        Stadium stadium = (Stadium) findEntityByIdOrThrowException(stadiumRepository, stadiumId, ExceptionMessage.STADIUM_NOT_FOUND);
-        if (!stadium.getMember().getMemberId().equals(memberId)) {
-            throw new IllegalArgumentException(ExceptionMessage.STADIUM_NOT_OWNED_BY_MEMBER.getText());
-        }
-        return stadium;
+        return (Stadium) findEntityByIdOrThrowException(stadiumRepository, stadiumId, ExceptionMessage.STADIUM_NOT_FOUND);
     }
 
     private <T> T findEntityByIdOrThrowException(CustomGlobalRepository<T> repository, Long id, ExceptionMessage exceptionMessage) {

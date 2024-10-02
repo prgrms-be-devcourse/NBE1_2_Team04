@@ -23,7 +23,7 @@ public class StadiumApi {
     @GetMapping("/stadiums")
     public ApiResponse<Slice<StadiumsResponse>> stadiums(
             @RequestParam(defaultValue = "0", required = false) Integer page,
-            @RequestParam(defaultValue = "COURT", required = false) @StadiumAllowedValues String sort) {
+            @RequestParam(defaultValue = "STADIUM", required = false) @StadiumAllowedValues String sort) {
         Slice<StadiumsResponse> stadiumList = stadiumService.getStadiumList(page, sort);
         return ApiResponse.ok(stadiumList);
     }
@@ -38,7 +38,7 @@ public class StadiumApi {
     public ApiResponse<Slice<StadiumsResponse>> getStadiumsByName(
             @RequestParam String query,
             @RequestParam(defaultValue = "0", required = false) Integer page,
-            @RequestParam(defaultValue = "COURT", required = false) @StadiumAllowedValues String sort) {
+            @RequestParam(defaultValue = "STADIUM", required = false) @StadiumAllowedValues String sort) {
         Slice<StadiumsResponse> stadiums = stadiumService.getStadiumsByName(query, page, sort);
         return ApiResponse.ok(stadiums);
     }
@@ -46,7 +46,7 @@ public class StadiumApi {
     @GetMapping("/stadiums/search/address")
     public ApiResponse<Slice<StadiumsResponse>> getStadiumsByAddress(
             @RequestParam String query, @RequestParam(defaultValue = "0", required = false) Integer page,
-            @RequestParam(defaultValue = "COURT", required = false) @StadiumAllowedValues String sort) {
+            @RequestParam(defaultValue = "STADIUM", required = false) @StadiumAllowedValues String sort) {
         Slice<StadiumsResponse> stadiums = stadiumService.getStadiumsByAddress(query, page, sort);
         return ApiResponse.ok(stadiums);
     }
@@ -55,7 +55,7 @@ public class StadiumApi {
     public ApiResponse<Slice<StadiumsResponse>> getStadiumsByLocation(
             @Validated @RequestBody StadiumSearchByLocationRequest request,
             @RequestParam(defaultValue = "0", required = false) Integer page,
-            @RequestParam(defaultValue = "COURT", required = false) @StadiumAllowedValues String sort) {
+            @RequestParam(defaultValue = "STADIUM", required = false) @StadiumAllowedValues String sort) {
         Slice<StadiumsResponse> stadiums = stadiumService.getStadiumsWithinDistance(request.toServiceRequest(), page, sort);
         return ApiResponse.ok(stadiums);
     }

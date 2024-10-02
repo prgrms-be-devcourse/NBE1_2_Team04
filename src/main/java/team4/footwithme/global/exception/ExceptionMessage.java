@@ -14,6 +14,7 @@ public enum ExceptionMessage {
 
     // Court
     COURT_NOT_FOUND("해당 구장을 찾을 수 없습니다."),
+    COURT_NOT_OWNED_BY_STADIUM("해당 풋살장의 구장이 아닙니다."),
 
 
     // Member
