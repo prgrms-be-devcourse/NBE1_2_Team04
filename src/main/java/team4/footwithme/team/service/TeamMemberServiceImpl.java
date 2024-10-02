@@ -3,6 +3,7 @@ package team4.footwithme.team.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import team4.footwithme.global.domain.IsDeleted;
 import team4.footwithme.member.domain.Member;
 import team4.footwithme.member.repository.MemberRepository;
 import team4.footwithme.team.domain.Team;
@@ -32,21 +33,31 @@ public class TeamMemberServiceImpl implements TeamMemberService{
         Team team = findTeamByIdOrThrowException(teamId);
 
         //return할 DTO
-        List<TeamResponse> teamMembers = new ArrayList<>();
+        List<TeamResponse> addList = new ArrayList<>();
 
         //member 추가
         for(String email : request.emails()){
             Member member = memberRepository.findByEmail(email).orElse(null);
-
             if(member == null){
                 continue;
             }
-
-            TeamMember teamMember =  teamMemberRepository.save(TeamMember.create(team, member, TeamMemberRole.MEMBER));
-
-            teamMembers.add(TeamResponse.of(teamMember));
+            // TODO :: 이전에 참가했다 탈퇴한 멤버면 is_delete false로 변경 or 중복 참여 금지
+            TeamMember teamMember = teamMemberRepository.findByTeamIdAndMemberId(teamId, member.getMemberId());
+            //해당 멤버가 팀에 이미 존재 할 경우
+            if(teamMember != null){
+                //추가되었지만 삭제되었던 멤버
+                if(teamMember.getIsDeleted().equals(IsDeleted.TRUE)){
+                    teamMember.restoreTeamMember();
+                }else{
+                    //이미 등록되어있는 멤버
+                    continue;
+                }
+            }else{
+                teamMember = TeamMember.create(team, member, TeamMemberRole.MEMBER);
+            }
+            addList.add(TeamResponse.of(teamMemberRepository.save(teamMember)));
         }
-        return teamMembers;
+        return addList;
     }
 
     @Override
@@ -66,9 +77,14 @@ public class TeamMemberServiceImpl implements TeamMemberService{
 
     @Override
     @Transactional
-    public Long deleteTeamMembers(Long teamMemberId) {
+    public Long deleteTeamMembers(Long teamMemberId, Member member) {
         //팀 멤버 찾기
         TeamMember teamMember = findTeamMemberByIdOrThrowException(teamMemberId);
+
+        // TODO :: 본인 or Creator만 삭제 권한
+        if(teamMember.getRole() != TeamMemberRole.CREATOR && teamMember.getMember().getMemberId()!=member.getMemberId()){
+            throw new IllegalArgumentException("삭제 권한이 없습니다.");
+        }
         teamMemberRepository.delete(teamMember);
         return teamMemberId;
     }
@@ -89,4 +105,5 @@ public class TeamMemberServiceImpl implements TeamMemberService{
         }
         return teamMember;
     }
+
 }

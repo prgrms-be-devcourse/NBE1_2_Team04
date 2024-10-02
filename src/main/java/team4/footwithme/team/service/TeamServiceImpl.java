@@ -3,6 +3,7 @@ package team4.footwithme.team.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import team4.footwithme.global.domain.IsDeleted;
 import team4.footwithme.member.domain.*;
 import team4.footwithme.member.repository.MemberRepository;
 import team4.footwithme.team.domain.*;
@@ -27,7 +28,7 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     @Transactional
-    public TeamDefaultResponse createTeam(TeamDefaultServiceRequest dto) {
+    public TeamDefaultResponse createTeam(TeamDefaultServiceRequest dto, Member member) {
         /**
          * # 1.
          * chatRoomId는 일단 가짜 id 넣어놓고,
@@ -51,6 +52,9 @@ public class TeamServiceImpl implements TeamService {
             dto.location()
         );
         Team createdTeam = teamRepository.save(entity);
+
+        //TODO :: 현재 유저 팀장으로 TeamMember에 저장
+        teamMemberRepository.save(TeamMember.create(createdTeam, member, TeamMemberRole.CREATOR));
 
         return TeamDefaultResponse.from(createdTeam);
     }
@@ -84,41 +88,70 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     @Transactional
-    public TeamDefaultResponse updateTeamInfo(Long teamId, TeamDefaultServiceRequest dto) {
+    public TeamDefaultResponse updateTeamInfo(Long teamId, TeamDefaultServiceRequest dto, Member member) {
         //변경할 팀 id로 검색
         Team teamEntity = findTeamByIdOrThrowException(teamId);
+        //현재 유저 정보 검색
+        TeamMember teamMember = findTeamMemberByIdOrThrowException(teamId, member.getMemberId());
+        //권한 정보
+        if(checkAuthority(teamId, teamMember) == false) {
+            throw new IllegalArgumentException("수정 권한이 없습니다.");
+        }
 
         //entity에 수정된 값 적용
         if (dto.name() != null) {
-            teamEntity.setName(dto.name());
+            teamEntity.updateName(dto.name());
         }
         if (dto.description() != null) {
-            teamEntity.setDescription(dto.description());
+            teamEntity.updateDescription(dto.description());
         }
         if (dto.location() != null) {
-            teamEntity.setLocation(dto.location());
+            teamEntity.updateLocation(dto.location());
         }
 
         //바뀐 Team값 반환
         return TeamDefaultResponse.from(teamEntity);
+
     }
 
     @Override
     @Transactional
-    public Long deleteTeam(Long teamId) {
+    public Long deleteTeam(Long teamId, Member member) {
         //삭제할 팀 탐색
         Team teamEntity = findTeamByIdOrThrowException(teamId);
+        //현재 유저 정보 검색
+        TeamMember teamMember = findTeamMemberByIdOrThrowException(teamId, member.getMemberId());
+        //권한 정보
+        if(checkAuthority(teamId, teamMember) == false) {
+            throw new IllegalArgumentException("삭제 권한이 없습니다.");
+        }
         teamRepository.delete(teamEntity);
         return teamId;
     }
+
 
     public Team findTeamByIdOrThrowException(long id){
         Team team = teamRepository.findByTeamId(id);
         if(team == null) {
             throw new IllegalArgumentException("해당 팀이 존재하지 않습니다.");
-        }else{
-            return team;
         }
+        return team;
+    }
+
+    public TeamMember findTeamMemberByIdOrThrowException(Long teamId, Long memberId){
+        TeamMember teamMember = teamMemberRepository.findByTeamIdAndMemberId(teamId, memberId);
+
+        if(teamMember == null || teamMember.getIsDeleted().equals(IsDeleted.TRUE)) {
+            throw new IllegalArgumentException("존재하지 않는 팀원입니다.");
+        }
+        return teamMember;
+    }
+
+    public boolean checkAuthority(Long teamId, TeamMember teamMember){
+        if(teamMember.getTeam().getTeamId() == teamId && teamMember.getRole() == TeamMemberRole.CREATOR) {
+            return true;
+        }
+        return false;
     }
 
 }

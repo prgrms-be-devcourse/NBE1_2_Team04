@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import team4.footwithme.global.domain.BaseEntity;
+import team4.footwithme.global.domain.IsDeleted;
 import team4.footwithme.member.domain.Member;
 
 @Getter
@@ -45,6 +46,11 @@ public class TeamMember extends BaseEntity {
             .member(member)
             .role(role)
             .build();
+    }
+
+    //TeamMember 재등록
+    public void restoreTeamMember() {
+        this.restore();
     }
 
 }

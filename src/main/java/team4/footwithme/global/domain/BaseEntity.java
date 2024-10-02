@@ -30,4 +30,9 @@ public abstract class BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private IsDeleted isDeleted = IsDeleted.FALSE;
+
+    // TODO :: isDeleted 값을 변경할 수 있는 메서드
+    public void restore(){
+        this.isDeleted = IsDeleted.FALSE;
+    }
 }

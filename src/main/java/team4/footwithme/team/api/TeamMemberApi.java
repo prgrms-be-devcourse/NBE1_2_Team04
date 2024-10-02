@@ -1,8 +1,10 @@
 package team4.footwithme.team.api;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import team4.footwithme.global.api.ApiResponse;
+import team4.footwithme.member.jwt.PrincipalDetails;
 import team4.footwithme.team.api.request.TeamMemberRequest;
 import team4.footwithme.team.service.TeamMemberService;
 import team4.footwithme.team.service.response.TeamResponse;
@@ -38,8 +40,8 @@ public class TeamMemberApi {
      * 팀 멤버 삭제
      */
     @DeleteMapping("/{teamMemberId}")
-    public ApiResponse<Long> deleteTeamMember(@PathVariable Long teamMemberId){
-        teamMemberService.deleteTeamMembers(teamMemberId);
+    public ApiResponse<Long> deleteTeamMember(@PathVariable Long teamMemberId, @AuthenticationPrincipal PrincipalDetails principalDetails){
+        teamMemberService.deleteTeamMembers(teamMemberId, principalDetails.getMember());
         return ApiResponse.ok(teamMemberId);
     }
 

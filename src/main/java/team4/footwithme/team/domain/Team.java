@@ -60,15 +60,15 @@ public class Team extends BaseEntity {
             .build();
     }
 
-    public void setName(@NotNull String name) {
+    public void updateName(@NotNull String name) {
         this.name = name;
     }
 
-    public void setDescription(String description) {
+    public void updateDescription(String description) {
         this.description = description;
     }
 
-    public void setLocation(String location) {
+    public void updateLocation(String location) {
         this.location = location;
     }
 }

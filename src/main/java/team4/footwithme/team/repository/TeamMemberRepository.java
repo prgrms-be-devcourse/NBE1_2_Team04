@@ -11,7 +11,7 @@ import team4.footwithme.team.domain.TeamMember;
 import java.util.List;
 
 @Repository
-public interface TeamMemberRepository extends JpaRepository<TeamMember, Long> {
+public interface TeamMemberRepository extends JpaRepository<TeamMember, Long>, CustomTeamMemberRepository{
     @Query("select tm from TeamMember tm where tm.isDeleted = 'false'")
     List<TeamMember> findTeamMembersByTeam(Team team);
 
