@@ -2,6 +2,7 @@ package team4.footwithme.vote.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +20,6 @@ import team4.footwithme.vote.service.request.VoteUpdateServiceRequest;
 import team4.footwithme.vote.service.response.VoteItemResponse;
 import team4.footwithme.vote.service.response.VoteResponse;
 
-import java.time.ZoneId;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -34,6 +34,7 @@ public class VoteServiceImpl implements VoteService {
     private final TeamRepository teamRepository;
     private final ChoiceRepository choiceRepository;
     private final TaskScheduler taskScheduler;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     @Override
@@ -43,7 +44,7 @@ public class VoteServiceImpl implements VoteService {
 
         Vote vote = Vote.create(memberId, teamId, request.title(), request.endAt());
         Vote savedVote = voteRepository.save(vote);
-        addClosedVoteTaskToTaskSchedule(savedVote.getVoteId());
+        addClosedVoteTaskToTaskSchedule(savedVote);
 
         List<VoteItemLocate> voteItemLocates = createVoteItemLocate(request, savedVote);
 
@@ -69,7 +70,7 @@ public class VoteServiceImpl implements VoteService {
 
         Vote vote = Vote.create(memberId, teamId, request.title(), request.endAt());
         Vote savedVote = voteRepository.save(vote);
-        addClosedVoteTaskToTaskSchedule(savedVote.getVoteId());
+        addClosedVoteTaskToTaskSchedule(savedVote);
 
         List<VoteItemDate> savedVoteItems = createVoteItemDate(request, savedVote);
 
@@ -222,14 +223,8 @@ public class VoteServiceImpl implements VoteService {
     }
 
     // 투표 종료시간이 지나면 투표를 종료하는 작업을 스케줄링합니다.
-    private void addClosedVoteTaskToTaskSchedule(Long voteId) {
-        Vote vote = getVoteByVoteId(voteId);
-        taskScheduler.schedule(() -> updateVoteStatusToClose(vote), vote.getEndAt().atZone(ZoneId.systemDefault()).toInstant());
-    }
-
-    private void updateVoteStatusToClose(Vote vote) {
-        vote.updateVoteStatusToClose();
-        voteRepository.save(vote);
+    private void addClosedVoteTaskToTaskSchedule(Vote vote) {
+        taskScheduler.schedule(() -> eventPublisher.publishEvent(new RegisteredVoteEvent(vote.getVoteId())), vote.getInstantEndAt());
     }
 
 }

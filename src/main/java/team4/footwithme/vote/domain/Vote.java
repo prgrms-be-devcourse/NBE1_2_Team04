@@ -10,7 +10,9 @@ import org.hibernate.annotations.SQLDelete;
 import org.springframework.transaction.annotation.Transactional;
 import team4.footwithme.global.domain.BaseEntity;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -97,5 +99,9 @@ public class Vote extends BaseEntity {
 
     private boolean isWriter(Long memberId) {
         return this.memberId.equals(memberId);
+    }
+
+    public Instant getInstantEndAt() {
+        return endAt.atZone(ZoneId.systemDefault()).toInstant();
     }
 }
