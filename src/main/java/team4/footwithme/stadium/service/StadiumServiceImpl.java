@@ -2,6 +2,8 @@ package team4.footwithme.stadium.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team4.footwithme.global.exception.ExceptionMessage;
@@ -31,52 +33,37 @@ public class StadiumServiceImpl implements StadiumService {
 
     // 구장 목록 조회
     @Override
-    public List<StadiumsResponse> getStadiumList() {
-        return stadiumRepository.findAllActiveStadiums().stream()
-                .map(stadium -> new StadiumsResponse(stadium.getStadiumId(), stadium.getName(), stadium.getAddress()))
-                .toList();
+    public Slice<StadiumsResponse> getStadiumList(Pageable pageable) {
+        Slice<Stadium> stadiums = stadiumRepository.findAllActiveStadiums(pageable);
+        return stadiums.map(StadiumsResponse::of);
     }
 
     // 구장 상세 정보 조회
     @Override
     public StadiumDetailResponse getStadiumDetail(Long id) {
         Stadium stadium = findStadiumByIdOrThrowException(id);
-
         return StadiumDetailResponse.of(stadium);
     }
 
     // 이름으로 구장 검색
     @Override
-    public List<StadiumsResponse> getStadiumsByName(String query) {
-        List<Stadium> stadiums = stadiumRepository.findByNameContainingIgnoreCase(query);
-        return Optional.ofNullable(stadiums)
-                .orElse(Collections.emptyList())
-                .stream()
-                .map(StadiumsResponse::of)
-                .collect(Collectors.toList());
+    public Slice<StadiumsResponse> getStadiumsByName(String query, Pageable pageable) {
+        Slice<Stadium> stadiums = stadiumRepository.findByNameContainingIgnoreCase(query, pageable);
+        return stadiums.map(StadiumsResponse::of);
     }
 
     // 주소로 구장 검색
     @Override
-    public List<StadiumsResponse> getStadiumsByAddress(String address) {
-        List<Stadium> stadiums = stadiumRepository.findByAddressContainingIgnoreCase(address);
-        return Optional.ofNullable(stadiums)
-                .orElse(Collections.emptyList())
-                .stream()
-                .map(stadium -> StadiumsResponse.of(stadium))
-                .collect(Collectors.toList());
+    public Slice<StadiumsResponse> getStadiumsByAddress(String address, Pageable pageable) {
+        Slice<Stadium> stadiums = stadiumRepository.findByAddressContainingIgnoreCase(address, pageable);
+        return stadiums.map(StadiumsResponse::of);
     }
 
     // 위도, 경도의 일정 거리 내의 구장 목록 반환
     @Override
-    public List<StadiumsResponse> getStadiumsWithinDistance(StadiumSearchByLocationServiceRequest request) {
-        System.out.println(request.latitude());
-        System.out.println(request.longitude());
-        System.out.println(request.distance());
-        List<Stadium> stadiums = stadiumRepository.findStadiumsByLocation(request.latitude(), request.longitude(), request.distance());
-        return stadiums.stream()
-                .map(stadium -> new StadiumsResponse(stadium.getStadiumId(), stadium.getName(), stadium.getAddress()))
-                .collect(Collectors.toList());
+    public Slice<StadiumsResponse> getStadiumsWithinDistance(StadiumSearchByLocationServiceRequest request, Pageable pageable) {
+        Slice<Stadium> stadiums = stadiumRepository.findStadiumsByLocation(request.latitude(), request.longitude(), request.distance(), pageable);
+        return stadiums.map(StadiumsResponse::of);
     }
 
     // 풋살장 등록

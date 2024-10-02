@@ -1,5 +1,7 @@
 package team4.footwithme.stadium.repository;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -17,13 +19,13 @@ public interface StadiumRepository extends JpaRepository<Stadium, Long>, CustomS
     Optional<Stadium> findByStadiumId(@Param("id") Long id);
 
     @Query("SELECT s FROM Stadium s WHERE s.isDeleted = 'false'")
-    List<Stadium> findAllActiveStadiums();
+    Slice<Stadium> findAllActiveStadiums(Pageable pageable);
 
     @Query("SELECT s FROM Stadium s WHERE s.isDeleted = 'false' AND LOWER(s.name) LIKE LOWER(CONCAT('%', :query, '%'))")
-    List<Stadium> findByNameContainingIgnoreCase(@Param("query") String query);
+    Slice<Stadium> findByNameContainingIgnoreCase(@Param("query") String query, Pageable pageable);
 
     @Query("SELECT s FROM Stadium s WHERE s.isDeleted = 'false' AND LOWER(s.address) LIKE LOWER(CONCAT('%', :address, '%'))")
-    List<Stadium> findByAddressContainingIgnoreCase(@Param("address") String address);
+    Slice<Stadium> findByAddressContainingIgnoreCase(@Param("address") String address, Pageable pageable);
 
 
 //    @Query(value = "SELECT * FROM stadium WHERE ST_Distance_Sphere(position, ST_GeomFromText(:point, 4326)) <= :distance * 1000", nativeQuery = true)

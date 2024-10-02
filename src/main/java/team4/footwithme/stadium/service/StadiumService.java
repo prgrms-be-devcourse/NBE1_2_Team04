@@ -1,5 +1,7 @@
 package team4.footwithme.stadium.service;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import team4.footwithme.stadium.service.request.StadiumRegisterServiceRequest;
 import team4.footwithme.stadium.service.request.StadiumSearchByLocationServiceRequest;
 import team4.footwithme.stadium.service.request.StadiumUpdateServiceRequest;
@@ -9,15 +11,15 @@ import team4.footwithme.stadium.service.response.StadiumsResponse;
 import java.util.List;
 
 public interface StadiumService {
-    List<StadiumsResponse> getStadiumList();
+    Slice<StadiumsResponse> getStadiumList(Pageable pageable);
 
     StadiumDetailResponse getStadiumDetail(Long id);
 
-    List<StadiumsResponse> getStadiumsByName(String query);
+    Slice<StadiumsResponse> getStadiumsByName(String query, Pageable pageable);
 
-    List<StadiumsResponse> getStadiumsByAddress(String address);
+    Slice<StadiumsResponse> getStadiumsByAddress(String address, Pageable pageable);
 
-    List<StadiumsResponse> getStadiumsWithinDistance(StadiumSearchByLocationServiceRequest request);
+    Slice<StadiumsResponse> getStadiumsWithinDistance(StadiumSearchByLocationServiceRequest request, Pageable pageable);
 
     StadiumDetailResponse registerStadium(StadiumRegisterServiceRequest request, Long memberId);
 

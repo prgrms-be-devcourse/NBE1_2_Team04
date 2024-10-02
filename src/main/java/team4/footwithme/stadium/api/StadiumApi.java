@@ -2,6 +2,8 @@ package team4.footwithme.stadium.api;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import team4.footwithme.global.api.ApiResponse;
@@ -22,8 +24,8 @@ public class StadiumApi {
     private final StadiumService stadiumService;
 
     @GetMapping("/stadiums")
-    public ApiResponse<List<StadiumsResponse>> stadiums() {
-        List<StadiumsResponse> stadiumList = stadiumService.getStadiumList();
+    public ApiResponse<Slice<StadiumsResponse>> stadiums(Pageable pageable) {
+        Slice<StadiumsResponse> stadiumList = stadiumService.getStadiumList(pageable);
         return ApiResponse.ok(stadiumList);
     }
 
@@ -34,25 +36,20 @@ public class StadiumApi {
     }
 
     @GetMapping("/stadiums/search/name")
-    public ApiResponse<List<StadiumsResponse>> getStadiumsByName(@RequestParam String query) {
-        List<StadiumsResponse> stadiums = stadiumService.getStadiumsByName(query);
+    public ApiResponse<Slice<StadiumsResponse>> getStadiumsByName(@RequestParam String query, Pageable pageable) {
+        Slice<StadiumsResponse> stadiums = stadiumService.getStadiumsByName(query, pageable);
         return ApiResponse.ok(stadiums);
     }
 
     @GetMapping("/stadiums/search/address")
-    public ApiResponse<List<StadiumsResponse>> getStadiumsByAddress(@RequestParam String query) {
-        List<StadiumsResponse> stadiums = stadiumService.getStadiumsByAddress(query);
+    public ApiResponse<Slice<StadiumsResponse>> getStadiumsByAddress(@RequestParam String query, Pageable pageable) {
+        Slice<StadiumsResponse> stadiums = stadiumService.getStadiumsByAddress(query, pageable);
         return ApiResponse.ok(stadiums);
     }
 
     @PostMapping("/stadiums/search/location")
-    public ApiResponse<List<StadiumsResponse>> getStadiumsByLocation(@Validated @RequestBody StadiumSearchByLocationRequest request) {
-        StadiumSearchByLocationServiceRequest serviceRequest = new StadiumSearchByLocationServiceRequest(
-                request.latitude(),
-                request.longitude(),
-                request.distance()
-        );
-        List<StadiumsResponse> stadiums = stadiumService.getStadiumsWithinDistance(serviceRequest);
+    public ApiResponse<Slice<StadiumsResponse>> getStadiumsByLocation(@Validated @RequestBody StadiumSearchByLocationRequest request, Pageable pageable) {
+        Slice<StadiumsResponse> stadiums = stadiumService.getStadiumsWithinDistance(request.toServiceRequest(), pageable);
         return ApiResponse.ok(stadiums);
     }
 }
