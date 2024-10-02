@@ -27,38 +27,32 @@ public class StadiumServiceImpl implements StadiumService {
 
     private final MemberRepository memberRepository;
 
-    // 구장 목록 조회
     @Override
     public Slice<StadiumsResponse> getStadiumList(Pageable pageable) {
         return stadiumRepository.findAllActiveStadiums(pageable).map(StadiumsResponse::from);
     }
 
-    // 구장 상세 정보 조회
     @Override
     public StadiumDetailResponse getStadiumDetail(Long id) {
         return StadiumDetailResponse.from((Stadium) findEntityByIdOrThrowException(stadiumRepository, id, ExceptionMessage.STADIUM_NOT_FOUND));
     }
 
-    // 이름으로 구장 검색
     @Override
     public Slice<StadiumsResponse> getStadiumsByName(String query, Pageable pageable) {
         return stadiumRepository.findByNameContainingIgnoreCase(query, pageable).map(StadiumsResponse::from);
     }
 
-    // 주소로 구장 검색
     @Override
     public Slice<StadiumsResponse> getStadiumsByAddress(String address, Pageable pageable) {
         return stadiumRepository.findByAddressContainingIgnoreCase(address, pageable).map(StadiumsResponse::from);
     }
 
-    // 위도, 경도의 일정 거리 내의 구장 목록 반환
     @Override
     public Slice<StadiumsResponse> getStadiumsWithinDistance(StadiumSearchByLocationServiceRequest request, Pageable pageable) {
         return stadiumRepository.findStadiumsByLocation(request.latitude(), request.longitude(), request.distance(), pageable)
                 .map(StadiumsResponse::from);
     }
 
-    // 풋살장 등록
     @Override
     @Transactional
     public StadiumDetailResponse registerStadium(StadiumRegisterServiceRequest request, Long memberId) {
@@ -70,7 +64,6 @@ public class StadiumServiceImpl implements StadiumService {
         return StadiumDetailResponse.from(stadium);
     }
 
-    // 풋살장 정보 수정
     @Override
     @Transactional
     public StadiumDetailResponse updateStadium(StadiumUpdateServiceRequest request, Long memberId, Long stadiumId) {
@@ -80,7 +73,6 @@ public class StadiumServiceImpl implements StadiumService {
         return StadiumDetailResponse.from(stadium);
     }
 
-    // 풋살장 삭제
     @Override
     @Transactional
     public void deleteStadium(Long memberId, Long stadiumId) {
