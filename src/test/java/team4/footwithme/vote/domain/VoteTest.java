@@ -74,4 +74,20 @@ class VoteTest {
             .withMessage("투표 작성자만 수정,삭제할 수 있습니다.");
     }
 
+        @DisplayName("투표 상태를 마감 상태로 변경한다.")
+        @Test
+        void updateVoteStatusToClose() {
+            //given
+            Vote vote = Vote.builder()
+                .memberId(1L)
+                .teamId(1L)
+                .title("투표 제목")
+                .endAt(LocalDateTime.now().plusDays(1))
+                .build();
+            //when
+            vote.updateVoteStatusToClose();
+            //then
+            Assertions.assertThat(vote.getVoteStatus()).isEqualTo(VoteStatus.CLOSED);
+        }
+
 }
