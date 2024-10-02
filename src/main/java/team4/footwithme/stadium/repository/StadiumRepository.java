@@ -6,17 +6,20 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import team4.footwithme.global.repository.CustomGlobalRepository;
 import team4.footwithme.stadium.domain.Stadium;
 
-import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface StadiumRepository extends JpaRepository<Stadium, Long>, CustomStadiumRepository {
+public interface StadiumRepository extends JpaRepository<Stadium, Long>, CustomStadiumRepository, CustomGlobalRepository {
 
 
     @Query("SELECT s FROM Stadium s WHERE s.isDeleted = 'false' AND s.stadiumId = :id")
     Optional<Stadium> findByStadiumId(@Param("id") Long id);
+
+    @Query("SELECT s FROM Stadium s WHERE s.isDeleted = 'false' AND s.stadiumId = :id")
+    Optional<Stadium> findActiveById(@Param("id") Long id);
 
     @Query("SELECT s FROM Stadium s WHERE s.isDeleted = 'false'")
     Slice<Stadium> findAllActiveStadiums(Pageable pageable);

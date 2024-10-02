@@ -1,6 +1,6 @@
 package team4.footwithme.stadium.service.request;
 
 public record CourtDeleteServiceRequest(
-        Long StadiumId
+        Long stadiumId
 ) {
 }

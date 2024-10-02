@@ -7,7 +7,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team4.footwithme.global.exception.ExceptionMessage;
-import team4.footwithme.member.domain.Member;
+import team4.footwithme.global.repository.CustomGlobalRepository;
 import team4.footwithme.member.repository.MemberRepository;
 import team4.footwithme.stadium.domain.Court;
 import team4.footwithme.stadium.domain.Stadium;
@@ -18,11 +18,6 @@ import team4.footwithme.stadium.service.request.CourtRegisterServiceRequest;
 import team4.footwithme.stadium.service.request.CourtUpdateServiceRequest;
 import team4.footwithme.stadium.service.response.CourtDetailResponse;
 import team4.footwithme.stadium.service.response.CourtsResponse;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -37,7 +32,7 @@ public class CourtServiceImpl implements CourtService {
 
     @Override
     public Slice<CourtsResponse> getCourtsByStadiumId(Long stadiumId, Pageable pageable) {
-        findStadiumByIdOrThrowException(stadiumId);
+        findEntityByIdOrThrowException(stadiumRepository, stadiumId, ExceptionMessage.STADIUM_NOT_FOUND);
         Slice<Court> courts = courtRepository.findByStadium_StadiumId(stadiumId, pageable);
         return courts.map(CourtsResponse::from);
     }
@@ -50,41 +45,29 @@ public class CourtServiceImpl implements CourtService {
 
     @Override
     public CourtDetailResponse getCourtByCourtId(Long courtId) {
-        Court court = findCourtByIdOrThrowException(courtId);
+        Court court = (Court) findEntityByIdOrThrowException(courtRepository, courtId, ExceptionMessage.COURT_NOT_FOUND);
         return CourtDetailResponse.from(court);
     }
 
-    // TODO : 중복 코드가 좀 많아서 나중에 리펙토링 할 것
     @Override
     @Transactional
     public CourtDetailResponse registerCourt(CourtRegisterServiceRequest request, Long memberId) {
-        findMemberByIdOrThrowException(memberId);
-        Stadium stadium = findStadiumByIdOrThrowException(request.stadiumId());
-        if (!stadium.getMember().getMemberId().equals(memberId)) {
-            throw new IllegalArgumentException(ExceptionMessage.STADIUM_NOT_OWNED_BY_MEMBER.getText());
-        }
-
+        validateStadiumOwnership(request.stadiumId(), memberId);
         Court court = Court.create(
-                stadium,
+                (Stadium) findEntityByIdOrThrowException(stadiumRepository, request.stadiumId(), ExceptionMessage.STADIUM_NOT_FOUND),
                 request.name(),
                 request.description(),
                 request.price_per_hour()
         );
-
         courtRepository.save(court);
-
         return CourtDetailResponse.from(court);
     }
 
     @Override
     @Transactional
     public CourtDetailResponse updateCourt(CourtUpdateServiceRequest request, Long memberId, Long courtId) {
-        findMemberByIdOrThrowException(memberId);
-        Stadium stadium = findStadiumByIdOrThrowException(request.stadiumId());
-        if (!stadium.getMember().getMemberId().equals(memberId)) {
-            throw new IllegalArgumentException(ExceptionMessage.STADIUM_NOT_OWNED_BY_MEMBER.getText());
-        }
-        Court court = findCourtByIdOrThrowException(courtId);
+        validateStadiumOwnership(request.stadiumId(), memberId);
+        Court court = (Court) findEntityByIdOrThrowException(courtRepository, courtId, ExceptionMessage.COURT_NOT_FOUND);
         court.updateCourt(request.name(), request.description(), request.price_per_hour());
         return CourtDetailResponse.from(court);
     }
@@ -92,39 +75,24 @@ public class CourtServiceImpl implements CourtService {
     @Override
     @Transactional
     public void deleteCourt(CourtDeleteServiceRequest request, Long memberId, Long courtId) {
-        findMemberByIdOrThrowException(memberId);
-        Stadium stadium = findStadiumByIdOrThrowException(request.StadiumId());
-        if (!stadium.getMember().getMemberId().equals(memberId)) {
-            throw new IllegalArgumentException(ExceptionMessage.STADIUM_NOT_OWNED_BY_MEMBER.getText());
-        }
-        Court court = findCourtByIdOrThrowException(courtId);
+        validateStadiumOwnership(request.stadiumId(), memberId);
+        Court court = (Court) findEntityByIdOrThrowException(courtRepository, courtId, ExceptionMessage.COURT_NOT_FOUND);
         courtRepository.delete(court);
     }
 
-    // 구장 조회 예외처리
-    public Court findCourtByIdOrThrowException(long id) {
-        return courtRepository.findByCourtId(id)
-                .orElseThrow(() -> {
-                    log.warn(">>>> {} : {} <<<<", id, ExceptionMessage.COURT_NOT_FOUND);
-                    return new IllegalArgumentException(ExceptionMessage.COURT_NOT_FOUND.getText());
-                });
+    private void validateStadiumOwnership(Long stadiumId, Long memberId) {
+        findEntityByIdOrThrowException(memberRepository, memberId, ExceptionMessage.MEMBER_NOT_FOUND);
+        Stadium stadium = (Stadium) findEntityByIdOrThrowException(stadiumRepository, stadiumId, ExceptionMessage.STADIUM_NOT_FOUND);
+        if (!stadium.getMember().getMemberId().equals(memberId)) {
+            throw new IllegalArgumentException(ExceptionMessage.STADIUM_NOT_OWNED_BY_MEMBER.getText());
+        }
     }
 
-    // 풋살장 조회 예외처리
-    public Stadium findStadiumByIdOrThrowException(long id) {
-        return stadiumRepository.findByStadiumId(id)
+    private <T> T findEntityByIdOrThrowException(CustomGlobalRepository<T> repository, Long id, ExceptionMessage exceptionMessage) {
+        return repository.findActiveById(id)
                 .orElseThrow(() -> {
-                    log.warn(">>>> {} : {} <<<<", id, ExceptionMessage.STADIUM_NOT_FOUND);
-                    return new IllegalArgumentException(ExceptionMessage.STADIUM_NOT_FOUND.getText());
-                });
-    }
-
-    //맴버 조회 예외처리
-    public Member findMemberByIdOrThrowException(long id) {
-        return memberRepository.findByMemberId(id)
-                .orElseThrow(() -> {
-                    log.warn(">>>> {} : {} <<<<", id, ExceptionMessage.MEMBER_NOT_FOUND);
-                    return new IllegalArgumentException(ExceptionMessage.MEMBER_NOT_FOUND.getText());
+                    log.warn(">>>> {} : {} <<<<", id, exceptionMessage);
+                    return new IllegalArgumentException(exceptionMessage.getText());
                 });
     }
 }

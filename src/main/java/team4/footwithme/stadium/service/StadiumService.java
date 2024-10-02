@@ -8,8 +8,6 @@ import team4.footwithme.stadium.service.request.StadiumUpdateServiceRequest;
 import team4.footwithme.stadium.service.response.StadiumDetailResponse;
 import team4.footwithme.stadium.service.response.StadiumsResponse;
 
-import java.util.List;
-
 public interface StadiumService {
     Slice<StadiumsResponse> getStadiumList(Pageable pageable);
 

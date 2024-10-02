@@ -1,6 +1,5 @@
 package team4.footwithme.stadium.service.response;
 
-import org.locationtech.jts.geom.Point;
 import team4.footwithme.stadium.domain.Stadium;
 
 public record StadiumDetailResponse(
@@ -13,7 +12,7 @@ public record StadiumDetailResponse(
         Double latitude,
         Double longitude
 ) {
-    public static StadiumDetailResponse of(Stadium stadium) {
+    public static StadiumDetailResponse from(Stadium stadium) {
         return new StadiumDetailResponse(
                 stadium.getStadiumId(),
                 stadium.getMember().getMemberId(),

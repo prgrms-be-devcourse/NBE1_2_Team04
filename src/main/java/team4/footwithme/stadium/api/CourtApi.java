@@ -13,8 +13,6 @@ import team4.footwithme.stadium.service.CourtService;
 import team4.footwithme.stadium.service.response.CourtDetailResponse;
 import team4.footwithme.stadium.service.response.CourtsResponse;
 
-import java.util.List;
-
 @Slf4j
 @RequiredArgsConstructor
 @RestController

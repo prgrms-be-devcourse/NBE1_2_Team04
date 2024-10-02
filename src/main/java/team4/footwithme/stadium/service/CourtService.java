@@ -8,8 +8,6 @@ import team4.footwithme.stadium.service.request.CourtUpdateServiceRequest;
 import team4.footwithme.stadium.service.response.CourtDetailResponse;
 import team4.footwithme.stadium.service.response.CourtsResponse;
 
-import java.util.List;
-
 public interface CourtService {
     Slice<CourtsResponse> getCourtsByStadiumId(Long stadiumId, Pageable pageable);
 
