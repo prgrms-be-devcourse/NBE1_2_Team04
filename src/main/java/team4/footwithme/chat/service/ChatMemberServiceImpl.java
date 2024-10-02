@@ -41,13 +41,33 @@ public class ChatMemberServiceImpl implements ChatMemberService {
     @Transactional
     public ChatMemberResponse joinChatMember(ChatMemberServiceRequest request) {
         Member member = getMember(request.memberId());
-        Chatroom chatroom = getChatroom(request.chatroomId());
+        Chatroom chatroom = getChatroomByChatroomId(request.chatroomId());
 
+        return addChatMember(member, chatroom);
+    }
+
+    @Override
+    @Transactional
+    public ChatMemberResponse joinTeamChatMember(Member member, Long teamId) {
+        Chatroom chatroom = getChatroomByTeamId(teamId);
+
+        return addChatMember(member, chatroom);
+    }
+
+    @Override
+    @Transactional
+    public ChatMemberResponse joinReservationChatMember(Member member, Long reservationId) {
+        Chatroom chatroom = getChatroomByReservationId(reservationId);
+
+        return addChatMember(member, chatroom);
+    }
+
+    private ChatMemberResponse addChatMember(Member member, Chatroom chatroom){
         checkMemberNotInChatroom(member, chatroom);
 
         ChatMember chatMember = chatMemberRepository.save(ChatMember.create(member, chatroom));
 
-        Chat chat = Chat.createEnterChat(chatroom, member, member.getName() + "님이 입장했습니다.");
+        Chat chat = Chat.createEnterChat(chatroom, member);
         chatRepository.save(chat);
 
         redisPublisher.publish(chat);
@@ -59,43 +79,42 @@ public class ChatMemberServiceImpl implements ChatMemberService {
      * 팀원 채팅방 초대
      *
      * @param teamMembers
-     * @param chatroomId
      * @return
      */
     @Override
     @Transactional
-    public String joinChatTeam(List<TeamMember> teamMembers, Long chatroomId) {
+    public String joinChatTeam(List<TeamMember> teamMembers, Long teamId) {
+        Chatroom chatroom = getChatroomByTeamId(teamId);
         List<Member> members = teamMembers.stream().map(TeamMember::getMember).collect(Collectors.toList());
 
-        return joinChatMembers(members, chatroomId);
+        return joinChatMembers(members, chatroom);
     }
 
     /**
      * 게임 참여 인원 채팅방 초대
      *
      * @param gameMembers
-     * @param chatroomId
      * @return
      */
     @Override
     @Transactional
-    public String joinChatGame(List<Participant> gameMembers, Long chatroomId) {
+    public String joinChatGame(List<Participant> gameMembers, Long reservationId) {
+        Chatroom chatroom = getChatroomByReservationId(reservationId);
+
         List<Member> members = gameMembers.stream().map(Participant::getMember).collect(Collectors.toList());
 
-        return joinChatMembers(members, chatroomId);
+        return joinChatMembers(members, chatroom);
     }
 
     /**
      * 단체로 채팅방 초대
      *
      * @param members
-     * @param chatroomId
      * @return
      */
     @Override
     @Transactional
-    public String joinChatMembers(List<Member> members, Long chatroomId){
-        Chatroom chatroom = getChatroom(chatroomId);
+    public String joinChatMembers(List<Member> members, Chatroom chatroom){
 
         List<Long> oldMembersId = chatMemberRepository.findByChatroom(chatroom)
                 .stream().map(chatMember -> chatMember.getMember().getMemberId()).collect(Collectors.toList());
@@ -129,13 +148,33 @@ public class ChatMemberServiceImpl implements ChatMemberService {
     @Transactional
     public ChatMemberResponse leaveChatMember(ChatMemberServiceRequest request) {
         Member member = getMember(request.memberId());
-        Chatroom chatroom = getChatroom(request.chatroomId());
+        Chatroom chatroom = getChatroomByChatroomId(request.chatroomId());
 
+        return removeChatMember(member, chatroom);
+    }
+
+    @Override
+    @Transactional
+    public ChatMemberResponse leaveTeamChatMember(Member member, Long teamId) {
+        Chatroom chatroom = getChatroomByTeamId(teamId);
+
+        return removeChatMember(member, chatroom);
+    }
+
+    @Override
+    @Transactional
+    public ChatMemberResponse leaveReservationChatMember(Member member, Long reservationId) {
+        Chatroom chatroom = getChatroomByReservationId(reservationId);
+
+        return removeChatMember(member, chatroom);
+    }
+
+    private ChatMemberResponse removeChatMember(Member member, Chatroom chatroom) {
         checkMemberInChatroom(member, chatroom);
 
         chatMemberRepository.deleteByMemberAndChatRoom(member, chatroom);
 
-        Chat chat = Chat.createQuitChat(chatroom, member, member.getName());
+        Chat chat = Chat.createQuitChat(chatroom, member);
         chatRepository.save(chat);
 
         redisPublisher.publish(chat);
@@ -152,9 +191,27 @@ public class ChatMemberServiceImpl implements ChatMemberService {
     @Override
     @Transactional
     public String leaveChatRoom(Long chatroomId) {
-        Chatroom chatroom = getChatroom(chatroomId);
+        Chatroom chatroom = getChatroomByChatroomId(chatroomId);
 
-        chatMemberRepository.deleteByChatRoom(chatroom);
+        chatMemberRepository.updateIsDeletedForChatRoom(chatroom);
+        return "Successfully leaving the chatroom";
+    }
+
+    @Override
+    @Transactional
+    public String leaveTeamChatRoom(Long teamId) {
+        Chatroom chatroom = getChatroomByTeamId(teamId);
+
+        chatMemberRepository.updateIsDeletedForChatRoom(chatroom);
+        return "Successfully leaving the chatroom";
+    }
+
+    @Override
+    @Transactional
+    public String leaveReservationChatRoom(Long reservationId) {
+        Chatroom chatroom = getChatroomByReservationId(reservationId);
+
+        chatMemberRepository.updateIsDeletedForChatRoom(chatroom);
         return "Successfully leaving the chatroom";
     }
 
@@ -175,8 +232,18 @@ public class ChatMemberServiceImpl implements ChatMemberService {
                 .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.MEMBER_NOT_FOUND.getText()));
     }
 
-    private Chatroom getChatroom(Long chatroomId) {
+    private Chatroom getChatroomByChatroomId(Long chatroomId) {
         return chatroomRepository.findByChatroomId(chatroomId)
+                .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.CHATROOM_NOT_FOUND.getText()));
+    }
+
+    private Chatroom getChatroomByTeamId(Long teamId) {
+        return chatroomRepository.findByTeamId(teamId)
+                .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.CHATROOM_NOT_FOUND.getText()));
+    }
+
+    private Chatroom getChatroomByReservationId(Long reservationId) {
+        return chatroomRepository.findByReservationId(reservationId)
                 .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.CHATROOM_NOT_FOUND.getText()));
     }
 }
