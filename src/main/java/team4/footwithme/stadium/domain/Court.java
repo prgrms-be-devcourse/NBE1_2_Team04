@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import team4.footwithme.global.domain.BaseEntity;
+import team4.footwithme.global.exception.ExceptionMessage;
 
 import java.math.BigDecimal;
 
@@ -51,11 +52,28 @@ public class Court extends BaseEntity {
                 .build();
     }
 
-    // TODO : 검증에 대한 책임 한번 생각해보자
-    public void updateCourt(String name, String description, BigDecimal pricePerHour) {
+    public void updateCourt(Long stadiumId, Long memberId, String name, String description, BigDecimal pricePerHour) {
+        checkMember(memberId);
+        checkStadium(stadiumId);
         this.name = name;
         this.description = description;
         this.pricePerHour = pricePerHour;
     }
 
+    public void deleteCourt(Long stadiumId, Long memberId) {
+        checkMember(memberId);
+        checkStadium(stadiumId);
+    }
+
+    private void checkStadium(Long stadiumId) {
+        if (!this.stadium.getStadiumId().equals(stadiumId)) {
+            throw new IllegalArgumentException(ExceptionMessage.COURT_NOT_OWNED_BY_STADIUM.getText());
+        }
+    }
+
+    private void checkMember(Long memberId) {
+        if (!this.stadium.getMember().getMemberId().equals(memberId)) {
+            throw new IllegalArgumentException(ExceptionMessage.STADIUM_NOT_OWNED_BY_MEMBER.getText());
+        }
+    }
 }

@@ -1,8 +1,8 @@
 package team4.footwithme.stadium.api.request;
 
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import team4.footwithme.stadium.service.request.CourtUpdateServiceRequest;
 
@@ -19,7 +19,7 @@ public record CourtUpdateRequest(
         String description,
 
         @NotNull(message = "시간당 요금은 필수입니다.")
-        @Min(value = 0, message = "요금은 음수가 될 수 없습니다.")
+        @PositiveOrZero(message = "요금은 음수가 될 수 없습니다.")
         BigDecimal price_per_hour
 ) {
     public CourtUpdateServiceRequest toServiceRequest() {

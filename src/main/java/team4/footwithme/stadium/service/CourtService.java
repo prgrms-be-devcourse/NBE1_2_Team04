@@ -1,17 +1,16 @@
 package team4.footwithme.stadium.service;
 
+import org.springframework.data.domain.Slice;
 import team4.footwithme.stadium.service.request.CourtDeleteServiceRequest;
 import team4.footwithme.stadium.service.request.CourtRegisterServiceRequest;
 import team4.footwithme.stadium.service.request.CourtUpdateServiceRequest;
 import team4.footwithme.stadium.service.response.CourtDetailResponse;
 import team4.footwithme.stadium.service.response.CourtsResponse;
 
-import java.util.List;
-
 public interface CourtService {
-    List<CourtsResponse> getCourtsByStadiumId(Long stadiumId);
+    Slice<CourtsResponse> getCourtsByStadiumId(Long stadiumId, Integer page, String sort);
 
-    List<CourtsResponse> getAllCourts();
+    Slice<CourtsResponse> getAllCourts(Integer page, String sort);
 
     CourtDetailResponse getCourtByCourtId(Long courtId);
 
