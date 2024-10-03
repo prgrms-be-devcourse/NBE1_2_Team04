@@ -13,25 +13,25 @@ public interface ChatMemberService {
 
     ChatMemberResponse joinChatMember(ChatMemberServiceRequest request);
 
-    String joinChatTeam(List<TeamMember> teamMembers, Long teamId);
+    void joinChatTeam(List<TeamMember> teamMembers, Long teamId);
 
-    String joinChatGame(List<Participant> gameMembers, Long reservationId);
+    void joinChatGame(List<Participant> gameMembers, Long reservationId);
 
-    String joinChatMembers(List<Member> members, Chatroom chatroom);
+    void joinChatMembers(List<Member> members, Chatroom chatroom);
 
     ChatMemberResponse leaveChatMember(ChatMemberServiceRequest request);
 
-    String leaveChatRoom(Long chatroomId);
+    void leaveChatRoom(Long chatroomId);
 
-    ChatMemberResponse joinTeamChatMember(Member member, Long teamId);
+    void joinTeamChatMember(Member member, Long teamId);
 
-    ChatMemberResponse joinReservationChatMember(Member member, Long reservationId);
+    void joinReservationChatMember(Member member, Long reservationId);
 
-    String leaveTeamChatRoom(Long teamId);
+    void leaveTeamChatRoom(Long teamId);
 
-    String leaveReservationChatRoom(Long reservationId);
+    void leaveReservationChatRoom(Long reservationId);
 
-    ChatMemberResponse leaveTeamChatMember(Member member, Long teamId);
+    void leaveTeamChatMember(Member member, Long teamId);
 
-    ChatMemberResponse leaveReservationChatMember(Member member, Long reservationId);
+    void leaveReservationChatMember(Member member, Long reservationId);
 }

@@ -48,18 +48,18 @@ public class ChatMemberServiceImpl implements ChatMemberService {
 
     @Override
     @Transactional
-    public ChatMemberResponse joinTeamChatMember(Member member, Long teamId) {
+    public void joinTeamChatMember(Member member, Long teamId) {
         Chatroom chatroom = getChatroomByTeamId(teamId);
 
-        return addChatMember(member, chatroom);
+        addChatMember(member, chatroom);
     }
 
     @Override
     @Transactional
-    public ChatMemberResponse joinReservationChatMember(Member member, Long reservationId) {
+    public void joinReservationChatMember(Member member, Long reservationId) {
         Chatroom chatroom = getChatroomByReservationId(reservationId);
 
-        return addChatMember(member, chatroom);
+        addChatMember(member, chatroom);
     }
 
     private ChatMemberResponse addChatMember(Member member, Chatroom chatroom){
@@ -79,42 +79,39 @@ public class ChatMemberServiceImpl implements ChatMemberService {
      * 팀원 채팅방 초대
      *
      * @param teamMembers
-     * @return
      */
     @Override
     @Transactional
-    public String joinChatTeam(List<TeamMember> teamMembers, Long teamId) {
+    public void joinChatTeam(List<TeamMember> teamMembers, Long teamId) {
         Chatroom chatroom = getChatroomByTeamId(teamId);
         List<Member> members = teamMembers.stream().map(TeamMember::getMember).collect(Collectors.toList());
 
-        return joinChatMembers(members, chatroom);
+        joinChatMembers(members, chatroom);
     }
 
     /**
      * 게임 참여 인원 채팅방 초대
      *
      * @param gameMembers
-     * @return
      */
     @Override
     @Transactional
-    public String joinChatGame(List<Participant> gameMembers, Long reservationId) {
+    public void joinChatGame(List<Participant> gameMembers, Long reservationId) {
         Chatroom chatroom = getChatroomByReservationId(reservationId);
 
         List<Member> members = gameMembers.stream().map(Participant::getMember).collect(Collectors.toList());
 
-        return joinChatMembers(members, chatroom);
+        joinChatMembers(members, chatroom);
     }
 
     /**
      * 단체로 채팅방 초대
      *
      * @param members
-     * @return
      */
     @Override
     @Transactional
-    public String joinChatMembers(List<Member> members, Chatroom chatroom){
+    public void joinChatMembers(List<Member> members, Chatroom chatroom){
 
         List<Long> oldMembersId = chatMemberRepository.findByChatroom(chatroom)
                 .stream().map(chatMember -> chatMember.getMember().getMemberId()).collect(Collectors.toList());
@@ -135,7 +132,6 @@ public class ChatMemberServiceImpl implements ChatMemberService {
 
         redisPublisher.publish(chat);
 
-        return "Successfully joined chat";
     }
 
     /**
@@ -155,18 +151,18 @@ public class ChatMemberServiceImpl implements ChatMemberService {
 
     @Override
     @Transactional
-    public ChatMemberResponse leaveTeamChatMember(Member member, Long teamId) {
+    public void leaveTeamChatMember(Member member, Long teamId) {
         Chatroom chatroom = getChatroomByTeamId(teamId);
 
-        return removeChatMember(member, chatroom);
+        removeChatMember(member, chatroom);
     }
 
     @Override
     @Transactional
-    public ChatMemberResponse leaveReservationChatMember(Member member, Long reservationId) {
+    public void leaveReservationChatMember(Member member, Long reservationId) {
         Chatroom chatroom = getChatroomByReservationId(reservationId);
 
-        return removeChatMember(member, chatroom);
+        removeChatMember(member, chatroom);
     }
 
     private ChatMemberResponse removeChatMember(Member member, Chatroom chatroom) {
@@ -190,29 +186,26 @@ public class ChatMemberServiceImpl implements ChatMemberService {
      */
     @Override
     @Transactional
-    public String leaveChatRoom(Long chatroomId) {
+    public void leaveChatRoom(Long chatroomId) {
         Chatroom chatroom = getChatroomByChatroomId(chatroomId);
 
         chatMemberRepository.updateIsDeletedForChatRoom(chatroom);
-        return "Successfully leaving the chatroom";
     }
 
     @Override
     @Transactional
-    public String leaveTeamChatRoom(Long teamId) {
+    public void leaveTeamChatRoom(Long teamId) {
         Chatroom chatroom = getChatroomByTeamId(teamId);
 
         chatMemberRepository.updateIsDeletedForChatRoom(chatroom);
-        return "Successfully leaving the chatroom";
     }
 
     @Override
     @Transactional
-    public String leaveReservationChatRoom(Long reservationId) {
+    public void leaveReservationChatRoom(Long reservationId) {
         Chatroom chatroom = getChatroomByReservationId(reservationId);
 
         chatMemberRepository.updateIsDeletedForChatRoom(chatroom);
-        return "Successfully leaving the chatroom";
     }
 
     private void checkMemberInChatroom(Member member, Chatroom chatroom) {
