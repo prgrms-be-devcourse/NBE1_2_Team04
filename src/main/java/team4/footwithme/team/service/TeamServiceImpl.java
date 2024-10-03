@@ -75,8 +75,8 @@ public class TeamServiceImpl implements TeamService {
             evaluations.add(teamRate.getEvaluation());
         }
 
-        Long maleCount = teamRepository.countMaleByMemberId();
-        Long femaleCount = teamRepository.countFemaleByMemberId();
+        Long maleCount = teamRepository.countMaleByMemberId(teamId);
+        Long femaleCount = teamRepository.countFemaleByMemberId(teamId);
 
         return TeamInfoResponse.of(
             teamEntity,
