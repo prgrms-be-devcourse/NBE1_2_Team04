@@ -1,5 +1,6 @@
 package team4.footwithme.team.service;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,10 @@ import team4.footwithme.team.service.request.TeamDefaultServiceRequest;
 import team4.footwithme.team.service.response.TeamDefaultResponse;
 import team4.footwithme.team.service.response.TeamInfoResponse;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 @Transactional
@@ -37,19 +41,43 @@ class TeamServiceImplTest extends IntegrationTestSupport {
     @Autowired
     private TeamMemberRepository teamMemberRepository;
 
+    @BeforeEach
+    void setUp() {
+        //팀장용 멤버 생성
+        memberRepository.save(
+                Member.create("teamLeader@gmail.com", "123456", "팀장", "010-1111-1111",
+                        LoginProvider.ORIGINAL,"test", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE)
+        );
+        // 멤버 생성
+        memberRepository.save(
+                Member.create("member01@gmail.com", "123456", "남팀원01", "010-1111-1111",
+                        LoginProvider.ORIGINAL,"test", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE)
+        );
+        memberRepository.save(
+                Member.create("member02@gmail.com", "123456", "남팀원02", "010-1111-1111",
+                        LoginProvider.ORIGINAL,"test", Gender.MALE, MemberRole.USER,TermsAgreed.AGREE)
+        );
+        memberRepository.save(
+                Member.create("member03@gmail.com", "123456", "여팀원01", "010-1111-1111",
+                        LoginProvider.ORIGINAL,"test", Gender.FEMALE, MemberRole.USER,TermsAgreed.AGREE)
+        );
+    }
     @Test
     @DisplayName("팀 생성")
     void createTeam() {
         //given
         TeamCreateRequest request = new TeamCreateRequest("팀명", "팀 설명", "선호지역");
+        Member leaderMember = memberRepository.findByEmail("teamLeader@gmail.com")
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자 입니다."));
         TeamDefaultServiceRequest dto = request.toServiceRequest();
-        teamService.createTeam(dto);
+        TeamDefaultResponse teamDefaultResponse = teamService.createTeam(dto,leaderMember);
 
         //when
         long count = teamRepository.count();
-
+        TeamMember teamLeader = teamMemberRepository.findByTeamIdAndMemberId(teamDefaultResponse.teamId(), leaderMember.getMemberId());
         //then
         assertThat(count).isEqualTo(1);
+        assertThat(teamLeader.getRole()).isEqualTo(TeamMemberRole.CREATOR);
     }
 
     @Test
@@ -57,26 +85,19 @@ class TeamServiceImplTest extends IntegrationTestSupport {
     void getTeamInfo(){
         // Given
         TeamCreateRequest request = new TeamCreateRequest("팀명", "팀 설명", "선호지역");
+        Member leaderMember = memberRepository.findByEmail("teamLeader@gmail.com")
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자 입니다."));
         TeamDefaultServiceRequest dto = request.toServiceRequest();
-        TeamDefaultResponse teamDefaultResponse = teamService.createTeam(dto);
-        Long teamId = teamDefaultResponse.teamId();
-        Team team = teamRepository.findByTeamId(teamId);
+        TeamDefaultResponse teamDefaultResponse = teamService.createTeam(dto, leaderMember);
+        Team team = teamRepository.findByTeamId(teamDefaultResponse.teamId());
 
-        // 멤버 생성 및 저장
-        Member member01 = memberRepository.save(
-                Member.create("member01@gmail.com", "123456", "남남남", "010-1111-1111",
-                LoginProvider.ORIGINAL,"test", Gender.MALE, MemberRole.USER,TermsAgreed.AGREE)
-        );
-
-        Member member02 = memberRepository.save(
-                Member.create("member02@gmail.com", "123456", "남남남", "010-1111-1111",
-                LoginProvider.ORIGINAL,"test", Gender.MALE, MemberRole.USER,TermsAgreed.AGREE)
-        );
-
-        Member member03 = memberRepository.save(
-                Member.create("member03@gmail.com", "123456", "남남남", "010-1111-1111",
-                LoginProvider.ORIGINAL,"test", Gender.FEMALE, MemberRole.USER,TermsAgreed.AGREE)
-        );
+        // 등록할 멤버
+        Member member01 = memberRepository.findByEmail("member01@gmail.com")
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자 입니다."));
+        Member member02 = memberRepository.findByEmail("member02@gmail.com")
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자 입니다."));
+        Member member03 = memberRepository.findByEmail("member03@gmail.com")
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자 입니다."));
 
         // 팀 멤버 등록
         teamMemberRepository.save(TeamMember.create(team, member01, TeamMemberRole.MEMBER));
@@ -88,32 +109,34 @@ class TeamServiceImplTest extends IntegrationTestSupport {
         teamRateRepository.save(new TeamRate(team, 2.0, "별로였다"));
 
         // When
-        TeamInfoResponse response = teamService.getTeamInfo(teamId);
+        TeamInfoResponse response = teamService.getTeamInfo(team.getTeamId());
 
         // Then
         assertThat(response).isNotNull();
         assertThat(response.name()).isEqualTo("팀명");
         assertThat(response.winCount()).isEqualTo(0);
         assertThat(response.evaluation().size()).isEqualTo(2);
-        assertThat(response.maleCount()).isEqualTo(2);
+        assertThat(response.maleCount()).isEqualTo(3);
+        assertThat(response.femaleCount()).isEqualTo(1);
 
     }
 
-    //궁금점.. 수정 쿼리가 아니고 insert쿼리가 날라가도 되는건가?
     @Test
-    @DisplayName("팀 정보 수정")
+    @DisplayName("팀 정보 수정_팀장")
     void updateTeamInfo(){
         //given
         //팀 정보 저장
         TeamCreateRequest request = new TeamCreateRequest("팀명", "팀 설명", "선호지역");
+        Member leaderMember = memberRepository.findByEmail("teamLeader@gmail.com")
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자 입니다."));
         TeamDefaultServiceRequest dto = request.toServiceRequest();
-        TeamDefaultResponse beforeEntity = teamService.createTeam(dto);
+        TeamDefaultResponse beforeEntity = teamService.createTeam(dto, leaderMember);
+        Team team = teamRepository.findByTeamId(beforeEntity.teamId());
 
         //when
         //팀 정보 수정
-        Long teamId = beforeEntity.teamId();
         TeamDefaultServiceRequest updateDTO = new TeamDefaultServiceRequest(null, "우리애 월드클래스 아닙니다.", "서울 전역");
-        TeamDefaultResponse result = teamService.updateTeamInfo(teamId, updateDTO);
+        TeamDefaultResponse result = teamService.updateTeamInfo(team.getTeamId(), updateDTO, leaderMember);
 
         //then
         assertThat(result).isNotNull();
@@ -126,16 +149,44 @@ class TeamServiceImplTest extends IntegrationTestSupport {
     }
 
     @Test
+    @DisplayName("팀 정보 수정_멤버")
+    void updateTeamInfo_exception(){
+        //given
+        //팀 정보 저장
+        TeamCreateRequest request = new TeamCreateRequest("팀명", "팀 설명", "선호지역");
+        Member leaderMember = memberRepository.findByEmail("teamLeader@gmail.com")
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자 입니다."));
+        TeamDefaultServiceRequest dto = request.toServiceRequest();
+        TeamDefaultResponse beforeEntity = teamService.createTeam(dto, leaderMember);
+        Team team = teamRepository.findByTeamId(beforeEntity.teamId());
+
+        Member member01 = memberRepository.findByEmail("member01@gmail.com")
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자 입니다."));
+        teamMemberRepository.save(TeamMember.create(team, member01, TeamMemberRole.MEMBER));
+
+        //when
+        //팀 정보 수정
+        TeamDefaultServiceRequest updateDTO = new TeamDefaultServiceRequest(null, "우리애 월드클래스 아닙니다.", "서울 전역");
+
+        //then -- 팀원이 정보 수정 시 예외
+        Throwable exception = assertThrows(IllegalArgumentException.class, () ->{
+            teamService.updateTeamInfo(team.getTeamId(), updateDTO, member01);
+        });
+    }
+
+    @Test
     @DisplayName("팀 삭제")
     void deleteTeam(){
         //given
         //팀 정보 저장
         TeamCreateRequest request = new TeamCreateRequest("팀명", "팀 설명", "선호지역");
         TeamDefaultServiceRequest dto = request.toServiceRequest();
-        TeamDefaultResponse team = teamService.createTeam(dto);
+        Member leaderMember = memberRepository.findByEmail("teamLeader@gmail.com")
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자 입니다."));
+        TeamDefaultResponse team = teamService.createTeam(dto, leaderMember);
 
         //when
-        Long deletedTeamId = teamService.deleteTeam(team.teamId());
+        Long deletedTeamId = teamService.deleteTeam(team.teamId(), leaderMember);
 
         //then
         assertThat(deletedTeamId).isNotNull();

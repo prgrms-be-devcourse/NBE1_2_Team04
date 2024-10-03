@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Transactional
 class TeamMemberServiceImplTest extends IntegrationTestSupport {
@@ -37,25 +38,36 @@ class TeamMemberServiceImplTest extends IntegrationTestSupport {
     private TeamMemberRepository teamMemberRepository;
 
     private Team team;
+    private Member leader;
 
     @BeforeEach
     void setUp() {
         //팀 생성
         team = Team.create(null, 111L, "테스트 팀이름", "테스트 팀 설명", 0, 0, 0, "서울");
         teamRepository.saveAndFlush(team);
-        // 멤버 생성
-        memberRepository.save(
-                Member.create("member01@gmail.com", "123456", "남남남", "010-1111-1111",
+        //팀장용 멤버 생성
+        leader = memberRepository.save(
+                Member.create("teamLeader@gmail.com", "123456", "팀장", "010-1111-1111",
                         LoginProvider.ORIGINAL,"test", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE)
         );
-       memberRepository.save(
-                Member.create("member02@gmail.com", "123456", "남남남", "010-1111-1111",
+        //팀장 미리 저장
+        TeamMember leaderM = TeamMember.create(team, leader,TeamMemberRole.CREATOR);
+        teamMemberRepository.save(leaderM);
+
+        // 멤버 생성
+        memberRepository.save(
+                Member.create("member01@gmail.com", "123456", "남팀원01", "010-1111-1111",
+                        LoginProvider.ORIGINAL,"test", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE)
+        );
+        memberRepository.save(
+                Member.create("member02@gmail.com", "123456", "남팀원02", "010-1111-1111",
                         LoginProvider.ORIGINAL,"test", Gender.MALE, MemberRole.USER,TermsAgreed.AGREE)
         );
         memberRepository.save(
-                Member.create("member03@gmail.com", "123456", "여여여", "010-1111-1111",
+                Member.create("member03@gmail.com", "123456", "여팀원01", "010-1111-1111",
                         LoginProvider.ORIGINAL,"test", Gender.FEMALE, MemberRole.USER,TermsAgreed.AGREE)
         );
+
     }
 
     @Test
@@ -75,7 +87,7 @@ class TeamMemberServiceImplTest extends IntegrationTestSupport {
 
         //then
         assertThat(response.size()).isEqualTo(3);
-        assertThat(response.get(0).name()).isEqualTo("남남남");
+        assertThat(response.get(0).name()).isEqualTo("남팀원01");
         assertThat(response.get(0).role()).isEqualTo(TeamMemberRole.MEMBER);
     }
 
@@ -90,13 +102,13 @@ class TeamMemberServiceImplTest extends IntegrationTestSupport {
         List<TeamResponse> response = teamMemberService.getTeamMembers(teamId);
 
         //then
-        assertThat(response.size()).isEqualTo(3);
-        assertThat(response.get(2).name()).isEqualTo("여여여");
-        assertThat(response.get(2).role()).isEqualTo(TeamMemberRole.MEMBER);
+        assertThat(response.size()).isEqualTo(4);
+        assertThat(response.get(3).name()).isEqualTo("여팀원01");
+        assertThat(response.get(3).role()).isEqualTo(TeamMemberRole.MEMBER);
     }
 
     @Test
-    @DisplayName("팀원 삭제")
+    @DisplayName("팀원 삭제_팀장")
     public void deleteTeamMember(){
         //given
         addTeamMember();
@@ -105,11 +117,31 @@ class TeamMemberServiceImplTest extends IntegrationTestSupport {
         Long deletedMember = teamMembers.get(1).teamMemberId();
 
         //when
-        Long result = teamMemberService.deleteTeamMembers(deletedMember);
+        Long result = teamMemberService.deleteTeamMembers(teamId, deletedMember, leader);
         List<TeamMember> list = teamMemberRepository.findAll();
 
         //then
         assertThat(result).isEqualTo(deletedMember);
         assertThat(list.get(1).getIsDeleted()).isEqualTo(IsDeleted.TRUE);
+    }
+
+    @Test
+    @DisplayName("팀원 삭제_예외")
+    public void deleteTeamMember_exception(){
+        //given
+        addTeamMember();
+        Long teamId = team.getTeamId();
+        List<TeamResponse> teamMembers = teamMemberService.getTeamMembers(teamId);
+        //삭제할 멤버
+        Long deletedMemberId = teamMembers.get(1).teamMemberId();
+        //현재 유저
+        Long unAuthorizedMemberId = teamMembers.get(2).teamMemberId();
+        TeamMember unAuthorizedMember = teamMemberRepository.findByTeamMemberId(unAuthorizedMemberId);
+
+        //then -- 외부 팀원이 멤버 삭제 시 예외
+        assertThrows(IllegalArgumentException.class, () -> {
+            teamMemberService.deleteTeamMembers(teamId, deletedMemberId, unAuthorizedMember.getMember());
+        });
+
     }
 }
