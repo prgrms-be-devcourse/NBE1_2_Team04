@@ -9,5 +9,5 @@ import java.util.List;
 public interface TeamMemberService {
     List<TeamResponse> addTeamMembers(Long teamId, TeamMemberServiceRequest request);
     List<TeamResponse> getTeamMembers(Long teamId);
-    Long deleteTeamMembers(Long teamMemberId, Member member);
+    Long deleteTeamMembers(Long teamId, Long teamMemberId, Member member);
 }
