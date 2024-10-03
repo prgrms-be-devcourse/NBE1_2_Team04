@@ -5,7 +5,6 @@ import team4.footwithme.team.domain.Team;
 public record TeamDefaultResponse(
         Long teamId,
         Long stadiumId,
-        Long chatRoomId,
         String name,
         String description,
         int winCount,
@@ -17,7 +16,6 @@ public record TeamDefaultResponse(
                 return new TeamDefaultResponse(
                         team.getTeamId(),
                         team.getStadiumId(),
-                        team.getChatRoomId(),
                         team.getName(),
                         team.getDescription(),
                         team.getTotalRecord().getWinCount(),

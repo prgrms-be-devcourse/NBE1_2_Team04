@@ -28,26 +28,21 @@ public class Participant extends BaseEntity {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    @NotNull
-    private Long chatroomId;
-
     @Enumerated(EnumType.STRING)
     @NotNull
     private ParticipantRole participantRole;
 
     @Builder
-    private Participant(Reservation reservation, Member member, Long chatroomId, ParticipantRole participantRole) {
+    private Participant(Reservation reservation, Member member, ParticipantRole participantRole) {
         this.reservation = reservation;
         this.member = member;
-        this.chatroomId = chatroomId;
         this.participantRole = participantRole;
     }
 
-    public static Participant create(Reservation reservation, Member member, Long chatroomId, ParticipantRole participantRole) {
+    public static Participant create(Reservation reservation, Member member, ParticipantRole participantRole) {
         return Participant.builder()
             .reservation(reservation)
             .member(member)
-            .chatroomId(chatroomId)
             .participantRole(participantRole)
             .build();
     }
