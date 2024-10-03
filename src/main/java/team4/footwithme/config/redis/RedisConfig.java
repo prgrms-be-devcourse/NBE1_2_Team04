@@ -12,10 +12,14 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import team4.footwithme.chat.service.RedisSubscriber;
 
 @Configuration
 @EnableRedisRepositories
+@EnableTransactionManagement
 @RequiredArgsConstructor
 public class RedisConfig {
 
@@ -52,6 +56,12 @@ public class RedisConfig {
         redisTemplate.setConnectionFactory(connectionFactory);
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(String.class));
+        redisTemplate.setEnableTransactionSupport(true);
         return redisTemplate;
+    }
+
+    @Bean
+    public PlatformTransactionManager transactionManager() {
+        return new JpaTransactionManager();
     }
 }
