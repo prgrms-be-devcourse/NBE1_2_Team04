@@ -46,6 +46,7 @@ class VoteApiTest extends ApiTestSupport {
             1L,
             "연말 행사 투표",
             endAt,
+            "진행 중",
             List.of(new VoteItemResponse(1L, "최강 풋살장", 0L),
                 new VoteItemResponse(2L, "열정 풋살장", 0L)
             )
@@ -66,6 +67,7 @@ class VoteApiTest extends ApiTestSupport {
             .andExpect(jsonPath("$.data.voteId").value(1L))
             .andExpect(jsonPath("$.data.title").value("연말 행사 투표"))
             .andExpect(jsonPath("$.data.endAt").value(endAt.toString()))
+            .andExpect(jsonPath("$.data.voteStatus").value("진행 중"))
             .andExpect(jsonPath("$.data.choices").isArray())
             .andExpect(jsonPath("$.data.choices[0].voteItemId").value(1L))
             .andExpect(jsonPath("$.data.choices[0].content").value("최강 풋살장"))
@@ -92,6 +94,7 @@ class VoteApiTest extends ApiTestSupport {
                 1L,
                 "연말 행사 투표",
                 endAt,
+                "진행 중",
                 List.of(new VoteItemResponse(1L, "최강 풋살장", 0L),
                     new VoteItemResponse(2L, "열정 풋살장", 0L)
                 )
@@ -125,6 +128,7 @@ class VoteApiTest extends ApiTestSupport {
                 1L,
                 "연말 행사 투표",
                 endAt,
+                "진행 중",
                 List.of(new VoteItemResponse(1L, "최강 풋살장", 0L),
                     new VoteItemResponse(2L, "열정 풋살장", 0L)
                 )
@@ -158,6 +162,7 @@ class VoteApiTest extends ApiTestSupport {
                 1L,
                 "연말 행사 투표",
                 endAt,
+                "진행 중",
                 List.of(new VoteItemResponse(1L, "최강 풋살장", 0L),
                     new VoteItemResponse(2L, "열정 풋살장", 0L)
                 )
@@ -189,6 +194,7 @@ class VoteApiTest extends ApiTestSupport {
                 1L,
                 "연말 행사 투표",
                 endAt,
+                "진행 중",
                 List.of(new VoteItemResponse(1L, "최강 풋살장", 0L),
                     new VoteItemResponse(2L, "열정 풋살장", 0L)
                 )
@@ -222,6 +228,7 @@ class VoteApiTest extends ApiTestSupport {
                 1L,
                 "연말 행사 투표",
                 endAt,
+                "진행 중",
                 List.of(new VoteItemResponse(1L, "최강 풋살장", 0L),
                     new VoteItemResponse(2L, "열정 풋살장", 0L)
                 )

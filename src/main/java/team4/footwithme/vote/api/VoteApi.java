@@ -49,4 +49,9 @@ public class VoteApi {
         return ApiResponse.ok(voteService.updateVote(request.toServiceRequest(), voteId, principalDetails.getUsername()));
     }
 
+    @PostMapping("/close/{voteId}")
+    public ApiResponse<VoteResponse> closeVote(@PathVariable Long voteId, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        return ApiResponse.ok(voteService.closeVote(voteId, principalDetails.getMember()));
+    }
+
 }

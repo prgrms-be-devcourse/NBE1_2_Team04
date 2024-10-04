@@ -1,11 +1,13 @@
 package team4.footwithme.vote.service;
 
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import team4.footwithme.member.domain.Member;
 import team4.footwithme.member.repository.MemberRepository;
 import team4.footwithme.stadium.repository.StadiumRepository;
 import team4.footwithme.team.repository.TeamRepository;
@@ -21,6 +23,9 @@ import team4.footwithme.vote.service.response.VoteItemResponse;
 import team4.footwithme.vote.service.response.VoteResponse;
 
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ScheduledFuture;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -35,6 +40,16 @@ public class VoteServiceImpl implements VoteService {
     private final ChoiceRepository choiceRepository;
     private final TaskScheduler taskScheduler;
     private final ApplicationEventPublisher eventPublisher;
+
+    private final Map<Long, ScheduledFuture<?>> scheduledTasks = new ConcurrentHashMap<>();
+
+    @PostConstruct
+    private void initializeScheduledTasks() {
+        List<Vote> activeVotes = voteRepository.findOpenedVotes();
+        for (Vote vote : activeVotes) {
+            addVoteTaskToTaskSchedule(vote);
+        }
+    }
 
     @Transactional
     @Override
@@ -140,6 +155,17 @@ public class VoteServiceImpl implements VoteService {
         return VoteResponse.of(vote, voteItemResponses);
     }
 
+    @Transactional
+    @Override
+    public VoteResponse closeVote(Long voteId, Member member) {
+        Vote vote = voteRepository.findNotDeletedVoteById(voteId)
+            .orElseThrow(() -> new IllegalArgumentException("해당하는 투표가 없습니다."));
+        vote.checkWriterFromMemberId(member.getMemberId());
+        vote.updateVoteStatusToClose();
+        cancelTaskInSchedulerFromVoteId(voteId);
+        return VoteResponse.of(vote, convertVoteItemsToResponseFrom(getVoteItemsByVoteId(voteId)));
+    }
+
     private List<VoteItemDate> createVoteItemDate(VoteDateCreateServiceRequest request, Vote savedVote) {
         return voteItemRepository.saveAll(request.choices().stream()
             .map(choice -> VoteItemDate.create(savedVote, choice))
@@ -228,6 +254,15 @@ public class VoteServiceImpl implements VoteService {
 
     private Runnable publishClosedVoteTask(Long voteId) {
         return () -> eventPublisher.publishEvent(new RegisteredVoteEvent(voteId));
+    }
+
+    private void cancelTaskInSchedulerFromVoteId(Long voteId) {
+        ScheduledFuture<?> scheduledTask = scheduledTasks.get(voteId);
+        if (scheduledTask == null) {
+            throw new IllegalArgumentException("해당하는 투표 ID로 등록된 작업이 없습니다.");
+        }
+        scheduledTask.cancel(false);
+        scheduledTasks.remove(voteId);
     }
 
 }

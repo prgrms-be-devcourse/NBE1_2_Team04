@@ -503,7 +503,7 @@ class VoteServiceImplTest extends IntegrationTestSupport {
 
         Stadium givenStadium1 = Stadium.create(savedMember, "최강 풋살장", "서울시 강남구 어딘가", "01010101010", "최고임", 54.123, 10.123);
         Stadium savedStadium = stadiumRepository.save(givenStadium1);
-        Team team = Team.create(savedStadium.getStadiumId(),  "팀이름", "팀 설명", 1, 1, 1, "서울");
+        Team team = Team.create(savedStadium.getStadiumId(), "팀이름", "팀 설명", 1, 1, 1, "서울");
         Team savedTeam = teamRepository.save(team);
 
         Vote vote = Vote.create(savedMember.getMemberId(), 1L, "연말 경기 투표", endAt);
@@ -565,6 +565,44 @@ class VoteServiceImplTest extends IntegrationTestSupport {
                 "voteId", "title", "endAt", "voteStatus")
             .containsExactly(
                 response.voteId(), "9월4주차 구장 투표", endAt, VoteStatus.CLOSED
+            );
+    }
+
+    @Disabled("돌려도 통과는 하는데 스케쥴러가 취소되는지는 테스트가 안되고 있어서 테스트의 신뢰성이 부족함")
+    @DisplayName("투표 종료요청이 생기면 투표를 종료하고, 스케쥴러에서 제외시킨다.")
+    @Test
+    void closeVote() {
+        //given
+        LocalDateTime endAt = LocalDateTime.now().plusDays(1);
+
+        LocalDateTime choice1 = LocalDateTime.now().plusDays(2);
+        LocalDateTime choice2 = LocalDateTime.now().plusDays(3);
+        LocalDateTime choice3 = LocalDateTime.now().plusDays(4);
+
+        Member givenMember = Member.create("test@gmail.com", "1234", "test", "010-1234-5678", LoginProvider.ORIGINAL, "test", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE);
+        Member savedMember = memberRepository.save(givenMember);
+
+        Stadium givenStadium1 = Stadium.create(savedMember, "최강 풋살장", "서울시 강남구 어딘가", "01010101010", "최고임", 54.123, 10.123);
+        Stadium savedStadium = stadiumRepository.save(givenStadium1);
+        Team team = Team.create(savedStadium.getStadiumId(), "팀이름", "팀 설명", 1, 1, 1, "서울");
+        Team savedTeam = teamRepository.save(team);
+
+        Vote vote = Vote.create(1L, 1L, "연말 경기 투표", endAt);
+        Vote savedVote = voteRepository.save(vote);
+
+        VoteItem voteItem1 = VoteItemDate.create(savedVote, choice1);
+        VoteItem voteItem2 = VoteItemDate.create(savedVote, choice2);
+        VoteItem voteItem3 = VoteItemDate.create(savedVote, choice3);
+
+        List<VoteItem> savedVoteItems = voteItemRepository.saveAll(List.of(voteItem1, voteItem2, voteItem3));
+
+        //when
+        VoteResponse response = voteService.closeVote(savedVote.getVoteId(), savedMember);
+        //then
+        assertThat(response)
+            .extracting("voteId", "title", "endAt", "voteStatus")
+            .containsExactlyInAnyOrder(
+                response.voteId(), "연말 경기 투표", endAt, VoteStatus.CLOSED.getText()
             );
     }
 

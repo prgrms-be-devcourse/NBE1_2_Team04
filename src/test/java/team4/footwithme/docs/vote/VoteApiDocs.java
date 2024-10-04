@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import team4.footwithme.docs.RestDocsSupport;
+import team4.footwithme.member.domain.Member;
 import team4.footwithme.vote.api.VoteApi;
 import team4.footwithme.vote.api.request.*;
 import team4.footwithme.vote.service.VoteService;
@@ -53,6 +54,7 @@ public class VoteApiDocs extends RestDocsSupport {
                 1L,
                 "연말 행사 투표",
                 endAt,
+                "진행 중",
                 List.of(new VoteItemResponse(1L, "최강 풋살장", 0L),
                     new VoteItemResponse(2L, "열정 풋살장", 0L)
                 )
@@ -89,6 +91,8 @@ public class VoteApiDocs extends RestDocsSupport {
                         .description("투표 제목"),
                     fieldWithPath("data.endAt").type(JsonFieldType.ARRAY)
                         .description("투표 종료 시간"),
+                    fieldWithPath("data.voteStatus").type(JsonFieldType.STRING)
+                        .description("투표 상태"),
                     fieldWithPath("data.choices").type(JsonFieldType.ARRAY)
                         .description("투표 선택지 목록"),
                     fieldWithPath("data.choices[].voteItemId").type(JsonFieldType.NUMBER)
@@ -112,6 +116,7 @@ public class VoteApiDocs extends RestDocsSupport {
                 1L,
                 "연말 행사 투표",
                 endAt,
+                "진행 중",
                 List.of(new VoteItemResponse(1L, "최강 풋살장", 5L),
                     new VoteItemResponse(2L, "열정 풋살장", 4L)
                 )
@@ -140,6 +145,8 @@ public class VoteApiDocs extends RestDocsSupport {
                         .description("투표 제목"),
                     fieldWithPath("data.endAt").type(JsonFieldType.ARRAY)
                         .description("투표 종료 시간"),
+                    fieldWithPath("data.voteStatus").type(JsonFieldType.STRING)
+                        .description("투표 상태"),
                     fieldWithPath("data.choices").type(JsonFieldType.ARRAY)
                         .description("투표 선택지 목록"),
                     fieldWithPath("data.choices[].voteItemId").type(JsonFieldType.NUMBER)
@@ -168,6 +175,7 @@ public class VoteApiDocs extends RestDocsSupport {
                     1L,
                     "연말 행사 투표",
                     endAt,
+                    "진행 중",
                     List.of(
                         new VoteItemResponse(1L, "2021-12-25 12:00", 0L),
                         new VoteItemResponse(2L, "2021-12-26 12:00", 0L),
@@ -208,6 +216,8 @@ public class VoteApiDocs extends RestDocsSupport {
                         .description("투표 제목"),
                     fieldWithPath("data.endAt").type(JsonFieldType.ARRAY)
                         .description("투표 종료 시간"),
+                    fieldWithPath("data.voteStatus").type(JsonFieldType.STRING)
+                        .description("투표 상태"),
                     fieldWithPath("data.choices").type(JsonFieldType.ARRAY)
                         .description("투표 선택지 목록"),
                     fieldWithPath("data.choices[].voteItemId").type(JsonFieldType.NUMBER)
@@ -233,6 +243,7 @@ public class VoteApiDocs extends RestDocsSupport {
                     1L,
                     "연말 행사 투표",
                     endAt,
+                    "진행 중",
                     List.of(
                         new VoteItemResponse(1L, "2021-12-25 12:00", 0L),
                         new VoteItemResponse(2L, "2021-12-26 12:00", 0L),
@@ -266,6 +277,8 @@ public class VoteApiDocs extends RestDocsSupport {
                         .description("투표 제목"),
                     fieldWithPath("data.endAt").type(JsonFieldType.ARRAY)
                         .description("투표 종료 시간"),
+                    fieldWithPath("data.voteStatus").type(JsonFieldType.STRING)
+                        .description("투표 상태"),
                     fieldWithPath("data.choices").type(JsonFieldType.ARRAY)
                         .description("투표 선택지 목록"),
                     fieldWithPath("data.choices[].voteItemId").type(JsonFieldType.NUMBER)
@@ -284,7 +297,7 @@ public class VoteApiDocs extends RestDocsSupport {
     void deleteVote() throws Exception {
         long voteId = 1L;
 
-        given(voteService.deleteVote(voteId,""))
+        given(voteService.deleteVote(voteId, ""))
             .willReturn(voteId);
 
         mockMvc.perform(delete("/api/v1/votes/{voteId}", voteId)
@@ -324,6 +337,7 @@ public class VoteApiDocs extends RestDocsSupport {
                     1L,
                     "10월 행사 투표",
                     endAt,
+                    "진행 중",
                     List.of(
                         new VoteItemResponse(1L, "2021-12-25 12:00", 0L),
                         new VoteItemResponse(2L, "2021-12-26 12:00", 0L),
@@ -362,6 +376,70 @@ public class VoteApiDocs extends RestDocsSupport {
                         .description("투표 제목"),
                     fieldWithPath("data.endAt").type(JsonFieldType.ARRAY)
                         .description("투표 종료 시간"),
+                    fieldWithPath("data.voteStatus").type(JsonFieldType.STRING)
+                        .description("투표 상태"),
+                    fieldWithPath("data.choices").type(JsonFieldType.ARRAY)
+                        .description("투표 선택지 목록"),
+                    fieldWithPath("data.choices[].voteItemId").type(JsonFieldType.NUMBER)
+                        .description("투표 선택지 ID"),
+                    fieldWithPath("data.choices[].content").type(JsonFieldType.STRING)
+                        .description("투표 선택지 내용"),
+                    fieldWithPath("data.choices[].voteCount").type(JsonFieldType.NUMBER)
+                        .description("투표 선택지 투표 수")
+                )
+            ));
+    }
+
+    @DisplayName("투표를 종료하는 API")
+    @Test
+    void closeVote() throws Exception {
+        LocalDateTime endAt = LocalDateTime.now().plusDays(5);
+
+        VoteUpdateRequest request = new VoteUpdateRequest("10월 행사 투표", endAt);
+
+        given(voteService.closeVote(any(Long.class), any(Member.class)))
+            .willReturn(
+                new VoteResponse(
+                    1L,
+                    "10월 행사 투표",
+                    endAt,
+                    "마감",
+                    List.of(
+                        new VoteItemResponse(1L, "2021-12-25 12:00", 0L),
+                        new VoteItemResponse(2L, "2021-12-26 12:00", 0L),
+                        new VoteItemResponse(3L, "2021-12-27 12:00", 0L)
+                    )
+                )
+            );
+
+        mockMvc.perform(post("/api/v1/votes/close/{voteId}", 1L)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request))
+            )
+            .andExpect(status().isOk())
+            .andDo(document("vote-close",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                pathParameters(
+                    parameterWithName("voteId").description("투표 ID")
+                ),
+                responseFields(
+                    fieldWithPath("code").type(JsonFieldType.NUMBER)
+                        .description("코드"),
+                    fieldWithPath("status").type(JsonFieldType.STRING)
+                        .description("상태"),
+                    fieldWithPath("message").type(JsonFieldType.STRING)
+                        .description("메시지"),
+                    fieldWithPath("data").type(JsonFieldType.OBJECT)
+                        .description("응답 데이터"),
+                    fieldWithPath("data.voteId").type(JsonFieldType.NUMBER)
+                        .description("투표 ID"),
+                    fieldWithPath("data.title").type(JsonFieldType.STRING)
+                        .description("투표 제목"),
+                    fieldWithPath("data.endAt").type(JsonFieldType.ARRAY)
+                        .description("투표 종료 시간"),
+                    fieldWithPath("data.voteStatus").type(JsonFieldType.STRING)
+                        .description("투표 상태"),
                     fieldWithPath("data.choices").type(JsonFieldType.ARRAY)
                         .description("투표 선택지 목록"),
                     fieldWithPath("data.choices[].voteItemId").type(JsonFieldType.NUMBER)
