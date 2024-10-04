@@ -55,7 +55,7 @@ class CourtRepositoryTest extends IntegrationTestSupport {
     }
 
     @Test
-    @DisplayName("findByStadium_StadiumId는 특정 스타디움의 코트를 조회한다")
+    @DisplayName("findByStadium_StadiumId는 특정 풋살장의 구장를 조회한다")
     void findByStadium_StadiumId_returnsCourtsOfStadium() {
         Slice<Court> courts = courtRepository.findByStadium_StadiumId(testStadium.getStadiumId(), PageRequest.of(0, 10));
 
@@ -66,7 +66,7 @@ class CourtRepositoryTest extends IntegrationTestSupport {
     }
 
     @Test
-    @DisplayName("findByStadium_StadiumId는 삭제된 코트를 조회하지 않는다")
+    @DisplayName("findByStadium_StadiumId는 삭제된 구장을 조회하지 않는다")
     void findByStadium_StadiumId_doesNotReturnDeletedCourts() {
         courtRepository.delete(court2);
 
@@ -79,7 +79,7 @@ class CourtRepositoryTest extends IntegrationTestSupport {
     }
 
     @Test
-    @DisplayName("findAllActive는 모든 활성화된 코트를 조회한다")
+    @DisplayName("findAllActive는 모든 활성화된 구장을 조회한다")
     void findAllActive_returnsAllActiveCourts() {
         Slice<Court> courts = courtRepository.findAllActive(PageRequest.of(0, 10));
 
@@ -90,7 +90,7 @@ class CourtRepositoryTest extends IntegrationTestSupport {
     }
 
     @Test
-    @DisplayName("findAllActive는 삭제된 코트를 조회하지 않는다")
+    @DisplayName("findAllActive는 삭제된 구장을 조회하지 않는다")
     void findAllActive_doesNotReturnDeletedCourts() {
         courtRepository.delete(court1);
 
@@ -103,7 +103,7 @@ class CourtRepositoryTest extends IntegrationTestSupport {
     }
 
     @Test
-    @DisplayName("findActiveById는 활성화된 코트를 ID로 조회한다")
+    @DisplayName("findActiveById는 활성화된 구장을 ID로 조회한다")
     void findActiveById_returnsActiveCourt() {
         Optional<Court> foundCourt = courtRepository.findActiveById(court3.getCourtId());
 
@@ -112,7 +112,7 @@ class CourtRepositoryTest extends IntegrationTestSupport {
     }
 
     @Test
-    @DisplayName("findActiveById는 삭제된 코트를 조회하지 않는다")
+    @DisplayName("findActiveById는 삭제된 구장을 조회하지 않는다")
     void findActiveById_doesNotReturnDeletedCourt() {
         courtRepository.delete(court3);
 

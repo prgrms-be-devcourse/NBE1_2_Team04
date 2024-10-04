@@ -12,7 +12,9 @@ import team4.footwithme.global.exception.ExceptionMessage;
 import team4.footwithme.global.repository.CustomGlobalRepository;
 import team4.footwithme.member.domain.Member;
 import team4.footwithme.member.repository.MemberRepository;
+import team4.footwithme.stadium.domain.Court;
 import team4.footwithme.stadium.domain.Stadium;
+import team4.footwithme.stadium.repository.CourtRepository;
 import team4.footwithme.stadium.repository.StadiumRepository;
 import team4.footwithme.stadium.service.request.StadiumRegisterServiceRequest;
 import team4.footwithme.stadium.service.request.StadiumSearchByLocationServiceRequest;
@@ -20,6 +22,9 @@ import team4.footwithme.stadium.service.request.StadiumUpdateServiceRequest;
 import team4.footwithme.stadium.service.response.StadiumDetailResponse;
 import team4.footwithme.stadium.service.response.StadiumsResponse;
 import team4.footwithme.stadium.util.SortFieldMapper;
+
+import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -29,6 +34,8 @@ public class StadiumServiceImpl implements StadiumService {
     private final StadiumRepository stadiumRepository;
 
     private final MemberRepository memberRepository;
+
+    private final CourtRepository courtRepository;
 
     @Override
     public Slice<StadiumsResponse> getStadiumList(Integer page, String sort) {
@@ -85,6 +92,8 @@ public class StadiumServiceImpl implements StadiumService {
     public void deleteStadium(Long memberId, Long stadiumId) {
         Stadium stadium = validateStadiumOwnership(memberId, stadiumId);
         stadium.deleteStadium(memberId);
+        List<Court> courts = courtRepository.findActiveByStadiumId(stadiumId);
+        if (!courts.isEmpty()) courtRepository.deleteAll(courts);
         stadiumRepository.delete(stadium);
     }
 
