@@ -8,7 +8,7 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 
-@Profile("dev")
+@Profile("dev | test")
 @Configuration
 public class ExternalRedisConfig {
 
@@ -17,6 +17,7 @@ public class ExternalRedisConfig {
     @Value("${spring.data.redis.port}")
     private int redisPort;
 
+    @Profile("dev | test")
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
