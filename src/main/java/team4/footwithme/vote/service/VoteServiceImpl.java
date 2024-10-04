@@ -44,7 +44,7 @@ public class VoteServiceImpl implements VoteService {
 
         Vote vote = Vote.create(memberId, teamId, request.title(), request.endAt());
         Vote savedVote = voteRepository.save(vote);
-        addClosedVoteTaskToTaskSchedule(savedVote);
+        addVoteTaskToTaskSchedule(savedVote);
 
         List<VoteItemLocate> voteItemLocates = createVoteItemLocate(request, savedVote);
 
@@ -70,7 +70,7 @@ public class VoteServiceImpl implements VoteService {
 
         Vote vote = Vote.create(memberId, teamId, request.title(), request.endAt());
         Vote savedVote = voteRepository.save(vote);
-        addClosedVoteTaskToTaskSchedule(savedVote);
+        addVoteTaskToTaskSchedule(savedVote);
 
         List<VoteItemDate> savedVoteItems = createVoteItemDate(request, savedVote);
 
@@ -91,7 +91,7 @@ public class VoteServiceImpl implements VoteService {
     @Override
     public Long deleteVote(Long voteId, String email) {
         Vote vote = getVoteByVoteId(voteId);
-        vote.delete(getMemberIdByEmail(email));
+        vote.checkWriterFromMemberId(getMemberIdByEmail(email));
         voteRepository.delete(vote);
         return voteId;
     }
@@ -166,7 +166,7 @@ public class VoteServiceImpl implements VoteService {
     }
 
     private Vote getVoteByVoteId(Long voteId) {
-        return voteRepository.findById(voteId)
+        return voteRepository.findNotDeletedVoteById(voteId)
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 투표입니다."));
     }
 
@@ -222,9 +222,12 @@ public class VoteServiceImpl implements VoteService {
         );
     }
 
-    // 투표 종료시간이 지나면 투표를 종료하는 작업을 스케줄링합니다.
-    private void addClosedVoteTaskToTaskSchedule(Vote vote) {
-        taskScheduler.schedule(() -> eventPublisher.publishEvent(new RegisteredVoteEvent(vote.getVoteId())), vote.getInstantEndAt());
+    private void addVoteTaskToTaskSchedule(Vote vote) {
+        taskScheduler.schedule(publishClosedVoteTask(vote.getVoteId()), vote.getInstantEndAt());
+    }
+
+    private Runnable publishClosedVoteTask(Long voteId) {
+        return () -> eventPublisher.publishEvent(new RegisteredVoteEvent(voteId));
     }
 
 }

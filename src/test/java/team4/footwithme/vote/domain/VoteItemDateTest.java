@@ -25,7 +25,7 @@ class VoteItemDateTest {
             .isEqualTo(voteItem);
     }
 
-    @DisplayName("")
+    @DisplayName("투표 상세 항목 생성 시 투표 종료 시간보다 이른 시간을 선택할 수 없다.")
     @Test
     void createVoteItemWhenVoteItemIsBeforeEndAtThrowException() {
         //given

@@ -20,7 +20,7 @@ public class VoteEventHandler {
     @Transactional
     @EventListener
     public void onClosedVote(RegisteredVoteEvent event) {
-        Optional<Vote> vote = voteRepository.findById(event.voteId());
+        Optional<Vote> vote = voteRepository.findNotDeletedVoteById(event.voteId());
         vote.ifPresent(Vote::updateVoteStatusToClose);
     }
 
