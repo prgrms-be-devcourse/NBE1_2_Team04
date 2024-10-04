@@ -21,6 +21,9 @@ public interface StadiumRepository extends JpaRepository<Stadium, Long>, CustomS
     @Query("SELECT s FROM Stadium s WHERE s.isDeleted = 'false' AND s.stadiumId = :id")
     Optional<Stadium> findActiveById(@Param("id") Long id);
 
+    @Query("SELECT s FROM Stadium s WHERE s.isDeleted = 'false' AND s.name = :name")
+    Optional<Stadium> findActiveByName(@Param("name") String name);
+
     @Query("SELECT s FROM Stadium s WHERE s.isDeleted = 'false'")
     Slice<Stadium> findAllActiveStadiums(Pageable pageable);
 
