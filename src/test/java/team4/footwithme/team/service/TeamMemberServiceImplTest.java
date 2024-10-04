@@ -41,7 +41,7 @@ class TeamMemberServiceImplTest extends IntegrationTestSupport {
     @BeforeEach
     void setUp() {
         //팀 생성
-        team = Team.create(null, 111L, "테스트 팀이름", "테스트 팀 설명", 0, 0, 0, "서울");
+        team = Team.create(null, "테스트 팀이름", "테스트 팀 설명", 0, 0, 0, "서울");
         teamRepository.saveAndFlush(team);
         // 멤버 생성
         memberRepository.save(
