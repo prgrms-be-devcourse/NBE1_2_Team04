@@ -37,13 +37,21 @@ public class TeamMemberApi {
      */
 
     /**
-     * 팀 멤버 삭제
+     * 팀 탈퇴_팀장
      */
     @DeleteMapping("/{teamId}/members/{teamMemberId}")
-    public ApiResponse<Long> deleteTeamMember(@PathVariable Long teamId,@PathVariable Long teamMemberId, @AuthenticationPrincipal PrincipalDetails principalDetails){
-        teamMemberService.deleteTeamMembers(teamId, teamMemberId, principalDetails.getMember());
+    public ApiResponse<Long> deleteTeamMemberByCreator(@PathVariable Long teamId,@PathVariable Long teamMemberId, @AuthenticationPrincipal PrincipalDetails principalDetails){
+        teamMemberService.deleteTeamMemberByCreator(teamId, teamMemberId, principalDetails.getMember());
         return ApiResponse.ok(teamMemberId);
     }
 
+    /**
+     * 팀 탈퇴_본인
+     */
+    @DeleteMapping("/{teamId}/members")
+    public ApiResponse<Long> deleteTeamMember(@PathVariable Long teamId,@AuthenticationPrincipal PrincipalDetails principalDetails){
+        Long teamMemberId = teamMemberService.deleteTeamMember(teamId, principalDetails.getMember());
+        return ApiResponse.ok(teamMemberId);
+    }
 
 }

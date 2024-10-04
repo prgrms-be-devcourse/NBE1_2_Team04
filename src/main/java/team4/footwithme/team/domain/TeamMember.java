@@ -48,9 +48,20 @@ public class TeamMember extends BaseEntity {
             .build();
     }
 
-    //TeamMember 재등록
-    public void restoreTeamMember() {
-        this.restore();
+    public static TeamMember createCreator(Team team, Member member){
+        return TeamMember.builder()
+            .team(team)
+            .member(member)
+            .role(TeamMemberRole.CREATOR)
+            .build();
+    }
+
+    public static TeamMember createMember(Team team, Member member){
+        return TeamMember.builder()
+                .team(team)
+                .member(member)
+                .role(TeamMemberRole.MEMBER)
+                .build();
     }
 
 }

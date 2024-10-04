@@ -53,8 +53,7 @@ public class TeamServiceImpl implements TeamService {
         );
         Team createdTeam = teamRepository.save(entity);
 
-        //TODO :: 현재 유저 팀장으로 TeamMember에 저장
-        teamMemberRepository.save(TeamMember.create(createdTeam, member, TeamMemberRole.CREATOR));
+        teamMemberRepository.save(TeamMember.createCreator(createdTeam, member));
 
         return TeamDefaultResponse.from(createdTeam);
     }
@@ -94,9 +93,7 @@ public class TeamServiceImpl implements TeamService {
         //현재 유저 정보 검색
         TeamMember teamMember = findTeamMemberByIdOrThrowException(teamId, member.getMemberId());
         //권한 정보
-        if(checkAuthority(teamId, teamMember) == false) {
-            throw new IllegalArgumentException("수정 권한이 없습니다.");
-        }
+        checkAuthority(teamId, teamMember);
 
         //entity에 수정된 값 적용
         if (dto.name() != null) {
@@ -122,36 +119,29 @@ public class TeamServiceImpl implements TeamService {
         //현재 유저 정보 검색
         TeamMember teamMember = findTeamMemberByIdOrThrowException(teamId, member.getMemberId());
         //권한 정보
-        if(checkAuthority(teamId, teamMember) == false) {
-            throw new IllegalArgumentException("삭제 권한이 없습니다.");
-        }
+        checkAuthority(teamId, teamMember);
+
         teamRepository.delete(teamEntity);
         return teamId;
     }
 
 
     public Team findTeamByIdOrThrowException(long id){
-        Team team = teamRepository.findByTeamId(id);
-        if(team == null) {
-            throw new IllegalArgumentException("해당 팀이 존재하지 않습니다.");
-        }
+        Team team = teamRepository.findByTeamId(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 팀이 존재하지 않습니다."));
         return team;
     }
 
     public TeamMember findTeamMemberByIdOrThrowException(Long teamId, Long memberId){
-        TeamMember teamMember = teamMemberRepository.findByTeamIdAndMemberId(teamId, memberId);
-
-        if(teamMember == null || teamMember.getIsDeleted().equals(IsDeleted.TRUE)) {
-            throw new IllegalArgumentException("존재하지 않는 팀원입니다.");
-        }
+        TeamMember teamMember = teamMemberRepository.findByTeamIdAndMemberId(teamId, memberId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 팀원입니다."));
         return teamMember;
     }
 
-    public boolean checkAuthority(Long teamId, TeamMember teamMember){
-        if(teamMember.getTeam().getTeamId() == teamId && teamMember.getRole() == TeamMemberRole.CREATOR) {
-            return true;
+    public void checkAuthority(Long teamId, TeamMember teamMember){
+        if(teamMember.getTeam().getTeamId() != teamId || teamMember.getRole() != TeamMemberRole.CREATOR) {
+            throw new IllegalArgumentException("접근 권한이 없습니다.");
         }
-        return false;
     }
 
 }

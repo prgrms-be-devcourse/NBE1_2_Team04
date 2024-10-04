@@ -3,6 +3,8 @@ package team4.footwithme.team.repository;
 import lombok.RequiredArgsConstructor;
 import team4.footwithme.team.domain.TeamMember;
 
+import java.util.Optional;
+
 public interface CustomTeamMemberRepository {
-    TeamMember findByTeamIdAndMemberId(Long teamId, Long memberId);
+    Optional<TeamMember> findByTeamIdAndMemberId(Long teamId, Long memberId);
 }

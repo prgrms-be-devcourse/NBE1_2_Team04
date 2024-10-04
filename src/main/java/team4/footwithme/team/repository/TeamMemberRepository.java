@@ -9,12 +9,13 @@ import team4.footwithme.team.domain.Team;
 import team4.footwithme.team.domain.TeamMember;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface TeamMemberRepository extends JpaRepository<TeamMember, Long>, CustomTeamMemberRepository{
-    @Query("select tm from TeamMember tm where tm.isDeleted = 'false'")
-    List<TeamMember> findTeamMembersByTeam(Team team);
+    @Query("select tm from TeamMember tm where tm.isDeleted = 'false' and tm.team = :team")
+    List<TeamMember> findTeamMembersByTeam(@Param("team")Team team);
 
     @Query("select tm from TeamMember tm where tm.isDeleted = 'false' and tm.teamMemberId = :id")
-    TeamMember findByTeamMemberId(@Param("id")Long teamMemberId);
+    Optional<TeamMember> findByTeamMemberId(@Param("id")Long teamMemberId);
 }
