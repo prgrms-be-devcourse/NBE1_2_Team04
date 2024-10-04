@@ -1,7 +1,5 @@
 package team4.footwithme.stadium.repository;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,9 +24,6 @@ class CustomStadiumRepositoryImplTest extends IntegrationTestSupport {
 
     @Autowired
     private MemberRepository memberRepository;
-
-    @PersistenceContext
-    private EntityManager entityManager;
 
     @DisplayName("구장 이름을 IN절을 사용해 구장ID로 조회한다.")
     @Test
@@ -88,7 +83,7 @@ class CustomStadiumRepositoryImplTest extends IntegrationTestSupport {
         Assertions.assertThat(stadiumName).isEqualTo("최강 풋살장");
     }
 
-    @DisplayName("주어진 위치와 거리 내의 스타디움 목록을 조회한다.")
+    @DisplayName("주어진 위치와 거리 내의 풋살장 목록을 조회한다.")
     @Test
     void findStadiumsByLocation_withinDistance() {
         Member testMember = Member.create("test@example.com", "password", "Test User", "010-1234-5678", LoginProvider.ORIGINAL, "test@example.com", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE);
@@ -115,7 +110,7 @@ class CustomStadiumRepositoryImplTest extends IntegrationTestSupport {
                 .containsExactlyInAnyOrder("Stadium1", "Stadium3");
     }
 
-    @DisplayName("주어진 위치와 거리 밖의 스타디움은 조회되지 않는다.")
+    @DisplayName("주어진 위치와 거리 밖의 풋살장은 조회되지 않는다.")
     @Test
     void findStadiumsByLocation_outsideDistance() {
         Member testMember = Member.create("test@example.com", "password", "Test User", "010-1234-5678", LoginProvider.ORIGINAL, "test@example.com", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE);

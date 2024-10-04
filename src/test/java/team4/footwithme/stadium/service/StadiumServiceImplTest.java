@@ -54,13 +54,13 @@ class StadiumServiceImplTest extends IntegrationTestSupport {
                 .build();
         memberRepository.save(testMember);
 
-        Stadium stadium1 = Stadium.create(testMember, "Stadium1", "seoul", "123-4567", "Description1",
+        Stadium stadium1 = Stadium.create(testMember, "Stadium1", "seoul", "010-1111-1111", "Description1",
                 37.5642135, 127.0016985);
 
-        Stadium stadium2 = Stadium.create(testMember, "Stadium2", "busan", "890-1234", "Description2",
+        Stadium stadium2 = Stadium.create(testMember, "Stadium2", "busan", "010-2222-2222", "Description2",
                 35.1379222, 129.05562775);
 
-        Stadium stadium3 = Stadium.create(testMember, "Stadium3", "daejeon", "321-6547", "Description3",
+        Stadium stadium3 = Stadium.create(testMember, "Stadium3", "daejeon", "010-3333-3333", "Description3",
                 36.3504119, 127.3845475);
 
         stadiumRepository.save(stadium1);
@@ -69,7 +69,7 @@ class StadiumServiceImplTest extends IntegrationTestSupport {
     }
 
     @Test
-    @DisplayName("구장 목록을 정상적으로 반환해야 한다")
+    @DisplayName("풋살장 목록을 정상적으로 반환해야 한다")
     void getStadiumList() {
         Slice<StadiumsResponse> result = stadiumService.getStadiumList(0, "name");
 
@@ -80,7 +80,7 @@ class StadiumServiceImplTest extends IntegrationTestSupport {
     }
 
     @Test
-    @DisplayName("특정 구장의 상세 정보를 정상적으로 반환해야 한다")
+    @DisplayName("특정 풋살장의 상세 정보를 정상적으로 반환해야 한다")
     void getStadiumDetail() {
         Stadium stadium = stadiumRepository.findAll().get(0);
 
@@ -95,11 +95,11 @@ class StadiumServiceImplTest extends IntegrationTestSupport {
                         StadiumDetailResponse::latitude,
                         StadiumDetailResponse::longitude
                 )
-                .containsExactly("Stadium1", "seoul", "123-4567", 37.5642135, 127.0016985);
+                .containsExactly("Stadium1", "seoul", "010-1111-1111", 37.5642135, 127.0016985);
     }
 
     @Test
-    @DisplayName("이름 검색어로 구장 리스트를 정상적으로 반환해야 한다")
+    @DisplayName("이름 검색어로 풋살장 리스트를 정상적으로 반환해야 한다")
     void searchStadiumByName() {
         Slice<StadiumsResponse> result = stadiumService.getStadiumsByName("2", 0, "name");
 
@@ -110,7 +110,7 @@ class StadiumServiceImplTest extends IntegrationTestSupport {
     }
 
     @Test
-    @DisplayName("주소 검색어로 구장 리스트를 정상적으로 반환해야 한다")
+    @DisplayName("주소 검색어로 풋살장 리스트를 정상적으로 반환해야 한다")
     void searchStadiumByAddress() {
         Slice<StadiumsResponse> result = stadiumService.getStadiumsByAddress("seo", 0, "name");
 
@@ -121,7 +121,7 @@ class StadiumServiceImplTest extends IntegrationTestSupport {
     }
 
     @Test
-    @DisplayName("주어진 거리 내의 구장 목록을 반환해야 한다")
+    @DisplayName("주어진 거리 내의 풋살장 목록을 반환해야 한다")
     void getStadiumsWithinDistance_shouldReturnStadiumsWithinGivenDistance() {
         Double searchLatitude = 37.5665;
         Double searchLongitude = 126.9780;
@@ -142,7 +142,7 @@ class StadiumServiceImplTest extends IntegrationTestSupport {
     }
 
     @Test
-    @DisplayName("주어진 거리 외의 구장이 반환되지 않아야 한다")
+    @DisplayName("주어진 거리 외의 풋살장이 반환되지 않아야 한다")
     void getStadiumsWithinDistance_shouldReturnEmptyListWhenTooFar() {
         Double searchLatitude = 33.450701;
         Double searchLongitude = 126.570667;
@@ -160,10 +160,10 @@ class StadiumServiceImplTest extends IntegrationTestSupport {
     }
 
     @Test
-    @DisplayName("구장을 정상적으로 등록해야 한다")
+    @DisplayName("풋살장을 정상적으로 등록해야 한다")
     void registerStadium() {
         StadiumRegisterServiceRequest request = new StadiumRegisterServiceRequest(
-                "New Stadium", "Incheon", "111-2222", "New Description",
+                "New Stadium", "Incheon", "010-4444-4444", "New Description",
                 37.456, 126.705
         );
 
@@ -180,12 +180,12 @@ class StadiumServiceImplTest extends IntegrationTestSupport {
     }
 
     @Test
-    @DisplayName("구장을 정상적으로 수정해야 한다")
+    @DisplayName("풋살장을 정상적으로 수정해야 한다")
     void updateStadium() {
         Stadium stadium = stadiumRepository.findAll().get(0);
 
         StadiumUpdateServiceRequest request = new StadiumUpdateServiceRequest(
-                "Updated Stadium", "Updated Address", "999-8888", "Updated Description",
+                "Updated Stadium", "Updated Address", "010-9999-9999", "Updated Description",
                 38.0, 128.0
         );
 
@@ -209,7 +209,7 @@ class StadiumServiceImplTest extends IntegrationTestSupport {
     }
 
     @Test
-    @DisplayName("구장을 정상적으로 삭제해야 한다")
+    @DisplayName("풋살장을 정상적으로 삭제해야 한다")
     void deleteStadium() {
         Stadium stadium = stadiumRepository.findAll().get(0);
 
@@ -220,7 +220,7 @@ class StadiumServiceImplTest extends IntegrationTestSupport {
     }
 
     @Test
-    @DisplayName("존재하지 않는 구장을 조회할 때 IllegalArgumentException이 발생해야 한다")
+    @DisplayName("존재하지 않는 풋살장을 조회할 때 IllegalArgumentException이 발생해야 한다")
     void getStadiumDetail_whenStadiumDoesNotExist() {
         Long invalidId = -1L;
 
@@ -230,10 +230,10 @@ class StadiumServiceImplTest extends IntegrationTestSupport {
     }
 
     @Test
-    @DisplayName("존재하지 않는 구장을 수정할 때 IllegalArgumentException이 발생해야 한다")
+    @DisplayName("존재하지 않는 풋살장을 수정할 때 IllegalArgumentException이 발생해야 한다")
     void updateStadium_whenStadiumDoesNotExist() {
         StadiumUpdateServiceRequest request = new StadiumUpdateServiceRequest(
-                "Non-existent Stadium", "Nowhere", "000-0000", "No Description",
+                "Non-existent Stadium", "Nowhere", "000-0000-0000", "No Description",
                 0.0, 0.0
         );
 
@@ -245,9 +245,8 @@ class StadiumServiceImplTest extends IntegrationTestSupport {
     }
 
     @Test
-    @DisplayName("다른 회원의 구장을 수정할 때 IllegalArgumentException이 발생해야 한다")
+    @DisplayName("다른 회원의 풋살장을 수정할 때 IllegalArgumentException이 발생해야 한다")
     void updateStadium_whenMemberDoesNotOwnStadium() {
-        // 다른 회원 생성
         Member anotherMember = Member.builder()
                 .email("another@example.com")
                 .password("password")
@@ -266,7 +265,7 @@ class StadiumServiceImplTest extends IntegrationTestSupport {
         Stadium stadium = stadiumRepository.findAll().get(0);
 
         StadiumUpdateServiceRequest request = new StadiumUpdateServiceRequest(
-                "Unauthorized Update", "Unauthorized Address", "000-0000", "Unauthorized",
+                "Unauthorized Update", "Unauthorized Address", "000-0000-0000", "Unauthorized",
                 0.0, 0.0
         );
 
@@ -276,7 +275,7 @@ class StadiumServiceImplTest extends IntegrationTestSupport {
     }
 
     @Test
-    @DisplayName("존재하지 않는 구장을 삭제할 때 IllegalArgumentException이 발생해야 한다")
+    @DisplayName("존재하지 않는 풋살장을 삭제할 때 IllegalArgumentException이 발생해야 한다")
     void deleteStadium_whenStadiumDoesNotExist() {
         Long invalidStadiumId = -1L;
 
@@ -286,9 +285,8 @@ class StadiumServiceImplTest extends IntegrationTestSupport {
     }
 
     @Test
-    @DisplayName("다른 회원의 구장을 삭제할 때 IllegalArgumentException이 발생해야 한다")
+    @DisplayName("다른 회원의 풋살장을 삭제할 때 IllegalArgumentException이 발생해야 한다")
     void deleteStadium_whenMemberDoesNotOwnStadium() {
-        // 다른 회원 생성
         Member anotherMember = Member.builder()
                 .email("another@example.com")
                 .password("password")

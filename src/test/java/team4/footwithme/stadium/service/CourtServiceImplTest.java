@@ -61,7 +61,7 @@ class CourtServiceImplTest extends IntegrationTestSupport {
                 .build();
         memberRepository.save(testMember);
 
-        testStadium = Stadium.create(testMember, "Test Stadium", "Test Address", "010-1111-2222", "Test Description", 37.5665, 126.9780);
+        testStadium = Stadium.create(testMember, "Test Stadium", "Test Address", "010-1111-1111", "Test Description", 37.5665, 126.9780);
         stadiumRepository.save(testStadium);
 
         Court court1 = Court.create(testStadium, "Court1", "Description1", new BigDecimal("10000"));
@@ -71,7 +71,7 @@ class CourtServiceImplTest extends IntegrationTestSupport {
     }
 
     @Test
-    @DisplayName("특정 스타디움의 코트 목록을 정상적으로 반환해야 한다")
+    @DisplayName("특정 풋살장의 구장 목록을 정상적으로 반환해야 한다")
     void getCourtsByStadiumId() {
         Slice<CourtsResponse> result = courtService.getCourtsByStadiumId(testStadium.getStadiumId(), 0, "name");
 
@@ -82,7 +82,7 @@ class CourtServiceImplTest extends IntegrationTestSupport {
     }
 
     @Test
-    @DisplayName("전체 코트 목록을 정상적으로 반환해야 한다")
+    @DisplayName("전체 구장 목록을 정상적으로 반환해야 한다")
     void getAllCourts() {
         Slice<CourtsResponse> result = courtService.getAllCourts(0, "name");
 
@@ -93,7 +93,7 @@ class CourtServiceImplTest extends IntegrationTestSupport {
     }
 
     @Test
-    @DisplayName("코트 ID로 코트 상세 정보를 정상적으로 반환해야 한다")
+    @DisplayName("구장 ID로 구장 상세 정보를 정상적으로 반환해야 한다")
     void getCourtByCourtId() {
         Court court = courtRepository.findAll().get(0);
 
@@ -114,7 +114,7 @@ class CourtServiceImplTest extends IntegrationTestSupport {
     }
 
     @Test
-    @DisplayName("코트를 정상적으로 등록해야 한다")
+    @DisplayName("구장을 정상적으로 등록해야 한다")
     void registerCourt() {
         BigDecimal price = new BigDecimal("20000");
         CourtRegisterServiceRequest request = new CourtRegisterServiceRequest(
@@ -143,7 +143,7 @@ class CourtServiceImplTest extends IntegrationTestSupport {
     }
 
     @Test
-    @DisplayName("코트를 정상적으로 수정해야 한다")
+    @DisplayName("구장을 정상적으로 수정해야 한다")
     void updateCourt() {
         Court court = courtRepository.findAll().get(0);
 
@@ -185,7 +185,7 @@ class CourtServiceImplTest extends IntegrationTestSupport {
     }
 
     @Test
-    @DisplayName("코트를 정상적으로 삭제해야 한다")
+    @DisplayName("구장을 정상적으로 삭제해야 한다")
     void deleteCourt() {
         Court court = courtRepository.findAll().get(0);
 
@@ -200,7 +200,7 @@ class CourtServiceImplTest extends IntegrationTestSupport {
     }
 
     @Test
-    @DisplayName("존재하지 않는 코트를 조회할 때 IllegalArgumentException이 발생해야 한다")
+    @DisplayName("존재하지 않는 구장을 조회할 때 IllegalArgumentException이 발생해야 한다")
     void getCourtByCourtId_whenCourtDoesNotExist() {
         Long invalidCourtId = -1L;
 
@@ -210,7 +210,7 @@ class CourtServiceImplTest extends IntegrationTestSupport {
     }
 
     @Test
-    @DisplayName("존재하지 않는 스타디움에 코트를 등록할 때 IllegalArgumentException이 발생해야 한다")
+    @DisplayName("존재하지 않는 풋살장에 구장을 등록할 때 IllegalArgumentException이 발생해야 한다")
     void registerCourt_whenStadiumDoesNotExist() {
         BigDecimal price = new BigDecimal("20000");
         CourtRegisterServiceRequest request = new CourtRegisterServiceRequest(
@@ -226,7 +226,7 @@ class CourtServiceImplTest extends IntegrationTestSupport {
     }
 
     @Test
-    @DisplayName("존재하지 않는 코트를 수정할 때 IllegalArgumentException이 발생해야 한다")
+    @DisplayName("존재하지 않는 구장을 수정할 때 IllegalArgumentException이 발생해야 한다")
     void updateCourt_whenCourtDoesNotExist() {
         BigDecimal updatedPrice = new BigDecimal("25000");
         CourtUpdateServiceRequest request = new CourtUpdateServiceRequest(
@@ -244,7 +244,7 @@ class CourtServiceImplTest extends IntegrationTestSupport {
     }
 
     @Test
-    @DisplayName("존재하지 않는 코트를 삭제할 때 IllegalArgumentException이 발생해야 한다")
+    @DisplayName("존재하지 않는 구장을 삭제할 때 IllegalArgumentException이 발생해야 한다")
     void deleteCourt_whenCourtDoesNotExist() {
         CourtDeleteServiceRequest request = new CourtDeleteServiceRequest(
                 testStadium.getStadiumId()
@@ -258,7 +258,7 @@ class CourtServiceImplTest extends IntegrationTestSupport {
     }
 
     @Test
-    @DisplayName("다른 회원의 스타디움에 코트를 등록할 때 IllegalArgumentException이 발생해야 한다")
+    @DisplayName("다른 회원의 풋살장에 구장을 등록할 때 IllegalArgumentException이 발생해야 한다")
     void registerCourt_whenMemberDoesNotOwnStadium() {
         Member anotherMember = Member.builder()
                 .email("another@example.com")
@@ -289,7 +289,7 @@ class CourtServiceImplTest extends IntegrationTestSupport {
     }
 
     @Test
-    @DisplayName("다른 회원의 스타디움의 코트를 수정할 때 IllegalArgumentException이 발생해야 한다")
+    @DisplayName("다른 회원의 풋살장의 구장을 수정할 때 IllegalArgumentException이 발생해야 한다")
     void updateCourt_whenMemberDoesNotOwnStadium() {
         Member anotherMember = Member.builder()
                 .email("another@example.com")
@@ -322,7 +322,7 @@ class CourtServiceImplTest extends IntegrationTestSupport {
     }
 
     @Test
-    @DisplayName("다른 회원의 스타디움의 코트를 삭제할 때 IllegalArgumentException이 발생해야 한다")
+    @DisplayName("다른 회원의 풋살장의 구장을 삭제할 때 IllegalArgumentException이 발생해야 한다")
     void deleteCourt_whenMemberDoesNotOwnStadium() {
         Member anotherMember = Member.builder()
                 .email("another@example.com")
