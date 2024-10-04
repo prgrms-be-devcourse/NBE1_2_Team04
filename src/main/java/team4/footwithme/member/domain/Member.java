@@ -75,6 +75,19 @@ public class Member extends BaseEntity {
             .build();
     }
 
+    public static Member createTemporary(String email, String name, LoginProvider loginProvider, String snsId) {
+        return Member.builder()
+                .email(email)
+                .loginType(LoginType.builder()
+                        .loginProvider(loginProvider)
+                        .snsId(snsId)
+                        .build())
+                .name(name)
+                .memberRole(MemberRole.GUEST)
+                .termsAgreed(TermsAgreed.DISAGREE)
+                .build();
+    }
+
 
     public void update(String name, String phoneNumber, Gender gender){
         if(name != null) {

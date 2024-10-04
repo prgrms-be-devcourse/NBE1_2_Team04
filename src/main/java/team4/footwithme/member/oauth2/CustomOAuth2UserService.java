@@ -40,17 +40,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         Member member = memberRepository.findByEmail(email)
                 .orElseGet(() -> {
-                    Member newMember = Member.builder()
-                            .email(email)
-                            .password("")
-                            .loginType(LoginType.builder()
-                                    .loginProvider(loginProvider)
-                                    .snsId(snsId)
-                                            .build())
-                            .name(name)
-                            .memberRole(MemberRole.GUEST)
-                            .termsAgreed(TermsAgreed.DISAGREE)
-                            .build();
+                    Member newMember = Member.createTemporary(email, name, loginProvider, snsId);
                     return newMember;
                 }); // 없을 시 임시 유저 생성 (저장 x)
 
