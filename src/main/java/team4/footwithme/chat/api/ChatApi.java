@@ -5,12 +5,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import team4.footwithme.chat.api.request.ChatRequest;
+import team4.footwithme.chat.api.request.ChatUpdateRequest;
 import team4.footwithme.chat.service.ChatService;
 import team4.footwithme.chat.service.response.ChatResponse;
 import team4.footwithme.global.api.ApiResponse;
+import team4.footwithme.member.jwt.PrincipalDetails;
 
 @RequiredArgsConstructor
 @RestController
@@ -23,9 +27,8 @@ public class ChatApi {
      */
     // TODO : test를 위해 email을 변수로 설정함. 나중에 매개변수에 @AuthenticationPrincipal에서 이메일 빼오기
     @MessageMapping("/api/v1/chat/message")
-    public void sendMessage(@Valid ChatRequest request) {
-        String email = "a@a.com";
-        chatService.sendMessage(request.toServiceRequest(), email);
+    public void sendMessage(@Valid ChatRequest request, @Header("Authorization") String token) {
+        chatService.sendMessage(request.toServiceRequest(), token);
     }
 
     /**
@@ -37,9 +40,27 @@ public class ChatApi {
      * @return
      */
     @GetMapping("/{chatroomId}")
-    public ApiResponse<Slice<ChatResponse>> getChatting(@PathVariable Long chatroomId, @RequestParam int page, @RequestParam int size) {
-        String email = "a@a.com";
-        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("createdAt").descending());
+    public ApiResponse<Slice<ChatResponse>> getChatting(@PathVariable Long chatroomId, @RequestParam int page, @RequestParam int size, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        String email = principalDetails.getUsername();
+        PageRequest pageRequest = PageRequest.of(page-1, size, Sort.by("createdAt").descending());
         return ApiResponse.ok(chatService.getChatList(chatroomId, pageRequest, email));
+    }
+
+    /**
+     * 채팅 수정
+     */
+    @PutMapping("/{chatId}")
+    public ApiResponse<ChatResponse> updateChatting(@PathVariable Long chatId, @RequestBody @Valid ChatUpdateRequest request, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        String email = principalDetails.getUsername();
+        return ApiResponse.ok(chatService.updateChat(request.toServiceRequest(), email, chatId));
+    }
+
+    /**
+     * 채팅 삭제
+     */
+    @DeleteMapping("/{chatId}")
+    public ApiResponse<Long> deleteChatting(@PathVariable Long chatId, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        String email = principalDetails.getUsername();
+        return ApiResponse.ok(chatService.deleteChat(email, chatId));
     }
 }

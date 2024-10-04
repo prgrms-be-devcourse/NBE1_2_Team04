@@ -2,9 +2,14 @@ package team4.footwithme.stadium.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team4.footwithme.global.exception.ExceptionMessage;
+import team4.footwithme.global.repository.CustomGlobalRepository;
 import team4.footwithme.member.domain.Member;
 import team4.footwithme.member.repository.MemberRepository;
 import team4.footwithme.stadium.domain.Stadium;
@@ -14,11 +19,7 @@ import team4.footwithme.stadium.service.request.StadiumSearchByLocationServiceRe
 import team4.footwithme.stadium.service.request.StadiumUpdateServiceRequest;
 import team4.footwithme.stadium.service.response.StadiumDetailResponse;
 import team4.footwithme.stadium.service.response.StadiumsResponse;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import team4.footwithme.stadium.util.SortFieldMapper;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -29,109 +30,74 @@ public class StadiumServiceImpl implements StadiumService {
 
     private final MemberRepository memberRepository;
 
-    // 구장 목록 조회
-    public List<StadiumsResponse> getStadiumList() {
-        return stadiumRepository.findAllActiveStadiums().stream()
-                .map(stadium -> new StadiumsResponse(stadium.getStadiumId(), stadium.getName(), stadium.getAddress()))
-                .toList();
+    @Override
+    public Slice<StadiumsResponse> getStadiumList(Integer page, String sort) {
+        Pageable pageable = PageRequest.of(page, 10, Sort.by(SortFieldMapper.getDatabaseField(sort)));
+        return stadiumRepository.findAllActiveStadiums(pageable).map(StadiumsResponse::from);
     }
 
-    // 구장 상세 정보 조회
+    @Override
     public StadiumDetailResponse getStadiumDetail(Long id) {
-        Stadium stadium = findStadiumByIdOrThrowException(id);
-
-        return StadiumDetailResponse.of(stadium);
+        return StadiumDetailResponse.from((Stadium) findEntityByIdOrThrowException(stadiumRepository, id, ExceptionMessage.STADIUM_NOT_FOUND));
     }
 
-    // 이름으로 구장 검색
-    public List<StadiumsResponse> getStadiumsByName(String query) {
-        List<Stadium> stadiums = stadiumRepository.findByNameContainingIgnoreCase(query);
-        return Optional.ofNullable(stadiums)
-            .orElse(Collections.emptyList())
-            .stream()
-            .map(StadiumsResponse::of)
-            .collect(Collectors.toList());
+    @Override
+    public Slice<StadiumsResponse> getStadiumsByName(String query, Integer page, String sort) {
+        Pageable pageable = PageRequest.of(page, 10, Sort.by(SortFieldMapper.getDatabaseField(sort)));
+        return stadiumRepository.findByNameContainingIgnoreCase(query, pageable).map(StadiumsResponse::from);
     }
 
-    // 주소로 구장 검색
-    public List<StadiumsResponse> getStadiumsByAddress(String address) {
-        List<Stadium> stadiums = stadiumRepository.findByAddressContainingIgnoreCase(address);
-        return Optional.ofNullable(stadiums)
-                .orElse(Collections.emptyList())
-                .stream()
-                .map(stadium -> StadiumsResponse.of(stadium))
-                .collect(Collectors.toList());
+    @Override
+    public Slice<StadiumsResponse> getStadiumsByAddress(String address, Integer page, String sort) {
+        Pageable pageable = PageRequest.of(page, 10, Sort.by(SortFieldMapper.getDatabaseField(sort)));
+        return stadiumRepository.findByAddressContainingIgnoreCase(address, pageable).map(StadiumsResponse::from);
     }
 
-    // 위도, 경도의 일정 거리 내의 구장 목록 반환
-    public List<StadiumsResponse> getStadiumsWithinDistance(StadiumSearchByLocationServiceRequest request) {
-        System.out.println(request.latitude());
-        System.out.println(request.longitude());
-        System.out.println(request.distance());
-        List<Stadium> stadiums = stadiumRepository.findStadiumsByLocation(request.latitude(), request.longitude(), request.distance());
-        return stadiums.stream()
-            .map(stadium -> new StadiumsResponse(stadium.getStadiumId(), stadium.getName(), stadium.getAddress()))
-            .collect(Collectors.toList());
+    @Override
+    public Slice<StadiumsResponse> getStadiumsWithinDistance(StadiumSearchByLocationServiceRequest request, Integer page, String sort) {
+        Pageable pageable = PageRequest.of(page, 10, Sort.by(SortFieldMapper.getDatabaseField(sort)));
+        return stadiumRepository.findStadiumsByLocation(request.latitude(), request.longitude(), request.distance(), pageable)
+                .map(StadiumsResponse::from);
     }
 
-    // 풋살장 등록
+    @Override
     @Transactional
     public StadiumDetailResponse registerStadium(StadiumRegisterServiceRequest request, Long memberId) {
-        Member member = findMemberByIdOrThrowException(memberId);
-
-        Stadium stadium = Stadium.create(
-                member,
-                request.name(),
-                request.address(),
-                request.phoneNumber(),
-                request.description(),
-                request.latitude(),
-                request.longitude()
-        );
+        Member member = (Member) findEntityByIdOrThrowException(memberRepository, memberId, ExceptionMessage.MEMBER_NOT_FOUND);
+        Stadium stadium = Stadium.create(member, request.name(), request.address(), request.phoneNumber(), request.description(),
+                request.latitude(), request.longitude());
 
         stadiumRepository.save(stadium);
-
-        return StadiumDetailResponse.of(stadium);
+        return StadiumDetailResponse.from(stadium);
     }
 
-    // 풋살장 정보 수정
+    @Override
     @Transactional
     public StadiumDetailResponse updateStadium(StadiumUpdateServiceRequest request, Long memberId, Long stadiumId) {
-        findMemberByIdOrThrowException(memberId);
-        Stadium stadium = findStadiumByIdOrThrowException(stadiumId);
-        if (!stadium.getMember().getMemberId().equals(memberId)) {
-            throw new IllegalArgumentException(ExceptionMessage.STADIUM_NOT_OWNED_BY_MEMBER.getText());
-        }
-        stadium.updateStadium(request.name(), request.address(), request.phoneNumber(), request.description(), request.latitude(), request.longitude());
-        return StadiumDetailResponse.of(stadium);
+        Stadium stadium = validateStadiumOwnership(memberId, stadiumId);
+        stadium.updateStadium(memberId, request.name(), request.address(), request.phoneNumber(), request.description(),
+                request.latitude(), request.longitude());
+        return StadiumDetailResponse.from(stadium);
     }
 
-    // 풋살장 삭제
+    @Override
     @Transactional
     public void deleteStadium(Long memberId, Long stadiumId) {
-        findMemberByIdOrThrowException(memberId);
-        Stadium stadium = findStadiumByIdOrThrowException(stadiumId);
-        if (!stadium.getMember().getMemberId().equals(memberId)) {
-            throw new IllegalArgumentException(ExceptionMessage.STADIUM_NOT_OWNED_BY_MEMBER.getText());
-        }
+        Stadium stadium = validateStadiumOwnership(memberId, stadiumId);
+        stadium.deleteStadium(memberId);
         stadiumRepository.delete(stadium);
     }
 
-    // 풋살장 조회 예외처리
-    public Stadium findStadiumByIdOrThrowException(long id) {
-        return stadiumRepository.findByStadiumId(id)
-                .orElseThrow(() -> {
-                    log.warn(">>>> {} : {} <<<<", id, ExceptionMessage.STADIUM_NOT_FOUND);
-                    return new IllegalArgumentException(ExceptionMessage.STADIUM_NOT_FOUND.getText());
-                });
+    private Stadium validateStadiumOwnership(Long memberId, Long stadiumId) {
+        findEntityByIdOrThrowException(memberRepository, memberId, ExceptionMessage.MEMBER_NOT_FOUND);
+        return (Stadium) findEntityByIdOrThrowException(stadiumRepository, stadiumId, ExceptionMessage.STADIUM_NOT_FOUND);
     }
 
-    //맴버 조회 예외처리
-    public Member findMemberByIdOrThrowException(long id) {
-        return memberRepository.findByMemberId(id)
-                .orElseThrow(()-> {
-                    log.warn(">>>> {} : {} <<<<", id, ExceptionMessage.MEMBER_NOT_FOUND);
-                    return new IllegalArgumentException(ExceptionMessage.MEMBER_NOT_FOUND.getText());
+    private <T> T findEntityByIdOrThrowException(CustomGlobalRepository<T> repository, Long id, ExceptionMessage exceptionMessage) {
+        return repository.findActiveById(id)
+                .orElseThrow(() -> {
+                    log.warn(">>>> {} : {} <<<<", id, exceptionMessage);
+                    return new IllegalArgumentException(exceptionMessage.getText());
                 });
     }
 }

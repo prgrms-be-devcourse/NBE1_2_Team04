@@ -6,10 +6,14 @@ import org.springframework.stereotype.Repository;
 import team4.footwithme.chat.domain.Chat;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ChatRepository extends JpaRepository<Chat, Long>, CustomChatRepository {
 
     @Query("select c from Chat c where c.isDeleted = 'false' and c.chatRoom.chatroomId = ?1")
     List<Chat> findByChatRoom_ChatroomId(Long chatroomId);
+
+    @Query("select c from Chat c where c.isDeleted = 'false' and c.chatId = ?1")
+    Optional<Chat> findByChatId(Long chatId);
 }

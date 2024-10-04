@@ -28,7 +28,14 @@ public class ChatroomApi {
      */
     @DeleteMapping("/{chatroomId}")
     public ApiResponse<Long> deleteChatroom(@PathVariable("chatroomId") Long chatroomId) {
-        chatroomService.deleteChatroom(chatroomId);
-        return ApiResponse.ok(chatroomId);
+        return ApiResponse.ok(chatroomService.deleteChatroomByChatroomId(chatroomId));
+    }
+
+    /**
+     * 채팅방 수정
+     */
+    @PutMapping("/{chatroomId}")
+    public ApiResponse<ChatroomResponse> updateChatroom(@PathVariable("chatroomId") Long chatroomId, @RequestBody @Valid ChatroomRequest chatroomRequest) {
+        return ApiResponse.ok(chatroomService.updateChatroom(chatroomId, chatroomRequest.toServiceRequest()));
     }
 }

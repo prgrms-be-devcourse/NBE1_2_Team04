@@ -28,7 +28,7 @@ public record StadiumRegisterRequest(
         @Max(value = 180, message = "경도 값은 180도 이하이어야 합니다.")
         Double longitude
 ) {
-        public StadiumRegisterServiceRequest toServiceRequest() {
-                return new StadiumRegisterServiceRequest(name, address, phoneNumber, description, latitude, longitude);
-        }
+    public StadiumRegisterServiceRequest toServiceRequest() {
+        return new StadiumRegisterServiceRequest(name, address, phoneNumber, description, latitude, longitude);
+    }
 }

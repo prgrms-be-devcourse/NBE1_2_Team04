@@ -57,6 +57,8 @@ public class MemberApiDocs extends RestDocsSupport {
         //when
         given(memberService.join(any(JoinServiceRequest.class)))
                 .willReturn(response);
+
+        //then
         mockMvc.perform(post("/api/v1/members/join")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))

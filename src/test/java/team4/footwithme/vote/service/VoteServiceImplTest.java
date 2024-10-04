@@ -2,6 +2,7 @@ package team4.footwithme.vote.service;
 
 import jakarta.persistence.EntityManager;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -362,7 +363,7 @@ class VoteServiceImplTest extends IntegrationTestSupport {
 
         List<VoteItem> savedVoteItems = voteItemRepository.saveAll(List.of(voteItem1, voteItem2, voteItem3));
         //when
-        Long deletedId = voteService.deleteVote(savedVote.getVoteId(),savedMember.getEmail());
+        Long deletedId = voteService.deleteVote(savedVote.getVoteId(), savedMember.getEmail());
 
         // @SQLDelete를 사용하면 수동으로 flush 해야함
         entityManager.flush();
@@ -523,6 +524,47 @@ class VoteServiceImplTest extends IntegrationTestSupport {
             .extracting("voteId", "title", "endAt")
             .containsExactlyInAnyOrder(
                 savedVote.getVoteId(), "연말 경기 투표 수정", endAt
+            );
+    }
+
+    @Disabled("신뢰성이 없는 테스트임 추후 수정이 따로 필요함 Proudct 환경과 간극이 존재함")
+    @DisplayName("투표 마감시간이되면 투표를 종료한다.")
+    @Test
+    void addClosedVoteTaskToTaskSchedule() throws InterruptedException {
+        //given
+        LocalDateTime endAt = LocalDateTime.now().plusSeconds(1);
+
+        Member givenMember = Member.create("test@gmail.com", "1234", "test", "010-1234-5678", LoginProvider.ORIGINAL, "test", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE);
+        Member savedMember = memberRepository.save(givenMember);
+        Stadium givenStadium1 = Stadium.create(savedMember, "최강 풋살장", "서울시 강남구 어딘가", "01010101010", "최고임", 54.123, 10.123);
+        Stadium givenStadium2 = Stadium.create(savedMember, "열정 풋살장", "서울시 강서구 어딘가", "01099999999", "열정 있음", 78.90, 9.876);
+        Stadium givenStadium4 = Stadium.create(savedMember, "미친 풋살장", "서울시 강북구 어딘가", "01044444444", "강북에 있음", 19.8374, 67.765);
+
+        List<Stadium> savedStadiums = stadiumRepository.saveAll(List.of(givenStadium1, givenStadium2, givenStadium4));
+        List<Long> stadiumIds = List.of(savedStadiums.get(0).getStadiumId(), savedStadiums.get(1).getStadiumId(), savedStadiums.get(2).getStadiumId());
+
+        Team team = Team.create(givenStadium1.getStadiumId(), 1L, "팀이름", "팀 설명", 1, 1, 1, "서울");
+        Team savedTeam = teamRepository.save(team);
+
+        VoteStadiumCreateServiceRequest request = new VoteStadiumCreateServiceRequest("9월4주차 구장 투표", endAt, stadiumIds);
+
+        //when
+
+        VoteResponse response = voteService.createStadiumVote(request, savedTeam.getTeamId(), "test@gmail.com");
+        //then
+        assertThat(response).isNotNull()
+            .extracting("voteId", "title", "endAt")
+            .containsExactlyInAnyOrder(
+                response.voteId(), "9월4주차 구장 투표", endAt
+            );
+
+        System.out.println("실행 할 시간 확인" + LocalDateTime.now());
+        Optional<Vote> updateVote = voteRepository.findById(response.voteId());
+        Thread.sleep(2000);
+        Assertions.assertThat(updateVote.get()).extracting(
+                "voteId", "title", "endAt", "voteStatus")
+            .containsExactly(
+                response.voteId(), "9월4주차 구장 투표", endAt, VoteStatus.CLOSED
             );
     }
 

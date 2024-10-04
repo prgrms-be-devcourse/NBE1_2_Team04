@@ -3,6 +3,7 @@ package team4.footwithme.stadium.api.request;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import team4.footwithme.stadium.service.request.StadiumSearchByLocationServiceRequest;
 
 public record StadiumSearchByLocationRequest(
         @NotNull(message = "위도 값은 필수 입력 항목입니다.")
@@ -18,4 +19,8 @@ public record StadiumSearchByLocationRequest(
         @NotNull(message = "거리 값은 필수 입력 항목입니다.")
         @Min(value = 0, message = "거리는 0 이상이어야 합니다.")
         Double distance
-) {}
+) {
+        public StadiumSearchByLocationServiceRequest toServiceRequest() {
+                return new StadiumSearchByLocationServiceRequest(latitude, longitude, distance);
+        }
+}

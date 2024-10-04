@@ -3,11 +3,16 @@ package team4.footwithme.chat.service;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import team4.footwithme.chat.service.request.ChatServiceRequest;
+import team4.footwithme.chat.service.request.ChatUpdateServiceRequest;
 import team4.footwithme.chat.service.response.ChatResponse;
 
 public interface ChatService {
 
-    void sendMessage(ChatServiceRequest request, String email);
+    void sendMessage(ChatServiceRequest request, String token);
 
     Slice<ChatResponse> getChatList(Long chatroomId, PageRequest pageRequest, String email);
+
+    ChatResponse updateChat(ChatUpdateServiceRequest request, String email, Long chatId);
+
+    Long deleteChat(String email, Long chatId);
 }
