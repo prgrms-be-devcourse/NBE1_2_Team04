@@ -41,9 +41,8 @@ public class ChatApi {
      */
     @GetMapping("/{chatroomId}")
     public ApiResponse<Slice<ChatResponse>> getChatting(@PathVariable Long chatroomId, @RequestParam int page, @RequestParam int size, @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        String email = principalDetails.getUsername();
         PageRequest pageRequest = PageRequest.of(page-1, size, Sort.by("createdAt").descending());
-        return ApiResponse.ok(chatService.getChatList(chatroomId, pageRequest, email));
+        return ApiResponse.ok(chatService.getChatList(chatroomId, pageRequest, principalDetails.getMember()));
     }
 
     /**
@@ -51,8 +50,7 @@ public class ChatApi {
      */
     @PutMapping("/{chatId}")
     public ApiResponse<ChatResponse> updateChatting(@PathVariable Long chatId, @RequestBody @Valid ChatUpdateRequest request, @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        String email = principalDetails.getUsername();
-        return ApiResponse.ok(chatService.updateChat(request.toServiceRequest(), email, chatId));
+        return ApiResponse.ok(chatService.updateChat(request.toServiceRequest(), principalDetails.getMember(), chatId));
     }
 
     /**
@@ -60,7 +58,6 @@ public class ChatApi {
      */
     @DeleteMapping("/{chatId}")
     public ApiResponse<Long> deleteChatting(@PathVariable Long chatId, @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        String email = principalDetails.getUsername();
-        return ApiResponse.ok(chatService.deleteChat(email, chatId));
+        return ApiResponse.ok(chatService.deleteChat(principalDetails.getMember(), chatId));
     }
 }
