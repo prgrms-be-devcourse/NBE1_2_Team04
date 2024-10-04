@@ -15,10 +15,7 @@ import team4.footwithme.member.jwt.JwtTokenUtil;
 import team4.footwithme.member.jwt.PrincipalDetails;
 import team4.footwithme.member.jwt.response.TokenResponse;
 import team4.footwithme.member.repository.MemberRepository;
-import team4.footwithme.member.service.request.JoinServiceRequest;
-import team4.footwithme.member.service.request.LoginServiceRequest;
-import team4.footwithme.member.service.request.UpdatePasswordServiceRequest;
-import team4.footwithme.member.service.request.UpdateServiceRequest;
+import team4.footwithme.member.service.request.*;
 import team4.footwithme.member.service.response.LoginResponse;
 import team4.footwithme.member.service.response.MemberResponse;
 
@@ -41,7 +38,11 @@ public class MemberServiceImpl implements MemberService {
             throw new IllegalArgumentException("이미 존재하는 이메일 입니다.");
 
         Member member = serviceRequest.toEntity();
-        member.encodePassword(jwtSecurityConfig.passwordEncoder());
+
+        if(member.getPassword() != null){ // OAUth 2 회원가입 시 Password 가 null로 들어옴
+            member.encodePassword(jwtSecurityConfig.passwordEncoder());
+        }
+
         memberRepository.save(member);
 
         return MemberResponse.from(member);
@@ -122,5 +123,4 @@ public class MemberServiceImpl implements MemberService {
 
         return "Success Change Password";
     }
-
 }

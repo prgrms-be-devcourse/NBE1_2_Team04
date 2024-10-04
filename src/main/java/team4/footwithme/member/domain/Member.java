@@ -9,7 +9,6 @@ import org.hibernate.annotations.SQLDelete;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import team4.footwithme.global.domain.BaseEntity;
 import org.hibernate.annotations.SQLDelete;
-import team4.footwithme.member.api.request.UpdateRequest;
 
 
 @Getter
@@ -25,7 +24,6 @@ public class Member extends BaseEntity {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false)
     private String password;
 
     @Column(nullable = false)
