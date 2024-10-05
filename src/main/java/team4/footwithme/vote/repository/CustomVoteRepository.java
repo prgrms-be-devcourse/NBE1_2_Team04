@@ -11,4 +11,6 @@ public interface CustomVoteRepository {
 
     List<Vote> findOpenedVotes();
 
+    Long choiceMemberCountByVoteId(Long voteId);
+
 }

@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.context.support.WithSecurityContext;
 import team4.footwithme.ApiTestSupport;
 import team4.footwithme.config.SecurityConfig;
 import team4.footwithme.vote.api.request.StadiumChoices;
@@ -47,8 +46,8 @@ class VoteApiTest extends ApiTestSupport {
             "연말 행사 투표",
             endAt,
             "진행 중",
-            List.of(new VoteItemResponse(1L, "최강 풋살장", 0L),
-                new VoteItemResponse(2L, "열정 풋살장", 0L)
+            List.of(new VoteItemResponse(1L, "최강 풋살장", List.of()),
+                new VoteItemResponse(2L, "열정 풋살장", List.of())
             )
         );
 
@@ -95,8 +94,8 @@ class VoteApiTest extends ApiTestSupport {
                 "연말 행사 투표",
                 endAt,
                 "진행 중",
-                List.of(new VoteItemResponse(1L, "최강 풋살장", 0L),
-                    new VoteItemResponse(2L, "열정 풋살장", 0L)
+                List.of(new VoteItemResponse(1L, "최강 풋살장", List.of()),
+                    new VoteItemResponse(2L, "열정 풋살장", List.of())
                 )
             ));
 
@@ -129,8 +128,8 @@ class VoteApiTest extends ApiTestSupport {
                 "연말 행사 투표",
                 endAt,
                 "진행 중",
-                List.of(new VoteItemResponse(1L, "최강 풋살장", 0L),
-                    new VoteItemResponse(2L, "열정 풋살장", 0L)
+                List.of(new VoteItemResponse(1L, "최강 풋살장", List.of()),
+                    new VoteItemResponse(2L, "열정 풋살장", List.of())
                 )
             ));
 
@@ -163,8 +162,8 @@ class VoteApiTest extends ApiTestSupport {
                 "연말 행사 투표",
                 endAt,
                 "진행 중",
-                List.of(new VoteItemResponse(1L, "최강 풋살장", 0L),
-                    new VoteItemResponse(2L, "열정 풋살장", 0L)
+                List.of(new VoteItemResponse(1L, "최강 풋살장", List.of()),
+                    new VoteItemResponse(2L, "열정 풋살장", List.of())
                 )
             ));
 
@@ -195,8 +194,8 @@ class VoteApiTest extends ApiTestSupport {
                 "연말 행사 투표",
                 endAt,
                 "진행 중",
-                List.of(new VoteItemResponse(1L, "최강 풋살장", 0L),
-                    new VoteItemResponse(2L, "열정 풋살장", 0L)
+                List.of(new VoteItemResponse(1L, "최강 풋살장", List.of()),
+                    new VoteItemResponse(2L, "열정 풋살장", List.of())
                 )
             ));
 
@@ -229,8 +228,8 @@ class VoteApiTest extends ApiTestSupport {
                 "연말 행사 투표",
                 endAt,
                 "진행 중",
-                List.of(new VoteItemResponse(1L, "최강 풋살장", 0L),
-                    new VoteItemResponse(2L, "열정 풋살장", 0L)
+                List.of(new VoteItemResponse(1L, "최강 풋살장", List.of()),
+                    new VoteItemResponse(2L, "열정 풋살장", List.of())
                 )
             ));
 

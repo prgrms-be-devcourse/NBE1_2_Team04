@@ -55,8 +55,8 @@ public class VoteApiDocs extends RestDocsSupport {
                 "연말 행사 투표",
                 endAt,
                 "진행 중",
-                List.of(new VoteItemResponse(1L, "최강 풋살장", 0L),
-                    new VoteItemResponse(2L, "열정 풋살장", 0L)
+                List.of(new VoteItemResponse(1L, "최강 풋살장", List.of()),
+                    new VoteItemResponse(2L, "열정 풋살장", List.of())
                 )
             ));
 
@@ -99,8 +99,8 @@ public class VoteApiDocs extends RestDocsSupport {
                         .description("투표 선택지 ID"),
                     fieldWithPath("data.choices[].content").type(JsonFieldType.STRING)
                         .description("투표 선택지 내용"),
-                    fieldWithPath("data.choices[].voteCount").type(JsonFieldType.NUMBER)
-                        .description("투표 선택지 투표 수")
+                    fieldWithPath("data.choices[].memberIds").type(JsonFieldType.ARRAY)
+                        .description("투표 선택지 투표한 회원 ID")
                 )
             ));
     }
@@ -117,8 +117,8 @@ public class VoteApiDocs extends RestDocsSupport {
                 "연말 행사 투표",
                 endAt,
                 "진행 중",
-                List.of(new VoteItemResponse(1L, "최강 풋살장", 5L),
-                    new VoteItemResponse(2L, "열정 풋살장", 4L)
+                List.of(new VoteItemResponse(1L, "최강 풋살장", List.of(1L,2L)),
+                    new VoteItemResponse(2L, "열정 풋살장", List.of(1L))
                 )
             ));
 
@@ -153,8 +153,8 @@ public class VoteApiDocs extends RestDocsSupport {
                         .description("투표 선택지 ID"),
                     fieldWithPath("data.choices[].content").type(JsonFieldType.STRING)
                         .description("투표 선택지 내용"),
-                    fieldWithPath("data.choices[].voteCount").type(JsonFieldType.NUMBER)
-                        .description("투표 선택지 투표 수")
+                    fieldWithPath("data.choices[].memberIds").type(JsonFieldType.ARRAY)
+                        .description("투표 선택지 투표한 회원 ID")
                 )
             ));
     }
@@ -177,9 +177,9 @@ public class VoteApiDocs extends RestDocsSupport {
                     endAt,
                     "진행 중",
                     List.of(
-                        new VoteItemResponse(1L, "2021-12-25 12:00", 0L),
-                        new VoteItemResponse(2L, "2021-12-26 12:00", 0L),
-                        new VoteItemResponse(3L, "2021-12-27 12:00", 0L)
+                        new VoteItemResponse(1L, "2021-12-25 12:00", List.of(1L,2L)),
+                        new VoteItemResponse(2L, "2021-12-26 12:00", List.of(1L)),
+                        new VoteItemResponse(3L, "2021-12-27 12:00", List.of())
                     )
                 )
             );
@@ -224,8 +224,8 @@ public class VoteApiDocs extends RestDocsSupport {
                         .description("투표 선택지 ID"),
                     fieldWithPath("data.choices[].content").type(JsonFieldType.STRING)
                         .description("투표 선택지 내용"),
-                    fieldWithPath("data.choices[].voteCount").type(JsonFieldType.NUMBER)
-                        .description("투표 선택지 투표 수")
+                    fieldWithPath("data.choices[].memberIds").type(JsonFieldType.ARRAY)
+                        .description("투표 선택지 투표한 회원 ID")
                 )
             ));
     }
@@ -245,9 +245,9 @@ public class VoteApiDocs extends RestDocsSupport {
                     endAt,
                     "진행 중",
                     List.of(
-                        new VoteItemResponse(1L, "2021-12-25 12:00", 0L),
-                        new VoteItemResponse(2L, "2021-12-26 12:00", 0L),
-                        new VoteItemResponse(3L, "2021-12-27 12:00", 0L)
+                        new VoteItemResponse(1L, "2021-12-25 12:00", List.of(1L,2L)),
+                        new VoteItemResponse(2L, "2021-12-26 12:00", List.of(1L)),
+                        new VoteItemResponse(3L, "2021-12-27 12:00", List.of())
                     )
                 )
             );
@@ -285,8 +285,8 @@ public class VoteApiDocs extends RestDocsSupport {
                         .description("투표 선택지 ID"),
                     fieldWithPath("data.choices[].content").type(JsonFieldType.STRING)
                         .description("투표 선택지 내용"),
-                    fieldWithPath("data.choices[].voteCount").type(JsonFieldType.NUMBER)
-                        .description("투표 선택지 투표 수")
+                    fieldWithPath("data.choices[].memberIds").type(JsonFieldType.ARRAY)
+                        .description("투표 선택지 투표한 회원 ID")
                 )
             ));
 
@@ -339,9 +339,9 @@ public class VoteApiDocs extends RestDocsSupport {
                     endAt,
                     "진행 중",
                     List.of(
-                        new VoteItemResponse(1L, "2021-12-25 12:00", 0L),
-                        new VoteItemResponse(2L, "2021-12-26 12:00", 0L),
-                        new VoteItemResponse(3L, "2021-12-27 12:00", 0L)
+                        new VoteItemResponse(1L, "2021-12-25 12:00", List.of(1L,2L)),
+                        new VoteItemResponse(2L, "2021-12-26 12:00", List.of(1L)),
+                        new VoteItemResponse(3L, "2021-12-27 12:00", List.of())
                     )
                 )
             );
@@ -384,8 +384,8 @@ public class VoteApiDocs extends RestDocsSupport {
                         .description("투표 선택지 ID"),
                     fieldWithPath("data.choices[].content").type(JsonFieldType.STRING)
                         .description("투표 선택지 내용"),
-                    fieldWithPath("data.choices[].voteCount").type(JsonFieldType.NUMBER)
-                        .description("투표 선택지 투표 수")
+                    fieldWithPath("data.choices[].memberIds").type(JsonFieldType.ARRAY)
+                        .description("투표 선택지 투표한 회원 ID")
                 )
             ));
     }
@@ -405,9 +405,9 @@ public class VoteApiDocs extends RestDocsSupport {
                     endAt,
                     "마감",
                     List.of(
-                        new VoteItemResponse(1L, "2021-12-25 12:00", 0L),
-                        new VoteItemResponse(2L, "2021-12-26 12:00", 0L),
-                        new VoteItemResponse(3L, "2021-12-27 12:00", 0L)
+                        new VoteItemResponse(1L, "2021-12-25 12:00", List.of(1L,2L)),
+                        new VoteItemResponse(2L, "2021-12-26 12:00", List.of(1L)),
+                        new VoteItemResponse(3L, "2021-12-27 12:00", List.of())
                     )
                 )
             );
@@ -446,8 +446,8 @@ public class VoteApiDocs extends RestDocsSupport {
                         .description("투표 선택지 ID"),
                     fieldWithPath("data.choices[].content").type(JsonFieldType.STRING)
                         .description("투표 선택지 내용"),
-                    fieldWithPath("data.choices[].voteCount").type(JsonFieldType.NUMBER)
-                        .description("투표 선택지 투표 수")
+                    fieldWithPath("data.choices[].memberIds").type(JsonFieldType.ARRAY)
+                        .description("투표 선택지 투표한 회원 ID")
                 )
             ));
     }

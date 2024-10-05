@@ -106,11 +106,11 @@ class VoteServiceImplTest extends IntegrationTestSupport {
 
         assertThat(response.choices())
             .hasSize(3)
-            .extracting("voteItemId", "content", "voteCount")
+            .extracting("voteItemId", "content", "memberIds")
             .containsExactlyInAnyOrder(
-                tuple(voteItems.get(0).getVoteItemId(), "최강 풋살장", 0L),
-                tuple(voteItems.get(1).getVoteItemId(), "열정 풋살장", 0L),
-                tuple(voteItems.get(2).getVoteItemId(), "미친 풋살장", 0L)
+                tuple(voteItems.get(0).getVoteItemId(), "최강 풋살장", List.of()),
+                tuple(voteItems.get(1).getVoteItemId(), "열정 풋살장", List.of()),
+                tuple(voteItems.get(2).getVoteItemId(), "미친 풋살장", List.of())
             );
     }
 
@@ -208,7 +208,7 @@ class VoteServiceImplTest extends IntegrationTestSupport {
         Choice choice2 = Choice.create(10L, savedVoteItems.get(1).getVoteItemId());
         Choice choice3 = Choice.create(20L, savedVoteItems.get(0).getVoteItemId());
 
-        choiceRepository.saveAll(List.of(choice1, choice2, choice3));
+        List<Choice> choices = choiceRepository.saveAll(List.of(choice1, choice2, choice3));
 
 
         //when
@@ -223,11 +223,11 @@ class VoteServiceImplTest extends IntegrationTestSupport {
 
         Assertions.assertThat(response.choices())
             .hasSize(3)
-            .extracting("voteItemId", "content", "voteCount")
+            .extracting("voteItemId", "content", "memberIds")
             .containsExactlyInAnyOrder(
-                tuple(savedVoteItems.get(0).getVoteItemId(), "최강 풋살장", 2L),
-                tuple(savedVoteItems.get(1).getVoteItemId(), "열정 풋살장", 1L),
-                tuple(savedVoteItems.get(2).getVoteItemId(), "우주 풋살장", 0L)
+                tuple(savedVoteItems.get(0).getVoteItemId(), "최강 풋살장", List.of(choices.get(0).getMemberId(),choices.get(2).getMemberId())),
+                tuple(savedVoteItems.get(1).getVoteItemId(), "열정 풋살장", List.of(choices.get(0).getMemberId())),
+                tuple(savedVoteItems.get(2).getVoteItemId(), "우주 풋살장", List.of())
             );
     }
 
@@ -281,11 +281,11 @@ class VoteServiceImplTest extends IntegrationTestSupport {
 
         Assertions.assertThat(response.choices())
             .hasSize(3)
-            .extracting("voteItemId", "content", "voteCount")
+            .extracting("voteItemId", "content", "memberIds")
             .containsExactlyInAnyOrder(
-                tuple(voteItems.get(0).getVoteItemId(), choice1.toString(), 0L),
-                tuple(voteItems.get(1).getVoteItemId(), choice2.toString(), 0L),
-                tuple(voteItems.get(2).getVoteItemId(), choice3.toString(), 0L)
+                tuple(voteItems.get(0).getVoteItemId(), choice1.toString(), List.of()),
+                tuple(voteItems.get(1).getVoteItemId(), choice2.toString(), List.of()),
+                tuple(voteItems.get(2).getVoteItemId(), choice3.toString(), List.of())
             );
     }
 
@@ -328,11 +328,11 @@ class VoteServiceImplTest extends IntegrationTestSupport {
 
         Assertions.assertThat(response.choices())
             .hasSize(3)
-            .extracting("voteItemId", "content", "voteCount")
+            .extracting("voteItemId", "content", "memberIds")
             .containsExactlyInAnyOrder(
-                tuple(savedVoteItems.get(0).getVoteItemId(), choice1.toString(), 0L),
-                tuple(savedVoteItems.get(1).getVoteItemId(), choice2.toString(), 0L),
-                tuple(savedVoteItems.get(2).getVoteItemId(), choice3.toString(), 0L)
+                tuple(savedVoteItems.get(0).getVoteItemId(), choice1.toString(), List.of()),
+                tuple(savedVoteItems.get(1).getVoteItemId(), choice2.toString(), List.of()),
+                tuple(savedVoteItems.get(2).getVoteItemId(), choice3.toString(), List.of())
             );
     }
 
@@ -422,11 +422,11 @@ class VoteServiceImplTest extends IntegrationTestSupport {
 
         Assertions.assertThat(response.choices())
             .hasSize(3)
-            .extracting("voteItemId", "content", "voteCount")
+            .extracting("voteItemId", "content", "memberIds")
             .containsExactlyInAnyOrder(
-                tuple(savedVoteItems.get(0).getVoteItemId(), choice1.toString(), 1L),
-                tuple(savedVoteItems.get(1).getVoteItemId(), choice2.toString(), 1L),
-                tuple(savedVoteItems.get(2).getVoteItemId(), choice3.toString(), 0L)
+                tuple(savedVoteItems.get(0).getVoteItemId(), choice1.toString(), List.of(choices.get(0).getMemberId())),
+                tuple(savedVoteItems.get(1).getVoteItemId(), choice2.toString(), List.of(choices.get(0).getMemberId())),
+                tuple(savedVoteItems.get(2).getVoteItemId(), choice3.toString(), List.of())
             );
 
         Assertions.assertThat(choices)
@@ -480,11 +480,11 @@ class VoteServiceImplTest extends IntegrationTestSupport {
 
         Assertions.assertThat(response.choices())
             .hasSize(3)
-            .extracting("voteItemId", "content", "voteCount")
+            .extracting("voteItemId", "content", "memberIds")
             .containsExactlyInAnyOrder(
-                tuple(savedVoteItems.get(0).getVoteItemId(), choice1.toString(), 0L),
-                tuple(savedVoteItems.get(1).getVoteItemId(), choice2.toString(), 0L),
-                tuple(savedVoteItems.get(2).getVoteItemId(), choice3.toString(), 0L)
+                tuple(savedVoteItems.get(0).getVoteItemId(), choice1.toString(), List.of()),
+                tuple(savedVoteItems.get(1).getVoteItemId(), choice2.toString(), List.of()),
+                tuple(savedVoteItems.get(2).getVoteItemId(), choice3.toString(), List.of())
             );
     }
 

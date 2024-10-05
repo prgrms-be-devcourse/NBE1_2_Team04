@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import team4.footwithme.IntegrationTestSupport;
 import team4.footwithme.global.domain.IsDeleted;
-import team4.footwithme.vote.domain.Vote;
-import team4.footwithme.vote.domain.VoteStatus;
+import team4.footwithme.member.domain.*;
+import team4.footwithme.vote.domain.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,6 +20,12 @@ class CustomVoteRepositoryImplTest extends IntegrationTestSupport {
 
     @Autowired
     private VoteRepository voteRepository;
+
+    @Autowired
+    private VoteItemRepository voteItemRepository;
+
+    @Autowired
+    private ChoiceRepository choiceRepository;
 
     @DisplayName("삭제되지 않은 투표를 id로 조회한다.")
     @Test
@@ -70,6 +76,41 @@ class CustomVoteRepositoryImplTest extends IntegrationTestSupport {
                 tuple(vote1.getVoteId(), "title", endAt, IsDeleted.FALSE, VoteStatus.OPENED),
                 tuple(vote2.getVoteId(), "title", endAt, IsDeleted.FALSE, VoteStatus.OPENED)
             );
+    }
+
+    @DisplayName("투표 id로 투표에 참여한 총 인원을 계산한다.")
+    @Test
+    void choiceMemberCountByVoteId() {
+        //given
+        LocalDateTime endAt = LocalDateTime.now().plusDays(1);
+
+        LocalDateTime givenVoteItem1 = LocalDateTime.now().plusDays(2);
+        LocalDateTime givenVoteItem2 = LocalDateTime.now().plusDays(3);
+        LocalDateTime givenVoteItem3 = LocalDateTime.now().plusDays(4);
+
+        Member givenMember = Member.create("test@gmail.com", "1234", "test", "010-1234-5678", LoginProvider.ORIGINAL, "test", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE);
+
+        Vote vote = Vote.create(1L, 1L, "연말 경기 투표", endAt);
+        Vote savedVote = voteRepository.save(vote);
+
+        VoteItem voteItem1 = VoteItemDate.create(savedVote, givenVoteItem1);
+        VoteItem voteItem2 = VoteItemDate.create(savedVote, givenVoteItem2);
+        VoteItem voteItem3 = VoteItemDate.create(savedVote, givenVoteItem3);
+
+        List<VoteItem> savedVoteItems = voteItemRepository.saveAll(List.of(voteItem1, voteItem2, voteItem3));
+
+        Choice choice1 = Choice.create(1L, savedVoteItems.get(0).getVoteItemId());
+        Choice choice2 = Choice.create(1L, savedVoteItems.get(1).getVoteItemId());
+        Choice choice3 = Choice.create(2L, savedVoteItems.get(2).getVoteItemId());
+        Choice choice4 = Choice.create(3L, savedVoteItems.get(0).getVoteItemId());
+        Choice choice5 = Choice.create(3L, savedVoteItems.get(1).getVoteItemId());
+        Choice choice6 = Choice.create(3L, savedVoteItems.get(2).getVoteItemId());
+
+        choiceRepository.saveAll(List.of(choice1, choice2, choice3, choice4, choice5, choice6));
+        //when
+        Long count = voteRepository.choiceMemberCountByVoteId(savedVote.getVoteId());
+        //then
+        assertThat(count).isEqualTo(3);
     }
 
 }

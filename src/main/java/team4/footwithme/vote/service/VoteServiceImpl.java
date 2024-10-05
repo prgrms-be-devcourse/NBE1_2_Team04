@@ -72,8 +72,7 @@ public class VoteServiceImpl implements VoteService {
     @Override
     public VoteResponse getStadiumVote(Long voteId) {
         Vote vote = getVoteByVoteId(voteId);
-        List<VoteItem> voteItems = getVoteItemsByVoteId(voteId);
-        List<VoteItemResponse> voteItemResponses = convertVoteItemsToResponseFrom(voteItems);
+        List<VoteItemResponse> voteItemResponses = convertVoteItemsToResponseFrom(vote.getVoteItems());
         return VoteResponse.of(vote, voteItemResponses);
     }
 
@@ -97,8 +96,7 @@ public class VoteServiceImpl implements VoteService {
     @Override
     public VoteResponse getDateVote(Long voteId) {
         Vote vote = getVoteByVoteId(voteId);
-        List<VoteItem> voteItems = getVoteItemsByVoteId(voteId);
-        List<VoteItemResponse> voteItemResponses = convertVoteItemsToResponseFrom(voteItems);
+        List<VoteItemResponse> voteItemResponses = convertVoteItemsToResponseFrom(vote.getVoteItems());
         return VoteResponse.of(vote, voteItemResponses);
     }
 
@@ -121,9 +119,8 @@ public class VoteServiceImpl implements VoteService {
         List<Choice> choices = createChoice(request, memberId);
 
         choiceRepository.saveAll(choices);
-        List<VoteItem> voteItems = getVoteItemsByVoteId(voteId);
 
-        List<VoteItemResponse> voteItemResponses = convertVoteItemsToResponseFrom(voteItems);
+        List<VoteItemResponse> voteItemResponses = convertVoteItemsToResponseFrom(vote.getVoteItems());
 
         return VoteResponse.of(vote, voteItemResponses);
     }
@@ -137,8 +134,7 @@ public class VoteServiceImpl implements VoteService {
         List<Choice> choices = choiceRepository.findByMemberIdAndVoteId(memberId, voteId);
 
         choiceRepository.deleteAllInBatch(choices);
-        List<VoteItem> voteItems = getVoteItemsByVoteId(voteId);
-        List<VoteItemResponse> voteItemResponses = convertVoteItemsToResponseFrom(voteItems);
+        List<VoteItemResponse> voteItemResponses = convertVoteItemsToResponseFrom(vote.getVoteItems());
         return VoteResponse.of(vote, voteItemResponses);
     }
 
@@ -150,8 +146,7 @@ public class VoteServiceImpl implements VoteService {
 
         vote.update(serviceRequest.title(), serviceRequest.endAt(), memberId);
 
-        List<VoteItem> voteItems = getVoteItemsByVoteId(voteId);
-        List<VoteItemResponse> voteItemResponses = convertVoteItemsToResponseFrom(voteItems);
+        List<VoteItemResponse> voteItemResponses = convertVoteItemsToResponseFrom(vote.getVoteItems());
         return VoteResponse.of(vote, voteItemResponses);
     }
 
@@ -163,7 +158,7 @@ public class VoteServiceImpl implements VoteService {
         vote.checkWriterFromMemberId(member.getMemberId());
         vote.updateVoteStatusToClose();
         cancelTaskInSchedulerFromVoteId(voteId);
-        return VoteResponse.of(vote, convertVoteItemsToResponseFrom(getVoteItemsByVoteId(voteId)));
+        return VoteResponse.of(vote, convertVoteItemsToResponseFrom(vote.getVoteItems()));
     }
 
     private List<VoteItemDate> createVoteItemDate(VoteDateCreateServiceRequest request, Vote savedVote) {
@@ -196,14 +191,6 @@ public class VoteServiceImpl implements VoteService {
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 투표입니다."));
     }
 
-    private List<VoteItem> getVoteItemsByVoteId(Long voteId) {
-        List<VoteItem> voteItems = voteItemRepository.findByVoteVoteId(voteId);
-        if (voteItems.isEmpty()) {
-            throw new IllegalArgumentException("투표 항목이 존재하지 않습니다.");
-        }
-        return voteItems;
-    }
-
     private void validateTeamByTeamId(Long teamId) {
         teamRepository.findById(teamId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 팀입니다."));
     }
@@ -216,11 +203,13 @@ public class VoteServiceImpl implements VoteService {
         return memberId;
     }
 
+
     private <T extends VoteItem> List<VoteItemResponse> convertVoteItemsToResponseFrom(List<T> voteItems) {
         return voteItems.stream()
             .map(this::convertVoteItemToResponse)
             .toList();
     }
+
 
     private <T extends VoteItem> VoteItemResponse convertVoteItemToResponse(T voteItem) {
         if (voteItem instanceof VoteItemLocate voteItemLocate) {
@@ -236,7 +225,7 @@ public class VoteServiceImpl implements VoteService {
         return VoteItemResponse.of(
             voteItemDate.getVoteItemId(),
             voteItemDate.getTime().toString(),
-            choiceRepository.countByVoteItemId(voteItemDate.getVoteItemId())
+            choiceRepository.findMemberIdsByVoteItemId(voteItemDate.getVoteItemId())
         );
     }
 
@@ -244,7 +233,7 @@ public class VoteServiceImpl implements VoteService {
         return VoteItemResponse.of(
             voteItemLocate.getVoteItemId(),
             stadiumRepository.findStadiumNameById(voteItemLocate.getStadiumId()),
-            choiceRepository.countByVoteItemId(voteItemLocate.getVoteItemId())
+            choiceRepository.findMemberIdsByVoteItemId(voteItemLocate.getVoteItemId())
         );
     }
 
