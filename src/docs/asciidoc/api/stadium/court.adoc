@@ -1,0 +1,32 @@
+[[court-get-all]]
+=== 코트 전체 목록 조회 API
+
+==== HTTP Request
+include::{snippets}/court-get-all/http-request.adoc[]
+
+==== HTTP Response
+include::{snippets}/court-get-all/http-response.adoc[]
+include::{snippets}/court-get-all/response-fields.adoc[]
+
+[[court-get-by-stadium]]
+== 구장별 코트 목록 조회 API
+
+==== HTTP Request
+include::{snippets}/court-get-by-stadium/http-request.adoc[]
+include::{snippets}/court-get-by-stadium/path-parameters.adoc[]
+include::{snippets}/court-get-by-stadium/query-parameters.adoc[]
+
+==== HTTP Response
+include::{snippets}/court-get-by-stadium/http-response.adoc[]
+include::{snippets}/court-get-by-stadium/response-fields.adoc[]
+
+[[court-get-detail]]
+== 코트 상세 정보 조회 API
+
+==== HTTP Request
+include::{snippets}/court-get-detail/http-request.adoc[]
+include::{snippets}/court-get-detail/path-parameters.adoc[]
+
+==== HTTP Response
+include::{snippets}/court-get-detail/http-response.adoc[]
+include::{snippets}/court-get-detail/response-fields.adoc[]

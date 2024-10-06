@@ -59,9 +59,6 @@ class StadiumApiTest extends ApiTestSupport {
 
     @BeforeEach
     void setUp() {
-        Member testMember = Member.create("test@example.com", "password", "Test User", "010-1234-5678",
-                LoginProvider.ORIGINAL, "test@example.com", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE);
-
         stadium1 = new StadiumsResponse(1L, "Stadium1", "seoul");
         stadium2 = new StadiumsResponse(2L, "Stadium2", "busan");
         stadiumDetail = new StadiumDetailResponse(1L, 1L, "Stadium1", "seoul", "010-1111-2222", "Description1", 37.5665, 126.9780);
