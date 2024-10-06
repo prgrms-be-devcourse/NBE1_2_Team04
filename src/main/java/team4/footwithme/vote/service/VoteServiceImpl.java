@@ -105,6 +105,7 @@ public class VoteServiceImpl implements VoteService {
     public Long deleteVote(Long voteId, Member member) {
         Vote vote = getVoteByVoteId(voteId);
         vote.checkWriterFromMemberId(member.getMemberId());
+        cancelTaskInSchedulerFromVoteId(voteId);
         voteRepository.delete(vote);
         return voteId;
     }
@@ -142,6 +143,8 @@ public class VoteServiceImpl implements VoteService {
         Vote vote = getVoteByVoteId(voteId);
 
         vote.update(serviceRequest.title(), serviceRequest.endAt(), memberId);
+        cancelTaskInSchedulerFromVoteId(voteId);
+        addVoteTaskToTaskSchedule(vote);
 
         List<VoteItemResponse> voteItemResponses = convertVoteItemsToResponseFrom(vote.getVoteItems());
         return VoteResponse.of(vote, voteItemResponses);
@@ -235,7 +238,8 @@ public class VoteServiceImpl implements VoteService {
     }
 
     private void addVoteTaskToTaskSchedule(Vote vote) {
-        taskScheduler.schedule(publishClosedVoteTask(vote.getVoteId()), vote.getInstantEndAt());
+        ScheduledFuture<?> scheduledTask = taskScheduler.schedule(publishClosedVoteTask(vote.getVoteId()), vote.getInstantEndAt());
+        scheduledTasks.put(vote.getVoteId(), scheduledTask);
     }
 
     private Runnable publishClosedVoteTask(Long voteId) {
