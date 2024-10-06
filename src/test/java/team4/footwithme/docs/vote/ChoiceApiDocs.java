@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import team4.footwithme.docs.RestDocsSupport;
+import team4.footwithme.member.domain.Member;
 import team4.footwithme.vote.api.ChoiceApi;
 import team4.footwithme.vote.api.request.ChoiceCreateRequest;
 import team4.footwithme.vote.service.VoteService;
@@ -45,7 +46,7 @@ public class ChoiceApiDocs extends RestDocsSupport {
 
         ChoiceCreateRequest request = new ChoiceCreateRequest(List.of(1L, 2L));
 
-        given(voteService.createChoice(any(ChoiceCreateServiceRequest.class), eq(voteId), any(String.class)))
+        given(voteService.createChoice(any(ChoiceCreateServiceRequest.class), eq(voteId), any(Member.class)))
             .willReturn(new VoteResponse(
                 voteId,
                 "연말 행사 투표",
@@ -108,7 +109,7 @@ public class ChoiceApiDocs extends RestDocsSupport {
         LocalDateTime endAt = LocalDateTime.now().plusDays(1);
         long voteId = 1L;
 
-        given(voteService.deleteChoice(eq(voteId), any(String.class)))
+        given(voteService.deleteChoice(eq(voteId), any(Member.class)))
             .willReturn(new VoteResponse(
                 voteId,
                 "연말 행사 투표",

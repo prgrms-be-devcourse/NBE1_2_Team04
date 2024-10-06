@@ -80,7 +80,7 @@ class VoteServiceImplTest extends IntegrationTestSupport {
         VoteStadiumCreateServiceRequest request = new VoteStadiumCreateServiceRequest("9월4주차 구장 투표", endAt, stadiumIds);
 
         //when
-        VoteResponse response = voteService.createStadiumVote(request, savedTeam.getTeamId(), "test@gmail.com");
+        VoteResponse response = voteService.createStadiumVote(request, savedTeam.getTeamId(), savedMember);
         List<Vote> votes = voteRepository.findAll();
         List<VoteItem> voteItems = voteItemRepository.findAll();
         //then
@@ -114,25 +114,6 @@ class VoteServiceImplTest extends IntegrationTestSupport {
             );
     }
 
-    @DisplayName("새로운 구장 투표를 생성 할 때 회원 아이디가 존재하지 않으면 예외를 던진다")
-    @Test
-    void createStadiumVoteWhenMemberIdIsNotExistThrowException() {
-        //given
-        LocalDateTime endAt = LocalDateTime.now().plusDays(1);
-        List<Long> stadiumIds = List.of(1L, 2L, 3L);
-
-        Member givenMember = Member.create("test@gmail.com", "1234", "test", "010-1234-5678", LoginProvider.ORIGINAL, "test", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE);
-        Member savedMember = memberRepository.save(givenMember);
-
-        VoteStadiumCreateServiceRequest request = new VoteStadiumCreateServiceRequest("9월4주차 구장 투표", endAt, stadiumIds);
-
-        //when
-        //then
-        assertThatThrownBy(() -> voteService.createStadiumVote(request, 1L, "error@e.r"))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("존재하지 않는 회원입니다.");
-    }
-
     @DisplayName("새로운 구장 투표를 생성 할 때 팀이 존재하지 않으면 예외를 던진다")
     @Test
     void createStadiumVoteWhenTeamIsNotExistThrowException() {
@@ -147,7 +128,7 @@ class VoteServiceImplTest extends IntegrationTestSupport {
 
         //when
         //then
-        assertThatThrownBy(() -> voteService.createStadiumVote(request, -1L, "test@gmail.com"))
+        assertThatThrownBy(() -> voteService.createStadiumVote(request, -1L, savedMember))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("존재하지 않는 팀입니다.");
     }
@@ -174,7 +155,7 @@ class VoteServiceImplTest extends IntegrationTestSupport {
 
         //when
         //then
-        assertThatThrownBy(() -> voteService.createStadiumVote(request, savedTeam.getTeamId(), "test@gmail.com"))
+        assertThatThrownBy(() -> voteService.createStadiumVote(request, savedTeam.getTeamId(), savedMember))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("존재하지 않는 구장이 포함되어 있습니다.");
     }
@@ -253,7 +234,7 @@ class VoteServiceImplTest extends IntegrationTestSupport {
 
 
         //when
-        VoteResponse response = voteService.createDateVote(request, savedTeam.getTeamId(), "test@gmail.com");
+        VoteResponse response = voteService.createDateVote(request, savedTeam.getTeamId(), savedMember);
 
         List<Vote> votes = voteRepository.findAll();
         List<VoteItem> voteItems = voteItemRepository.findAll();
@@ -363,7 +344,7 @@ class VoteServiceImplTest extends IntegrationTestSupport {
 
         List<VoteItem> savedVoteItems = voteItemRepository.saveAll(List.of(voteItem1, voteItem2, voteItem3));
         //when
-        Long deletedId = voteService.deleteVote(savedVote.getVoteId(), savedMember.getEmail());
+        Long deletedId = voteService.deleteVote(savedVote.getVoteId(), savedMember);
 
         // @SQLDelete를 사용하면 수동으로 flush 해야함
         entityManager.flush();
@@ -409,7 +390,7 @@ class VoteServiceImplTest extends IntegrationTestSupport {
         ChoiceCreateServiceRequest request = new ChoiceCreateServiceRequest(List.of(savedVoteItems.get(0).getVoteItemId(), savedVoteItems.get(1).getVoteItemId()));
 
         //when
-        VoteResponse response = voteService.createChoice(request, savedVote.getVoteId(), savedMember.getEmail());
+        VoteResponse response = voteService.createChoice(request, savedVote.getVoteId(), savedMember);
 
         List<Choice> choices = choiceRepository.findAll();
 
@@ -469,7 +450,7 @@ class VoteServiceImplTest extends IntegrationTestSupport {
         Choice memberChoice2 = Choice.create(savedMember.getMemberId(), savedVoteItems.get(1).getVoteItemId());
         choiceRepository.saveAll(List.of(memberChoice1, memberChoice2));
         //when
-        VoteResponse response = voteService.deleteChoice(savedVote.getVoteId(), savedMember.getEmail());
+        VoteResponse response = voteService.deleteChoice(savedVote.getVoteId(), savedMember);
 
         //then
         Assertions.assertThat(response)
@@ -517,7 +498,7 @@ class VoteServiceImplTest extends IntegrationTestSupport {
 
         VoteUpdateServiceRequest request = new VoteUpdateServiceRequest("연말 경기 투표 수정", endAt);
         //when
-        VoteResponse response = voteService.updateVote(request, savedVote.getVoteId(), savedMember.getEmail());
+        VoteResponse response = voteService.updateVote(request, savedVote.getVoteId(), savedMember);
 
         //then
         Assertions.assertThat(response)
@@ -550,7 +531,7 @@ class VoteServiceImplTest extends IntegrationTestSupport {
 
         //when
 
-        VoteResponse response = voteService.createStadiumVote(request, savedTeam.getTeamId(), "test@gmail.com");
+        VoteResponse response = voteService.createStadiumVote(request, savedTeam.getTeamId(), savedMember);
         //then
         assertThat(response).isNotNull()
             .extracting("voteId", "title", "endAt")

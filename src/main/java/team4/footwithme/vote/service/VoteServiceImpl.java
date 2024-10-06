@@ -53,8 +53,8 @@ public class VoteServiceImpl implements VoteService {
 
     @Transactional
     @Override
-    public VoteResponse createStadiumVote(VoteStadiumCreateServiceRequest request, Long teamId, String email) {
-        Long memberId = getMemberIdByEmail(email);
+    public VoteResponse createStadiumVote(VoteStadiumCreateServiceRequest request, Long teamId, Member member) {
+        Long memberId = member.getMemberId();
         validateTeamByTeamId(teamId);
 
         Vote vote = Vote.create(memberId, teamId, request.title(), request.endAt());
@@ -78,8 +78,8 @@ public class VoteServiceImpl implements VoteService {
 
     @Transactional
     @Override
-    public VoteResponse createDateVote(VoteDateCreateServiceRequest request, Long teamId, String email) {
-        Long memberId = getMemberIdByEmail(email);
+    public VoteResponse createDateVote(VoteDateCreateServiceRequest request, Long teamId, Member member) {
+        Long memberId = member.getMemberId();
         validateTeamByTeamId(teamId);
 
         Vote vote = Vote.create(memberId, teamId, request.title(), request.endAt());
@@ -102,33 +102,30 @@ public class VoteServiceImpl implements VoteService {
 
     @Transactional
     @Override
-    public Long deleteVote(Long voteId, String email) {
+    public Long deleteVote(Long voteId, Member member) {
         Vote vote = getVoteByVoteId(voteId);
-        vote.checkWriterFromMemberId(getMemberIdByEmail(email));
+        vote.checkWriterFromMemberId(member.getMemberId());
         voteRepository.delete(vote);
         return voteId;
     }
 
     @Transactional
     @Override
-    public VoteResponse createChoice(ChoiceCreateServiceRequest request, Long voteId, String email) {
-        Long memberId = getMemberIdByEmail(email);
+    public VoteResponse createChoice(ChoiceCreateServiceRequest request, Long voteId, Member member) {
+        Long memberId = member.getMemberId();
         Vote vote = getVoteByVoteId(voteId);
 
-        // TODO : 투표 항목 ID가 존재하는지 검증 이걸 vote를 통해서 쓰면 N+1 문제가 발생 할 것으로 보임 그러면 exist를 쓰는게 좋을까? 아니면 fetch join을 쓰는게 좋을까?
         List<Choice> choices = createChoice(request, memberId);
-
         choiceRepository.saveAll(choices);
 
         List<VoteItemResponse> voteItemResponses = convertVoteItemsToResponseFrom(vote.getVoteItems());
-
         return VoteResponse.of(vote, voteItemResponses);
     }
 
     @Transactional
     @Override
-    public VoteResponse deleteChoice(Long voteId, String email) {
-        Long memberId = getMemberIdByEmail(email);
+    public VoteResponse deleteChoice(Long voteId, Member member) {
+        Long memberId = member.getMemberId();
         Vote vote = getVoteByVoteId(voteId);
 
         List<Choice> choices = choiceRepository.findByMemberIdAndVoteId(memberId, voteId);
@@ -140,8 +137,8 @@ public class VoteServiceImpl implements VoteService {
 
     @Transactional
     @Override
-    public VoteResponse updateVote(VoteUpdateServiceRequest serviceRequest, Long voteId, String email) {
-        Long memberId = getMemberIdByEmail(email);
+    public VoteResponse updateVote(VoteUpdateServiceRequest serviceRequest, Long voteId, Member member) {
+        Long memberId = member.getMemberId();
         Vote vote = getVoteByVoteId(voteId);
 
         vote.update(serviceRequest.title(), serviceRequest.endAt(), memberId);

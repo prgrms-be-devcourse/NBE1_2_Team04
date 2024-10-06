@@ -49,7 +49,7 @@ public class VoteApiDocs extends RestDocsSupport {
         StadiumChoices stadiumChoices2 = new StadiumChoices(2L);
         VoteStadiumCreateRequest request = new VoteStadiumCreateRequest("연말 행사 투표", endAt, List.of(stadiumChoices1, stadiumChoices2));
 
-        given(voteService.createStadiumVote(any(VoteStadiumCreateServiceRequest.class), eq(1L), any(String.class)))
+        given(voteService.createStadiumVote(any(VoteStadiumCreateServiceRequest.class), eq(1L), any(Member.class)))
             .willReturn(new VoteResponse(
                 1L,
                 "연말 행사 투표",
@@ -169,7 +169,7 @@ public class VoteApiDocs extends RestDocsSupport {
 
         VoteDateCreateRequest request = new VoteDateCreateRequest("연말 행사 투표", endAt, List.of(choice1, choice2, choice3));
 
-        given(voteService.createDateVote(any(VoteDateCreateServiceRequest.class), eq(1L), any(String.class)))
+        given(voteService.createDateVote(any(VoteDateCreateServiceRequest.class), eq(1L), any(Member.class)))
             .willReturn(
                 new VoteResponse(
                     1L,
@@ -297,7 +297,7 @@ public class VoteApiDocs extends RestDocsSupport {
     void deleteVote() throws Exception {
         long voteId = 1L;
 
-        given(voteService.deleteVote(voteId, ""))
+        given(voteService.deleteVote(eq(voteId), any(Member.class)))
             .willReturn(voteId);
 
         mockMvc.perform(delete("/api/v1/votes/{voteId}", voteId)
@@ -331,7 +331,7 @@ public class VoteApiDocs extends RestDocsSupport {
 
         VoteUpdateRequest request = new VoteUpdateRequest("10월 행사 투표", endAt);
 
-        given(voteService.updateVote(any(VoteUpdateServiceRequest.class), eq(1L), any(String.class)))
+        given(voteService.updateVote(any(VoteUpdateServiceRequest.class), eq(1L), any(Member.class)))
             .willReturn(
                 new VoteResponse(
                     1L,

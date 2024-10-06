@@ -9,21 +9,21 @@ import team4.footwithme.vote.service.response.VoteResponse;
 
 public interface VoteService {
 
-    VoteResponse createStadiumVote(VoteStadiumCreateServiceRequest request, Long teamId, String email);
+    VoteResponse createStadiumVote(VoteStadiumCreateServiceRequest request, Long teamId, Member member);
 
     VoteResponse getStadiumVote(Long voteId);
 
-    VoteResponse createDateVote(VoteDateCreateServiceRequest request, Long teamId, String email);
+    VoteResponse createDateVote(VoteDateCreateServiceRequest request, Long teamId, Member member);
 
     VoteResponse getDateVote(Long voteId);
 
-    Long deleteVote(Long voteId, String email);
+    Long deleteVote(Long voteId, Member member);
 
-    VoteResponse createChoice(ChoiceCreateServiceRequest request, Long voteId, String email);
+    VoteResponse createChoice(ChoiceCreateServiceRequest request, Long voteId, Member member);
 
-    VoteResponse deleteChoice(Long voteId, String email);
+    VoteResponse deleteChoice(Long voteId, Member member);
 
-    VoteResponse updateVote(VoteUpdateServiceRequest serviceRequest, Long voteId, String email);
+    VoteResponse updateVote(VoteUpdateServiceRequest serviceRequest, Long voteId, Member member);
 
     VoteResponse closeVote(Long voteId, Member member);
 }

@@ -21,7 +21,7 @@ public class VoteApi {
 
     @PostMapping("/stadiums/{teamId}")
     public ApiResponse<VoteResponse> createLocateVote(@Valid @RequestBody VoteStadiumCreateRequest request, @PathVariable Long teamId, @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        return ApiResponse.created(voteService.createStadiumVote(request.toServiceRequest(),teamId, principalDetails.getUsername()));
+        return ApiResponse.created(voteService.createStadiumVote(request.toServiceRequest(),teamId, principalDetails.getMember()));
     }
 
     @GetMapping("{voteId}")
@@ -31,7 +31,7 @@ public class VoteApi {
 
     @PostMapping("/dates/{teamId}")
     public ApiResponse<VoteResponse> createDateVote(@Valid @RequestBody VoteDateCreateRequest request, @PathVariable Long teamId, @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        return ApiResponse.created(voteService.createDateVote(request.toServiceRequest(), teamId, principalDetails.getUsername()));
+        return ApiResponse.created(voteService.createDateVote(request.toServiceRequest(), teamId, principalDetails.getMember()));
     }
 
     @GetMapping("/dates/{voteId}")
@@ -41,12 +41,12 @@ public class VoteApi {
 
     @DeleteMapping("{voteId}")
     public ApiResponse<Long> deleteVote(@PathVariable Long voteId, @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        return ApiResponse.ok(voteService.deleteVote(voteId,principalDetails.getUsername()));
+        return ApiResponse.ok(voteService.deleteVote(voteId, principalDetails.getMember()));
     }
 
     @PutMapping("{voteId}")
     public ApiResponse<VoteResponse> updateVote(@Valid @RequestBody VoteUpdateRequest request, @PathVariable Long voteId, @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        return ApiResponse.ok(voteService.updateVote(request.toServiceRequest(), voteId, principalDetails.getUsername()));
+        return ApiResponse.ok(voteService.updateVote(request.toServiceRequest(), voteId, principalDetails.getMember()));
     }
 
     @PostMapping("/close/{voteId}")
