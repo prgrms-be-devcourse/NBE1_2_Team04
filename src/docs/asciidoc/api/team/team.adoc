@@ -1,0 +1,46 @@
+= 팀 API Documentation
+
+[[team-create]]
+== 팀 생성 API
+
+=== HTTP Request
+include::{snippets}/team-create/http-request.adoc[]
+
+=== HTTP Response
+include::{snippets}/team-create/http-response.adoc[]
+include::{snippets}/team-create/request-fields.adoc[]
+include::{snippets}/team-create/response-fields.adoc[]
+
+[[team-info]]
+== 팀 정보 조회 API
+
+=== HTTP Request
+include::{snippets}/team-info/http-request.adoc[]
+include::{snippets}/team-info/path-parameters.adoc[]
+
+=== HTTP Response
+include::{snippets}/team-info/http-response.adoc[]
+include::{snippets}/team-info/response-fields.adoc[]
+
+[[team-update]]
+== 팀 정보 수정 API
+
+=== HTTP Request
+include::{snippets}/team-update/http-request.adoc[]
+include::{snippets}/team-update/path-parameters.adoc[]
+include::{snippets}/team-update/request-fields.adoc[]
+
+=== HTTP Response
+include::{snippets}/team-update/http-response.adoc[]
+include::{snippets}/team-update/response-fields.adoc[]
+
+[[team-delete]]
+== 팀 삭제 API
+
+=== HTTP Request
+include::{snippets}/team-delete/http-request.adoc[]
+include::{snippets}/team-delete/path-parameters.adoc[]
+
+=== HTTP Response
+include::{snippets}/team-delete/http-response.adoc[]
+include::{snippets}/team-delete/response-fields.adoc[]
