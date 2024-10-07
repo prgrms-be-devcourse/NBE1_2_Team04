@@ -32,9 +32,13 @@ public enum ExceptionMessage {
     // Reservation
     RESERVATION_NOT_FOUND("해당 예약을 찾을 수 없습니다."),
     RESERVATION_STATUS_NOT_READY("해당 예약은 준비 상태가 아닙니다."),
-    RESERVATION_MEMBER_NOT_MATCH("예약자만이 예약을 신청할 수 있습니다.")
+    RESERVATION_MEMBER_NOT_MATCH("예약자만이 예약을 신청할 수 있습니다."),
+    RESERVATION_CONFLICT("해당 예약은 더 이상 사용할 수 없습니다."),
+    RESERVATION_SUCCESS("예약에 성공했습니다."),
 
 
+    //Game
+    GAME_NOT_FOUND("해당 게임을 찾을 수 없습니다.")
     ;
     private final String text;
 }
