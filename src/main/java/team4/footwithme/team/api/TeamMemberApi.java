@@ -1,8 +1,10 @@
 package team4.footwithme.team.api;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import team4.footwithme.global.api.ApiResponse;
+import team4.footwithme.member.jwt.PrincipalDetails;
 import team4.footwithme.team.api.request.TeamMemberRequest;
 import team4.footwithme.team.service.TeamMemberService;
 import team4.footwithme.team.service.response.TeamResponse;
@@ -35,13 +37,21 @@ public class TeamMemberApi {
      */
 
     /**
-     * 팀 멤버 삭제
+     * 팀 탈퇴_팀장
      */
-    @DeleteMapping("/{teamMemberId}")
-    public ApiResponse<Long> deleteTeamMember(@PathVariable Long teamMemberId){
-        teamMemberService.deleteTeamMembers(teamMemberId);
+    @DeleteMapping("/{teamId}/members/{teamMemberId}")
+    public ApiResponse<Long> deleteTeamMemberByCreator(@PathVariable Long teamId,@PathVariable Long teamMemberId, @AuthenticationPrincipal PrincipalDetails principalDetails){
+        teamMemberService.deleteTeamMemberByCreator(teamId, teamMemberId, principalDetails.getMember());
         return ApiResponse.ok(teamMemberId);
     }
 
+    /**
+     * 팀 탈퇴_본인
+     */
+    @DeleteMapping("/{teamId}/members")
+    public ApiResponse<Long> deleteTeamMember(@PathVariable Long teamId,@AuthenticationPrincipal PrincipalDetails principalDetails){
+        Long teamMemberId = teamMemberService.deleteTeamMember(teamId, principalDetails.getMember());
+        return ApiResponse.ok(teamMemberId);
+    }
 
 }

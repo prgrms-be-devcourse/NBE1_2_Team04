@@ -16,20 +16,24 @@ public class CustomTeamRepositoryImpl implements CustomTeamRepository {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Long countMaleByMemberId() {
+    public Long countMaleByMemberId(Long teamId) {
         return queryFactory
                 .select(teamMember.count())
                 .from(teamMember).join(member).on(teamMember.member.memberId.eq(member.memberId))
-                .where(member.gender.eq(Gender.MALE).and(teamMember.isDeleted.eq(IsDeleted.FALSE)))
+                .where(member.gender.eq(Gender.MALE)
+                        .and(teamMember.isDeleted.eq(IsDeleted.FALSE))
+                        .and(teamMember.team.teamId.eq(teamId)))
                 .fetchOne();
     }
 
     @Override
-    public Long countFemaleByMemberId() {
+    public Long countFemaleByMemberId(Long teamId) {
         return queryFactory
                 .select(teamMember.count())
                 .from(teamMember).join(member).on(teamMember.member.memberId.eq(member.memberId))
-                .where(member.gender.eq(Gender.FEMALE).and(teamMember.isDeleted.eq(IsDeleted.FALSE)))
+                .where(member.gender.eq(Gender.FEMALE)
+                        .and(teamMember.isDeleted.eq(IsDeleted.FALSE))
+                        .and(teamMember.team.teamId.eq(teamId)))
                 .fetchOne();
     }
 }
