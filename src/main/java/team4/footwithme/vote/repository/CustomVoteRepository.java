@@ -1,4 +1,16 @@
 package team4.footwithme.vote.repository;
 
+import team4.footwithme.vote.domain.Vote;
+
+import java.util.List;
+import java.util.Optional;
+
 public interface CustomVoteRepository {
+
+    Optional<Vote> findNotDeletedVoteById(Long id);
+
+    List<Vote> findOpenedVotes();
+
+    Long choiceMemberCountByVoteId(Long voteId);
+
 }
