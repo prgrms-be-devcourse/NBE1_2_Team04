@@ -8,5 +8,6 @@ import lombok.RequiredArgsConstructor;
 public enum ReservationStatus {
     CONFIRMED,
     CANCELLED,
-    RECRUITING
+    RECRUITING,
+    READY
 }

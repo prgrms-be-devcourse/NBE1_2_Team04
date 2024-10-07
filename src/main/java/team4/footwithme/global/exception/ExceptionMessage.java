@@ -25,7 +25,14 @@ public enum ExceptionMessage {
     CHATROOM_NOT_FOUND("해당 채팅방을 찾을 수 없습니다."),
     MEMBER_NOT_IN_CHATROOM("채팅방에 참여한 회원이 아닙니다."),
     MEMBER_IN_CHATROOM("해당 회원이 채팅방에 존재합니다."),
-    UNAUTHORIZED_MESSAGE_EDIT("해당 메세지의 수정 권한이 없습니다.")
+    UNAUTHORIZED_MESSAGE_EDIT("해당 메세지의 수정 권한이 없습니다."),
+
+
+
+    // Reservation
+    RESERVATION_NOT_FOUND("해당 예약을 찾을 수 없습니다."),
+    RESERVATION_STATUS_NOT_READY("해당 예약은 준비 상태가 아닙니다."),
+    RESERVATION_MEMBER_NOT_MATCH("예약자만이 예약을 신청할 수 있습니다.")
 
 
     ;
