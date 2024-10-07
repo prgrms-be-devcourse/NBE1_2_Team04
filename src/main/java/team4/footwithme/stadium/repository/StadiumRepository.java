@@ -21,6 +21,9 @@ public interface StadiumRepository extends JpaRepository<Stadium, Long>, CustomS
     @Query("SELECT s FROM Stadium s WHERE s.isDeleted = 'false' AND s.stadiumId = :id")
     Optional<Stadium> findActiveById(@Param("id") Long id);
 
+    @Query("SELECT s FROM Stadium s WHERE s.isDeleted = 'false' AND s.name = :name")
+    Optional<Stadium> findActiveByName(@Param("name") String name);
+
     @Query("SELECT s FROM Stadium s WHERE s.isDeleted = 'false'")
     Slice<Stadium> findAllActiveStadiums(Pageable pageable);
 
@@ -29,8 +32,4 @@ public interface StadiumRepository extends JpaRepository<Stadium, Long>, CustomS
 
     @Query("SELECT s FROM Stadium s WHERE s.isDeleted = 'false' AND LOWER(s.address) LIKE LOWER(CONCAT('%', :address, '%'))")
     Slice<Stadium> findByAddressContainingIgnoreCase(@Param("address") String address, Pageable pageable);
-
-
-//    @Query(value = "SELECT * FROM stadium WHERE ST_Distance_Sphere(position, ST_GeomFromText(:point, 4326)) <= :distance * 1000", nativeQuery = true)
-//    List<Stadium> findStadiumsByLocation(@Param("point") String point, @Param("distance") Double distance);
 }
