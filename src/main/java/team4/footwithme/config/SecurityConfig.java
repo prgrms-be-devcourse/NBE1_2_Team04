@@ -1,5 +1,6 @@
 package team4.footwithme.config;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +18,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.client.RestTemplate;
 import team4.footwithme.global.exception.ExceptionHandlerFilter;
+import team4.footwithme.member.domain.MemberRole;
 import team4.footwithme.member.jwt.JwtTokenFilter;
 import team4.footwithme.member.jwt.JwtTokenUtil;
 import team4.footwithme.member.oauth2.CustomOAuth2LoginSuccessHandler;
@@ -54,7 +56,9 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
             .authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
-                    .requestMatchers("/**").permitAll()
+                    .requestMatchers("/api/v1/members/join", "/api/v1/members/login").permitAll()
+                    .requestMatchers("/api/v1/merchant/**").hasAuthority(MemberRole.MERCHANT.getText())
+                    .anyRequest().authenticated()
             )
                 .oauth2Login(customConfigurer -> customConfigurer
                         .userInfoEndpoint(endpointConfig -> endpointConfig.userService(customOAuth2UserService))
