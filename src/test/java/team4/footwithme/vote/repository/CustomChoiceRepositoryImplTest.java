@@ -68,7 +68,7 @@ class CustomChoiceRepositoryImplTest extends IntegrationTestSupport {
         Assertions.assertThat(count).isEqualTo(1L);
     }
 
-    @DisplayName("")
+    @DisplayName("회원의 아이디와 투표의 아이디로 선택한 항목을 조회한다.")
     @Test
     void findByMemberIdAndVoteId() {
         //given

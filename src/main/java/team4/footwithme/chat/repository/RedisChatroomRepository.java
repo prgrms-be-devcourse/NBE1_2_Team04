@@ -32,13 +32,13 @@ public class RedisChatroomRepository implements CommandLineRunner {
     private void init() {
         // 서버 재시작 시 embeddedRedis 초기화되기 때문
         chatroomRepository.findAll().forEach(chatroom -> {
-            if (findChatroomFromRedis(chatroom.getChatroomId().toString())==null) {
+            if (findChatroomFromRedis(chatroom.getChatroomId())==null) {
                 createChatRoom(chatroom);
             }
         });
     }
 
-    public Chatroom findChatroomFromRedis(String chatroomId) {
+    public Chatroom findChatroomFromRedis(Long chatroomId) {
         return opsHashChatRoom.get(CHAT_ROOMS, chatroomId);
     }
 
@@ -49,7 +49,7 @@ public class RedisChatroomRepository implements CommandLineRunner {
         opsHashChatRoom.put(CHAT_ROOMS, chatroom.getChatroomId(), chatroom);
     }
 
-    public void deleteChatroomFromRedis(String chatroomId) {
+    public void deleteChatroomFromRedis(Long chatroomId) {
         opsHashChatRoom.delete(CHAT_ROOMS, chatroomId);
     }
 }

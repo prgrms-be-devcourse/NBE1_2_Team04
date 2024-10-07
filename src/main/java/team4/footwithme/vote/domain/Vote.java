@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
-import org.springframework.transaction.annotation.Transactional;
 import team4.footwithme.global.domain.BaseEntity;
 
 import java.time.Instant;
@@ -77,28 +76,24 @@ public class Vote extends BaseEntity {
         this.voteItems.add(voteItem);
     }
 
-    public void delete(Long memberId) {
-        checkWriterFrom(memberId);
-    }
-
     public void updateVoteStatusToClose() {
         this.voteStatus = CLOSED;
     }
 
     public void update(String updateTitle, LocalDateTime updateEndAt, Long memberId) {
-        checkWriterFrom(memberId);
+        checkWriterFromMemberId(memberId);
         this.title = updateTitle;
         this.endAt = updateEndAt;
     }
 
-    private void checkWriterFrom(Long memberId) {
-        if (!isWriter(memberId)) {
-            throw new IllegalArgumentException("투표 작성자만 수정,삭제할 수 있습니다.");
+    public void checkWriterFromMemberId(Long memberId) {
+        if (isNotWriter(memberId)) {
+            throw new IllegalArgumentException("투표 작성자가 아닙니다.");
         }
     }
 
-    private boolean isWriter(Long memberId) {
-        return this.memberId.equals(memberId);
+    private boolean isNotWriter(Long memberId) {
+        return !this.memberId.equals(memberId);
     }
 
     public Instant getInstantEndAt() {

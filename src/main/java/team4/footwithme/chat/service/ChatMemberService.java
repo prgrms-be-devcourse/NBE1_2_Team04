@@ -1,5 +1,6 @@
 package team4.footwithme.chat.service;
 
+import team4.footwithme.chat.domain.Chatroom;
 import team4.footwithme.chat.service.request.ChatMemberServiceRequest;
 import team4.footwithme.chat.service.response.ChatMemberResponse;
 import team4.footwithme.member.domain.Member;
@@ -12,13 +13,25 @@ public interface ChatMemberService {
 
     ChatMemberResponse joinChatMember(ChatMemberServiceRequest request);
 
-    String joinChatTeam(List<TeamMember> teamMembers, Long chatroomId);
+    void joinChatTeam(List<TeamMember> teamMembers, Long teamId);
 
-    String joinChatGame(List<Participant> gameMembers, Long chatroomId);
+    void joinChatGame(List<Participant> gameMembers, Long reservationId);
 
-    String joinChatMembers(List<Member> members, Long chatroomId);
+    void joinChatMembers(List<Member> members, Chatroom chatroom);
 
     ChatMemberResponse leaveChatMember(ChatMemberServiceRequest request);
 
-    String leaveChatRoom(Long chatroomId);
+    void leaveChatRoom(Long chatroomId);
+
+    void joinTeamChatMember(Member member, Long teamId);
+
+    void joinReservationChatMember(Member member, Long reservationId);
+
+    void leaveTeamChatRoom(Long teamId);
+
+    void leaveReservationChatRoom(Long reservationId);
+
+    void leaveTeamChatMember(Member member, Long teamId);
+
+    void leaveReservationChatMember(Member member, Long reservationId);
 }

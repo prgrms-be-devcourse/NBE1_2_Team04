@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface CourtRepository extends JpaRepository<Court, Long>, CustomGlobalRepository {
+public interface CourtRepository extends JpaRepository<Court, Long>, CustomGlobalRepository, CustomCourtRepository {
 
     @Query("SELECT c FROM Court c WHERE c.isDeleted = 'false' AND c.stadium.stadiumId = :stadiumId")
     Slice<Court> findByStadium_StadiumId(@Param("stadiumId") Long stadiumId, Pageable pageable);

@@ -23,9 +23,6 @@ public class Team extends BaseEntity {
     private Long stadiumId;
 
     @NotNull
-    private Long chatRoomId;
-
-    @NotNull
     @Column(length = 50)
     private String name;
 
@@ -39,20 +36,18 @@ public class Team extends BaseEntity {
     private String location;
 
     @Builder
-    private Team(Long teamId, Long stadiumId, Long chatRoomId, String name, String description, TotalRecord totalRecord, String location) {
+    private Team(Long teamId, Long stadiumId, String name, String description, TotalRecord totalRecord, String location) {
         this.teamId = teamId;
         this.stadiumId = stadiumId;
-        this.chatRoomId = chatRoomId;
         this.name = name;
         this.description = description;
         this.totalRecord = totalRecord;
         this.location = location;
     }
 
-    public static Team create(Long stadiumId, Long chatRoomId, String name, String description, int winCount, int drawCount, int loseCount, String location) {
+    public static Team create(Long stadiumId, String name, String description, int winCount, int drawCount, int loseCount, String location) {
         return Team.builder()
             .stadiumId(stadiumId)
-            .chatRoomId(chatRoomId)
             .name(name)
             .description(description)
             .totalRecord(TotalRecord.builder().build())
@@ -60,15 +55,15 @@ public class Team extends BaseEntity {
             .build();
     }
 
-    public void setName(@NotNull String name) {
+    public void updateName(@NotNull String name) {
         this.name = name;
     }
 
-    public void setDescription(String description) {
+    public void updateDescription(String description) {
         this.description = description;
     }
 
-    public void setLocation(String location) {
+    public void updateLocation(String location) {
         this.location = location;
     }
 }

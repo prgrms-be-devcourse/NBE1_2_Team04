@@ -1,7 +1,6 @@
 package team4.footwithme.docs.member;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -60,7 +59,6 @@ public class MemberApiDocs extends RestDocsSupport {
                 .willReturn(response);
 
         //then
-
         mockMvc.perform(post("/api/v1/members/join")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))

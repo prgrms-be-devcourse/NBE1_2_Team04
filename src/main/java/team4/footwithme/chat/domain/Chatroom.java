@@ -1,12 +1,8 @@
 package team4.footwithme.chat.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
@@ -19,6 +15,8 @@ import java.io.Serializable;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @SQLDelete(sql = "UPDATE chatroom SET is_deleted = 'true' WHERE chatroom_id = ?")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn
 public class Chatroom extends BaseEntity implements Serializable {
 
     @Serial
@@ -31,15 +29,12 @@ public class Chatroom extends BaseEntity implements Serializable {
     @NotNull
     private String name;
 
-    @Builder
-    private Chatroom(String name) {
+    public Chatroom(String name) {
         this.name = name;
     }
 
     public static Chatroom create(String name) {
-        return Chatroom.builder()
-            .name(name)
-            .build();
+        return new Chatroom(name);
     }
 
     public void updateName(String name) {

@@ -68,12 +68,12 @@ public class Chat extends BaseEntity implements Serializable {
                 .build();
     }
 
-    public static Chat createEnterChat(Chatroom chatRoom, Member member, String name){
+    public static Chat createEnterChat(Chatroom chatRoom, Member member){
         return Chat.builder()
                 .chatRoom(chatRoom)
                 .member(member)
                 .chatType(ChatType.ENTER)
-                .text(name + "님이 입장했습니다.")
+                .text(member.getName() + "님이 입장했습니다.")
                 .build();
     }
 
@@ -86,12 +86,12 @@ public class Chat extends BaseEntity implements Serializable {
                 .build();
     }
 
-    public static Chat createQuitChat(Chatroom chatRoom, Member member, String name){
+    public static Chat createQuitChat(Chatroom chatRoom, Member member){
         return Chat.builder()
                 .chatRoom(chatRoom)
                 .member(member)
                 .chatType(ChatType.QUIT)
-                .text(name + "님이 채팅방을 떠났습니다.")
+                .text(member.getName() + "님이 채팅방을 떠났습니다.")
                 .build();
     }
 
