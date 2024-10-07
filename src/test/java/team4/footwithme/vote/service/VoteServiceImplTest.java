@@ -74,7 +74,7 @@ class VoteServiceImplTest extends IntegrationTestSupport {
         List<Stadium> savedStadiums = stadiumRepository.saveAll(List.of(givenStadium1, givenStadium2, givenStadium4));
         List<Long> stadiumIds = List.of(savedStadiums.get(0).getStadiumId(), savedStadiums.get(1).getStadiumId(), savedStadiums.get(2).getStadiumId());
 
-        Team team = Team.create(givenStadium1.getStadiumId(), 1L, "팀이름", "팀 설명", 1, 1, 1, "서울");
+        Team team = Team.create(givenStadium1.getStadiumId(), "팀이름", "팀 설명", 1, 1, 1, "서울");
         Team savedTeam = teamRepository.save(team);
 
         VoteStadiumCreateServiceRequest request = new VoteStadiumCreateServiceRequest("9월4주차 구장 투표", endAt, stadiumIds);
@@ -167,7 +167,7 @@ class VoteServiceImplTest extends IntegrationTestSupport {
 
         List<Stadium> savedStadiums = stadiumRepository.saveAll(List.of(givenStadium1, givenStadium2, givenStadium3));
 
-        Team team = Team.create(givenStadium1.getStadiumId(), 1L, "팀이름", "팀 설명", 1, 1, 1, "서울");
+        Team team = Team.create(givenStadium1.getStadiumId(), "팀이름", "팀 설명", 1, 1, 1, "서울");
         Team savedTeam = teamRepository.save(team);
 
         VoteStadiumCreateServiceRequest request = new VoteStadiumCreateServiceRequest("9월4주차 구장 투표", endAt, stadiumIds);
@@ -246,7 +246,7 @@ class VoteServiceImplTest extends IntegrationTestSupport {
 
         Stadium givenStadium1 = Stadium.create(savedMember, "최강 풋살장", "서울시 강남구 어딘가", "01010101010", "최고임", 54.123, 10.123);
         Stadium savedStadium = stadiumRepository.save(givenStadium1);
-        Team team = Team.create(savedStadium.getStadiumId(), 1L, "팀이름", "팀 설명", 1, 1, 1, "서울");
+        Team team = Team.create(savedStadium.getStadiumId(), "팀이름", "팀 설명", 1, 1, 1, "서울");
         Team savedTeam = teamRepository.save(team);
 
         VoteDateCreateServiceRequest request = new VoteDateCreateServiceRequest("연말 경기 투표", endAt, List.of(choice1, choice2, choice3));
@@ -304,7 +304,7 @@ class VoteServiceImplTest extends IntegrationTestSupport {
 
         Stadium givenStadium1 = Stadium.create(savedMember, "최강 풋살장", "서울시 강남구 어딘가", "01010101010", "최고임", 54.123, 10.123);
         Stadium savedStadium = stadiumRepository.save(givenStadium1);
-        Team team = Team.create(savedStadium.getStadiumId(), 1L, "팀이름", "팀 설명", 1, 1, 1, "서울");
+        Team team = Team.create(savedStadium.getStadiumId(), "팀이름", "팀 설명", 1, 1, 1, "서울");
         Team savedTeam = teamRepository.save(team);
 
         Vote vote = Vote.create(1L, 1L, "연말 경기 투표", endAt);
@@ -351,7 +351,7 @@ class VoteServiceImplTest extends IntegrationTestSupport {
 
         Stadium givenStadium1 = Stadium.create(savedMember, "최강 풋살장", "서울시 강남구 어딘가", "01010101010", "최고임", 54.123, 10.123);
         Stadium savedStadium = stadiumRepository.save(givenStadium1);
-        Team team = Team.create(savedStadium.getStadiumId(), 1L, "팀이름", "팀 설명", 1, 1, 1, "서울");
+        Team team = Team.create(savedStadium.getStadiumId(), "팀이름", "팀 설명", 1, 1, 1, "서울");
         Team savedTeam = teamRepository.save(team);
 
         Vote vote = Vote.create(savedMember.getMemberId(), 1L, "연말 경기 투표", endAt);
@@ -394,7 +394,7 @@ class VoteServiceImplTest extends IntegrationTestSupport {
 
         Stadium givenStadium1 = Stadium.create(savedMember, "최강 풋살장", "서울시 강남구 어딘가", "01010101010", "최고임", 54.123, 10.123);
         Stadium savedStadium = stadiumRepository.save(givenStadium1);
-        Team team = Team.create(savedStadium.getStadiumId(), 1L, "팀이름", "팀 설명", 1, 1, 1, "서울");
+        Team team = Team.create(savedStadium.getStadiumId(), "팀이름", "팀 설명", 1, 1, 1, "서울");
         Team savedTeam = teamRepository.save(team);
 
         Vote vote = Vote.create(1L, 1L, "연말 경기 투표", endAt);
@@ -452,7 +452,7 @@ class VoteServiceImplTest extends IntegrationTestSupport {
 
         Stadium givenStadium1 = Stadium.create(savedMember, "최강 풋살장", "서울시 강남구 어딘가", "01010101010", "최고임", 54.123, 10.123);
         Stadium savedStadium = stadiumRepository.save(givenStadium1);
-        Team team = Team.create(savedStadium.getStadiumId(), 1L, "팀이름", "팀 설명", 1, 1, 1, "서울");
+        Team team = Team.create(savedStadium.getStadiumId(), "팀이름", "팀 설명", 1, 1, 1, "서울");
         Team savedTeam = teamRepository.save(team);
 
         Vote vote = Vote.create(1L, 1L, "연말 경기 투표", endAt);
@@ -503,7 +503,7 @@ class VoteServiceImplTest extends IntegrationTestSupport {
 
         Stadium givenStadium1 = Stadium.create(savedMember, "최강 풋살장", "서울시 강남구 어딘가", "01010101010", "최고임", 54.123, 10.123);
         Stadium savedStadium = stadiumRepository.save(givenStadium1);
-        Team team = Team.create(savedStadium.getStadiumId(), 1L, "팀이름", "팀 설명", 1, 1, 1, "서울");
+        Team team = Team.create(savedStadium.getStadiumId(), "팀이름", "팀 설명", 1, 1, 1, "서울");
         Team savedTeam = teamRepository.save(team);
 
         Vote vote = Vote.create(savedMember.getMemberId(), 1L, "연말 경기 투표", endAt);
@@ -543,7 +543,7 @@ class VoteServiceImplTest extends IntegrationTestSupport {
         List<Stadium> savedStadiums = stadiumRepository.saveAll(List.of(givenStadium1, givenStadium2, givenStadium4));
         List<Long> stadiumIds = List.of(savedStadiums.get(0).getStadiumId(), savedStadiums.get(1).getStadiumId(), savedStadiums.get(2).getStadiumId());
 
-        Team team = Team.create(givenStadium1.getStadiumId(), 1L, "팀이름", "팀 설명", 1, 1, 1, "서울");
+        Team team = Team.create(givenStadium1.getStadiumId(), "팀이름", "팀 설명", 1, 1, 1, "서울");
         Team savedTeam = teamRepository.save(team);
 
         VoteStadiumCreateServiceRequest request = new VoteStadiumCreateServiceRequest("9월4주차 구장 투표", endAt, stadiumIds);

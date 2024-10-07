@@ -8,10 +8,10 @@ import team4.footwithme.team.domain.Team;
 import team4.footwithme.team.domain.TeamMember;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface TeamRepository extends JpaRepository<Team, Long>, CustomTeamRepository{
     @Query("select t from Team t where t.isDeleted = 'false' and t.teamId = :id")
-    Team findByTeamId(@Param("id")Long teamId);
-
+    Optional<Team> findByTeamId(@Param("id")Long teamId);
 }

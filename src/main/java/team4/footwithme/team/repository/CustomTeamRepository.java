@@ -6,6 +6,6 @@ import team4.footwithme.team.domain.TeamMember;
 import java.util.List;
 
 public interface CustomTeamRepository {
-    Long countMaleByMemberId();
-    Long countFemaleByMemberId();
+    Long countMaleByMemberId(Long teamId);
+    Long countFemaleByMemberId(Long teamId);
 }

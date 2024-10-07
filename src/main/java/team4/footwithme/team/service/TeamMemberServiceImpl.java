@@ -44,11 +44,6 @@ public class TeamMemberServiceImpl implements TeamMemberService{
         //채팅방에 초대할 TeamMember List
         List<TeamMember> teamMemberList = new ArrayList<>();
 
-        //기존 팀 멤버 아이디 저장
-        List<Long> oldMembersId = teamMemberRepository.findTeamMembersByTeam(team).stream()
-                .map(teamMember -> teamMember.getMember().getMemberId())
-                .collect(Collectors.toList());
-
         //member 추가
         for(String email : request.emails()){
             Member member = memberRepository.findByEmail(email).orElse(null);
@@ -57,14 +52,15 @@ public class TeamMemberServiceImpl implements TeamMemberService{
                 continue;
             }
 
-            // 기존 팀 멤버가 존재할 경우 continue
-            if(oldMembersId.contains(member.getMemberId())) {
+            TeamMember teamMember = teamMemberRepository.findByTeamIdAndMemberId(teamId, member.getMemberId()).orElse(null);
+            //해당 멤버가 팀에 이미 존재 할 경우
+            if(teamMember != null){
                 continue;
             }
 
-            TeamMember teamMember =  teamMemberRepository.save(TeamMember.create(team, member, TeamMemberRole.MEMBER));
+            teamMember = TeamMember.createMember(team, member);
 
-            teamMembers.add(TeamResponse.of(teamMember));
+            teamMembers.add(TeamResponse.of(teamMemberRepository.save(teamMember)));
 
             teamMemberList.add(teamMember);
         }
@@ -96,31 +92,53 @@ public class TeamMemberServiceImpl implements TeamMemberService{
         return membersInfo;
     }
 
+    //팀 탈퇴_팀장
     @Override
     @Transactional
-    public Long deleteTeamMembers(Long teamMemberId) {
-        //팀 멤버 찾기
-        TeamMember teamMember = teamMemberRepository.findTeamMemberWithMemberById(teamMemberId).orElseThrow(()->new IllegalArgumentException("존재하지 않는 팀원입니다."));
+    public Long deleteTeamMemberByCreator(Long teamId, Long teamMemberId, Member member) {
+        //삭제할 팀 멤버 찾기
+        TeamMember teamMember = findTeamMemberByIdOrThrowException(teamMemberId);
+        //현재 유저 정보
+        TeamMember Creator = findByTeamIdAndMemberIdOrThrowException(teamId, member.getMemberId());
+
+        if(Creator.getRole() != TeamMemberRole.CREATOR){
+            throw new IllegalArgumentException("삭제 권한이 없습니다");
+        }
+
         teamMemberRepository.delete(teamMember);
         //팀 멤버 삭제시 해당 멤버 채팅방 퇴장 이벤트 처리
         publisher.publishEvent(new TeamMemberLeaveEvent(teamMember.getMember(), teamMember.getTeam().getTeamId()));
         return teamMemberId;
     }
 
+    //팀 탈퇴_본인
+    @Override
+    @Transactional
+    public Long deleteTeamMember(Long teamId, Member member) {
+        TeamMember teamMember = findByTeamIdAndMemberIdOrThrowException(teamId, member.getMemberId());
+        teamMemberRepository.delete(teamMember);
+        //팀 멤버 삭제시 해당 멤버 채팅방 퇴장 이벤트 처리
+        publisher.publishEvent(new TeamMemberLeaveEvent(teamMember.getMember(), teamMember.getTeam().getTeamId()));
+        return teamMember.getTeamMemberId();
+    }
+
 
     public Team findTeamByIdOrThrowException(long id){
-        Team team = teamRepository.findByTeamId(id);
-        if(team == null) {
-            throw new IllegalArgumentException("해당 팀이 존재하지 않습니다.");
-        }
+        Team team = teamRepository.findByTeamId(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 팀이 존재하지 않습니다."));
+
         return team;
     }
 
     public TeamMember findTeamMemberByIdOrThrowException(long id){
-        TeamMember teamMember = teamMemberRepository.findByTeamMemberId(id);
-        if(teamMember == null) {
-            throw new IllegalArgumentException("존재하지 않는 팀원입니다.");
-        }
+        TeamMember teamMember = teamMemberRepository.findByTeamMemberId(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 팀원입니다."));
+        return teamMember;
+    }
+
+    public TeamMember findByTeamIdAndMemberIdOrThrowException(long teamId, long memberId){
+        TeamMember teamMember = teamMemberRepository.findByTeamIdAndMemberId(teamId, memberId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 팀원입니다."));
         return teamMember;
     }
 }
