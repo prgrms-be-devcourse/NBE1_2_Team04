@@ -8,6 +8,7 @@ import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.restdocs.request.RequestDocumentation;
 import team4.footwithme.chat.api.ChatApi;
 import team4.footwithme.chat.api.request.ChatUpdateRequest;
 import team4.footwithme.chat.domain.ChatType;
@@ -17,7 +18,6 @@ import team4.footwithme.chat.service.response.ChatMemberInfo;
 import team4.footwithme.chat.service.response.ChatResponse;
 import team4.footwithme.chat.service.response.ChatroomResponse;
 import team4.footwithme.docs.RestDocsSupport;
-import team4.footwithme.member.domain.Member;
 import team4.footwithme.member.domain.MemberRole;
 import team4.footwithme.security.WithMockPrincipalDetail;
 
@@ -25,18 +25,16 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class ChatApiDocs extends RestDocsSupport {
@@ -82,10 +80,10 @@ public class ChatApiDocs extends RestDocsSupport {
                 chatResponseList, PageRequest.of(page - 1, size, Sort.by("createdAt").descending()), false
         );
 
-        given(chatService.getChatList(any(Long.class), any(PageRequest.class), any(Member.class)))
+        given(chatService.getChatList(any(Long.class), any(PageRequest.class), any()))
                 .willReturn(chatroomResponses);
 
-        mockMvc.perform(get("/api/v1/chat/message/{chatroomId}", 1L).with(csrf())
+        mockMvc.perform(get("/api/v1/chat/message/{chatroomId}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .param("page", "1")
                         .param("size", "1"))
@@ -95,6 +93,10 @@ public class ChatApiDocs extends RestDocsSupport {
                         preprocessResponse(prettyPrint()),
                         pathParameters(
                                 parameterWithName("chatroomId").description("채팅방 ID")
+                        ),
+                        RequestDocumentation.queryParameters(
+                                parameterWithName("page").description("페이지 넘버"),
+                                parameterWithName("size").description("페이지 사이즈")
                         ),
                         responseFields(
                                 fieldWithPath("code").type(JsonFieldType.NUMBER)
@@ -127,10 +129,12 @@ public class ChatApiDocs extends RestDocsSupport {
                                         .description("회원 이메일"),
                                 fieldWithPath("data.content[].memberInfo.name").type(JsonFieldType.STRING)
                                         .description("회원 이름"),
-                                fieldWithPath("data.content[].memberRole").type(JsonFieldType.STRING)
+                                fieldWithPath("data.content[].memberInfo.memberRole").type(JsonFieldType.STRING)
                                         .description("회원 권한"),
                                 fieldWithPath("data.content[].chatType").type(JsonFieldType.STRING)
                                         .description("채팅 타입"),
+                                fieldWithPath("data.content[].text").type(JsonFieldType.STRING)
+                                        .description("채팅 내용"),
                                 fieldWithPath("data.pageable").type(JsonFieldType.OBJECT)
                                         .description("Pageable 정보"),
                                 fieldWithPath("data.pageable.pageNumber").type(JsonFieldType.NUMBER)
@@ -202,10 +206,10 @@ public class ChatApiDocs extends RestDocsSupport {
                 "채팅 2"
         );
 
-        given(chatService.updateChat(any(ChatUpdateServiceRequest.class), argThat(m -> m.getEmail().equals("a@a.com")), eq(chatId)))
+        given(chatService.updateChat(any(ChatUpdateServiceRequest.class), any(), eq(chatId)))
                 .willReturn(chatResponse);
 
-        mockMvc.perform(put("/api/v1/chat/message/{chatId}", 1L).with(csrf())
+        mockMvc.perform(put("/api/v1/chat/message/{chatId}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
@@ -247,10 +251,12 @@ public class ChatApiDocs extends RestDocsSupport {
                                         .description("회원 이메일"),
                                 fieldWithPath("data.memberInfo.name").type(JsonFieldType.STRING)
                                         .description("회원 이름"),
-                                fieldWithPath("data.memberRole").type(JsonFieldType.STRING)
+                                fieldWithPath("data.memberInfo.memberRole").type(JsonFieldType.STRING)
                                         .description("회원 권한"),
                                 fieldWithPath("data.chatType").type(JsonFieldType.STRING)
-                                        .description("채팅 타입")
+                                        .description("채팅 타입"),
+                                fieldWithPath("data.text").type(JsonFieldType.STRING)
+                                        .description("채팅 내용")
                         )));
     }
 
@@ -261,10 +267,10 @@ public class ChatApiDocs extends RestDocsSupport {
     void deleteChat() throws Exception {
         long chatId = 1L;
 
-        given(chatService.deleteChat(argThat(m -> m.getEmail().equals("a@a.com")), eq(chatId)))
+        given(chatService.deleteChat(any(), eq(chatId)))
                 .willReturn(chatId);
 
-        mockMvc.perform(delete("/api/v1/chat/message/{chatId}", 1L).with(csrf())
+        mockMvc.perform(delete("/api/v1/chat/message/{chatId}", 1L)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(document("chat-delete",

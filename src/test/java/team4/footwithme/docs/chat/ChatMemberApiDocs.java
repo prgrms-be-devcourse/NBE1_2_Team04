@@ -19,7 +19,6 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class ChatMemberApiDocs extends RestDocsSupport {
@@ -47,7 +46,7 @@ public class ChatMemberApiDocs extends RestDocsSupport {
         given(chatMemberService.joinChatMember(any(ChatMemberServiceRequest.class)))
                 .willReturn(response);
 
-        mockMvc.perform(post("/api/v1/chat/member").with(csrf())
+        mockMvc.perform(post("/api/v1/chat/member")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
@@ -92,7 +91,7 @@ public class ChatMemberApiDocs extends RestDocsSupport {
         given(chatMemberService.leaveChatMember(any(ChatMemberServiceRequest.class)))
                 .willReturn(response);
 
-        mockMvc.perform(delete("/api/v1/chat/member").with(csrf())
+        mockMvc.perform(delete("/api/v1/chat/member")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
