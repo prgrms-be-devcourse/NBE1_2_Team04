@@ -1,216 +1,311 @@
-//package team4.footwithme.stadium.service;
-//
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.DisplayName;
-//import org.junit.jupiter.api.Test;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.transaction.annotation.Transactional;
-//import team4.footwithme.IntegrationTestSupport;
-//import team4.footwithme.member.domain.*;
-//import team4.footwithme.member.repository.MemberRepository;
-//import team4.footwithme.stadium.domain.Position;
-//import team4.footwithme.stadium.domain.Stadium;
-//import team4.footwithme.stadium.repository.StadiumRepository;
-//import team4.footwithme.stadium.service.request.StadiumSearchByLocationServiceRequest;
-//import team4.footwithme.stadium.service.response.StadiumDetailResponse;
-//import team4.footwithme.stadium.service.response.StadiumsResponse;
-//
-//import java.util.List;
-//
-//import static org.assertj.core.api.Assertions.assertThat;
-//import static org.junit.jupiter.api.Assertions.assertThrows;
-//
-//@Transactional
-//class StadiumServiceImplTest extends IntegrationTestSupport {
-//
-//    @Autowired
-//    private StadiumServiceImpl stadiumService;
-//
-//    @Autowired
-//    private StadiumRepository stadiumRepository;
-//
-//    @Autowired
-//    private MemberRepository memberRepository;
-//
-//    private Member testMember;
-//
-//    @BeforeEach
-//    void setUp() {
-//        testMember = Member.builder()
-//            .email("test@example.com")
-//            .password("password")
-//            .name("Test User")
-//            .phoneNumber("010-1234-5678")
-//            .loginType(LoginType.builder()
-//                .loginProvider(LoginProvider.ORIGINAL)
-//                .snsId("example@example.com")
-//                .build())
-//            .gender(Gender.MALE)
-//            .memberRole(MemberRole.USER)
-//            .termsAgreed(TermsAgreed.AGREE)
-//            .build();
-//        memberRepository.save(testMember);
-//
-//        Position position1 = Position.builder()
-//            .latitude(37.5642135)
-//            .longitude(127.0016985)
-//            .build();
-//
-//        Position position2 = Position.builder()
-//            .latitude(35.1379222)
-//            .longitude(129.05562775)
-//            .build();
-//
-//        Position position3 = Position.builder()
-//            .latitude(36.3504119)
-//            .longitude(127.3845475)
-//            .build();
-//
-//        Stadium stadium1 = Stadium.builder()
-//            .name("Stadium1")
-//            .address("seoul")
-//            .phoneNumber("123-4567")
-//            .description("Description1")
-//            .position(position1)
-//            .member(testMember)
-//            .build();
-//
-//        Stadium stadium2 = Stadium.builder()
-//            .name("Stadium2")
-//            .address("busan")
-//            .phoneNumber("890-1234")
-//            .description("Description2")
-//            .position(position2)
-//            .member(testMember)
-//            .build();
-//
-//        Stadium stadium3 = Stadium.builder()
-//            .name("Stadium3")
-//            .address("daegu")
-//            .phoneNumber("321-6547")
-//            .description("Description3")
-//            .position(position3)
-//            .member(testMember)
-//            .build();
-//
-//        stadiumRepository.save(stadium1);
-//        stadiumRepository.save(stadium2);
-//        stadiumRepository.save(stadium3);
-//    }
-//
-//    @Test
-//    @DisplayName("구장 목록을 정상적으로 반환해야 한다")
-//    void getStadiumList() {
-//        List<StadiumsResponse> result = stadiumService.getStadiumList();
-//
-//        assertThat(result).hasSize(3);
-//        assertThat(result.get(0).name()).isEqualTo("Stadium1");
-//        assertThat(result.get(1).name()).isEqualTo("Stadium2");
-//        assertThat(result.get(2).name()).isEqualTo("Stadium3");
-//    }
-//
-//    @Test
-//    @DisplayName("구장 이름이 매우 긴 경우에도 정상적으로 저장되고 반환되어야 한다")
-//    void getStadiumList_withLongStadiumName() {
-//        String longName = "A".repeat(255);
-//        Position position = Position.builder()
-//            .latitude(37.5665)
-//            .longitude(126.9780)
-//            .build();
-//        Stadium stadium = Stadium.builder()
-//            .name(longName)
-//            .address("LongNameAddress")
-//            .phoneNumber("123-4567")
-//            .position(position)
-//            .member(testMember)
-//            .build();
-//        stadiumRepository.save(stadium);
-//
-//        List<StadiumsResponse> result = stadiumService.getStadiumList();
-//
-//        assertThat(result.get(3).name()).isEqualTo(longName);
-//    }
-//
-//    @Test
-//    @DisplayName("특정 구장의 상세 정보를 정상적으로 반환해야 한다")
-//    void getStadiumDetail() {
-//        Stadium stadium = stadiumRepository.findAll().get(0);
-//
-//        StadiumDetailResponse response = stadiumService.getStadiumDetail(stadium.getStadiumId());
-//
-//        assertThat(response).isNotNull();
-//        assertThat(response.name()).isEqualTo("Stadium1");
-//        assertThat(response.address()).isEqualTo("seoul");
-//        assertThat(response.phoneNumber()).isEqualTo("123-4567");
-//        assertThat(response.latitude()).isEqualTo(37.5642135);
-//        assertThat(response.longitude()).isEqualTo(127.0016985);
-//    }
-//
-//    @Test
-//    @DisplayName("이름 검색어로 구장 리스트를 정상적으로 반환해야 한다")
-//    void searchStadiumByName() {
-//        List<StadiumsResponse> result = stadiumService.getStadiumsByName("2");
-//
-//        assertThat(result).hasSize(1);
-//        assertThat(result.get(0).name()).isEqualTo("Stadium2");
-//    }
-//
-//    @Test
-//    @DisplayName("주어진 거리 내의 구장 목록을 반환해야 한다")
-//    void getStadiumsWithinDistance_shouldReturnStadiumsWithinGivenDistance() {
-//        Double searchLatitude = 37.5665;
-//        Double searchLongitude = 126.9780;
-//        Double distance = 100.0;
-//
-//        StadiumSearchByLocationServiceRequest request = new StadiumSearchByLocationServiceRequest(
-//            searchLatitude,
-//            searchLongitude,
-//            distance
-//        );
-//
-//        List<StadiumsResponse> result = stadiumService.getStadiumsWithinDistance(request);
-//
-//        assertThat(result).hasSize(1);
-//        assertThat(result.get(0).name()).isEqualTo("Stadium1");
-//    }
-//
-//    @Test
-//    @DisplayName("주어진 거리 외의 구장이 반환되지 않아야 한다")
-//    void getStadiumsWithinDistance_shouldReturnEmptyListWhenTooFar() {
-//        Double searchLatitude = 33.450701;
-//        Double searchLongitude = 126.570667;
-//        Double distance = 1.0;
-//        StadiumSearchByLocationServiceRequest request = new StadiumSearchByLocationServiceRequest(
-//            searchLatitude,
-//            searchLongitude,
-//            distance
-//        );
-//
-//        List<StadiumsResponse> result = stadiumService.getStadiumsWithinDistance(request);
-//
-//        assertThat(result).isEmpty();
-//    }
-//
-//    @Test
-//    @DisplayName("존재하는 구장을 조회할 때 예외 없이 정상적으로 반환해야 한다")
-//    void findByIdOrThrowException_whenStadiumExists() {
-//        Stadium stadium = stadiumRepository.findAll().get(0);
-//
-//        Stadium result = stadiumService.findStadiumByIdOrThrowException(stadium.getStadiumId());
-//
-//        assertThat(result).isNotNull();
-//        assertThat(result.getName()).isEqualTo("Stadium1");
-//    }
-//
-//    @Test
-//    @DisplayName("존재하지 않는 구장을 조회할 때 IllegalArgumentException이 발생해야 한다")
-//    void findByIdOrThrowException_whenStadiumDoesNotExist() {
-//        Long invalidId = 999L;
-//
-//        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-//            stadiumService.findStadiumByIdOrThrowException(invalidId);
-//        });
-//
-//        assertThat(exception.getMessage()).isEqualTo("해당 풋살장을 찾을 수 없습니다.");
-//    }
-//}
+package team4.footwithme.stadium.service;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Slice;
+import org.springframework.transaction.annotation.Transactional;
+import team4.footwithme.IntegrationTestSupport;
+import team4.footwithme.global.exception.ExceptionMessage;
+import team4.footwithme.member.domain.*;
+import team4.footwithme.member.repository.MemberRepository;
+import team4.footwithme.stadium.domain.Stadium;
+import team4.footwithme.stadium.repository.StadiumRepository;
+import team4.footwithme.stadium.service.request.StadiumRegisterServiceRequest;
+import team4.footwithme.stadium.service.request.StadiumSearchByLocationServiceRequest;
+import team4.footwithme.stadium.service.request.StadiumUpdateServiceRequest;
+import team4.footwithme.stadium.service.response.StadiumDetailResponse;
+import team4.footwithme.stadium.service.response.StadiumsResponse;
+
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+@Transactional
+class StadiumServiceImplTest extends IntegrationTestSupport {
+
+    @Autowired
+    private StadiumServiceImpl stadiumService;
+
+    @Autowired
+    private StadiumRepository stadiumRepository;
+
+    @Autowired
+    private MemberRepository memberRepository;
+
+    private Member testMember;
+
+    @BeforeEach
+    void setUp() {
+        testMember = Member.builder()
+                .email("test@example.com")
+                .password("password")
+                .name("Test User")
+                .phoneNumber("010-1234-5678")
+                .loginType(LoginType.builder()
+                        .loginProvider(LoginProvider.ORIGINAL)
+                        .snsId("example@example.com")
+                        .build())
+                .gender(Gender.MALE)
+                .memberRole(MemberRole.USER)
+                .termsAgreed(TermsAgreed.AGREE)
+                .build();
+        memberRepository.save(testMember);
+
+        Stadium stadium1 = Stadium.create(testMember, "Stadium1", "seoul", "010-1111-1111", "Description1",
+                37.5642135, 127.0016985);
+
+        Stadium stadium2 = Stadium.create(testMember, "Stadium2", "busan", "010-2222-2222", "Description2",
+                35.1379222, 129.05562775);
+
+        Stadium stadium3 = Stadium.create(testMember, "Stadium3", "daejeon", "010-3333-3333", "Description3",
+                36.3504119, 127.3845475);
+
+        stadiumRepository.save(stadium1);
+        stadiumRepository.save(stadium2);
+        stadiumRepository.save(stadium3);
+    }
+
+    @Test
+    @DisplayName("풋살장 목록을 정상적으로 반환해야 한다")
+    void getStadiumList() {
+        Slice<StadiumsResponse> result = stadiumService.getStadiumList(0, "name");
+
+        assertThat(result.getContent())
+                .hasSize(3)
+                .extracting(StadiumsResponse::name)
+                .containsExactly("Stadium1", "Stadium2", "Stadium3");
+    }
+
+    @Test
+    @DisplayName("특정 풋살장의 상세 정보를 정상적으로 반환해야 한다")
+    void getStadiumDetail() {
+        Stadium stadium = stadiumRepository.findAll().get(0);
+
+        StadiumDetailResponse response = stadiumService.getStadiumDetail(stadium.getStadiumId());
+
+        assertThat(response).isNotNull();
+        assertThat(response)
+                .extracting(
+                        StadiumDetailResponse::name,
+                        StadiumDetailResponse::address,
+                        StadiumDetailResponse::phoneNumber,
+                        StadiumDetailResponse::latitude,
+                        StadiumDetailResponse::longitude
+                )
+                .containsExactly("Stadium1", "seoul", "010-1111-1111", 37.5642135, 127.0016985);
+    }
+
+    @Test
+    @DisplayName("이름 검색어로 풋살장 리스트를 정상적으로 반환해야 한다")
+    void searchStadiumByName() {
+        Slice<StadiumsResponse> result = stadiumService.getStadiumsByName("2", 0, "name");
+
+        assertThat(result.getContent())
+                .hasSize(1)
+                .extracting(StadiumsResponse::name)
+                .containsExactly("Stadium2");
+    }
+
+    @Test
+    @DisplayName("주소 검색어로 풋살장 리스트를 정상적으로 반환해야 한다")
+    void searchStadiumByAddress() {
+        Slice<StadiumsResponse> result = stadiumService.getStadiumsByAddress("seo", 0, "name");
+
+        assertThat(result.getContent())
+                .hasSize(1)
+                .extracting(StadiumsResponse::name)
+                .containsExactly("Stadium1");
+    }
+
+    @Test
+    @DisplayName("주어진 거리 내의 풋살장 목록을 반환해야 한다")
+    void getStadiumsWithinDistance_shouldReturnStadiumsWithinGivenDistance() {
+        Double searchLatitude = 37.5665;
+        Double searchLongitude = 126.9780;
+        Double distance = 100.0;
+
+        StadiumSearchByLocationServiceRequest request = new StadiumSearchByLocationServiceRequest(
+                searchLatitude,
+                searchLongitude,
+                distance
+        );
+
+        Slice<StadiumsResponse> result = stadiumService.getStadiumsWithinDistance(request, 0, "name");
+
+        assertThat(result.getContent())
+                .hasSize(1)
+                .extracting(StadiumsResponse::name)
+                .containsExactly("Stadium1");
+    }
+
+    @Test
+    @DisplayName("주어진 거리 외의 풋살장이 반환되지 않아야 한다")
+    void getStadiumsWithinDistance_shouldReturnEmptyListWhenTooFar() {
+        Double searchLatitude = 33.450701;
+        Double searchLongitude = 126.570667;
+        Double distance = 1.0;
+
+        StadiumSearchByLocationServiceRequest request = new StadiumSearchByLocationServiceRequest(
+                searchLatitude,
+                searchLongitude,
+                distance
+        );
+
+        Slice<StadiumsResponse> result = stadiumService.getStadiumsWithinDistance(request, 0, "name");
+
+        assertThat(result.getContent()).isEmpty();
+    }
+
+    @Test
+    @DisplayName("풋살장을 정상적으로 등록해야 한다")
+    void registerStadium() {
+        StadiumRegisterServiceRequest request = new StadiumRegisterServiceRequest(
+                "New Stadium", "Incheon", "010-4444-4444", "New Description",
+                37.456, 126.705
+        );
+
+        StadiumDetailResponse response = stadiumService.registerStadium(request, testMember.getMemberId());
+
+        assertThat(response).isNotNull();
+        assertThat(response)
+                .extracting(
+                        StadiumDetailResponse::name,
+                        StadiumDetailResponse::address
+                )
+                .containsExactly("New Stadium", "Incheon");
+        assertThat(stadiumRepository.findById(response.stadiumId())).isPresent();
+    }
+
+    @Test
+    @DisplayName("풋살장을 정상적으로 수정해야 한다")
+    void updateStadium() {
+        Stadium stadium = stadiumRepository.findAll().get(0);
+
+        StadiumUpdateServiceRequest request = new StadiumUpdateServiceRequest(
+                "Updated Stadium", "Updated Address", "010-9999-9999", "Updated Description",
+                38.0, 128.0
+        );
+
+        StadiumDetailResponse response = stadiumService.updateStadium(request, testMember.getMemberId(), stadium.getStadiumId());
+
+        assertThat(response).isNotNull();
+        assertThat(response)
+                .extracting(
+                        StadiumDetailResponse::name,
+                        StadiumDetailResponse::address
+                )
+                .containsExactly("Updated Stadium", "Updated Address");
+
+        Stadium updatedStadium = stadiumRepository.findById(stadium.getStadiumId()).orElseThrow();
+        assertThat(updatedStadium)
+                .extracting(
+                        Stadium::getName,
+                        Stadium::getAddress
+                )
+                .containsExactly("Updated Stadium", "Updated Address");
+    }
+
+    @Test
+    @DisplayName("풋살장을 정상적으로 삭제해야 한다")
+    void deleteStadium() {
+        Stadium stadium = stadiumRepository.findAll().get(0);
+
+        stadiumService.deleteStadium(testMember.getMemberId(), stadium.getStadiumId());
+
+        Optional<Stadium> deletedStadium = stadiumRepository.findById(stadium.getStadiumId());
+        assertThat(deletedStadium).isEmpty();
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 풋살장을 조회할 때 IllegalArgumentException이 발생해야 한다")
+    void getStadiumDetail_whenStadiumDoesNotExist() {
+        Long invalidId = -1L;
+
+        assertThatThrownBy(() -> stadiumService.getStadiumDetail(invalidId))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(ExceptionMessage.STADIUM_NOT_FOUND.getText());
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 풋살장을 수정할 때 IllegalArgumentException이 발생해야 한다")
+    void updateStadium_whenStadiumDoesNotExist() {
+        StadiumUpdateServiceRequest request = new StadiumUpdateServiceRequest(
+                "Non-existent Stadium", "Nowhere", "000-0000-0000", "No Description",
+                0.0, 0.0
+        );
+
+        Long invalidStadiumId = -1L;
+
+        assertThatThrownBy(() -> stadiumService.updateStadium(request, testMember.getMemberId(), invalidStadiumId))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(ExceptionMessage.STADIUM_NOT_FOUND.getText());
+    }
+
+    @Test
+    @DisplayName("다른 회원의 풋살장을 수정할 때 IllegalArgumentException이 발생해야 한다")
+    void updateStadium_whenMemberDoesNotOwnStadium() {
+        Member anotherMember = Member.builder()
+                .email("another@example.com")
+                .password("password")
+                .name("Another User")
+                .phoneNumber("010-5678-1234")
+                .loginType(LoginType.builder()
+                        .loginProvider(LoginProvider.ORIGINAL)
+                        .snsId("another@example.com")
+                        .build())
+                .gender(Gender.FEMALE)
+                .memberRole(MemberRole.USER)
+                .termsAgreed(TermsAgreed.AGREE)
+                .build();
+        memberRepository.save(anotherMember);
+
+        Stadium stadium = stadiumRepository.findAll().get(0);
+
+        StadiumUpdateServiceRequest request = new StadiumUpdateServiceRequest(
+                "Unauthorized Update", "Unauthorized Address", "000-0000-0000", "Unauthorized",
+                0.0, 0.0
+        );
+
+        assertThatThrownBy(() -> stadiumService.updateStadium(request, anotherMember.getMemberId(), stadium.getStadiumId()))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(ExceptionMessage.STADIUM_NOT_OWNED_BY_MEMBER.getText());
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 풋살장을 삭제할 때 IllegalArgumentException이 발생해야 한다")
+    void deleteStadium_whenStadiumDoesNotExist() {
+        Long invalidStadiumId = -1L;
+
+        assertThatThrownBy(() -> stadiumService.deleteStadium(testMember.getMemberId(), invalidStadiumId))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(ExceptionMessage.STADIUM_NOT_FOUND.getText());
+    }
+
+    @Test
+    @DisplayName("다른 회원의 풋살장을 삭제할 때 IllegalArgumentException이 발생해야 한다")
+    void deleteStadium_whenMemberDoesNotOwnStadium() {
+        Member anotherMember = Member.builder()
+                .email("another@example.com")
+                .password("password")
+                .name("Another User")
+                .phoneNumber("010-5678-1234")
+                .loginType(LoginType.builder()
+                        .loginProvider(LoginProvider.ORIGINAL)
+                        .snsId("another@example.com")
+                        .build())
+                .gender(Gender.FEMALE)
+                .memberRole(MemberRole.USER)
+                .termsAgreed(TermsAgreed.AGREE)
+                .build();
+        memberRepository.save(anotherMember);
+
+        Stadium stadium = stadiumRepository.findAll().get(0);
+
+        assertThatThrownBy(() -> stadiumService.deleteStadium(anotherMember.getMemberId(), stadium.getStadiumId()))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(ExceptionMessage.STADIUM_NOT_OWNED_BY_MEMBER.getText());
+    }
+}

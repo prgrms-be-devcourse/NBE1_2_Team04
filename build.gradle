@@ -80,6 +80,10 @@ dependencies {
     //json
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
     implementation 'com.fasterxml.jackson.core:jackson-databind'
+
+    //Oauth2.0
+    implementation group: 'org.springframework.security', name: 'spring-security-oauth2-client', version: '6.3.1'
+
 }
 
 tasks.named('test') {

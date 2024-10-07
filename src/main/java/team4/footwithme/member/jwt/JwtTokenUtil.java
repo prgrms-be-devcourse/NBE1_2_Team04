@@ -52,8 +52,8 @@ public class JwtTokenUtil {
     }
 
     public String getHeaderToken(HttpServletRequest request, String type) {
-        if(type.equals("Access"))
-            return request.getHeader(ACCESS_TOKEN);
+        if(type.equals(ACCESS_TOKEN))
+            return resolveToken(request);
 
         return request.getHeader(REFRESH_TOKEN);
     }

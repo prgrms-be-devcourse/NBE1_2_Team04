@@ -1,18 +1,15 @@
 package team4.footwithme.member.service;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team4.footwithme.config.SecurityConfig;
-import team4.footwithme.member.api.request.UpdateRequest;
 import team4.footwithme.member.domain.Member;
 import team4.footwithme.member.jwt.JwtTokenFilter;
 import team4.footwithme.member.jwt.JwtTokenUtil;
-import team4.footwithme.member.jwt.PrincipalDetails;
 import team4.footwithme.member.jwt.response.TokenResponse;
 import team4.footwithme.member.repository.MemberRepository;
 import team4.footwithme.member.service.request.JoinServiceRequest;
@@ -41,7 +38,11 @@ public class MemberServiceImpl implements MemberService {
             throw new IllegalArgumentException("이미 존재하는 이메일 입니다.");
 
         Member member = serviceRequest.toEntity();
-        member.encodePassword(jwtSecurityConfig.passwordEncoder());
+
+        if(member.getPassword() != null){ // OAUth 2 회원가입 시 Password 가 null로 들어옴
+            member.encodePassword(jwtSecurityConfig.passwordEncoder());
+        }
+
         memberRepository.save(member);
 
         return MemberResponse.from(member);
@@ -101,8 +102,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public MemberResponse update(PrincipalDetails principalDetails, UpdateServiceRequest request) {
-        Member member = principalDetails.getMember();
+    public MemberResponse update(Member member, UpdateServiceRequest request) {
         member.update(request.name(), request.phoneNumber(), request.gender());
         memberRepository.save(member);
 
@@ -111,8 +111,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public String updatePassword(PrincipalDetails principalDetails, UpdatePasswordServiceRequest serviceRequest) {
-        Member member = principalDetails.getMember();
+    public String updatePassword(Member member, UpdatePasswordServiceRequest serviceRequest) {
 
         if(!jwtSecurityConfig.passwordEncoder().matches(serviceRequest.prePassword(), member.getPassword())) {
             throw new IllegalArgumentException("이전 패스워드가 일치하지 않습니다.");
@@ -122,5 +121,4 @@ public class MemberServiceImpl implements MemberService {
 
         return "Success Change Password";
     }
-
 }

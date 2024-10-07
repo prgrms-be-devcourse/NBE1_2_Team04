@@ -9,10 +9,11 @@ import org.springframework.stereotype.Repository;
 import team4.footwithme.global.repository.CustomGlobalRepository;
 import team4.footwithme.stadium.domain.Court;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface CourtRepository extends JpaRepository<Court, Long>, CustomGlobalRepository {
+public interface CourtRepository extends JpaRepository<Court, Long>, CustomGlobalRepository, CustomCourtRepository {
 
     @Query("SELECT c FROM Court c WHERE c.isDeleted = 'false' AND c.stadium.stadiumId = :stadiumId")
     Slice<Court> findByStadium_StadiumId(@Param("stadiumId") Long stadiumId, Pageable pageable);
@@ -25,4 +26,7 @@ public interface CourtRepository extends JpaRepository<Court, Long>, CustomGloba
 
     @Query("SELECT c FROM Court c WHERE c.isDeleted = 'false' AND c.courtId = :id")
     Optional<Court> findActiveById(@Param("id") Long id);
+
+    @Query("SELECT c FROM Court c WHERE c.isDeleted = 'false' AND c.stadium.stadiumId = :id")
+    List<Court> findActiveByStadiumId(@Param("id") Long id);
 }
