@@ -41,7 +41,6 @@ public class MemberApiDocs extends RestDocsSupport {
 
     private final MemberService memberService = mock(MemberService.class);
     private final CookieService cookieService = mock(CookieService.class);
-    private final JwtTokenUtil jwtTokenUtil = mock(JwtTokenUtil.class);
 
     @Override
     protected Object initController() {
@@ -146,7 +145,8 @@ public class MemberApiDocs extends RestDocsSupport {
 
         //then
         mockMvc.perform(delete("/api/v1/members/logout")
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Access Token"))
                 .andExpect(status().isOk())
                 .andDo(document("member-logout",
                         preprocessRequest(prettyPrint()),
@@ -173,7 +173,8 @@ public class MemberApiDocs extends RestDocsSupport {
 
         //then
         mockMvc.perform(post("/api/v1/members/reissue")
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Access Token"))
                 .andExpect(status().isOk())
                 .andDo(document("member-reissue",
                         preprocessRequest(prettyPrint()),
@@ -205,11 +206,17 @@ public class MemberApiDocs extends RestDocsSupport {
         //then
         mockMvc.perform(put("/api/v1/members/update")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Access Token")
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andDo(document("member-update",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
+                        requestFields(
+                                fieldWithPath("name").type(JsonFieldType.STRING).description("이름"),
+                                fieldWithPath("phoneNumber").type(JsonFieldType.STRING).description("전화 번호"),
+                                fieldWithPath("gender").type(JsonFieldType.STRING).description("성별")
+                        ),
                         responseFields(
                                 fieldWithPath("code").type(JsonFieldType.NUMBER).description("코드"),
                                 fieldWithPath("status").type(JsonFieldType.STRING).description("상태"),
@@ -240,11 +247,17 @@ public class MemberApiDocs extends RestDocsSupport {
         //then
         mockMvc.perform(put("/api/v1/members/update-password")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", "Access Token")
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andDo(document("member-update-password",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
+                        requestFields(
+                                fieldWithPath("prePassword").type(JsonFieldType.STRING).description("이전 비밀번호"),
+                                fieldWithPath("newPassword").type(JsonFieldType.STRING).description("새 비밀번호"),
+                                fieldWithPath("newPasswordConfirm").type(JsonFieldType.STRING).description("새 비밀번호 확인")
+                        ),
                         responseFields(
                                 fieldWithPath("code").type(JsonFieldType.NUMBER).description("코드"),
                                 fieldWithPath("status").type(JsonFieldType.STRING).description("상태"),
