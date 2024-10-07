@@ -44,7 +44,7 @@ public class CustomOAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSucc
         response.setCharacterEncoding("UTF-8");
 
         // 최초 로그인인 경우
-        if (member.getMemberRole().equals(MemberRole.GUEST)) {
+        if (member.getMemberRole() == MemberRole.GUEST) {
             ApiResponse<MemberOAuthResponse> apiResponse =  ApiResponse.of(
                     HttpStatus.OK,
                     MemberOAuthResponse.from(member)
@@ -60,9 +60,9 @@ public class CustomOAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSucc
                 HttpStatus.OK,
                 tokenResponse
         );
-
-        redisTemplate.opsForValue().set(member.getEmail(), tokenResponse.refreshToken(), tokenResponse.refreshTokenExpirationTime(), TimeUnit.MICROSECONDS);
+        
         // Redis에 RefreshToken 저장
+        redisTemplate.opsForValue().set(member.getEmail(), tokenResponse.refreshToken(), tokenResponse.refreshTokenExpirationTime(), TimeUnit.MICROSECONDS);
         cookieService.setHeader(response, tokenResponse.refreshToken()); // 쿠키에 refreshToken 저장
         String jsonResponse = objectMapper.writeValueAsString(apiResponse);
         response.getWriter().write(jsonResponse);
