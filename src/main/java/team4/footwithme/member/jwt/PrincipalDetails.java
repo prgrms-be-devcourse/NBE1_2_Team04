@@ -5,15 +5,17 @@ import org.springframework.security.core.userdetails.UserDetails;
 import team4.footwithme.member.domain.Member;
 import team4.footwithme.member.domain.MemberRole;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 public class PrincipalDetails implements UserDetails {
 
     private Member member;
+    private Collection<? extends GrantedAuthority> authorities;
 
-    public void setMember(Member member) {this.member = member;}
+    public PrincipalDetails(Member member, Collection<? extends GrantedAuthority> authorities) {
+        this.member = member;
+        this.authorities = authorities;
+    }
 
     public Member getMember() { return this.member; }
 
@@ -21,12 +23,7 @@ public class PrincipalDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        Collection<GrantedAuthority> collections = new ArrayList<>();
-        collections.add(() -> {
-            return member.getMemberRole().name();
-        });
-
-        return collections;
+        return authorities;
     }
 
     @Override
