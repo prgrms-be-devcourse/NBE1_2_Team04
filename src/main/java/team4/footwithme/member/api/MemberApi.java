@@ -59,14 +59,14 @@ public class MemberApi {
     public ApiResponse<MemberResponse> update(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                  @RequestBody @Valid UpdateRequest request){
 
-        return ApiResponse.ok(memberService.update(principalDetails, request.toServiceRequest()));
+        return ApiResponse.ok(memberService.update(principalDetails.getMember(), request.toServiceRequest()));
     }
 
     @PutMapping("/update-password")
     public ApiResponse<String> updatePassword(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                               @RequestBody @Valid UpdatePasswordRequest request){
 
-        return ApiResponse.ok(memberService.updatePassword(principalDetails, request.toServiceRequest()));
+        return ApiResponse.ok(memberService.updatePassword(principalDetails.getMember(), request.toServiceRequest()));
     }
 
 }

@@ -173,13 +173,11 @@ class MemberServiceImplTest extends IntegrationTestSupport {
         member.encodePassword(securityConfig.passwordEncoder());
         memberRepository.save(member);
 
-        PrincipalDetails principalDetails = new PrincipalDetails();
-        principalDetails.setMember(member);
 
         UpdateRequest updateRequest = new UpdateRequest("TestUser", "010-2222-2222", Gender.FEMALE);
 
         //when
-        MemberResponse response = memberService.update(principalDetails, updateRequest.toServiceRequest());
+        MemberResponse response = memberService.update(member, updateRequest.toServiceRequest());
 
         //then
         assertThat(response).isNotNull()
@@ -197,13 +195,11 @@ class MemberServiceImplTest extends IntegrationTestSupport {
         member.encodePassword(securityConfig.passwordEncoder());
         memberRepository.save(member);
 
-        PrincipalDetails principalDetails = new PrincipalDetails();
-        principalDetails.setMember(member);
 
         UpdatePasswordRequest updateRequest = new UpdatePasswordRequest("!test1234", "!Test123456", "!Test123456");
 
         //when
-        String response = memberService.updatePassword(principalDetails, updateRequest.toServiceRequest());
+        String response = memberService.updatePassword(member, updateRequest.toServiceRequest());
 
         //then
         assertThat(response).isEqualTo("Success Change Password");
