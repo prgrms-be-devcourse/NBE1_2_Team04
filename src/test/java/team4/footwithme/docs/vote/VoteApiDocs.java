@@ -10,7 +10,7 @@ import team4.footwithme.vote.api.VoteApi;
 import team4.footwithme.vote.api.request.*;
 import team4.footwithme.vote.service.VoteService;
 import team4.footwithme.vote.service.request.VoteDateCreateServiceRequest;
-import team4.footwithme.vote.service.request.VoteStadiumCreateServiceRequest;
+import team4.footwithme.vote.service.request.VoteCourtCreateServiceRequest;
 import team4.footwithme.vote.service.request.VoteUpdateServiceRequest;
 import team4.footwithme.vote.service.response.VoteItemResponse;
 import team4.footwithme.vote.service.response.VoteResponse;
@@ -45,11 +45,11 @@ public class VoteApiDocs extends RestDocsSupport {
     void createStadiumVote() throws Exception {
         //given
         LocalDateTime endAt = LocalDateTime.now().plusDays(1);
-        StadiumChoices stadiumChoices1 = new StadiumChoices(1L);
-        StadiumChoices stadiumChoices2 = new StadiumChoices(2L);
-        VoteStadiumCreateRequest request = new VoteStadiumCreateRequest("연말 행사 투표", endAt, List.of(stadiumChoices1, stadiumChoices2));
+        CourtChoices courtChoices1 = new CourtChoices(1L);
+        CourtChoices courtChoices2 = new CourtChoices(2L);
+        VoteCourtCreateRequest request = new VoteCourtCreateRequest("연말 행사 투표", endAt, List.of(courtChoices1, courtChoices2));
 
-        given(voteService.createStadiumVote(any(VoteStadiumCreateServiceRequest.class), eq(1L), any(Member.class)))
+        given(voteService.createCourtVote(any(VoteCourtCreateServiceRequest.class), eq(1L), any(Member.class)))
             .willReturn(new VoteResponse(
                 1L,
                 "연말 행사 투표",
@@ -111,7 +111,7 @@ public class VoteApiDocs extends RestDocsSupport {
         LocalDateTime endAt = LocalDateTime.now().plusDays(1);
         long voteId = 1L;
 
-        given(voteService.getStadiumVote(voteId))
+        given(voteService.getCourtVote(voteId))
             .willReturn(new VoteResponse(
                 1L,
                 "연말 행사 투표",

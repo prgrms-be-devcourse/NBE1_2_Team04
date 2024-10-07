@@ -9,9 +9,9 @@ import org.springframework.security.test.context.support.WithMockUser;
 import team4.footwithme.ApiTestSupport;
 import team4.footwithme.config.SecurityConfig;
 import team4.footwithme.member.domain.Member;
-import team4.footwithme.vote.api.request.StadiumChoices;
-import team4.footwithme.vote.api.request.VoteStadiumCreateRequest;
-import team4.footwithme.vote.service.request.VoteStadiumCreateServiceRequest;
+import team4.footwithme.vote.api.request.CourtChoices;
+import team4.footwithme.vote.api.request.VoteCourtCreateRequest;
+import team4.footwithme.vote.service.request.VoteCourtCreateServiceRequest;
 import team4.footwithme.vote.service.response.VoteItemResponse;
 import team4.footwithme.vote.service.response.VoteResponse;
 
@@ -37,9 +37,9 @@ class VoteApiTest extends ApiTestSupport {
     void createLocateVote() throws Exception {
         //given
         LocalDateTime endAt = LocalDateTime.now().plusDays(1);
-        StadiumChoices stadiumChoices1 = new StadiumChoices(1L);
-        StadiumChoices stadiumChoices2 = new StadiumChoices(2L);
-        VoteStadiumCreateRequest request = new VoteStadiumCreateRequest("연말 행사 투표", endAt, List.of(stadiumChoices1, stadiumChoices2));
+        CourtChoices courtChoices1 = new CourtChoices(1L);
+        CourtChoices courtChoices2 = new CourtChoices(2L);
+        VoteCourtCreateRequest request = new VoteCourtCreateRequest("연말 행사 투표", endAt, List.of(courtChoices1, courtChoices2));
 
 
         VoteResponse response = new VoteResponse(
@@ -52,7 +52,7 @@ class VoteApiTest extends ApiTestSupport {
             )
         );
 
-        given(voteService.createStadiumVote(any(VoteStadiumCreateServiceRequest.class), eq(1L), any(Member.class)))
+        given(voteService.createCourtVote(any(VoteCourtCreateServiceRequest.class), eq(1L), any(Member.class)))
             .willReturn(response);
 
         mockMvc.perform(post("/api/v1/votes/stadiums/{teamId}", 1L)
@@ -85,11 +85,11 @@ class VoteApiTest extends ApiTestSupport {
     void createLocateVoteWhenTitleIsNotExistThenThrowException() throws Exception {
         //given
         LocalDateTime endAt = LocalDateTime.now().plusDays(1);
-        StadiumChoices stadiumChoices1 = new StadiumChoices(1L);
-        StadiumChoices stadiumChoices2 = new StadiumChoices(2L);
-        VoteStadiumCreateRequest request = new VoteStadiumCreateRequest(null, endAt, List.of(stadiumChoices1, stadiumChoices2));
+        CourtChoices courtChoices1 = new CourtChoices(1L);
+        CourtChoices courtChoices2 = new CourtChoices(2L);
+        VoteCourtCreateRequest request = new VoteCourtCreateRequest(null, endAt, List.of(courtChoices1, courtChoices2));
 
-        given(voteService.createStadiumVote(any(VoteStadiumCreateServiceRequest.class), eq(1L), any(Member.class)))
+        given(voteService.createCourtVote(any(VoteCourtCreateServiceRequest.class), eq(1L), any(Member.class)))
             .willReturn(new VoteResponse(
                 1L,
                 "연말 행사 투표",
@@ -119,11 +119,11 @@ class VoteApiTest extends ApiTestSupport {
     void createLocateVoteWhenTitleIsOverLengthThenThrowException() throws Exception {
         //given
         LocalDateTime endAt = LocalDateTime.now().plusDays(1);
-        StadiumChoices stadiumChoices1 = new StadiumChoices(1L);
-        StadiumChoices stadiumChoices2 = new StadiumChoices(2L);
-        VoteStadiumCreateRequest request = new VoteStadiumCreateRequest("a".repeat(51), endAt, List.of(stadiumChoices1, stadiumChoices2));
+        CourtChoices courtChoices1 = new CourtChoices(1L);
+        CourtChoices courtChoices2 = new CourtChoices(2L);
+        VoteCourtCreateRequest request = new VoteCourtCreateRequest("a".repeat(51), endAt, List.of(courtChoices1, courtChoices2));
 
-        given(voteService.createStadiumVote(any(VoteStadiumCreateServiceRequest.class), eq(1L), any(Member.class)))
+        given(voteService.createCourtVote(any(VoteCourtCreateServiceRequest.class), eq(1L), any(Member.class)))
             .willReturn(new VoteResponse(
                 1L,
                 "연말 행사 투표",
@@ -153,11 +153,11 @@ class VoteApiTest extends ApiTestSupport {
     void createLocateVoteWhenEndAtIsBeforeNowThenThrowException() throws Exception {
         //given
         LocalDateTime endAt = LocalDateTime.now().minusDays(1);
-        StadiumChoices stadiumChoices1 = new StadiumChoices(1L);
-        StadiumChoices stadiumChoices2 = new StadiumChoices(2L);
-        VoteStadiumCreateRequest request = new VoteStadiumCreateRequest("연말 행사 투표", endAt, List.of(stadiumChoices1, stadiumChoices2));
+        CourtChoices courtChoices1 = new CourtChoices(1L);
+        CourtChoices courtChoices2 = new CourtChoices(2L);
+        VoteCourtCreateRequest request = new VoteCourtCreateRequest("연말 행사 투표", endAt, List.of(courtChoices1, courtChoices2));
 
-        given(voteService.createStadiumVote(any(VoteStadiumCreateServiceRequest.class), eq(1L), any(Member.class)))
+        given(voteService.createCourtVote(any(VoteCourtCreateServiceRequest.class), eq(1L), any(Member.class)))
             .willReturn(new VoteResponse(
                 1L,
                 "연말 행사 투표",
@@ -187,9 +187,9 @@ class VoteApiTest extends ApiTestSupport {
     void createLocateVoteWhenStadiumIsNullThenThrowException() throws Exception {
         //given
         LocalDateTime endAt = LocalDateTime.now().plusDays(1);
-        VoteStadiumCreateRequest request = new VoteStadiumCreateRequest("연말 행사 투표", endAt, List.of());
+        VoteCourtCreateRequest request = new VoteCourtCreateRequest("연말 행사 투표", endAt, List.of());
 
-        given(voteService.createStadiumVote(any(VoteStadiumCreateServiceRequest.class), eq(1L), any(Member.class)))
+        given(voteService.createCourtVote(any(VoteCourtCreateServiceRequest.class), eq(1L), any(Member.class)))
             .willReturn(new VoteResponse(
                 1L,
                 "연말 행사 투표",
@@ -219,11 +219,11 @@ class VoteApiTest extends ApiTestSupport {
     void createLocateVoteWhenStadiumIsDuplicateThenThrowException() throws Exception {
         //given
         LocalDateTime endAt = LocalDateTime.now().plusDays(1);
-        StadiumChoices stadiumChoices1 = new StadiumChoices(1L);
-        StadiumChoices stadiumChoices2 = new StadiumChoices(1L);
-        VoteStadiumCreateRequest request = new VoteStadiumCreateRequest("연말 행사 투표", endAt, List.of(stadiumChoices1, stadiumChoices2));
+        CourtChoices courtChoices1 = new CourtChoices(1L);
+        CourtChoices courtChoices2 = new CourtChoices(1L);
+        VoteCourtCreateRequest request = new VoteCourtCreateRequest("연말 행사 투표", endAt, List.of(courtChoices1, courtChoices2));
 
-        given(voteService.createStadiumVote(any(VoteStadiumCreateServiceRequest.class), eq(1L), any(Member.class)))
+        given(voteService.createCourtVote(any(VoteCourtCreateServiceRequest.class), eq(1L), any(Member.class)))
             .willReturn(new VoteResponse(
                 1L,
                 "연말 행사 투표",

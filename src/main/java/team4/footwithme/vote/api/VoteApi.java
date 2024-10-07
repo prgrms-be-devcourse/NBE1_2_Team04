@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import team4.footwithme.global.api.ApiResponse;
 import team4.footwithme.member.jwt.PrincipalDetails;
 import team4.footwithme.vote.api.request.VoteDateCreateRequest;
-import team4.footwithme.vote.api.request.VoteStadiumCreateRequest;
+import team4.footwithme.vote.api.request.VoteCourtCreateRequest;
 import team4.footwithme.vote.api.request.VoteUpdateRequest;
 import team4.footwithme.vote.service.VoteService;
 import team4.footwithme.vote.service.response.VoteResponse;
@@ -20,13 +20,13 @@ public class VoteApi {
     private final VoteService voteService;
 
     @PostMapping("/stadiums/{teamId}")
-    public ApiResponse<VoteResponse> createLocateVote(@Valid @RequestBody VoteStadiumCreateRequest request, @PathVariable Long teamId, @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        return ApiResponse.created(voteService.createStadiumVote(request.toServiceRequest(),teamId, principalDetails.getMember()));
+    public ApiResponse<VoteResponse> createLocateVote(@Valid @RequestBody VoteCourtCreateRequest request, @PathVariable Long teamId, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        return ApiResponse.created(voteService.createCourtVote(request.toServiceRequest(),teamId, principalDetails.getMember()));
     }
 
     @GetMapping("{voteId}")
     public ApiResponse<VoteResponse> getVote(@PathVariable Long voteId) {
-        return ApiResponse.ok(voteService.getStadiumVote(voteId));
+        return ApiResponse.ok(voteService.getCourtVote(voteId));
     }
 
     @PostMapping("/dates/{teamId}")

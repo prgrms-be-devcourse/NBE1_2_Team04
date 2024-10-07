@@ -8,8 +8,7 @@ import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team4.footwithme.member.domain.Member;
-import team4.footwithme.member.repository.MemberRepository;
-import team4.footwithme.stadium.repository.StadiumRepository;
+import team4.footwithme.stadium.repository.CourtRepository;
 import team4.footwithme.team.repository.TeamRepository;
 import team4.footwithme.vote.domain.*;
 import team4.footwithme.vote.repository.ChoiceRepository;
@@ -17,7 +16,7 @@ import team4.footwithme.vote.repository.VoteItemRepository;
 import team4.footwithme.vote.repository.VoteRepository;
 import team4.footwithme.vote.service.request.ChoiceCreateServiceRequest;
 import team4.footwithme.vote.service.request.VoteDateCreateServiceRequest;
-import team4.footwithme.vote.service.request.VoteStadiumCreateServiceRequest;
+import team4.footwithme.vote.service.request.VoteCourtCreateServiceRequest;
 import team4.footwithme.vote.service.request.VoteUpdateServiceRequest;
 import team4.footwithme.vote.service.response.VoteItemResponse;
 import team4.footwithme.vote.service.response.VoteResponse;
@@ -34,8 +33,7 @@ public class VoteServiceImpl implements VoteService {
 
     private final VoteRepository voteRepository;
     private final VoteItemRepository voteItemRepository;
-    private final MemberRepository memberRepository;
-    private final StadiumRepository stadiumRepository;
+    private final CourtRepository courtRepository;
     private final TeamRepository teamRepository;
     private final ChoiceRepository choiceRepository;
     private final TaskScheduler taskScheduler;
@@ -53,7 +51,7 @@ public class VoteServiceImpl implements VoteService {
 
     @Transactional
     @Override
-    public VoteResponse createStadiumVote(VoteStadiumCreateServiceRequest request, Long teamId, Member member) {
+    public VoteResponse createCourtVote(VoteCourtCreateServiceRequest request, Long teamId, Member member) {
         Long memberId = member.getMemberId();
         validateTeamByTeamId(teamId);
 
@@ -70,7 +68,7 @@ public class VoteServiceImpl implements VoteService {
 
     @Transactional(readOnly = true)
     @Override
-    public VoteResponse getStadiumVote(Long voteId) {
+    public VoteResponse getCourtVote(Long voteId) {
         Vote vote = getVoteByVoteId(voteId);
         List<VoteItemResponse> voteItemResponses = convertVoteItemsToResponseFrom(vote.getVoteItems());
         return VoteResponse.of(vote, voteItemResponses);
@@ -167,15 +165,15 @@ public class VoteServiceImpl implements VoteService {
             .toList());
     }
 
-    private List<VoteItemLocate> createVoteItemLocate(VoteStadiumCreateServiceRequest request, Vote savedVote) {
-        checkDuplicateStadiumIds(request.stadiumIds());
-        return request.stadiumIds().stream()
+    private List<VoteItemLocate> createVoteItemLocate(VoteCourtCreateServiceRequest request, Vote savedVote) {
+        checkDuplicateStadiumIds(request.courtIds());
+        return request.courtIds().stream()
             .map(stadiumId -> VoteItemLocate.create(savedVote, stadiumId))
             .toList();
     }
 
     private void checkDuplicateStadiumIds(List<Long> requestStadiumIds) {
-        if (stadiumRepository.countStadiumByStadiumIds(requestStadiumIds) != requestStadiumIds.size()) {
+        if (courtRepository.countCourtByCourtIds(requestStadiumIds) != requestStadiumIds.size()) {
             throw new IllegalArgumentException("존재하지 않는 구장이 포함되어 있습니다.");
         }
     }
@@ -195,15 +193,6 @@ public class VoteServiceImpl implements VoteService {
         teamRepository.findById(teamId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 팀입니다."));
     }
 
-    private Long getMemberIdByEmail(String email) {
-        Long memberId = memberRepository.findMemberIdByMemberEmail(email);
-        if (memberId == null) {
-            throw new IllegalArgumentException("존재하지 않는 회원입니다.");
-        }
-        return memberId;
-    }
-
-
     private <T extends VoteItem> List<VoteItemResponse> convertVoteItemsToResponseFrom(List<T> voteItems) {
         return voteItems.stream()
             .map(this::convertVoteItemToResponse)
@@ -212,7 +201,7 @@ public class VoteServiceImpl implements VoteService {
 
 
     private <T extends VoteItem> VoteItemResponse convertVoteItemToResponse(T voteItem) {
-        if (voteItem instanceof VoteItemLocate voteItemLocate) {
+            if (voteItem instanceof VoteItemLocate voteItemLocate) {
             return convertToVoteItemResponseFrom(voteItemLocate);
         }
         if (voteItem instanceof VoteItemDate voteItemDate) {
@@ -232,7 +221,7 @@ public class VoteServiceImpl implements VoteService {
     private VoteItemResponse convertToVoteItemResponseFrom(VoteItemLocate voteItemLocate) {
         return VoteItemResponse.of(
             voteItemLocate.getVoteItemId(),
-            stadiumRepository.findStadiumNameById(voteItemLocate.getStadiumId()),
+            courtRepository.findCourtNameByCourtId(voteItemLocate.getCourtId()),
             choiceRepository.findMemberIdsByVoteItemId(voteItemLocate.getVoteItemId())
         );
     }
