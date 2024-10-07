@@ -6,6 +6,9 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+
 class VoteTest {
 
     @DisplayName("투표 생성")
@@ -18,7 +21,7 @@ class VoteTest {
         Vote vote = Vote.create(1L, 1L, "투표 제목", tomorrowDateTime);
 
         //then
-        Assertions.assertThat(vote).isNotNull();
+        assertThat(vote).isNotNull();
     }
 
 
@@ -30,7 +33,7 @@ class VoteTest {
 
         //when
         //then
-        Assertions.assertThatThrownBy(() -> Vote.create(1L, 1L, "투표 제목", pastDateTime))
+        assertThatThrownBy(() -> Vote.create(1L, 1L, "투표 제목", pastDateTime))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("투표 종료일은 현재 시간 이후여야 합니다.");
     }
@@ -50,7 +53,7 @@ class VoteTest {
         //when
         vote.update("수정된 투표", tomorrowDateTime, 1L);
         //then
-        Assertions.assertThat(vote)
+        assertThat(vote)
             .extracting("title", "endAt")
             .containsExactly("수정된 투표", tomorrowDateTime);
     }
@@ -69,25 +72,59 @@ class VoteTest {
 
         //when
         //then
-        Assertions.assertThatIllegalArgumentException()
+        assertThatIllegalArgumentException()
             .isThrownBy(() -> vote.update("수정된 투표", tomorrowDateTime, 2L))
-            .withMessage("투표 작성자만 수정,삭제할 수 있습니다.");
+            .withMessage("투표 작성자가 아닙니다.");
     }
 
-        @DisplayName("투표 상태를 마감 상태로 변경한다.")
-        @Test
-        void updateVoteStatusToClose() {
-            //given
-            Vote vote = Vote.builder()
-                .memberId(1L)
-                .teamId(1L)
-                .title("투표 제목")
-                .endAt(LocalDateTime.now().plusDays(1))
-                .build();
-            //when
-            vote.updateVoteStatusToClose();
-            //then
-            Assertions.assertThat(vote.getVoteStatus()).isEqualTo(VoteStatus.CLOSED);
-        }
+    @DisplayName("투표 생성자와 수정 또는 삭제하려는 회원이 같은지 확인한다.")
+    @Test
+    void checkVoteAuthor() {
+        //given
+        Vote vote = Vote.builder()
+            .memberId(1L)
+            .teamId(1L)
+            .title("투표 제목")
+            .endAt(LocalDateTime.now().plusDays(1))
+            .build();
+
+        //when
+        //then
+        assertDoesNotThrow(() -> vote.checkWriterFromMemberId(1L));
+    }
+
+    @DisplayName("투표 생성자와 수정 또는 삭제하려는 회원이 같은지 확인한다.")
+    @Test
+    void checkVoteAuthorWhenAuthorIsDifferentThrowException() {
+        //given
+        Vote vote = Vote.builder()
+            .memberId(1L)
+            .teamId(1L)
+            .title("투표 제목")
+            .endAt(LocalDateTime.now().plusDays(1))
+            .build();
+
+        //when
+        //then
+        assertThatIllegalArgumentException()
+            .isThrownBy(() -> vote.checkWriterFromMemberId(4L))
+            .withMessage("투표 작성자가 아닙니다.");
+    }
+
+    @DisplayName("투표 상태를 마감 상태로 변경한다.")
+    @Test
+    void updateVoteStatusToClose() {
+        //given
+        Vote vote = Vote.builder()
+            .memberId(1L)
+            .teamId(1L)
+            .title("투표 제목")
+            .endAt(LocalDateTime.now().plusDays(1))
+            .build();
+        //when
+        vote.updateVoteStatusToClose();
+        //then
+        assertThat(vote.getVoteStatus()).isEqualTo(VoteStatus.CLOSED);
+    }
 
 }

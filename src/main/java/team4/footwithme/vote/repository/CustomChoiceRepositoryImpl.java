@@ -33,4 +33,12 @@ public class CustomChoiceRepositoryImpl implements CustomChoiceRepository {
                 .and(vote.voteId.eq(voteId)))
             .fetch();
     }
+
+    @Override
+    public List<Long> findMemberIdsByVoteItemId(Long voteItemId) {
+        return queryFactory.select(choice.memberId)
+            .from(choice)
+            .where(choice.voteItemId.eq(voteItemId))
+            .fetch();
+    }
 }

@@ -9,4 +9,7 @@ public interface CustomChoiceRepository {
     Long countByVoteItemId(Long voteItemId);
 
     List<Choice> findByMemberIdAndVoteId(Long memberId, Long voteId);
+
+    List<Long> findMemberIdsByVoteItemId(Long voteItemId);
+
 }

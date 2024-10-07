@@ -11,18 +11,18 @@ import lombok.NoArgsConstructor;
 @Entity
 public class VoteItemLocate extends VoteItem {
 
-    private Long stadiumId;
+    private Long courtId;
 
     @Builder
-    private VoteItemLocate(Vote vote, Long stadiumId) {
+    private VoteItemLocate(Vote vote, Long courtId) {
         super(vote);
-        this.stadiumId = stadiumId;
+        this.courtId = courtId;
     }
 
-    public static VoteItemLocate create(Vote vote, Long stadiumId) {
+    public static VoteItemLocate create(Vote vote, Long courtId) {
         return VoteItemLocate.builder()
             .vote(vote)
-            .stadiumId(stadiumId)
+            .courtId(courtId)
             .build();
     }
 

@@ -30,4 +30,5 @@ public abstract class BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private IsDeleted isDeleted = IsDeleted.FALSE;
+
 }

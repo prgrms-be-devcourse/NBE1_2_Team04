@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import team4.footwithme.docs.RestDocsSupport;
+import team4.footwithme.member.domain.Member;
 import team4.footwithme.vote.api.ChoiceApi;
 import team4.footwithme.vote.api.request.ChoiceCreateRequest;
 import team4.footwithme.vote.service.VoteService;
@@ -23,9 +24,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -47,15 +46,16 @@ public class ChoiceApiDocs extends RestDocsSupport {
 
         ChoiceCreateRequest request = new ChoiceCreateRequest(List.of(1L, 2L));
 
-        given(voteService.createChoice(any(ChoiceCreateServiceRequest.class),eq(voteId),any(String.class)))
+        given(voteService.createChoice(any(ChoiceCreateServiceRequest.class), eq(voteId), any(Member.class)))
             .willReturn(new VoteResponse(
                 voteId,
                 "연말 행사 투표",
                 endAt,
+                "진행 중",
                 List.of(
-                    new VoteItemResponse(1L, "2021-12-25 12:00", 1L),
-                    new VoteItemResponse(2L, "2021-12-26 12:00", 1L),
-                    new VoteItemResponse(3L, "2021-12-27 12:00", 0L)
+                    new VoteItemResponse(1L, "2021-12-25 12:00", List.of(1L,2L)),
+                    new VoteItemResponse(2L, "2021-12-26 12:00", List.of(1L)),
+                    new VoteItemResponse(3L, "2021-12-27 12:00", List.of())
                 )
             ));
 
@@ -88,14 +88,16 @@ public class ChoiceApiDocs extends RestDocsSupport {
                         .description("투표 제목"),
                     fieldWithPath("data.endAt").type(JsonFieldType.ARRAY)
                         .description("투표 종료 시간"),
+                    fieldWithPath("data.voteStatus").type(JsonFieldType.STRING)
+                        .description("투표 상태"),
                     fieldWithPath("data.choices").type(JsonFieldType.ARRAY)
                         .description("투표 선택지 목록"),
                     fieldWithPath("data.choices[].voteItemId").type(JsonFieldType.NUMBER)
                         .description("투표 선택지 ID"),
                     fieldWithPath("data.choices[].content").type(JsonFieldType.STRING)
                         .description("투표 선택지 내용"),
-                    fieldWithPath("data.choices[].voteCount").type(JsonFieldType.NUMBER)
-                        .description("투표 선택지 투표 수")
+                    fieldWithPath("data.choices[].memberIds").type(JsonFieldType.ARRAY)
+                        .description("투표 선택지 투표한 회원 ID")
                 )
             ));
 
@@ -107,15 +109,16 @@ public class ChoiceApiDocs extends RestDocsSupport {
         LocalDateTime endAt = LocalDateTime.now().plusDays(1);
         long voteId = 1L;
 
-        given(voteService.deleteChoice(eq(voteId),any(String.class)))
+        given(voteService.deleteChoice(eq(voteId), any(Member.class)))
             .willReturn(new VoteResponse(
                 voteId,
                 "연말 행사 투표",
                 endAt,
+                "진행 중",
                 List.of(
-                    new VoteItemResponse(1L, "2021-12-25 12:00", 0L),
-                    new VoteItemResponse(2L, "2021-12-26 12:00", 0L),
-                    new VoteItemResponse(3L, "2021-12-27 12:00", 0L)
+                    new VoteItemResponse(1L, "2021-12-25 12:00", List.of(1L,2L)),
+                    new VoteItemResponse(2L, "2021-12-26 12:00", List.of(1L)),
+                    new VoteItemResponse(3L, "2021-12-27 12:00", List.of())
                 )
             ));
 
@@ -144,14 +147,16 @@ public class ChoiceApiDocs extends RestDocsSupport {
                         .description("투표 제목"),
                     fieldWithPath("data.endAt").type(JsonFieldType.ARRAY)
                         .description("투표 종료 시간"),
+                    fieldWithPath("data.voteStatus").type(JsonFieldType.STRING)
+                        .description("투표 상태"),
                     fieldWithPath("data.choices").type(JsonFieldType.ARRAY)
                         .description("투표 선택지 목록"),
                     fieldWithPath("data.choices[].voteItemId").type(JsonFieldType.NUMBER)
                         .description("투표 선택지 ID"),
                     fieldWithPath("data.choices[].content").type(JsonFieldType.STRING)
                         .description("투표 선택지 내용"),
-                    fieldWithPath("data.choices[].voteCount").type(JsonFieldType.NUMBER)
-                        .description("투표 선택지 투표 수")
+                    fieldWithPath("data.choices[].memberIds").type(JsonFieldType.ARRAY)
+                        .description("투표 선택지 투표한 회원 ID")
                 )
             ));
 
