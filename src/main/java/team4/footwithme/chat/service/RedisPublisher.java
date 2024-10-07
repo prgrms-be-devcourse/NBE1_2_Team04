@@ -10,8 +10,9 @@ import team4.footwithme.chat.domain.Chat;
 @Service
 public class RedisPublisher {
     private final RedisTemplate<String, Object> redisTemplate;
+    private final ChannelTopic channelTopic;
 
-    public void publish(ChannelTopic topic, Chat chat) {
-        redisTemplate.convertAndSend(topic.getTopic(), chat);
+    public void publish(Chat chat) {
+        redisTemplate.convertAndSend(channelTopic.getTopic(), chat);
     }
 }

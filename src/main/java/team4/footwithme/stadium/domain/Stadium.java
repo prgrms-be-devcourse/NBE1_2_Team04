@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import team4.footwithme.global.domain.BaseEntity;
+import team4.footwithme.global.exception.ExceptionMessage;
 import team4.footwithme.member.domain.Member;
 
 @Getter
@@ -64,13 +65,27 @@ public class Stadium extends BaseEntity {
                 .build();
     }
 
-    // TODO : 검증에 대한 책임 한번 생각해보자
-    public void updateStadium(String name, String address, String phoneNumber, String description, Double latitude, Double longitude) {
+    public void updateStadium(Long memberId, String name, String address, String phoneNumber, String description, Double latitude, Double longitude) {
+        checkMember(memberId);
         this.name = name;
         this.address = address;
         this.phoneNumber = phoneNumber;
         this.description = description;
         this.position.updatePosition(latitude, longitude);
+    }
+
+    public void deleteStadium(Long memberId) {
+        checkMember(memberId);
+    }
+
+    public void createCourt(Long memberId) {
+        checkMember(memberId);
+    }
+
+    private void checkMember(Long memberId) {
+        if (!this.member.getMemberId().equals(memberId)) {
+            throw new IllegalArgumentException(ExceptionMessage.STADIUM_NOT_OWNED_BY_MEMBER.getText());
+        }
     }
 }
 

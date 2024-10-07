@@ -4,8 +4,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.transaction.annotation.Transactional;
 import team4.footwithme.IntegrationTestSupport;
+import team4.footwithme.chat.domain.Chatroom;
+import team4.footwithme.chat.domain.TeamChatroom;
+import team4.footwithme.chat.repository.ChatroomRepository;
+import team4.footwithme.chat.repository.RedisChatroomRepository;
+import team4.footwithme.chat.service.event.TeamPublishedEvent;
+import org.springframework.context.ApplicationEventPublisher;
 import team4.footwithme.global.domain.IsDeleted;
 import team4.footwithme.member.domain.*;
 import team4.footwithme.member.repository.MemberRepository;
@@ -41,6 +48,11 @@ class TeamServiceImplTest extends IntegrationTestSupport {
     private TeamRateRepository teamRateRepository;
     @Autowired
     private TeamMemberRepository teamMemberRepository;
+
+    @Autowired
+    private ChatroomRepository chatroomRepository;
+    @Autowired
+    private RedisChatroomRepository redisChatroomRepository;
 
     @BeforeEach
     void setUp() {
@@ -86,7 +98,7 @@ class TeamServiceImplTest extends IntegrationTestSupport {
         // Given
         Member leader = memberRepository.findByEmail("teamLeader@gmail.com")
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자 입니다."));
-        Team team = teamRepository.save(Team.create(null,1L, "팀명","팀 설명", 0, 0, 0,"선호지역"));
+        Team team = teamRepository.save(Team.create(null,"팀명","팀 설명", 0, 0, 0,"선호지역"));
         teamMemberRepository.save(TeamMember.createCreator(team, leader));
 
         // 등록할 멤버
@@ -127,7 +139,7 @@ class TeamServiceImplTest extends IntegrationTestSupport {
         Member leader = memberRepository.findByEmail("teamLeader@gmail.com")
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자 입니다."));
 
-        Team team = teamRepository.save(Team.create(null,1L, "팀명","팀 설명", 0, 0, 0,"선호지역"));
+        Team team = teamRepository.save(Team.create(null,"팀명","팀 설명", 0, 0, 0,"선호지역"));
         teamMemberRepository.save(TeamMember.createCreator(team, leader));
 
         //when
@@ -155,7 +167,7 @@ class TeamServiceImplTest extends IntegrationTestSupport {
         Member member01 = memberRepository.findByEmail("member01@gmail.com")
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자 입니다."));
 
-        Team team = teamRepository.save(Team.create(null,1L, "팀명","팀 설명", 0, 0, 0,"선호지역"));
+        Team team = teamRepository.save(Team.create(null,"팀명","팀 설명", 0, 0, 0,"선호지역"));
         teamMemberRepository.save(TeamMember.createCreator(team, leaderMember));
         teamMemberRepository.save(TeamMember.createMember(team, member01));
 
@@ -177,8 +189,12 @@ class TeamServiceImplTest extends IntegrationTestSupport {
         Member leader = memberRepository.findByEmail("teamLeader@gmail.com")
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자 입니다."));
 
-        Team team = teamRepository.save(Team.create(null,1L, "팀명","팀 설명", 0, 0, 0,"선호지역"));
+        Team team = teamRepository.save(Team.create(null,"팀명","팀 설명", 0, 0, 0,"선호지역"));
         teamMemberRepository.save(TeamMember.createCreator(team, leader));
+
+        Chatroom chatroom = chatroomRepository.save(TeamChatroom.create(team.getName(), team.getTeamId()));
+        // redis Hash에 저장
+        redisChatroomRepository.createChatRoom(chatroom);
 
         //when
         Long teamId = teamService.deleteTeam(team.getTeamId(), leader);

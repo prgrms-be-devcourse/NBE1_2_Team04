@@ -1,6 +1,9 @@
 package team4.footwithme.vote.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team4.footwithme.member.repository.MemberRepository;
@@ -20,6 +23,7 @@ import team4.footwithme.vote.service.response.VoteResponse;
 import java.util.List;
 
 @RequiredArgsConstructor
+@Slf4j
 @Service
 public class VoteServiceImpl implements VoteService {
 
@@ -29,6 +33,8 @@ public class VoteServiceImpl implements VoteService {
     private final StadiumRepository stadiumRepository;
     private final TeamRepository teamRepository;
     private final ChoiceRepository choiceRepository;
+    private final TaskScheduler taskScheduler;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     @Override
@@ -38,6 +44,7 @@ public class VoteServiceImpl implements VoteService {
 
         Vote vote = Vote.create(memberId, teamId, request.title(), request.endAt());
         Vote savedVote = voteRepository.save(vote);
+        addClosedVoteTaskToTaskSchedule(savedVote);
 
         List<VoteItemLocate> voteItemLocates = createVoteItemLocate(request, savedVote);
 
@@ -63,6 +70,7 @@ public class VoteServiceImpl implements VoteService {
 
         Vote vote = Vote.create(memberId, teamId, request.title(), request.endAt());
         Vote savedVote = voteRepository.save(vote);
+        addClosedVoteTaskToTaskSchedule(savedVote);
 
         List<VoteItemDate> savedVoteItems = createVoteItemDate(request, savedVote);
 
@@ -213,4 +221,10 @@ public class VoteServiceImpl implements VoteService {
             choiceRepository.countByVoteItemId(voteItemLocate.getVoteItemId())
         );
     }
+
+    // 투표 종료시간이 지나면 투표를 종료하는 작업을 스케줄링합니다.
+    private void addClosedVoteTaskToTaskSchedule(Vote vote) {
+        taskScheduler.schedule(() -> eventPublisher.publishEvent(new RegisteredVoteEvent(vote.getVoteId())), vote.getInstantEndAt());
+    }
+
 }

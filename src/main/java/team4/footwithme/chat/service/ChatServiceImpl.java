@@ -3,7 +3,6 @@ package team4.footwithme.chat.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
-import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team4.footwithme.chat.domain.Chat;
@@ -11,9 +10,10 @@ import team4.footwithme.chat.domain.Chatroom;
 import team4.footwithme.chat.repository.ChatMemberRepository;
 import team4.footwithme.chat.repository.ChatRepository;
 import team4.footwithme.chat.repository.ChatroomRepository;
-import team4.footwithme.chat.repository.RedisChatroomRepository;
 import team4.footwithme.chat.service.request.ChatServiceRequest;
+import team4.footwithme.chat.service.request.ChatUpdateServiceRequest;
 import team4.footwithme.chat.service.response.ChatResponse;
+import team4.footwithme.global.exception.ExceptionMessage;
 import team4.footwithme.member.domain.Member;
 import team4.footwithme.member.jwt.JwtTokenUtil;
 import team4.footwithme.member.repository.MemberRepository;
@@ -26,7 +26,6 @@ public class ChatServiceImpl implements ChatService {
     private final MemberRepository memberRepository;
     private final ChatMemberRepository chatMemberRepository;
 
-    private final RedisChatroomRepository redisChatroomRepository;
     private final RedisPublisher redisPublisher;
     private final JwtTokenUtil jwtTokenUtil;
 
@@ -42,17 +41,16 @@ public class ChatServiceImpl implements ChatService {
         String accessToken = token.substring(7).trim();
         String email = jwtTokenUtil.getEmailFromToken(accessToken);
 
-        Member member = checkMember(email);
-        Chatroom chatroom = checkChatroom(request.ChatroomId());
+        Member member = getMember(email);
+        Chatroom chatroom = getChatroom(request.ChatroomId());
         checkMemberInChatroom(member, chatroom);
 
         // 메시지를 데이터베이스에 저장
-        Chat chat = Chat.create(chatroom, member, request.message());
+        Chat chat = Chat.createTalkChat(chatroom, member, request.message());
         chatRepository.save(chat);
 
         // Redis에 메시지 발행
-        ChannelTopic topic = redisChatroomRepository.getTopic(chatroom.getChatroomId().toString());
-        redisPublisher.publish(topic, chat);
+        redisPublisher.publish(chat);
     }
 
     /**
@@ -64,8 +62,8 @@ public class ChatServiceImpl implements ChatService {
     @Transactional(readOnly = true)
     public Slice<ChatResponse> getChatList(Long chatroomId, PageRequest pageRequest, String email) {
         // 채팅방에 참여한 멤버인지 검증
-        Member member = checkMember(email);
-        Chatroom chatroom = checkChatroom(chatroomId);
+        Member member = getMember(email);
+        Chatroom chatroom = getChatroom(chatroomId);
         checkMemberInChatroom(member, chatroom);
 
         return chatRepository.findChatByChatroom(chatroom, pageRequest);
@@ -80,9 +78,9 @@ public class ChatServiceImpl implements ChatService {
      */
     @Transactional
     @Override
-    public ChatResponse updateChat(ChatServiceRequest request, String email, Long chatId) {
-        Member member = checkMember(email);
-        Chat chat = checkChat(chatId);
+    public ChatResponse updateChat(ChatUpdateServiceRequest request, String email, Long chatId) {
+        Member member = getMember(email);
+        Chat chat = getChat(chatId);
 
         checkChatByMember(member, chat);
 
@@ -98,8 +96,8 @@ public class ChatServiceImpl implements ChatService {
     @Transactional
     @Override
     public Long deleteChat(String email, Long chatId) {
-        Member member = checkMember(email);
-        Chat chat = checkChat(chatId);
+        Member member = getMember(email);
+        Chat chat = getChat(chatId);
 
         checkChatByMember(member, chat);
 
@@ -111,9 +109,9 @@ public class ChatServiceImpl implements ChatService {
     /**
      * 채팅방에 소속된 멤버인지 검증하는 메소드
      */
-    public void checkMemberInChatroom(Member member, Chatroom chatroom) {
+    private void checkMemberInChatroom(Member member, Chatroom chatroom) {
         if(!chatMemberRepository.existByMemberAndChatroom(member, chatroom)) {
-            throw new IllegalArgumentException("Invalid member");
+            throw new IllegalArgumentException(ExceptionMessage.MEMBER_NOT_IN_CHATROOM.getText());
         }
     }
 
@@ -122,21 +120,21 @@ public class ChatServiceImpl implements ChatService {
      * @param member
      * @param chat
      */
-    public void checkChatByMember(Member member, Chat chat){
+    private void checkChatByMember(Member member, Chat chat){
         if(!chat.getMember().equals(member)){
-            throw new IllegalArgumentException("Invalid member");
+            throw new IllegalArgumentException(ExceptionMessage.UNAUTHORIZED_MESSAGE_EDIT.getText());
         }
     }
 
-    public Member checkMember(String email) {
-        return memberRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("Member not found"));
+    private Member getMember(String email) {
+        return memberRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.MEMBER_NOT_FOUND.getText()));
     }
 
-    public Chatroom checkChatroom(Long chatroomId) {
-        return chatroomRepository.findByChatroomId(chatroomId).orElseThrow(() -> new IllegalArgumentException("Chatroom not found"));
+    private Chatroom getChatroom(Long chatroomId) {
+        return chatroomRepository.findByChatroomId(chatroomId).orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.CHATROOM_NOT_FOUND.getText()));
     }
 
-    public Chat checkChat(Long chatId) {
-        return chatRepository.findByChatId(chatId).orElseThrow(()-> new IllegalArgumentException("Chat not found"));
+    private Chat getChat(Long chatId) {
+        return chatRepository.findByChatId(chatId).orElseThrow(()-> new IllegalArgumentException(ExceptionMessage.CHAT_NOT_FOUND.getText()));
     }
 }

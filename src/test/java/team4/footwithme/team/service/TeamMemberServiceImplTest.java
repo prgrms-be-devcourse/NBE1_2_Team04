@@ -6,6 +6,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import team4.footwithme.IntegrationTestSupport;
+import team4.footwithme.chat.domain.ChatMember;
+import team4.footwithme.chat.domain.Chatroom;
+import team4.footwithme.chat.domain.TeamChatroom;
+import team4.footwithme.chat.repository.ChatMemberRepository;
+import team4.footwithme.chat.repository.ChatroomRepository;
+import team4.footwithme.chat.repository.RedisChatroomRepository;
 import team4.footwithme.global.domain.IsDeleted;
 import team4.footwithme.member.domain.*;
 import team4.footwithme.member.repository.MemberRepository;
@@ -37,6 +43,13 @@ class TeamMemberServiceImplTest extends IntegrationTestSupport {
     @Autowired
     private TeamMemberRepository teamMemberRepository;
 
+    @Autowired
+    private ChatroomRepository chatroomRepository;
+    @Autowired
+    private RedisChatroomRepository redisChatroomRepository;
+    @Autowired
+    private ChatMemberRepository chatMemberRepository;
+
     @BeforeEach
     void setUp() {
         //팀장용 멤버 생성
@@ -64,13 +77,17 @@ class TeamMemberServiceImplTest extends IntegrationTestSupport {
     @DisplayName("팀원 추가")
     void addTeamMember() {
         //given
-        Team team = teamRepository.save(Team.create(null,1L, "팀명","팀 설명", 0, 0, 0,"선호지역"));
+        Team team = teamRepository.save(Team.create(null,"팀명","팀 설명", 0, 0, 0,"선호지역"));
         List<String> emails = new ArrayList<>();
         List<Member> members = memberRepository.findAll();
         for(Member member : members) {
             emails.add(member.getEmail());
         }
         TeamMemberServiceRequest request = new TeamMemberServiceRequest(emails);
+        //해당 팀의 채팅방 생성
+        Chatroom chatroom = chatroomRepository.save(TeamChatroom.create(team.getName(), team.getTeamId()));
+        // redis Hash에 저장
+        redisChatroomRepository.createChatRoom(chatroom);
 
         //when
         List<TeamResponse> response = teamMemberService.addTeamMembers(team.getTeamId(),request);
@@ -97,7 +114,7 @@ class TeamMemberServiceImplTest extends IntegrationTestSupport {
         Member member03 = memberRepository.findByEmail("member03@gmail.com")
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자 입니다."));
 
-        Team team = teamRepository.save(Team.create(null,1L, "팀명","팀 설명", 0, 0, 0,"선호지역"));
+        Team team = teamRepository.save(Team.create(null,"팀명","팀 설명", 0, 0, 0,"선호지역"));
         teamMemberRepository.save(TeamMember.createCreator(team, leader));
         teamMemberRepository.save(TeamMember.createMember(team, member01));
         teamMemberRepository.save(TeamMember.createMember(team, member02));
@@ -124,9 +141,15 @@ class TeamMemberServiceImplTest extends IntegrationTestSupport {
         Member member = memberRepository.findByEmail("member01@gmail.com")
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자 입니다."));
 
-        Team team = teamRepository.save(Team.create(null,1L, "팀명","팀 설명", 0, 0, 0,"선호지역"));
+        Team team = teamRepository.save(Team.create(null,"팀명","팀 설명", 0, 0, 0,"선호지역"));
         TeamMember creator = teamMemberRepository.save(TeamMember.createCreator(team, leader));
         TeamMember user = teamMemberRepository.save(TeamMember.createMember(team, member));
+        //해당 팀의 채팅방 생성
+        Chatroom chatroom = chatroomRepository.save(TeamChatroom.create(team.getName(), team.getTeamId()));
+        redisChatroomRepository.createChatRoom(chatroom);
+        //채팅방에 멤버 추가
+        chatMemberRepository.save(ChatMember.create(leader, chatroom));
+        chatMemberRepository.save(ChatMember.create(member, chatroom));
 
         //when -- 본인 탈퇴
         teamMemberService.deleteTeamMemberByCreator(team.getTeamId(),user.getTeamMemberId(),leader);
@@ -147,9 +170,16 @@ class TeamMemberServiceImplTest extends IntegrationTestSupport {
         Member member = memberRepository.findByEmail("member01@gmail.com")
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자 입니다."));
 
-        Team team = teamRepository.save(Team.create(null,1L, "팀명","팀 설명", 0, 0, 0,"선호지역"));
+        Team team = teamRepository.save(Team.create(null,"팀명","팀 설명", 0, 0, 0,"선호지역"));
         TeamMember creator = teamMemberRepository.save(TeamMember.createCreator(team, leader));
         TeamMember user = teamMemberRepository.save(TeamMember.createMember(team, member));
+        //해당 팀의 채팅방 생성
+        Chatroom chatroom = chatroomRepository.save(TeamChatroom.create(team.getName(), team.getTeamId()));
+        // redis Hash에 저장
+        redisChatroomRepository.createChatRoom(chatroom);
+        //채팅방에 멤버 추가
+        chatMemberRepository.save(ChatMember.create(leader, chatroom));
+        chatMemberRepository.save(ChatMember.create(member, chatroom));
 
         //when -- 본인 탈퇴
         teamMemberService.deleteTeamMember(team.getTeamId(),member);

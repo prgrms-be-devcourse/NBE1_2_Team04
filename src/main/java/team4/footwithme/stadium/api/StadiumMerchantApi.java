@@ -22,22 +22,26 @@ public class StadiumMerchantApi {
 
     //@PreAuthorize("hasRole('ROLE_MERCHANT')")
     @PostMapping("/register")
-    public ApiResponse<StadiumDetailResponse> registerStadium(@Validated @RequestBody StadiumRegisterRequest request,
-                                                              @AuthenticationPrincipal PrincipalDetails currentUser) {
+    public ApiResponse<StadiumDetailResponse> registerStadium(
+            @Validated @RequestBody StadiumRegisterRequest request,
+            @AuthenticationPrincipal PrincipalDetails currentUser) {
         return ApiResponse.created(stadiumService.registerStadium(request.toServiceRequest(), currentUser.getMember().getMemberId()));
     }
 
     //@PreAuthorize("hasRole('ROLE_MERCHANT')")
     @PutMapping("/{stadiumId}")
-    public ApiResponse<StadiumDetailResponse> updateStadium(@PathVariable Long stadiumId, @Validated @RequestBody StadiumUpdateRequest request,
-                                                            @AuthenticationPrincipal PrincipalDetails currentUser) {
+    public ApiResponse<StadiumDetailResponse> updateStadium(
+            @PathVariable Long stadiumId,
+            @Validated @RequestBody StadiumUpdateRequest request,
+            @AuthenticationPrincipal PrincipalDetails currentUser) {
         return ApiResponse.ok(stadiumService.updateStadium(request.toServiceRequest(), currentUser.getMember().getMemberId(), stadiumId));
     }
 
     //@PreAuthorize("hasRole('ROLE_MERCHANT')")
     @DeleteMapping("/{stadiumId}")
-    public ApiResponse<Void> deleteStadium(@PathVariable Long stadiumId,
-                                           @AuthenticationPrincipal PrincipalDetails currentUser) {
+    public ApiResponse<Void> deleteStadium(
+            @PathVariable Long stadiumId,
+            @AuthenticationPrincipal PrincipalDetails currentUser) {
         stadiumService.deleteStadium(currentUser.getMember().getMemberId(), stadiumId);
         return ApiResponse.ok(null);
     }

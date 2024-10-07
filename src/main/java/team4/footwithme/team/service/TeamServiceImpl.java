@@ -1,18 +1,21 @@
 package team4.footwithme.team.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import team4.footwithme.chat.service.event.TeamDeletedEvent;
+import team4.footwithme.chat.service.event.TeamPublishedEvent;
 import team4.footwithme.global.domain.IsDeleted;
 import team4.footwithme.member.domain.*;
 import team4.footwithme.member.repository.MemberRepository;
 import team4.footwithme.team.domain.*;
 import team4.footwithme.team.repository.TeamMemberRepository;
 import team4.footwithme.team.repository.TeamRateRepository;
-import team4.footwithme.team.service.request.TeamDefaultServiceRequest;
-import team4.footwithme.team.service.response.TeamInfoResponse;
 import team4.footwithme.team.repository.TeamRepository;
+import team4.footwithme.team.service.request.TeamDefaultServiceRequest;
 import team4.footwithme.team.service.response.TeamDefaultResponse;
+import team4.footwithme.team.service.response.TeamInfoResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +29,8 @@ public class TeamServiceImpl implements TeamService {
     private final TeamMemberRepository teamMemberRepository;
     private final MemberRepository memberRepository;
 
+    private final ApplicationEventPublisher publisher;
+
     @Override
     @Transactional
     public TeamDefaultResponse createTeam(TeamDefaultServiceRequest dto, Member member) {
@@ -35,7 +40,6 @@ public class TeamServiceImpl implements TeamService {
          * 채팅방 생기면 해당 id 적용
          */
         Long stadiumId = null;
-        Long chatRoomId = 100000L;
 
         //TotalRecord 초기값으로 생성
         TotalRecord totalRecord = TotalRecord.builder().build();
@@ -43,7 +47,6 @@ public class TeamServiceImpl implements TeamService {
         //dto -> entity
         Team entity = Team.create(
             stadiumId,
-            chatRoomId,
             dto.name(),
             dto.description(),
             totalRecord.getWinCount(),
@@ -52,6 +55,9 @@ public class TeamServiceImpl implements TeamService {
             dto.location()
         );
         Team createdTeam = teamRepository.save(entity);
+
+        //채팅방 생성 이벤트 실행
+        publisher.publishEvent(new TeamPublishedEvent(createdTeam.getName(), createdTeam.getTeamId()));
 
         teamMemberRepository.save(TeamMember.createCreator(createdTeam, member));
 
@@ -122,6 +128,8 @@ public class TeamServiceImpl implements TeamService {
         checkAuthority(teamId, teamMember);
 
         teamRepository.delete(teamEntity);
+        // 채팅방 삭제 이벤트 실행
+        publisher.publishEvent(new TeamDeletedEvent(teamId));
         return teamId;
     }
 
