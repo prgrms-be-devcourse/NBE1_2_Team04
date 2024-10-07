@@ -1,0 +1,32 @@
+[[chat-get]]
+=== Chat 조회
+
+==== HTTP Request
+include::{snippets}/chat-get/http-request.adoc[]
+include::{snippets}/chat-get/path-parameters.adoc[]
+include::{snippets}/chat-get/query-parameters.adoc[]
+
+==== HTTP Response
+include::{snippets}/chat-get/http-response.adoc[]
+include::{snippets}/chat-get/response-fields.adoc[]
+
+[[chat-update]]
+=== Chat 수정
+
+==== HTTP Request
+include::{snippets}/chat-update/http-request.adoc[]
+include::{snippets}/chat-update/request-fields.adoc[]
+include::{snippets}/chat-update/path-parameters.adoc[]
+
+==== HTTP Response
+include::{snippets}/chat-update/http-response.adoc[]
+include::{snippets}/chat-update/response-fields.adoc[]
+
+[[chat-delete]]
+=== Chat 삭제
+include::{snippets}/chat-delete/http-request.adoc[]
+include::{snippets}/chat-delete/path-parameters.adoc[]
+
+==== HTTP Response
+include::{snippets}/chat-delete/http-response.adoc[]
+include::{snippets}/chat-delete/response-fields.adoc[]
