@@ -143,7 +143,7 @@ public class TeamApiDocs extends RestDocsSupport {
         TeamUpdateRequest request = new TeamUpdateRequest("수정할 팀명", "수정할 설명", "수정할 지역");
         //response
         TeamDefaultResponse response = new TeamDefaultResponse(
-                1L,
+                teamId,
                 null,
                 "수정한 팀 명",
                 "수정한 팀 설명",

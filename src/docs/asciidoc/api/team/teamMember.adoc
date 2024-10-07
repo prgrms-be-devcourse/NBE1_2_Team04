@@ -1,0 +1,45 @@
+= 팀 멤버 API Documentation
+
+[[team-member-add]]
+== 팀 멤버 추가 API
+
+=== HTTP Request
+include::{snippets}/team-member-add/http-request.adoc[]
+
+=== HTTP Response
+include::{snippets}/team-member-add/http-response.adoc[]
+include::{snippets}/team-member-add/request-fields.adoc[]
+include::{snippets}/team-member-add/response-fields.adoc[]
+
+[[team-member-get]]
+== 팀 멤버 전체 조회 API
+
+=== HTTP Request
+include::{snippets}/team-member-get/http-request.adoc[]
+include::{snippets}/team-member-get/path-parameters.adoc[]
+
+=== HTTP Response
+include::{snippets}/team-member-get/http-response.adoc[]
+include::{snippets}/team-member-get/response-fields.adoc[]
+
+[[team-member-deleteByCreator]]
+== 팀 탈퇴 (팀장) API
+
+=== HTTP Request
+include::{snippets}/team-member-deleteByCreator/http-request.adoc[]
+include::{snippets}/team-member-deleteByCreator/path-parameters.adoc[]
+
+=== HTTP Response
+include::{snippets}/team-member-deleteByCreator/http-response.adoc[]
+include::{snippets}/team-member-deleteByCreator/response-fields.adoc[]
+
+[[team-member-delete]]
+== 팀 탈퇴 (멤버) API
+
+=== HTTP Request
+include::{snippets}/team-member-delete/http-request.adoc[]
+include::{snippets}/team-member-delete/path-parameters.adoc[]
+
+=== HTTP Response
+include::{snippets}/team-member-delete/http-response.adoc[]
+include::{snippets}/team-member-delete/response-fields.adoc[]
