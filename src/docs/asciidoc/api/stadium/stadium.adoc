@@ -1,5 +1,5 @@
 [[stadium-get-list]]
-=== 풋살장 목록 조회 API
+== 풋살장 목록 조회 API
 
 ==== HTTP Request
 include::{snippets}/stadium-get-list/http-request.adoc[]
@@ -32,7 +32,7 @@ include::{snippets}/stadium-search-name/http-response.adoc[]
 include::{snippets}/stadium-search-name/response-fields.adoc[]
 
 [[stadium-search-address]]
-== 구장 주소로 검색 API
+== 풋살장 주소로 검색 API
 
 ==== HTTP Request
 include::{snippets}/stadium-search-address/http-request.adoc[]
@@ -43,7 +43,7 @@ include::{snippets}/stadium-search-address/http-response.adoc[]
 include::{snippets}/stadium-search-address/response-fields.adoc[]
 
 [[stadium-search-location]]
-== 위치로 구장 검색 API
+== 위치로 풋살장 검색 API
 
 ==== HTTP Request
 include::{snippets}/stadium-search-location/http-request.adoc[]

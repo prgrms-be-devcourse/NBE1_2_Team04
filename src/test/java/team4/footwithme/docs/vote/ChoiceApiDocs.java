@@ -46,7 +46,7 @@ public class ChoiceApiDocs extends RestDocsSupport {
 
         ChoiceCreateRequest request = new ChoiceCreateRequest(List.of(1L, 2L));
 
-        given(voteService.createChoice(any(ChoiceCreateServiceRequest.class), eq(voteId), any(Member.class)))
+        given(voteService.createChoice(any(ChoiceCreateServiceRequest.class), eq(voteId), any()))
             .willReturn(new VoteResponse(
                 voteId,
                 "연말 행사 투표",
@@ -109,7 +109,7 @@ public class ChoiceApiDocs extends RestDocsSupport {
         LocalDateTime endAt = LocalDateTime.now().plusDays(1);
         long voteId = 1L;
 
-        given(voteService.deleteChoice(eq(voteId), any(Member.class)))
+        given(voteService.deleteChoice(eq(voteId), any()))
             .willReturn(new VoteResponse(
                 voteId,
                 "연말 행사 투표",

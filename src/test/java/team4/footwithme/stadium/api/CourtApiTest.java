@@ -36,15 +36,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc(addFilters = false)
 class CourtApiTest extends ApiTestSupport {
 
-    @Autowired
-    private MockMvc mockMvc;
-
-    @MockBean
-    private CourtService courtService;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
     private CourtsResponse court1;
     private CourtsResponse court2;
     private CourtDetailResponse courtDetail;

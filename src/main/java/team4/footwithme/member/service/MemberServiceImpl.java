@@ -1,21 +1,21 @@
 package team4.footwithme.member.service;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team4.footwithme.config.SecurityConfig;
-import team4.footwithme.member.api.request.UpdateRequest;
 import team4.footwithme.member.domain.Member;
 import team4.footwithme.member.jwt.JwtTokenFilter;
 import team4.footwithme.member.jwt.JwtTokenUtil;
-import team4.footwithme.member.jwt.PrincipalDetails;
 import team4.footwithme.member.jwt.response.TokenResponse;
 import team4.footwithme.member.repository.MemberRepository;
-import team4.footwithme.member.service.request.*;
+import team4.footwithme.member.service.request.JoinServiceRequest;
+import team4.footwithme.member.service.request.LoginServiceRequest;
+import team4.footwithme.member.service.request.UpdatePasswordServiceRequest;
+import team4.footwithme.member.service.request.UpdateServiceRequest;
 import team4.footwithme.member.service.response.LoginResponse;
 import team4.footwithme.member.service.response.MemberResponse;
 
@@ -102,8 +102,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public MemberResponse update(PrincipalDetails principalDetails, UpdateServiceRequest request) {
-        Member member = principalDetails.getMember();
+    public MemberResponse update(Member member, UpdateServiceRequest request) {
         member.update(request.name(), request.phoneNumber(), request.gender());
         memberRepository.save(member);
 
@@ -112,8 +111,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public String updatePassword(PrincipalDetails principalDetails, UpdatePasswordServiceRequest serviceRequest) {
-        Member member = principalDetails.getMember();
+    public String updatePassword(Member member, UpdatePasswordServiceRequest serviceRequest) {
 
         if(!jwtSecurityConfig.passwordEncoder().matches(serviceRequest.prePassword(), member.getPassword())) {
             throw new IllegalArgumentException("이전 패스워드가 일치하지 않습니다.");

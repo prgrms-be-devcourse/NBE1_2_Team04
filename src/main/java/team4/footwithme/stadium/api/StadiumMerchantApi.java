@@ -25,7 +25,7 @@ public class StadiumMerchantApi {
     public ApiResponse<StadiumDetailResponse> registerStadium(
             @Validated @RequestBody StadiumRegisterRequest request,
             @AuthenticationPrincipal PrincipalDetails currentUser) {
-        return ApiResponse.created(stadiumService.registerStadium(request.toServiceRequest(), currentUser.getMember().getMemberId()));
+        return ApiResponse.created(stadiumService.registerStadium(request.toServiceRequest(), currentUser.getMember()));
     }
 
     //@PreAuthorize("hasRole('ROLE_MERCHANT')")
@@ -34,7 +34,7 @@ public class StadiumMerchantApi {
             @PathVariable Long stadiumId,
             @Validated @RequestBody StadiumUpdateRequest request,
             @AuthenticationPrincipal PrincipalDetails currentUser) {
-        return ApiResponse.ok(stadiumService.updateStadium(request.toServiceRequest(), currentUser.getMember().getMemberId(), stadiumId));
+        return ApiResponse.ok(stadiumService.updateStadium(request.toServiceRequest(), currentUser.getMember(), stadiumId));
     }
 
     //@PreAuthorize("hasRole('ROLE_MERCHANT')")
@@ -42,7 +42,7 @@ public class StadiumMerchantApi {
     public ApiResponse<Void> deleteStadium(
             @PathVariable Long stadiumId,
             @AuthenticationPrincipal PrincipalDetails currentUser) {
-        stadiumService.deleteStadium(currentUser.getMember().getMemberId(), stadiumId);
+        stadiumService.deleteStadium(currentUser.getMember(), stadiumId);
         return ApiResponse.ok(null);
     }
 }

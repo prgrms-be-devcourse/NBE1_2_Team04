@@ -60,9 +60,7 @@ public class ChatServiceImpl implements ChatService {
      */
     @Override
     @Transactional(readOnly = true)
-    public Slice<ChatResponse> getChatList(Long chatroomId, PageRequest pageRequest, String email) {
-        // 채팅방에 참여한 멤버인지 검증
-        Member member = getMember(email);
+    public Slice<ChatResponse> getChatList(Long chatroomId, PageRequest pageRequest, Member member) {
         Chatroom chatroom = getChatroom(chatroomId);
         checkMemberInChatroom(member, chatroom);
 
@@ -71,15 +69,10 @@ public class ChatServiceImpl implements ChatService {
 
     /**
      * 채팅 수정
-     * @param request
-     * @param email 채팅을 작성한 사람만 수정할 수 있음
-     * @param chatId
-     * @return
      */
     @Transactional
     @Override
-    public ChatResponse updateChat(ChatUpdateServiceRequest request, String email, Long chatId) {
-        Member member = getMember(email);
+    public ChatResponse updateChat(ChatUpdateServiceRequest request, Member member, Long chatId) {
         Chat chat = getChat(chatId);
 
         checkChatByMember(member, chat);
@@ -91,12 +84,10 @@ public class ChatServiceImpl implements ChatService {
 
     /**
      * 채팅 삭제
-     * @param email
      */
     @Transactional
     @Override
-    public Long deleteChat(String email, Long chatId) {
-        Member member = getMember(email);
+    public Long deleteChat(Member member, Long chatId) {
         Chat chat = getChat(chatId);
 
         checkChatByMember(member, chat);

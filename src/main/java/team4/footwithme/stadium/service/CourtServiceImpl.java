@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team4.footwithme.global.exception.ExceptionMessage;
 import team4.footwithme.global.repository.CustomGlobalRepository;
+import team4.footwithme.member.domain.Member;
 import team4.footwithme.member.repository.MemberRepository;
 import team4.footwithme.stadium.domain.Court;
 import team4.footwithme.stadium.domain.Stadium;
@@ -56,8 +57,8 @@ public class CourtServiceImpl implements CourtService {
 
     @Override
     @Transactional
-    public CourtDetailResponse registerCourt(CourtRegisterServiceRequest request, Long memberId) {
-        validateStadiumOwnership(request.stadiumId(), memberId).createCourt(memberId);
+    public CourtDetailResponse registerCourt(CourtRegisterServiceRequest request, Member member) {
+        validateStadiumOwnership(request.stadiumId(), member.getMemberId()).createCourt(member.getMemberId());
         Court court = Court.create(
                 (Stadium) findEntityByIdOrThrowException(stadiumRepository, request.stadiumId(), ExceptionMessage.STADIUM_NOT_FOUND),
                 request.name(),
@@ -70,19 +71,19 @@ public class CourtServiceImpl implements CourtService {
 
     @Override
     @Transactional
-    public CourtDetailResponse updateCourt(CourtUpdateServiceRequest request, Long memberId, Long courtId) {
-        validateStadiumOwnership(request.stadiumId(), memberId);
+    public CourtDetailResponse updateCourt(CourtUpdateServiceRequest request, Member member, Long courtId) {
+        validateStadiumOwnership(request.stadiumId(), member.getMemberId());
         Court court = (Court) findEntityByIdOrThrowException(courtRepository, courtId, ExceptionMessage.COURT_NOT_FOUND);
-        court.updateCourt(request.stadiumId(), memberId, request.name(), request.description(), request.price_per_hour());
+        court.updateCourt(request.stadiumId(), member.getMemberId(), request.name(), request.description(), request.price_per_hour());
         return CourtDetailResponse.from(court);
     }
 
     @Override
     @Transactional
-    public void deleteCourt(CourtDeleteServiceRequest request, Long memberId, Long courtId) {
-        validateStadiumOwnership(request.stadiumId(), memberId);
+    public void deleteCourt(CourtDeleteServiceRequest request, Member member, Long courtId) {
+        validateStadiumOwnership(request.stadiumId(), member.getMemberId());
         Court court = (Court) findEntityByIdOrThrowException(courtRepository, courtId, ExceptionMessage.COURT_NOT_FOUND);
-        court.deleteCourt(request.stadiumId(), memberId);
+        court.deleteCourt(request.stadiumId(), member.getMemberId());
         courtRepository.delete(court);
     }
 

@@ -11,7 +11,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
-
 @ExtendWith(RestDocumentationExtension.class)
 public abstract class RestDocsSupport {
 
@@ -28,5 +27,4 @@ public abstract class RestDocsSupport {
     }
 
     protected abstract Object initController();
-
 }

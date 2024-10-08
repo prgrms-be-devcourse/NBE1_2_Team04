@@ -5,16 +5,15 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.security.test.context.support.WithMockUser;
 import team4.footwithme.docs.RestDocsSupport;
 import team4.footwithme.member.api.MemberApi;
 import team4.footwithme.member.api.request.JoinRequest;
 import team4.footwithme.member.api.request.LoginRequest;
 import team4.footwithme.member.api.request.UpdatePasswordRequest;
 import team4.footwithme.member.api.request.UpdateRequest;
-import team4.footwithme.member.domain.Gender;
-import team4.footwithme.member.domain.LoginProvider;
-import team4.footwithme.member.domain.MemberRole;
-import team4.footwithme.member.domain.TermsAgreed;
+import team4.footwithme.member.domain.*;
+import team4.footwithme.member.jwt.JwtTokenUtil;
 import team4.footwithme.member.jwt.PrincipalDetails;
 import team4.footwithme.member.jwt.response.TokenResponse;
 import team4.footwithme.member.service.CookieService;
@@ -25,6 +24,8 @@ import team4.footwithme.member.service.request.UpdatePasswordServiceRequest;
 import team4.footwithme.member.service.request.UpdateServiceRequest;
 import team4.footwithme.member.service.response.LoginResponse;
 import team4.footwithme.member.service.response.MemberResponse;
+
+import java.security.Principal;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -40,6 +41,7 @@ public class MemberApiDocs extends RestDocsSupport {
 
     private final MemberService memberService = mock(MemberService.class);
     private final CookieService cookieService = mock(CookieService.class);
+    private final JwtTokenUtil jwtTokenUtil = mock(JwtTokenUtil.class);
 
     @Override
     protected Object initController() {
@@ -197,7 +199,7 @@ public class MemberApiDocs extends RestDocsSupport {
         MemberResponse response = new MemberResponse(1L, "test@naver.com", "test", "010-1234-1234", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE);
 
         //when
-        given(memberService.update(any(PrincipalDetails.class), any(UpdateServiceRequest.class)))
+        given(memberService.update(any(), any(UpdateServiceRequest.class)))
                 .willReturn(response);
 
         //then
@@ -232,7 +234,7 @@ public class MemberApiDocs extends RestDocsSupport {
         String response = "Success Change Password";
 
         //when
-        given(memberService.updatePassword(any(PrincipalDetails.class), any(UpdatePasswordServiceRequest.class)))
+        given(memberService.updatePassword(any(), any(UpdatePasswordServiceRequest.class)))
                 .willReturn(response);
 
         //then

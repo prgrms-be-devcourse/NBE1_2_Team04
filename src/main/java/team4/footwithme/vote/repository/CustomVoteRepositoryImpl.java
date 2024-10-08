@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import team4.footwithme.chat.domain.QChat;
 import team4.footwithme.global.domain.IsDeleted;
 import team4.footwithme.vote.domain.Vote;
+import team4.footwithme.vote.domain.VoteItemLocate;
 
 import java.util.List;
 import java.util.Optional;
@@ -48,4 +49,12 @@ public class CustomVoteRepositoryImpl implements CustomVoteRepository {
             .fetchOne();
     }
 
+    @Override
+    public Vote findRecentlyVoteByTeamId(Long teamId) {
+        return queryFactory.select(vote)
+            .where(vote.isDeleted.eq(FALSE)
+                .and(vote.voteStatus.eq(CLOSED)))
+            .orderBy(vote.updatedAt.desc())
+            .fetchOne();
+    }
 }
