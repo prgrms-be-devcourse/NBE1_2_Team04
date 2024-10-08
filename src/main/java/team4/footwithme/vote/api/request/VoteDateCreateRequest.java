@@ -3,7 +3,6 @@ package team4.footwithme.vote.api.request;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import team4.footwithme.vote.api.request.annotation.Duplicate;
 import team4.footwithme.vote.service.request.VoteDateCreateServiceRequest;
 
 import java.time.LocalDateTime;
