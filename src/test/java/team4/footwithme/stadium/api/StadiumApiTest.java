@@ -40,17 +40,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc(addFilters = false)
 class StadiumApiTest extends ApiTestSupport {
 
-    @Autowired
-    private MockMvc mockMvc;
-
-    @MockBean
-    private StadiumService stadiumService;
 
     @MockBean
     private JwtTokenUtil jwtTokenUtil;
 
-    @Autowired
-    private ObjectMapper objectMapper;
 
     private StadiumsResponse stadium1;
     private StadiumsResponse stadium2;

@@ -1,24 +1,19 @@
 package team4.footwithme.stadium.api;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import team4.footwithme.ApiTestSupport;
-import team4.footwithme.global.api.ApiResponse;
+import team4.footwithme.security.WithMockPrincipalDetail;
 import team4.footwithme.stadium.api.request.StadiumRegisterRequest;
 import team4.footwithme.stadium.api.request.StadiumUpdateRequest;
-import team4.footwithme.stadium.service.CourtService;
-import team4.footwithme.stadium.service.StadiumService;
 import team4.footwithme.stadium.service.response.StadiumDetailResponse;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import team4.footwithme.security.WithMockPrincipalDetail;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -30,12 +25,6 @@ class StadiumMerchantApiTest extends ApiTestSupport {
 
     @Autowired
     private MockMvc mockMvc;
-
-    @MockBean
-    private StadiumService stadiumService;
-
-    @MockBean
-    private CourtService courtService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -63,7 +52,7 @@ class StadiumMerchantApiTest extends ApiTestSupport {
                 126.9780
         );
 
-        Mockito.when(stadiumService.registerStadium(any(), eq(1L))).thenReturn(response);
+        Mockito.when(stadiumService.registerStadium(any(), any())).thenReturn(response);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/merchant/stadium/register")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -97,7 +86,7 @@ class StadiumMerchantApiTest extends ApiTestSupport {
                 129.0756
         );
 
-        Mockito.when(stadiumService.updateStadium(any(), eq(1L), eq(1L))).thenReturn(response);
+        Mockito.when(stadiumService.updateStadium(any(), any(), eq(1L))).thenReturn(response);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/merchant/stadium/1")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -114,7 +103,7 @@ class StadiumMerchantApiTest extends ApiTestSupport {
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.status().isOk());
 
-        Mockito.verify(stadiumService).deleteStadium(null, 1L);
+        Mockito.verify(stadiumService).deleteStadium(any(), eq(1L));
     }
 
     @Test

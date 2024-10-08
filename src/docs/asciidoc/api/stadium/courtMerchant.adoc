@@ -1,0 +1,33 @@
+[[court-register]]
+== 구장 등록 API
+
+==== HTTP Request
+include::{snippets}/court-register/http-request.adoc[]
+include::{snippets}/court-register/request-fields.adoc[]
+
+==== HTTP Response
+include::{snippets}/court-register/http-response.adoc[]
+include::{snippets}/court-register/response-fields.adoc[]
+
+[[court-update]]
+== 구장 수정 API
+
+==== HTTP Request
+include::{snippets}/court-update/http-request.adoc[]
+include::{snippets}/court-update/path-parameters.adoc[]
+include::{snippets}/court-update/request-fields.adoc[]
+
+==== HTTP Response
+include::{snippets}/court-update/http-response.adoc[]
+include::{snippets}/court-update/response-fields.adoc[]
+
+[[court-delete]]
+== 구장 삭제 API
+
+==== HTTP Request
+include::{snippets}/court-delete/http-request.adoc[]
+include::{snippets}/court-delete/path-parameters.adoc[]
+include::{snippets}/court-delete/request-fields.adoc[]
+
+==== HTTP Response
+include::{snippets}/court-delete/http-response.adoc[]

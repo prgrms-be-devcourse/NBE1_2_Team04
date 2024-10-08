@@ -32,21 +32,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class CourtMerchantApiTest extends ApiTestSupport {
 
-    @Autowired
-    private MockMvc mockMvc;
-
-    @MockBean
-    private StadiumService stadiumService;
-
-    @MockBean
-    private CourtService courtService;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
     @Test
     @WithMockPrincipalDetail(email = "merchant@example.com", role = team4.footwithme.member.domain.MemberRole.MERCHANT)
-    @DisplayName("코트 등록 시 Created 상태를 반환해야 한다")
+    @DisplayName("구장 등록 시 Created 상태를 반환해야 한다")
     void registerCourt_shouldReturnCreatedStatus() throws Exception {
         CourtRegisterRequest request = new CourtRegisterRequest(
                 1L,
@@ -62,7 +50,7 @@ class CourtMerchantApiTest extends ApiTestSupport {
                 new BigDecimal("5000.00")
         );
 
-        Mockito.when(courtService.registerCourt(any(), eq(1L))).thenReturn(response);
+        Mockito.when(courtService.registerCourt(any(), any())).thenReturn(response);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/merchant/court/register")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -75,7 +63,7 @@ class CourtMerchantApiTest extends ApiTestSupport {
 
     @Test
     @WithMockPrincipalDetail(email = "merchant@example.com", role = team4.footwithme.member.domain.MemberRole.MERCHANT)
-    @DisplayName("코트 수정 시 OK 상태를 반환해야 한다")
+    @DisplayName("구장 수정 시 OK 상태를 반환해야 한다")
     void updateCourt_shouldReturnOkStatus() throws Exception {
         CourtUpdateRequest request = new CourtUpdateRequest(
                 1L,
@@ -91,7 +79,7 @@ class CourtMerchantApiTest extends ApiTestSupport {
                 new BigDecimal("6000.00")
         );
 
-        Mockito.when(courtService.updateCourt(any(), eq(1L), eq(1L))).thenReturn(response);
+        Mockito.when(courtService.updateCourt(any(), any(), eq(1L))).thenReturn(response);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/merchant/court/1")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -102,7 +90,7 @@ class CourtMerchantApiTest extends ApiTestSupport {
 
     @Test
     @WithMockPrincipalDetail(email = "merchant@example.com", role = team4.footwithme.member.domain.MemberRole.MERCHANT)
-    @DisplayName("코트 삭제 시 OK 상태를 반환해야 한다")
+    @DisplayName("구장 삭제 시 OK 상태를 반환해야 한다")
     void deleteCourt_shouldReturnOkStatus() throws Exception {
         CourtDeleteRequest request = new CourtDeleteRequest(
                 1L
