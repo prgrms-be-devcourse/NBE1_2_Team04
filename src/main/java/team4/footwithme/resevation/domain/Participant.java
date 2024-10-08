@@ -47,4 +47,8 @@ public class Participant extends BaseEntity {
             .build();
     }
 
+    public void updateRole(ParticipantRole participantRole) {
+        this.participantRole = participantRole;
+    }
+
 }
