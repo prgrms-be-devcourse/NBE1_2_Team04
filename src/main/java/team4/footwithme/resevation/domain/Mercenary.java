@@ -10,7 +10,7 @@ import team4.footwithme.global.domain.BaseEntity;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLDelete(sql = "UPDATE mercenary SET is_deleted = TRUE WHERE mercenary_id = ?")
+@SQLDelete(sql = "UPDATE mercenary SET is_deleted = 'TRUE' WHERE mercenary_id = ?")
 @Entity
 public class Mercenary extends BaseEntity {
 

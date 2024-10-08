@@ -37,6 +37,7 @@ public enum ExceptionMessage {
     PARTICIPANT_NOT_IN_MEMBER("해당 회원이 매칭 예약에 존재하지 않습니다."),
     PARTICIPANT_IN_MEMBER("해당 회원이 매칭 예약에 이미 존재합니다."),
     MERCENARY_IN_RESERVATION("해당 회원은 이미 용병 신청을 했습니다."),
+    SAME_PARTICIPANT_ROLE("참가자의 역할과 수정하려는 역할이 동일합니다."),
 
     // Mercenary
     MERCENARY_NOT_FOUND("해당 용병 게시판을 찾을 수 없습니다.")

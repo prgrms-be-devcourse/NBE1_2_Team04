@@ -15,7 +15,7 @@ import team4.footwithme.resevation.domain.Reservation;
 import team4.footwithme.resevation.repository.MWParticipantRepository;
 import team4.footwithme.resevation.repository.MWReservationRepository;
 import team4.footwithme.resevation.repository.MercenaryRepository;
-import team4.footwithme.resevation.service.request.MWParticipantUpdateServiceResponse;
+import team4.footwithme.resevation.service.request.MWParticipantUpdateServiceRequest;
 import team4.footwithme.resevation.service.response.MWParticipantResponse;
 import team4.footwithme.team.domain.Team;
 import team4.footwithme.team.domain.TeamMember;
@@ -110,7 +110,7 @@ public class MWParticipantServiceImpl {
             throw new IllegalArgumentException(ExceptionMessage.PARTICIPANT_NOT_MEMBER.getText());
         }
 
-        Participant participant = participants.stream().filter(p -> p.getMember().equals(member)).findFirst()
+        Participant participant = participants.stream().filter(p -> p.getMember().getMemberId().equals(member.getMemberId())).findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.PARTICIPANT_NOT_IN_MEMBER.getText()));
 
         participantRepository.delete(participant);
@@ -125,14 +125,18 @@ public class MWParticipantServiceImpl {
      * Accept시 예약채팅방에도 추가
      */
     @Transactional
-    public MWParticipantResponse updateMercenaryParticipant(MWParticipantUpdateServiceResponse response, Member member){
-        Participant participant = getParticipantByParticipantId(response.participantId());
+    public MWParticipantResponse updateMercenaryParticipant(MWParticipantUpdateServiceRequest request, Member member){
+        Participant participant = getParticipantByParticipantId(request.participantId());
 
         checkReservationCreatedBy(participant.getReservation(), member);
 
-        participant.updateRole(response.role());
+        if(participant.getParticipantRole().equals(request.role())){
+            throw new IllegalArgumentException(ExceptionMessage.SAME_PARTICIPANT_ROLE.getText());
+        }
 
-        if(response.role() == ParticipantRole.ACCEPT){
+        participant.updateRole(request.role());
+
+        if(request.role() == ParticipantRole.ACCEPT){
             publisher.publishEvent(new ReservationMemberJoinEvent(member, participant.getReservation().getReservationId()));
         }
 
@@ -140,8 +144,19 @@ public class MWParticipantServiceImpl {
     }
 
     /**
-     * 전체 예약 참여자 조회
+     * 실제로 참여하는 예약 참여자 조회
      * agree, member인 참여자 조회
+     */
+    @Transactional(readOnly = true)
+    public List<MWParticipantResponse> getAcceptParticipants(Long reservationId){
+        List<Participant> participants = participantRepository.findParticipantByReservationIdAndRole(reservationId);
+
+        return participants.stream().map(MWParticipantResponse::new).toList();
+    }
+
+    /**
+     * 전체 예약 참여자 조회
+     * Pending, Ingore인 사람도 조회
      */
     @Transactional(readOnly = true)
     public List<MWParticipantResponse> getParticipants(Long reservationId){
@@ -182,7 +197,7 @@ public class MWParticipantServiceImpl {
     }
 
     private void checkReservationCreatedBy(Reservation reservation, Member member) {
-        if(!reservation.getMember().equals(member)) {
+        if(!reservation.getMember().getMemberId().equals(member.getMemberId())) {
             throw new IllegalArgumentException(ExceptionMessage.RESERVATION_NOT_MEMBER.getText());
         }
     }

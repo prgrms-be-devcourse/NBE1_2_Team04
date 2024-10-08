@@ -72,7 +72,7 @@ public class MercenaryServiceImpl implements MercenaryService{
 
 
     private String makeDescription(String description, Reservation reservation) {
-        return reservation.getMatchDate().format(DateTimeFormatter.ofPattern("(MM'/'dd'' HH':'mm'')")) +
+        return reservation.getMatchDate().format(DateTimeFormatter.ofPattern("'('MM'/'dd HH':'mm')'")) +
                 "(" +
                 reservation.getCourt().getStadium().getName() +
                 ") " +
@@ -90,7 +90,7 @@ public class MercenaryServiceImpl implements MercenaryService{
     }
 
     private void checkReservationCreatedBy(Reservation reservation, Member member) {
-        if(!reservation.getMember().equals(member)) {
+        if(!reservation.getMember().getMemberId().equals(member.getMemberId())) {
             throw new IllegalArgumentException(ExceptionMessage.RESERVATION_NOT_MEMBER.getText());
         }
     }
