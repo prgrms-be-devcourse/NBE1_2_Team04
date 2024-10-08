@@ -3,8 +3,10 @@ package team4.footwithme.resevation.service;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.transaction.annotation.Transactional;
 import team4.footwithme.IntegrationTestSupport;
+import team4.footwithme.chat.service.event.ReservationPublishedEvent;
 import team4.footwithme.member.domain.*;
 import team4.footwithme.member.repository.MemberRepository;
 import team4.footwithme.resevation.domain.*;
@@ -56,6 +58,9 @@ class JKReservationServiceImplTest extends IntegrationTestSupport {
     @Autowired
     private JKGameRepository gameRepository;
 
+    @Autowired
+    private ApplicationEventPublisher publisher;
+
     @DisplayName("예약을 취소한다.")
     @Test
     void deleteReservation(){
@@ -75,8 +80,8 @@ class JKReservationServiceImplTest extends IntegrationTestSupport {
 
         Court court = Court.create(stadium, "A번 구장", "잔디 구장", BigDecimal.valueOf(5000));
 
-        Reservation reservation = Reservation.create(court, manager, team, LocalDateTime.of(2024, 10, 20, 12,00,00), ReservationStatus.RECRUITING, Gender.MALE);
-        Reservation reservation2 = Reservation.create(court, manager, team2, LocalDateTime.of(2024, 10, 20, 12,00,00), ReservationStatus.RECRUITING, Gender.MALE);
+        Reservation reservation = Reservation.create(court, manager, team, LocalDateTime.of(2024, 10, 20, 12,00,00), ReservationStatus.RECRUITING, ParticipantGender.MALE);
+        Reservation reservation2 = Reservation.create(court, manager, team2, LocalDateTime.of(2024, 10, 20, 12,00,00), ReservationStatus.RECRUITING, ParticipantGender.MALE);
 
 
         Participant participant1 = Participant.create(reservation, manager, ParticipantRole.MEMBER);
@@ -98,6 +103,8 @@ class JKReservationServiceImplTest extends IntegrationTestSupport {
         participantRepository.saveAll(List.of(participant1, participant2, participant3, participant4, participant5, participant6));
         mercenaryRepository.save(mercenary);
         gameRepository.save(game);
+
+        publisher.publishEvent(new ReservationPublishedEvent("Test", reservation.getReservationId()));
 
         //when
         Long response = jkReservationService.deleteReservation(reservation.getReservationId(), manager);
@@ -133,8 +140,8 @@ class JKReservationServiceImplTest extends IntegrationTestSupport {
 
         Court court = Court.create(stadium, "A번 구장", "잔디 구장", BigDecimal.valueOf(5000));
 
-        Reservation reservation = Reservation.create(court, manager, team, LocalDateTime.of(2024, 10, 20, 12,00,00), ReservationStatus.RECRUITING, Gender.MALE);
-        Reservation reservation2 = Reservation.create(court, manager, team2, LocalDateTime.of(2024, 10, 20, 12,00,00), ReservationStatus.RECRUITING, Gender.MALE);
+        Reservation reservation = Reservation.create(court, manager, team, LocalDateTime.of(2024, 10, 20, 12,00,00), ReservationStatus.RECRUITING, ParticipantGender.MALE);
+        Reservation reservation2 = Reservation.create(court, manager, team2, LocalDateTime.of(2024, 10, 20, 12,00,00), ReservationStatus.RECRUITING, ParticipantGender.MALE);
 
 
         Participant participant1 = Participant.create(reservation, manager, ParticipantRole.MEMBER);
@@ -156,6 +163,7 @@ class JKReservationServiceImplTest extends IntegrationTestSupport {
         participantRepository.saveAll(List.of(participant1, participant2, participant3, participant4, participant5, participant6));
         mercenaryRepository.save(mercenary);
         gameRepository.save(game);
+        publisher.publishEvent(new ReservationPublishedEvent("Test", reservation.getReservationId()));
 
 
         //when & then
@@ -183,8 +191,8 @@ class JKReservationServiceImplTest extends IntegrationTestSupport {
 
         Court court = Court.create(stadium, "A번 구장", "잔디 구장", BigDecimal.valueOf(5000));
 
-        Reservation reservation = Reservation.create(court, manager, team, LocalDateTime.of(2024, 10, 20, 12,00,00), ReservationStatus.CONFIRMED, Gender.MALE);
-        Reservation reservation2 = Reservation.create(court, manager, team2, LocalDateTime.of(2024, 10, 20, 12,00,00), ReservationStatus.RECRUITING, Gender.MALE);
+        Reservation reservation = Reservation.create(court, manager, team, LocalDateTime.of(2024, 10, 20, 12,00,00), ReservationStatus.CONFIRMED, ParticipantGender.MALE);
+        Reservation reservation2 = Reservation.create(court, manager, team2, LocalDateTime.of(2024, 10, 20, 12,00,00), ReservationStatus.RECRUITING, ParticipantGender.MALE);
 
 
         Participant participant1 = Participant.create(reservation, manager, ParticipantRole.MEMBER);
@@ -207,6 +215,7 @@ class JKReservationServiceImplTest extends IntegrationTestSupport {
         participantRepository.saveAll(List.of(participant1, participant2, participant3, participant4, participant5, participant6));
         mercenaryRepository.save(mercenary);
         gameRepository.save(game);
+        publisher.publishEvent(new ReservationPublishedEvent("Test", reservation.getReservationId()));
 
 
         //when & then

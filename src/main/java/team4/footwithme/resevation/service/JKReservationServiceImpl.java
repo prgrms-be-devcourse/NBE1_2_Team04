@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import team4.footwithme.chat.service.event.ReservationDeletedEvent;
 import team4.footwithme.member.domain.Member;
 import team4.footwithme.resevation.domain.*;
 import team4.footwithme.resevation.repository.JKGameRepository;
@@ -42,7 +43,7 @@ public class JKReservationServiceImpl implements JKReservationService {
         deleteParticipants(reservationId);
 
         reservationRepository.delete(reservation);
-        //publisher.ReservationDeletedEvent(reservationId);
+        publisher.publishEvent(new ReservationDeletedEvent(reservationId));
 
         return reservationId;
     }
@@ -50,19 +51,19 @@ public class JKReservationServiceImpl implements JKReservationService {
     @Transactional
     public void deleteGames(Long reservationId){
         List<Game> games = gameRepository.findAllByReservationId(reservationId);
-        gameRepository.deleteAll(games);
+        gameRepository.deleteAllInBatch(games);
     }
 
     @Transactional
     public void deleteMercenaries(Long reservationId){
         List<Mercenary> mercenaries = mercenaryRepository.findAllMercenaryByReservationId(reservationId);
-        mercenaryRepository.deleteAll(mercenaries);
+        mercenaryRepository.deleteAllInBatch(mercenaries);
     }
 
     @Transactional
     public void deleteParticipants(Long reservationId){
         List<Participant> participants = participantRepository.findAllByReservationId(reservationId);
-        participantRepository.deleteAll(participants);
+        participantRepository.deleteAllInBatch(participants);
     }
 
 
