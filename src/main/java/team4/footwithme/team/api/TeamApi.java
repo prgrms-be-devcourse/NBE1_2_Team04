@@ -27,14 +27,6 @@ public class TeamApi {
     }
 
     /**
-     * 경기 일정(날짜만) 조회
-     */
-    @GetMapping("/{teamId}")
-    public ApiResponse<?> getTeamReservationInfo(@PathVariable Long teamId) {
-        return null;
-    }
-
-    /**
      * 팀 정보 조회
      */
     @GetMapping("/{teamId}/info")
