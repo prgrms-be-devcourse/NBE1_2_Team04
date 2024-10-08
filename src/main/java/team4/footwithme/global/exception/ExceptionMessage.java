@@ -25,7 +25,21 @@ public enum ExceptionMessage {
     CHATROOM_NOT_FOUND("해당 채팅방을 찾을 수 없습니다."),
     MEMBER_NOT_IN_CHATROOM("채팅방에 참여한 회원이 아닙니다."),
     MEMBER_IN_CHATROOM("해당 회원이 채팅방에 존재합니다."),
-    UNAUTHORIZED_MESSAGE_EDIT("해당 메세지의 수정 권한이 없습니다.")
+    UNAUTHORIZED_MESSAGE_EDIT("해당 메세지의 수정 권한이 없습니다."),
+
+    // Team
+    MEMBER_NOT_IN_TEAM("해당 회원이 팀에 존재하지 않습니다."),
+
+    // Reservation
+    RESERVATION_NOT_FOUND("해당 매칭 예약을 찾을 수 없습니다."),
+    RESERVATION_NOT_MEMBER("해당 매칭 예약 수정 권한이 없습니다."),
+    PARTICIPANT_NOT_MEMBER("해당 매칭 예약의 참가 인원 수정 권한이 없습니다."),
+    PARTICIPANT_NOT_IN_MEMBER("해당 회원이 매칭 예약에 존재하지 않습니다."),
+    PARTICIPANT_IN_MEMBER("해당 회원이 매칭 예약에 이미 존재합니다."),
+    MERCENARY_IN_RESERVATION("해당 회원은 이미 용병 신청을 했습니다."),
+
+    // Mercenary
+    MERCENARY_NOT_FOUND("해당 용병 게시판을 찾을 수 없습니다.")
 
 
     ;
