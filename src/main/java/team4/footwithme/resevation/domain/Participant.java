@@ -12,7 +12,7 @@ import team4.footwithme.member.domain.Member;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLDelete(sql = "UPDATE participant SET is_deleted = TRUE WHERE participant_id = ?")
+@SQLDelete(sql = "UPDATE participant SET is_deleted = 'TRUE' WHERE participant_id = ?")
 @Entity
 public class Participant extends BaseEntity {
 
@@ -45,6 +45,10 @@ public class Participant extends BaseEntity {
             .member(member)
             .participantRole(participantRole)
             .build();
+    }
+
+    public void updateRole(ParticipantRole participantRole) {
+        this.participantRole = participantRole;
     }
 
 }
