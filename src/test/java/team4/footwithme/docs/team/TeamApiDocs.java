@@ -108,7 +108,7 @@ public class TeamApiDocs extends RestDocsSupport {
 
         given(teamService.getTeamInfo(teamId)).willReturn(response);
 
-        mockMvc.perform(get("/api/v1/team/{teamId}/info", 1L)
+        mockMvc.perform(get("/api/v1/team/{teamId}/info", teamId)
                 .contentType(MediaType.APPLICATION_JSON)
             )
             .andExpect(status().isOk())
@@ -156,7 +156,7 @@ public class TeamApiDocs extends RestDocsSupport {
         given(teamService.updateTeamInfo(eq(teamId),any(TeamDefaultServiceRequest.class),any()))
                 .willReturn(response);
 
-        mockMvc.perform(put("/api/v1/team/{teamId}/info", 1L)
+        mockMvc.perform(put("/api/v1/team/{teamId}/info", teamId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())

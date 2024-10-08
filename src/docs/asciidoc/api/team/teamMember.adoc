@@ -8,7 +8,6 @@ include::{snippets}/team-member-add/http-request.adoc[]
 
 === HTTP Response
 include::{snippets}/team-member-add/http-response.adoc[]
-include::{snippets}/team-member-add/request-fields.adoc[]
 include::{snippets}/team-member-add/response-fields.adoc[]
 
 [[team-member-get]]
