@@ -638,8 +638,8 @@ class VoteServiceImplTest extends IntegrationTestSupport {
         Team team = Team.create(savedStadium.getStadiumId(), "팀이름", "팀 설명", 1, 1, 1, "서울");
         Team savedTeam = teamRepository.save(team);
 
-        Vote vote1 = Vote.create(1L, 1L, "연말 경기 투표", endAt);
-        Vote vote2 = Vote.create(1L, 1L, "축구 경기 투표", endAt);
+        Vote vote1 = Vote.create(1L, savedTeam.getTeamId(), "연말 경기 투표", endAt);
+        Vote vote2 = Vote.create(1L, savedTeam.getTeamId(), "축구 경기 투표", endAt);
         List<Vote> savedVotes = voteRepository.saveAll(List.of(vote1, vote2));
 
         VoteItem voteItem1 = VoteItemDate.create(savedVotes.get(0), choice1);
