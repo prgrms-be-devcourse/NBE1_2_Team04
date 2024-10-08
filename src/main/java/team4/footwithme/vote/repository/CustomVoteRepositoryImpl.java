@@ -57,4 +57,13 @@ public class CustomVoteRepositoryImpl implements CustomVoteRepository {
             .orderBy(vote.updatedAt.desc())
             .fetchOne();
     }
+
+    @Override
+    public List<Vote> findAllByTeamId(Long teamId) {
+        return queryFactory.select(vote)
+            .from(vote)
+            .where(vote.teamId.eq(teamId)
+                .and(vote.isDeleted.eq(FALSE)))
+            .fetch();
+    }
 }

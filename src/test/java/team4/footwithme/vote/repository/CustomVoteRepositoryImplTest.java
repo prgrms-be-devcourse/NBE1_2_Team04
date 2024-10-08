@@ -113,4 +113,24 @@ class CustomVoteRepositoryImplTest extends IntegrationTestSupport {
         assertThat(count).isEqualTo(3);
     }
 
+    @DisplayName("전체 투표 목록 조회")
+    @Test
+    void findAllByTeamId() {
+        //given
+        LocalDateTime endAt = LocalDateTime.now().plusHours(1);
+        Vote vote1 = Vote.create(1L, 1L, "title", endAt);
+        Vote vote2 = Vote.create(1L, 1L, "제목", endAt);
+
+        voteRepository.saveAll(List.of(vote1, vote2));
+        //when
+        List<Vote> findVotes = voteRepository.findAllByTeamId(1L);
+        //then
+        assertThat(findVotes).hasSize(2)
+            .extracting("voteId", "title", "endAt", "isDeleted")
+            .containsExactlyInAnyOrder(
+                tuple(vote1.getVoteId(), "title", endAt, IsDeleted.FALSE),
+                tuple(vote2.getVoteId(), "제목", endAt, IsDeleted.FALSE)
+            );
+    }
+
 }

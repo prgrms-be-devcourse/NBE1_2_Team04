@@ -10,7 +10,10 @@ import team4.footwithme.vote.api.request.VoteDateCreateRequest;
 import team4.footwithme.vote.api.request.VoteCourtCreateRequest;
 import team4.footwithme.vote.api.request.VoteUpdateRequest;
 import team4.footwithme.vote.service.VoteService;
+import team4.footwithme.vote.service.response.AllVoteResponse;
 import team4.footwithme.vote.service.response.VoteResponse;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -26,17 +29,12 @@ public class VoteApi {
 
     @GetMapping("{voteId}")
     public ApiResponse<VoteResponse> getVote(@PathVariable Long voteId) {
-        return ApiResponse.ok(voteService.getCourtVote(voteId));
+        return ApiResponse.ok(voteService.getVote(voteId));
     }
 
     @PostMapping("/dates/{teamId}")
     public ApiResponse<VoteResponse> createDateVote(@Valid @RequestBody VoteDateCreateRequest request, @PathVariable Long teamId, @AuthenticationPrincipal PrincipalDetails principalDetails) {
         return ApiResponse.created(voteService.createDateVote(request.toServiceRequest(), teamId, principalDetails.getMember()));
-    }
-
-    @GetMapping("/dates/{voteId}")
-    public ApiResponse<VoteResponse> getDateVote(@PathVariable Long voteId) {
-        return ApiResponse.ok(voteService.getDateVote(voteId));
     }
 
     @DeleteMapping("{voteId}")
@@ -52,6 +50,11 @@ public class VoteApi {
     @PostMapping("/close/{voteId}")
     public ApiResponse<VoteResponse> closeVote(@PathVariable Long voteId, @AuthenticationPrincipal PrincipalDetails principalDetails) {
         return ApiResponse.ok(voteService.closeVote(voteId, principalDetails.getMember()));
+    }
+
+    @GetMapping("/all/{teamId}")
+    public ApiResponse<List<AllVoteResponse>> getAllVotes(@PathVariable Long teamId) {
+        return ApiResponse.ok(voteService.getAllVotes(teamId));
     }
 
 }

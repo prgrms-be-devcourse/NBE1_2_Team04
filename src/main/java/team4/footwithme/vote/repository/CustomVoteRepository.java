@@ -15,4 +15,6 @@ public interface CustomVoteRepository {
     Long choiceMemberCountByVoteId(Long voteId);
 
     Vote findRecentlyVoteByTeamId(Long teamId);
+
+    List<Vote> findAllByTeamId(Long teamId);
 }

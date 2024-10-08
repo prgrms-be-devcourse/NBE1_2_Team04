@@ -15,9 +15,10 @@ import team4.footwithme.vote.repository.ChoiceRepository;
 import team4.footwithme.vote.repository.VoteItemRepository;
 import team4.footwithme.vote.repository.VoteRepository;
 import team4.footwithme.vote.service.request.ChoiceCreateServiceRequest;
-import team4.footwithme.vote.service.request.VoteDateCreateServiceRequest;
 import team4.footwithme.vote.service.request.VoteCourtCreateServiceRequest;
+import team4.footwithme.vote.service.request.VoteDateCreateServiceRequest;
 import team4.footwithme.vote.service.request.VoteUpdateServiceRequest;
+import team4.footwithme.vote.service.response.AllVoteResponse;
 import team4.footwithme.vote.service.response.VoteItemResponse;
 import team4.footwithme.vote.service.response.VoteResponse;
 
@@ -66,14 +67,6 @@ public class VoteServiceImpl implements VoteService {
         return VoteResponse.of(vote, voteItemResponses);
     }
 
-    @Transactional(readOnly = true)
-    @Override
-    public VoteResponse getCourtVote(Long voteId) {
-        Vote vote = getVoteByVoteId(voteId);
-        List<VoteItemResponse> voteItemResponses = convertVoteItemsToResponseFrom(vote.getVoteItems());
-        return VoteResponse.of(vote, voteItemResponses);
-    }
-
     @Transactional
     @Override
     public VoteResponse createDateVote(VoteDateCreateServiceRequest request, Long teamId, Member member) {
@@ -90,9 +83,8 @@ public class VoteServiceImpl implements VoteService {
         return VoteResponse.of(savedVote, voteItemResponses);
     }
 
-    @Transactional(readOnly = true)
     @Override
-    public VoteResponse getDateVote(Long voteId) {
+    public VoteResponse getVote(Long voteId) {
         Vote vote = getVoteByVoteId(voteId);
         List<VoteItemResponse> voteItemResponses = convertVoteItemsToResponseFrom(vote.getVoteItems());
         return VoteResponse.of(vote, voteItemResponses);
@@ -159,6 +151,15 @@ public class VoteServiceImpl implements VoteService {
         return VoteResponse.of(vote, convertVoteItemsToResponseFrom(vote.getVoteItems()));
     }
 
+    @Override
+    public List<AllVoteResponse> getAllVotes(Long teamId) {
+        validateTeamByTeamId(teamId);
+        List<Vote> votes = voteRepository.findAllByTeamId(teamId);
+        return votes.stream()
+            .map(AllVoteResponse::from)
+            .toList();
+    }
+
     private List<VoteItemDate> createVoteItemDate(VoteDateCreateServiceRequest request, Vote savedVote) {
         return voteItemRepository.saveAll(request.choices().stream()
             .map(choice -> VoteItemDate.create(savedVote, choice))
@@ -190,7 +191,9 @@ public class VoteServiceImpl implements VoteService {
     }
 
     private void validateTeamByTeamId(Long teamId) {
-        teamRepository.findById(teamId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 팀입니다."));
+        if (!teamRepository.existsById(teamId)) {
+            throw new IllegalArgumentException("존재하지 않는 팀입니다.");
+        }
     }
 
     private <T extends VoteItem> List<VoteItemResponse> convertVoteItemsToResponseFrom(List<T> voteItems) {
@@ -201,7 +204,7 @@ public class VoteServiceImpl implements VoteService {
 
 
     private <T extends VoteItem> VoteItemResponse convertVoteItemToResponse(T voteItem) {
-            if (voteItem instanceof VoteItemLocate voteItemLocate) {
+        if (voteItem instanceof VoteItemLocate voteItemLocate) {
             return convertToVoteItemResponseFrom(voteItemLocate);
         }
         if (voteItem instanceof VoteItemDate voteItemDate) {
