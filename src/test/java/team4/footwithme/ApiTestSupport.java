@@ -13,11 +13,13 @@ import team4.footwithme.chat.service.ChatMemberService;
 import team4.footwithme.chat.service.ChatService;
 import team4.footwithme.chat.service.ChatroomService;
 import team4.footwithme.member.jwt.JwtTokenFilter;
+import team4.footwithme.stadium.api.CourtMerchantApi;
+import team4.footwithme.stadium.api.StadiumMerchantApi;
 import team4.footwithme.vote.api.VoteApi;
 import team4.footwithme.vote.service.VoteService;
 
 @WebMvcTest(controllers = {
-    VoteApi.class, ChatApi.class, ChatroomApi.class, ChatMemberApi.class,
+    VoteApi.class, ChatApi.class, ChatroomApi.class, ChatMemberApi.class, StadiumMerchantApi.class, CourtMerchantApi.class
 })
 @AutoConfigureMockMvc(addFilters = false)
 public abstract class ApiTestSupport {
