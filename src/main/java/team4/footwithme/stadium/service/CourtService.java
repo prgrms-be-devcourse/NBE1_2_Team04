@@ -1,6 +1,7 @@
 package team4.footwithme.stadium.service;
 
 import org.springframework.data.domain.Slice;
+import team4.footwithme.member.domain.Member;
 import team4.footwithme.stadium.service.request.CourtDeleteServiceRequest;
 import team4.footwithme.stadium.service.request.CourtRegisterServiceRequest;
 import team4.footwithme.stadium.service.request.CourtUpdateServiceRequest;
@@ -14,9 +15,9 @@ public interface CourtService {
 
     CourtDetailResponse getCourtByCourtId(Long courtId);
 
-    CourtDetailResponse registerCourt(CourtRegisterServiceRequest request, Long memberId);
+    CourtDetailResponse registerCourt(CourtRegisterServiceRequest request, Member member);
 
-    CourtDetailResponse updateCourt(CourtUpdateServiceRequest request, Long memberId, Long courtId);
+    CourtDetailResponse updateCourt(CourtUpdateServiceRequest request, Member member, Long courtId);
 
-    void deleteCourt(CourtDeleteServiceRequest request, Long memberId, Long courtId);
+    void deleteCourt(CourtDeleteServiceRequest request, Member member, Long courtId);
 }

@@ -1,6 +1,7 @@
 package team4.footwithme.stadium.service;
 
 import org.springframework.data.domain.Slice;
+import team4.footwithme.member.domain.Member;
 import team4.footwithme.stadium.service.request.StadiumRegisterServiceRequest;
 import team4.footwithme.stadium.service.request.StadiumSearchByLocationServiceRequest;
 import team4.footwithme.stadium.service.request.StadiumUpdateServiceRequest;
@@ -18,9 +19,9 @@ public interface StadiumService {
 
     Slice<StadiumsResponse> getStadiumsWithinDistance(StadiumSearchByLocationServiceRequest request, Integer page, String sort);
 
-    StadiumDetailResponse registerStadium(StadiumRegisterServiceRequest request, Long memberId);
+    StadiumDetailResponse registerStadium(StadiumRegisterServiceRequest request, Member member);
 
-    StadiumDetailResponse updateStadium(StadiumUpdateServiceRequest request, Long memberId, Long stadiumId);
+    StadiumDetailResponse updateStadium(StadiumUpdateServiceRequest request, Member member, Long stadiumId);
 
-    void deleteStadium(Long memberId, Long stadiumId);
+    void deleteStadium(Member member, Long stadiumId);
 }
