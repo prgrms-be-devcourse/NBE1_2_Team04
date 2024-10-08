@@ -104,7 +104,7 @@ class MemberServiceImplTest extends IntegrationTestSupport {
         String response = memberService.logout(request);
 
         //then
-        assertThat(redisTemplate.opsForValue().get(loginResponse.accessToken())).isEqualTo("logout"); // redis 에 잘 저장 되었는지 확인
+        assertThat(redisTemplate.opsForValue().get(member.getEmail())).isNull(); // redis 에서 refreshToken 이 삭제 되었는지 확인
         assertThat(response).isEqualTo("Success Logout"); // 결과 확인
     }
 
