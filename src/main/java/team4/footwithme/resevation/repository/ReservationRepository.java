@@ -10,7 +10,6 @@ import team4.footwithme.global.repository.CustomGlobalRepository;
 import team4.footwithme.resevation.domain.Reservation;
 import team4.footwithme.resevation.domain.ReservationStatus;
 import team4.footwithme.stadium.domain.Court;
-import team4.footwithme.stadium.domain.Stadium;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -19,7 +18,7 @@ import java.util.Optional;
 public interface ReservationRepository extends JpaRepository<Reservation, Long>, CustomGlobalRepository {
 
     @Query("SELECT r FROM Reservation r WHERE r.isDeleted = 'false' AND r.reservationId = :id")
-    Optional<Stadium> findActiveById(@Param("id") Long id);
+    Optional<Reservation> findActiveById(@Param("id") Long id);
 
     @Query("SELECT r FROM Reservation r WHERE r.isDeleted = 'FALSE' AND r.matchDate = :matchDate AND r.court = :court AND r.reservationStatus = :reservationStatus")
     Slice<Reservation> findByMatchDateAndCourtAndReservationStatus(

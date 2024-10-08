@@ -51,10 +51,10 @@ public class GameServiceImpl implements GameService {
 
         game.update(request.status());
 
-        Reservation firstReservation = game.getFirstTeamReservation();
-        Reservation secondReservation = game.getSecondTeamReservation();
-
         if (request.status() == GameStatus.READY) {
+            Reservation firstReservation = (Reservation) findEntityByIdOrThrowException(reservationRepository, game.getFirstTeamReservation().getReservationId(), ExceptionMessage.RESERVATION_NOT_FOUND);
+            Reservation secondReservation = (Reservation) findEntityByIdOrThrowException(reservationRepository, game.getSecondTeamReservation().getReservationId(), ExceptionMessage.RESERVATION_NOT_FOUND);
+
             boolean isConflict = reservationRepository.findByMatchDateAndCourtAndReservationStatus(
                             firstReservation.getMatchDate(), firstReservation.getCourt(), ReservationStatus.CONFIRMED, PageRequest.of(0, 1))
                     .hasContent();
@@ -71,8 +71,7 @@ public class GameServiceImpl implements GameService {
             return ExceptionMessage.RESERVATION_SUCCESS.getText();
         }
 
-        //TODO 매칭 실패시 삭제해야함
-        return "해당 매칭은 거절하였습니다.";
+        return "해당 매칭을 거절하였습니다.";
     }
 
     public Slice<GameDetailResponse> findPendingGames(Member member, Long reservationId, Integer page) {

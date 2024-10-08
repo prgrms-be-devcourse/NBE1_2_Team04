@@ -23,6 +23,6 @@ public interface GameRepository extends JpaRepository<Game, Long>, CustomGlobalR
             PageRequest pageRequest);
 
     @Query("SELECT g FROM Game g WHERE g.isDeleted = 'false' AND g.gameId = :id")
-    Optional<Stadium> findActiveById(@Param("id") Long id);
+    Optional<Game> findActiveById(@Param("id") Long id);
 
 }
