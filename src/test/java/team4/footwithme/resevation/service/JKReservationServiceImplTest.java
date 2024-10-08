@@ -86,7 +86,7 @@ class JKReservationServiceImplTest extends IntegrationTestSupport {
         Participant participant5 = Participant.create(reservation, member6, ParticipantRole.MEMBER);
         Participant participant6 = Participant.create(reservation, member7, ParticipantRole.MEMBER);
 
-        Mercenary mercenary = Mercenary.create(participant1,"용병 구합니다", reservation);
+        Mercenary mercenary = Mercenary.create(reservation,"용병 구합니다");
 
         Game game = Game.create(reservation, reservation2, GameStatus.READY);
 
@@ -144,7 +144,7 @@ class JKReservationServiceImplTest extends IntegrationTestSupport {
         Participant participant5 = Participant.create(reservation, member6, ParticipantRole.MEMBER);
         Participant participant6 = Participant.create(reservation, member7, ParticipantRole.MEMBER);
 
-        Mercenary mercenary = Mercenary.create(participant1,"용병 구합니다", reservation);
+        Mercenary mercenary = Mercenary.create(reservation,"용병 구합니다");
 
         Game game = Game.create(reservation, reservation2, GameStatus.READY);
 
@@ -194,7 +194,8 @@ class JKReservationServiceImplTest extends IntegrationTestSupport {
         Participant participant5 = Participant.create(reservation, member6, ParticipantRole.MEMBER);
         Participant participant6 = Participant.create(reservation, member7, ParticipantRole.MEMBER);
 
-        Mercenary mercenary = Mercenary.create(participant1,"용병 구합니다", reservation);
+        Mercenary mercenary = Mercenary.create(reservation,"용병 구합니다");
+
 
         Game game = Game.create(reservation, reservation2, GameStatus.READY);
 
