@@ -13,3 +13,8 @@ endif::[]
 == Vote API
 
 include::api/vote/vote.adoc[]
+
+[[choice-API]]
+== Choice API
+
+include::api/vote/choice.adoc[]
