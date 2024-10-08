@@ -57,9 +57,4 @@ public class CustomVoteRepositoryImpl implements CustomVoteRepository {
             .orderBy(vote.updatedAt.desc())
             .fetchOne();
     }
-
-    @Override
-    public Long findRecentlyLocateVoteByTeamId(Long teamId) {
-        return 0L;
-    }
 }
