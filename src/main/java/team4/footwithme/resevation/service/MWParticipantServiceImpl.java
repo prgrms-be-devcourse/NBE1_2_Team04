@@ -5,6 +5,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team4.footwithme.chat.service.event.ReservationMemberJoinEvent;
+import team4.footwithme.chat.service.event.ReservationMemberLeaveEvent;
 import team4.footwithme.chat.service.event.ReservationMembersJoinEvent;
 import team4.footwithme.global.exception.ExceptionMessage;
 import team4.footwithme.member.domain.Member;
@@ -114,6 +115,10 @@ public class MWParticipantServiceImpl {
                 .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.PARTICIPANT_NOT_IN_MEMBER.getText()));
 
         participantRepository.delete(participant);
+
+        if (participant.getParticipantRole().equals(ParticipantRole.MEMBER) || participant.getParticipantRole().equals(ParticipantRole.ACCEPT)) {
+            publisher.publishEvent(new ReservationMemberLeaveEvent(member, reservationId));
+        }
 
         return member.getMemberId();
     }
