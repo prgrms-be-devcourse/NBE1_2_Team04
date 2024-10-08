@@ -11,7 +11,7 @@ import team4.footwithme.global.domain.BaseEntity;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLDelete(sql = "UPDATE game SET is_deleted = TRUE WHERE game_id = ?")
+@SQLDelete(sql = "UPDATE game SET is_deleted = 'TRUE' WHERE game_id = ?")
 @Entity
 public class Game extends BaseEntity {
 
