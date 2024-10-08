@@ -21,9 +21,18 @@ public class CustomChatRepositoryImpl implements CustomChatRepository {
 
     @Override
     public Slice<ChatResponse> findChatByChatroom(Chatroom chatroom, Pageable pageable) {
-        List<ChatResponse> content = getChatList(chatroom, pageable).stream().map(ChatResponse::new).toList();
+        int pageSize = pageable.getPageSize();
+        List<Chat> chats = getChatList(chatroom, pageable);
+        boolean hasNext = false;
+        if (chats.size() > pageSize) {
+            chats.remove(pageSize);
+            hasNext = true;
+        }
+
+        List<ChatResponse> content = chats.stream().map(ChatResponse::new).toList();
 //        Long count = getCount(chatroom);
-        return new SliceImpl<>(content);
+
+        return new SliceImpl<>(content, pageable, hasNext);
     }
 
     //Page<> 형태로 반환할 때 PageImpl에 사용
@@ -46,7 +55,7 @@ public class CustomChatRepositoryImpl implements CustomChatRepository {
             )
             .orderBy(chat.createdAt.desc())
             .offset(pageable.getOffset())   // 페이지 번호
-            .limit(pageable.getPageSize())  // 페이지 사이즈
+            .limit(pageable.getPageSize() + 1)  // 페이지 사이즈
             .fetch();
     }
 

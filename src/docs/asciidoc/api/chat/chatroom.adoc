@@ -1,0 +1,33 @@
+[[chatroom-create]]
+== 채팅방 생성
+
+==== HTTP Request
+include::{snippets}/chatroom-create/http-request.adoc[]
+include::{snippets}/chatroom-create/request-fields.adoc[]
+
+==== HTTP Response
+include::{snippets}/chatroom-create/http-response.adoc[]
+include::{snippets}/chatroom-create/response-fields.adoc[]
+
+[[chatroom-update]]
+== 채팅방 수정
+
+==== HTTP Request
+include::{snippets}/chatroom-update/http-request.adoc[]
+include::{snippets}/chatroom-update/request-fields.adoc[]
+include::{snippets}/chatroom-update/path-parameters.adoc[]
+
+==== HTTP Response
+include::{snippets}/chatroom-update/http-response.adoc[]
+include::{snippets}/chatroom-update/response-fields.adoc[]
+
+[[chatroom-delete]]
+== 채팅방 삭제
+
+==== HTTP Request
+include::{snippets}/chatroom-delete/http-request.adoc[]
+include::{snippets}/chatroom-delete/path-parameters.adoc[]
+
+==== HTTP Response
+include::{snippets}/chatroom-delete/http-response.adoc[]
+include::{snippets}/chatroom-delete/response-fields.adoc[]
