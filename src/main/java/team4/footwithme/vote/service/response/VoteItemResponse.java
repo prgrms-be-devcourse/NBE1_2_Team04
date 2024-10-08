@@ -9,9 +9,9 @@ public record VoteItemResponse(
 ) {
     public static VoteItemResponse of(Long voteItemId, String contents, List<Long> memberIds) {
         return new VoteItemResponse(
-                voteItemId,
-                contents,
-                memberIds
+            voteItemId,
+            contents,
+            memberIds
         );
     }
 }

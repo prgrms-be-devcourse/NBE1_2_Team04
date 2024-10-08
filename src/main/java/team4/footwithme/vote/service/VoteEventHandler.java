@@ -11,13 +11,11 @@ import team4.footwithme.vote.domain.VoteItem;
 import team4.footwithme.vote.domain.VoteItemDate;
 import team4.footwithme.vote.domain.VoteItemLocate;
 import team4.footwithme.vote.repository.ChoiceRepository;
-import team4.footwithme.vote.repository.VoteItemRepository;
 import team4.footwithme.vote.repository.VoteRepository;
 
 import java.time.LocalDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Component
@@ -41,12 +39,12 @@ public class VoteEventHandler {
         if (voteItems instanceof VoteItemLocate) {
             return;
         }
-        if( voteItems instanceof VoteItemDate) {
+        if (voteItems instanceof VoteItemDate) {
             Long voteItemDateId = choiceRepository.maxChoiceCountByVoteId(vote.getVoteId());
             List<Long> memberIds = choiceRepository.findMemberIdsByVoteItemId(voteItemDateId);
             Optional<VoteItemDate> voteItemDate = vote.getVoteItems().stream()
                 .filter(voteItem -> voteItem.getVoteItemId().equals(voteItemDateId))
-                .map(voteItem -> (VoteItemDate) voteItem)
+                .map(VoteItemDate.class::cast)
                 .findFirst();
             Long memberId = vote.getMemberId();
 
@@ -58,7 +56,7 @@ public class VoteEventHandler {
             Long voteItemLocateId = choiceRepository.maxChoiceCountByVoteId(locateVote.getVoteId());
             Optional<VoteItemLocate> voteItemLocate = locateVote.getVoteItems().stream()
                 .filter(voteItem -> voteItem.getVoteItemId().equals(voteItemLocateId))
-                .map(voteItem -> (VoteItemLocate) voteItem)
+                .map(VoteItemLocate.class::cast)
                 .findFirst();
             Long courtId = voteItemLocate.get().getCourtId();
 

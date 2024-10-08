@@ -15,10 +15,15 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
-import static team4.footwithme.vote.domain.VoteStatus.*;
+import static team4.footwithme.vote.domain.VoteStatus.CLOSED;
+import static team4.footwithme.vote.domain.VoteStatus.OPENED;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(indexes = {
+    @Index(name = "idx_vote_team_id", columnList = "teamId"),
+    @Index(name = "idx_vote_member_id", columnList = "memberId")
+})
 @SQLDelete(sql = "UPDATE vote SET is_deleted = 'TRUE' WHERE vote_id = ?")
 @Entity
 public class Vote extends BaseEntity {

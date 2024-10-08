@@ -14,6 +14,8 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = DuplicateValidator.class)
 public @interface Duplicate {
     String message() default "중복된 값이 포함되어 있습니다.";
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
 }

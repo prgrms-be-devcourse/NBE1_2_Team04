@@ -53,3 +53,38 @@ include::{snippets}/vote-delete/path-parameters.adoc[]
 ==== HTTP Response
 include::{snippets}/vote-delete/http-response.adoc[]
 include::{snippets}/vote-delete/response-fields.adoc[]
+
+[[vote-update]]
+=== Vote 수정
+
+==== HTTP Request
+include::{snippets}/vote-update/http-request.adoc[]
+include::{snippets}/vote-update/request-fields.adoc[]
+include::{snippets}/vote-update/path-parameters.adoc[]
+
+==== HTTP Response
+include::{snippets}/vote-update/http-response.adoc[]
+include::{snippets}/vote-update/response-fields.adoc[]
+
+
+[[vote-close]]
+=== Vote 닫기
+
+==== HTTP Request
+include::{snippets}/vote-close/http-request.adoc[]
+include::{snippets}/vote-close/path-parameters.adoc[]
+
+==== HTTP Response
+include::{snippets}/vote-close/http-response.adoc[]
+include::{snippets}/vote-close/response-fields.adoc[]
+
+[[vote-all-get]]
+=== Vote 전체 조회
+
+==== HTTP Request
+include::{snippets}/vote-all-get/http-request.adoc[]
+include::{snippets}/vote-all-get/path-parameters.adoc[]
+
+==== HTTP Response
+include::{snippets}/vote-all-get/http-response.adoc[]
+include::{snippets}/vote-all-get/response-fields.adoc[]

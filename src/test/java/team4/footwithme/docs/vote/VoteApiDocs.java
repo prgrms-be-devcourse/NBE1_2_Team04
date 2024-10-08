@@ -12,6 +12,7 @@ import team4.footwithme.vote.service.VoteService;
 import team4.footwithme.vote.service.request.VoteDateCreateServiceRequest;
 import team4.footwithme.vote.service.request.VoteCourtCreateServiceRequest;
 import team4.footwithme.vote.service.request.VoteUpdateServiceRequest;
+import team4.footwithme.vote.service.response.AllVoteResponse;
 import team4.footwithme.vote.service.response.VoteItemResponse;
 import team4.footwithme.vote.service.response.VoteResponse;
 
@@ -111,7 +112,7 @@ public class VoteApiDocs extends RestDocsSupport {
         LocalDateTime endAt = LocalDateTime.now().plusDays(1);
         long voteId = 1L;
 
-        given(voteService.getCourtVote(voteId))
+        given(voteService.getVote(voteId))
             .willReturn(new VoteResponse(
                 1L,
                 "연말 행사 투표",
@@ -237,7 +238,7 @@ public class VoteApiDocs extends RestDocsSupport {
 
         long voteId = 1L;
 
-        given(voteService.getDateVote(voteId))
+        given(voteService.getVote(voteId))
             .willReturn(
                 new VoteResponse(
                     1L,
@@ -252,11 +253,11 @@ public class VoteApiDocs extends RestDocsSupport {
                 )
             );
 
-        mockMvc.perform(get("/api/v1/votes/dates/{voteId}", voteId)
+        mockMvc.perform(get("/api/v1/votes/{voteId}", voteId)
                 .contentType(MediaType.APPLICATION_JSON)
             )
             .andExpect(status().isOk())
-            .andDo(document("vote-date-create",
+            .andDo(document("vote-date-get",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
                 pathParameters(
@@ -351,7 +352,7 @@ public class VoteApiDocs extends RestDocsSupport {
                 .content(objectMapper.writeValueAsString(request))
             )
             .andExpect(status().isOk())
-            .andDo(document("vote-date-create",
+            .andDo(document("vote-update",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
                 requestFields(
@@ -395,8 +396,6 @@ public class VoteApiDocs extends RestDocsSupport {
     void closeVote() throws Exception {
         LocalDateTime endAt = LocalDateTime.now().plusDays(5);
 
-        VoteUpdateRequest request = new VoteUpdateRequest("10월 행사 투표", endAt);
-
         given(voteService.closeVote(any(Long.class), any()))
             .willReturn(
                 new VoteResponse(
@@ -414,7 +413,6 @@ public class VoteApiDocs extends RestDocsSupport {
 
         mockMvc.perform(post("/api/v1/votes/close/{voteId}", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request))
             )
             .andExpect(status().isOk())
             .andDo(document("vote-close",
@@ -448,6 +446,59 @@ public class VoteApiDocs extends RestDocsSupport {
                         .description("투표 선택지 내용"),
                     fieldWithPath("data.choices[].memberIds").type(JsonFieldType.ARRAY)
                         .description("투표 선택지 투표한 회원 ID")
+                )
+            ));
+    }
+
+    @DisplayName("팀의 모든 투표를 조회하는 API")
+    @Test
+    void getAllVotes() throws Exception {
+        LocalDateTime endAt = LocalDateTime.now().plusDays(5);
+
+        given(voteService.getAllVotes(1L))
+            .willReturn(
+                List.of(
+                    new AllVoteResponse(
+                        1L,
+                        "10월 행사 투표",
+                        endAt,
+                        "진행 중"
+                    ),
+                    new AllVoteResponse(
+                        2L,
+                        "11월 행사 투표",
+                        endAt,
+                        "진행 중"
+                    )
+                ));
+
+        mockMvc.perform(get("/api/v1/votes/all/{teamId}",1L)
+                .contentType(MediaType.APPLICATION_JSON)
+            )
+            .andExpect(status().isOk())
+            .andDo(document("vote-all-get",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                pathParameters(
+                    parameterWithName("teamId").description("팀 ID")
+                ),
+                responseFields(
+                    fieldWithPath("code").type(JsonFieldType.NUMBER)
+                        .description("코드"),
+                    fieldWithPath("status").type(JsonFieldType.STRING)
+                        .description("상태"),
+                    fieldWithPath("message").type(JsonFieldType.STRING)
+                        .description("메시지"),
+                    fieldWithPath("data").type(JsonFieldType.ARRAY)
+                        .description("응답 데이터"),
+                    fieldWithPath("data[].voteId").type(JsonFieldType.NUMBER)
+                        .description("투표 ID"),
+                    fieldWithPath("data[].title").type(JsonFieldType.STRING)
+                        .description("투표 제목"),
+                    fieldWithPath("data[].endAt").type(JsonFieldType.ARRAY)
+                        .description("투표 종료 시간"),
+                    fieldWithPath("data[].status").type(JsonFieldType.STRING)
+                        .description("투표 상태")
                 )
             ));
     }
