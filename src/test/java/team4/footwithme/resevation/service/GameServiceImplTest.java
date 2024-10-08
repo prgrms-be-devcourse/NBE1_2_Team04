@@ -10,10 +10,7 @@ import team4.footwithme.IntegrationTestSupport;
 import team4.footwithme.global.exception.ExceptionMessage;
 import team4.footwithme.member.domain.*;
 import team4.footwithme.member.repository.MemberRepository;
-import team4.footwithme.resevation.domain.Game;
-import team4.footwithme.resevation.domain.GameStatus;
-import team4.footwithme.resevation.domain.Reservation;
-import team4.footwithme.resevation.domain.ReservationStatus;
+import team4.footwithme.resevation.domain.*;
 import team4.footwithme.resevation.repository.GameRepository;
 import team4.footwithme.resevation.repository.ReservationRepository;
 import team4.footwithme.resevation.service.request.GameRegisterServiceRequest;
@@ -128,7 +125,7 @@ class GameServiceImplTest extends IntegrationTestSupport {
                 .matchDate(LocalDateTime.parse("2024-10-01T10:00"))
                 .court(testCourt)
                 .reservationStatus(ReservationStatus.READY)
-                .gender(Gender.MALE)
+                .gender(ParticipantGender.MALE)
                 .team(team)
                 .build();
 
@@ -137,7 +134,7 @@ class GameServiceImplTest extends IntegrationTestSupport {
                 .matchDate(LocalDateTime.parse("2024-10-01T10:00"))
                 .court(testCourt)
                 .reservationStatus(ReservationStatus.READY)
-                .gender(Gender.MALE)
+                .gender(ParticipantGender.MALE)
                 .team(team)
                 .build();
 
@@ -255,7 +252,7 @@ class GameServiceImplTest extends IntegrationTestSupport {
                 .matchDate(LocalDateTime.parse("2024-10-01T10:00"))
                 .court(testCourt)
                 .reservationStatus(ReservationStatus.CONFIRMED)
-                .gender(Gender.MALE)
+                .gender(ParticipantGender.MALE)
                 .team(team)
                 .build();
 

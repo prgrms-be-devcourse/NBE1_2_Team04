@@ -1,4 +1,4 @@
-package team4.footwithme.reservation.service;
+package team4.footwithme.resevation.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,15 +16,16 @@ import team4.footwithme.global.repository.CustomGlobalRepository;
 import team4.footwithme.member.domain.Gender;
 import team4.footwithme.member.domain.Member;
 import team4.footwithme.member.repository.MemberRepository;
-import team4.footwithme.reservation.domain.Mercenary;
-import team4.footwithme.reservation.domain.Participant;
-import team4.footwithme.reservation.domain.ParticipantRole;
-import team4.footwithme.reservation.domain.Reservation;
-import team4.footwithme.reservation.domain.ReservationStatus;
-import team4.footwithme.reservation.repository.MercenaryRepository;
-import team4.footwithme.reservation.repository.ParticipantRepository;
-import team4.footwithme.reservation.repository.ReservationRepository;
-import team4.footwithme.reservation.service.response.ReservationsResponse;
+import team4.footwithme.resevation.domain.Mercenary;
+import team4.footwithme.resevation.domain.Participant;
+import team4.footwithme.resevation.domain.ParticipantRole;
+import team4.footwithme.resevation.domain.Reservation;
+import team4.footwithme.resevation.domain.ReservationStatus;
+import team4.footwithme.resevation.repository.MercenaryRepository;
+import team4.footwithme.resevation.repository.ParticipantRepository;
+import team4.footwithme.resevation.repository.ReservationRepository;
+import team4.footwithme.resevation.service.response.ReservationsResponse;
+import team4.footwithme.resevation.service.ReservationService;
 import team4.footwithme.stadium.domain.Court;
 import team4.footwithme.stadium.repository.CourtRepository;
 import team4.footwithme.team.domain.Team;
@@ -49,7 +50,7 @@ public class ReservationServiceImpl implements ReservationService {
     @Transactional(readOnly = true)
     public Slice<ReservationsResponse> findReadyReservations(Long reservationId, Integer page) {
         PageRequest pageRequest = PageRequest.of(page, 10, Sort.by(Sort.Direction.ASC, "createdAt"));
-        Reservation reservation = findEntityByIdOrThrowException(reservationRepository, reservationId, ExceptionMessage.RESERVATION_NOT_FOUND);
+        Reservation reservation = (Reservation) findEntityByIdOrThrowException(reservationRepository, reservationId, ExceptionMessage.RESERVATION_NOT_FOUND);
 
         if (reservation.getReservationStatus() != ReservationStatus.READY) {
             throw new CustomException(ExceptionMessage.RESERVATION_STATUS_NOT_READY.getText());

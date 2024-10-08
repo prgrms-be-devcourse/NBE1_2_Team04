@@ -1,6 +1,6 @@
 package team4.footwithme.resevation.service.response;
 
-import team4.footwithme.member.domain.Gender;
+import team4.footwithme.resevation.domain.ParticipantGender;
 import team4.footwithme.resevation.domain.Reservation;
 
 import java.time.LocalDateTime;
@@ -11,7 +11,7 @@ public record ReservationsResponse(
         Long memberId,
         Long teamId,
         LocalDateTime matchDate,
-        Gender gender
+        ParticipantGender gender
         ) {
     public static ReservationsResponse from(Reservation reservation) {
         return new ReservationsResponse(
