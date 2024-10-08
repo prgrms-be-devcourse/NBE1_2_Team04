@@ -19,23 +19,29 @@ public class Mercenary extends BaseEntity {
     private Long mercenaryId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "participant_id", nullable = false)
-    private Participant participant;
+    @JoinColumn(name = "reservation_id", nullable = false)
+    private Reservation reservation;
 
     @Column(length = 200, nullable = true)
     private String description;
 
     @Builder
-    private Mercenary(Participant participant, String description) {
-        this.participant = participant;
+    private Mercenary(Reservation reservation, String description) {
+        this.reservation = reservation;
         this.description = description;
     }
 
-    public static Mercenary create(Participant participant, String description) {
+    public static Mercenary create(Reservation reservation, String description) {
         return Mercenary.builder()
-            .participant(participant)
+            .reservation(reservation)
             .description(description)
             .build();
     }
 
+    public static Mercenary createDefault(Reservation reservation) {
+        return Mercenary.builder()
+            .reservation(reservation)
+            .description("기본 설명")
+            .build();
+    }
 }

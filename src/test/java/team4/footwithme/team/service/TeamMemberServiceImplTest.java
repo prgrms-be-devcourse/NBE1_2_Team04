@@ -52,6 +52,7 @@ class TeamMemberServiceImplTest extends IntegrationTestSupport {
 
     @BeforeEach
     void setUp() {
+        //팀 생성
         //팀장용 멤버 생성
         memberRepository.save(
             Member.create("teamLeader@gmail.com", "123456", "팀장", "010-1111-1111",

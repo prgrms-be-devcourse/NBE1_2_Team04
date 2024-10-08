@@ -10,12 +10,12 @@ import team4.footwithme.member.domain.*;
 import team4.footwithme.member.repository.MemberRepository;
 import team4.footwithme.stadium.domain.Stadium;
 import team4.footwithme.stadium.repository.StadiumRepository;
-import team4.footwithme.vote.domain.Choice;
-import team4.footwithme.vote.domain.Vote;
-import team4.footwithme.vote.domain.VoteItemLocate;
+import team4.footwithme.vote.domain.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
+import static org.assertj.core.api.Assertions.*;
 
 @Transactional
 class CustomChoiceRepositoryImplTest extends IntegrationTestSupport {
@@ -65,7 +65,7 @@ class CustomChoiceRepositoryImplTest extends IntegrationTestSupport {
         Long count = choiceRepository.countByVoteItemId(savedVoteItems.get(0).getVoteItemId());
 
         //then
-        Assertions.assertThat(count).isEqualTo(1L);
+        assertThat(count).isEqualTo(1L);
     }
 
     @DisplayName("회원의 아이디와 투표의 아이디로 선택한 항목을 조회한다.")
@@ -102,12 +102,48 @@ class CustomChoiceRepositoryImplTest extends IntegrationTestSupport {
         List<Choice> findChoices = choiceRepository.findByMemberIdAndVoteId(savedMember.getMemberId(), savedVote.getVoteId());
 
         //then
-        Assertions.assertThat(findChoices).hasSize(2)
+        assertThat(findChoices).hasSize(2)
             .extracting("memberId", "voteItemId")
             .containsExactlyInAnyOrder(
-                Assertions.tuple(savedMember.getMemberId(), savedVoteItems.get(0).getVoteItemId()),
-                Assertions.tuple(savedMember.getMemberId(), savedVoteItems.get(1).getVoteItemId())
+                tuple(savedMember.getMemberId(), savedVoteItems.get(0).getVoteItemId()),
+                tuple(savedMember.getMemberId(), savedVoteItems.get(1).getVoteItemId())
             );
+    }
+
+    @DisplayName("투표 항목 중 1등을 뽑는다.")
+    @Test
+    void maxChoiceCountByVoteId() {
+        //given
+        LocalDateTime endAt = LocalDateTime.now().plusDays(1);
+
+        LocalDateTime givenVoteItem1 = LocalDateTime.now().plusDays(2);
+        LocalDateTime givenVoteItem2 = LocalDateTime.now().plusDays(3);
+        LocalDateTime givenVoteItem3 = LocalDateTime.now().plusDays(4);
+
+        Member givenMember = Member.create("test@gmail.com", "1234", "test", "010-1234-5678", LoginProvider.ORIGINAL, "test", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE);
+
+        Vote vote = Vote.create(1L, 1L, "연말 경기 투표", endAt);
+        Vote savedVote = voteRepository.save(vote);
+
+        VoteItem voteItem1 = VoteItemDate.create(savedVote, givenVoteItem1);
+        VoteItem voteItem2 = VoteItemDate.create(savedVote, givenVoteItem2);
+        VoteItem voteItem3 = VoteItemDate.create(savedVote, givenVoteItem3);
+
+        List<VoteItem> savedVoteItems = voteItemRepository.saveAll(List.of(voteItem1, voteItem2, voteItem3));
+
+        Choice choice1 = Choice.create(1L, savedVoteItems.get(0).getVoteItemId());
+        Choice choice2 = Choice.create(1L, savedVoteItems.get(1).getVoteItemId());
+        Choice choice3 = Choice.create(2L, savedVoteItems.get(1).getVoteItemId());
+        Choice choice4 = Choice.create(3L, savedVoteItems.get(0).getVoteItemId());
+        Choice choice5 = Choice.create(3L, savedVoteItems.get(1).getVoteItemId());
+        Choice choice6 = Choice.create(3L, savedVoteItems.get(2).getVoteItemId());
+
+        choiceRepository.saveAll(List.of(choice1, choice2, choice3, choice4, choice5, choice6));
+
+        //when
+        Long voteId = choiceRepository.maxChoiceCountByVoteId(savedVote.getVoteId());
+        //then
+        assertThat(voteId).isEqualTo(savedVoteItems.get(1).getVoteItemId());
     }
 
 }

@@ -12,4 +12,6 @@ public interface CustomChoiceRepository {
 
     List<Long> findMemberIdsByVoteItemId(Long voteItemId);
 
+    Long maxChoiceCountByVoteId(Long voteId);
+
 }

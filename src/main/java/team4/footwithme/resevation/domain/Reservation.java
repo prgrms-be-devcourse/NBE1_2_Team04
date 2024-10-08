@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import team4.footwithme.global.domain.BaseEntity;
-import team4.footwithme.member.domain.Gender;
 import team4.footwithme.member.domain.Member;
 import team4.footwithme.stadium.domain.Court;
 import team4.footwithme.team.domain.Team;
@@ -46,10 +45,10 @@ public class Reservation extends BaseEntity {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    private Gender gender;
+    private ParticipantGender gender;
 
     @Builder
-    private Reservation(Court court, Member member, Team team, LocalDateTime matchDate, ReservationStatus reservationStatus, Gender gender) {
+    private Reservation(Court court, Member member, Team team, LocalDateTime matchDate, ReservationStatus reservationStatus, ParticipantGender gender) {
         this.court = court;
         this.member = member;
         this.team = team;
@@ -58,7 +57,7 @@ public class Reservation extends BaseEntity {
         this.gender = gender;
     }
 
-    public static Reservation create(Court court, Member member, Team team, LocalDateTime matchDate, ReservationStatus reservationStatus, Gender gender) {
+    public static Reservation create(Court court, Member member, Team team, LocalDateTime matchDate, ReservationStatus reservationStatus, ParticipantGender gender) {
         return Reservation.builder()
             .court(court)
             .member(member)
@@ -66,6 +65,74 @@ public class Reservation extends BaseEntity {
             .matchDate(matchDate)
             .reservationStatus(reservationStatus)
             .gender(gender)
+            .build();
+    }
+
+    public static Reservation createMaleReadyReservation(Court court, Member member, Team team, LocalDateTime matchDate) {
+        return Reservation.builder()
+            .court(court)
+            .member(member)
+            .team(team)
+            .matchDate(matchDate)
+            .reservationStatus(ReservationStatus.READY)
+            .gender(ParticipantGender.MALE)
+            .build();
+
+    }
+
+    public static Reservation createFemaleReadyReservation(Court court, Member member, Team team, LocalDateTime matchDate) {
+        return Reservation.builder()
+            .court(court)
+            .member(member)
+            .team(team)
+            .matchDate(matchDate)
+            .reservationStatus(ReservationStatus.READY)
+            .gender(ParticipantGender.FEMALE)
+            .build();
+    }
+
+    public static Reservation createMixedReadyReservation(Court court, Member member, Team team, LocalDateTime matchDate) {
+        return Reservation.builder()
+            .court(court)
+            .member(member)
+            .team(team)
+            .matchDate(matchDate)
+            .reservationStatus(ReservationStatus.READY)
+            .gender(ParticipantGender.MIXED)
+            .build();
+    }
+
+    public static Reservation createMaleRecruitReservation(Court court, Member member, Team team, LocalDateTime matchDate) {
+        return Reservation.builder()
+            .court(court)
+            .member(member)
+            .team(team)
+            .matchDate(matchDate)
+            .reservationStatus(ReservationStatus.RECRUITING)
+            .gender(ParticipantGender.MALE)
+            .build();
+
+    }
+
+    public static Reservation createFemaleRecruitReservation(Court court, Member member, Team team, LocalDateTime matchDate) {
+        return Reservation.builder()
+            .court(court)
+            .member(member)
+            .team(team)
+            .matchDate(matchDate)
+            .reservationStatus(ReservationStatus.RECRUITING)
+            .gender(ParticipantGender.FEMALE)
+            .build();
+    }
+
+    public static Reservation createMixedRecruitReservation(Court court, Member member, Team team, LocalDateTime matchDate) {
+        return Reservation.builder()
+            .court(court)
+            .member(member)
+            .team(team)
+            .matchDate(matchDate)
+            .reservationStatus(ReservationStatus.RECRUITING)
+            .gender(ParticipantGender.MIXED)
             .build();
     }
 

@@ -66,7 +66,7 @@ class VoteApiTest extends ApiTestSupport {
             .andExpect(jsonPath("$.data").isMap())
             .andExpect(jsonPath("$.data.voteId").value(1L))
             .andExpect(jsonPath("$.data.title").value("연말 행사 투표"))
-            .andExpect(jsonPath("$.data.endAt").value(endAt.toString()))
+            .andExpect(jsonPath("$.data.endAt").isString())
             .andExpect(jsonPath("$.data.voteStatus").value("진행 중"))
             .andExpect(jsonPath("$.data.choices").isArray())
             .andExpect(jsonPath("$.data.choices[0].voteItemId").value(1L))

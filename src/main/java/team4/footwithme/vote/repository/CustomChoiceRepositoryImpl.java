@@ -41,4 +41,16 @@ public class CustomChoiceRepositoryImpl implements CustomChoiceRepository {
             .where(choice.voteItemId.eq(voteItemId))
             .fetch();
     }
+
+    @Override
+    public Long maxChoiceCountByVoteId(Long voteId) {
+        return queryFactory.select(choice.voteItemId)
+            .from(choice)
+            .leftJoin(voteItem).on(choice.voteItemId.eq(voteItem.voteItemId))
+            .join(voteItem.vote, vote)
+            .where(vote.voteId.eq(voteId))
+            .groupBy(choice.voteItemId)
+            .orderBy(choice.count().desc())
+            .fetchFirst();
+    }
 }

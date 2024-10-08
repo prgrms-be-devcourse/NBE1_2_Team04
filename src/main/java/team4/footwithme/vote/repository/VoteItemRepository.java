@@ -7,7 +7,7 @@ import team4.footwithme.vote.domain.VoteItem;
 import java.util.List;
 
 @Repository
-public interface VoteItemRepository extends JpaRepository<VoteItem, Long>, CustomVoteItemRepository {
+public interface VoteItemRepository extends JpaRepository<VoteItem, Long> {
 
     List<VoteItem> findByVoteVoteId(Long voteId);
 }
