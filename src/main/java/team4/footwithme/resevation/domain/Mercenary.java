@@ -38,4 +38,10 @@ public class Mercenary extends BaseEntity {
             .build();
     }
 
+    public static Mercenary createDefault(Reservation reservation) {
+        return Mercenary.builder()
+            .reservation(reservation)
+            .description("기본 설명")
+            .build();
+    }
 }
