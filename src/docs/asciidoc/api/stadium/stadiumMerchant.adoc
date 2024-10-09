@@ -1,5 +1,5 @@
 [[stadium-register]]
-== 풋살장 등록 API
+=== 풋살장 등록 API
 
 ==== HTTP Request
 include::{snippets}/stadium-register/http-request.adoc[]
@@ -10,7 +10,7 @@ include::{snippets}/stadium-register/http-response.adoc[]
 include::{snippets}/stadium-register/response-fields.adoc[]
 
 [[stadium-update]]
-== 풋살장 수정 API
+=== 풋살장 수정 API
 
 ==== HTTP Request
 include::{snippets}/stadium-update/http-request.adoc[]
@@ -22,7 +22,7 @@ include::{snippets}/stadium-update/http-response.adoc[]
 include::{snippets}/stadium-update/response-fields.adoc[]
 
 [[stadium-delete]]
-== 풋살장 삭제 API
+=== 풋살장 삭제 API
 
 ==== HTTP Request
 include::{snippets}/stadium-delete/http-request.adoc[]

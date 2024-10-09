@@ -9,12 +9,48 @@ endif::[]
 :toclevels: 2
 :sectlinks:
 
+
+[[chat-API]]
+== Chat API
+include::api/chat/chat.adoc[]
+include::api/chat/chatMember.adoc[]
+include::api/chat/chatroom.adoc[]
+
+
+[[game-API]]
+== Game API
+
+include::api/game/game.adoc[]
+
+[[member-API]]
+== Member API
+
+include::api/member/member.adoc[]
+
+[[stadium-API]]
+== Stadium API
+
+include::api/stadium/stadium.adoc[]
+include::api/stadium/stadiumMerchant.adoc[]
+include::api/stadium/court.adoc[]
+include::api/stadium/courtMerchant.adoc[]
+
+[[reservation-API]]
+== Reservation API
+
+include::api/reservation/reservation.adoc[]
+include::api/mercenary/mercenary.adoc[]
+include::api/participant/participant.adoc[]
+
+
+[[team-API]]
+== Team API
+
+include::api/team/team.adoc[]
+include::api/team/teamMember.adoc[]
+
 [[Vote-API]]
 == Vote API
 
 include::api/vote/vote.adoc[]
-
-[[choice-API]]
-== Choice API
-
 include::api/vote/choice.adoc[]

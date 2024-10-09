@@ -1,5 +1,5 @@
 [[chatroom-create]]
-== 채팅방 생성
+=== 채팅방 생성
 
 ==== HTTP Request
 include::{snippets}/chatroom-create/http-request.adoc[]
@@ -10,7 +10,7 @@ include::{snippets}/chatroom-create/http-response.adoc[]
 include::{snippets}/chatroom-create/response-fields.adoc[]
 
 [[chatroom-update]]
-== 채팅방 수정
+=== 채팅방 수정
 
 ==== HTTP Request
 include::{snippets}/chatroom-update/http-request.adoc[]
@@ -22,7 +22,7 @@ include::{snippets}/chatroom-update/http-response.adoc[]
 include::{snippets}/chatroom-update/response-fields.adoc[]
 
 [[chatroom-delete]]
-== 채팅방 삭제
+=== 채팅방 삭제
 
 ==== HTTP Request
 include::{snippets}/chatroom-delete/http-request.adoc[]

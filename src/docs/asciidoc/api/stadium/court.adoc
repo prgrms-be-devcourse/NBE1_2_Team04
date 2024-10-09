@@ -1,5 +1,5 @@
 [[court-get-all]]
-== 구장 전체 목록 조회 API
+=== 구장 전체 목록 조회 API
 
 ==== HTTP Request
 include::{snippets}/court-get-all/http-request.adoc[]
@@ -9,7 +9,7 @@ include::{snippets}/court-get-all/http-response.adoc[]
 include::{snippets}/court-get-all/response-fields.adoc[]
 
 [[court-get-by-stadium]]
-== 풋살장별 구장 목록 조회 API
+=== 풋살장별 구장 목록 조회 API
 
 ==== HTTP Request
 include::{snippets}/court-get-by-stadium/http-request.adoc[]
@@ -21,7 +21,7 @@ include::{snippets}/court-get-by-stadium/http-response.adoc[]
 include::{snippets}/court-get-by-stadium/response-fields.adoc[]
 
 [[court-get-detail]]
-== 구장 상세 정보 조회 API
+=== 구장 상세 정보 조회 API
 
 ==== HTTP Request
 include::{snippets}/court-get-detail/http-request.adoc[]

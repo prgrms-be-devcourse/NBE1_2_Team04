@@ -1,5 +1,5 @@
 [[court-register]]
-== 구장 등록 API
+=== 구장 등록 API
 
 ==== HTTP Request
 include::{snippets}/court-register/http-request.adoc[]
@@ -10,7 +10,7 @@ include::{snippets}/court-register/http-response.adoc[]
 include::{snippets}/court-register/response-fields.adoc[]
 
 [[court-update]]
-== 구장 수정 API
+=== 구장 수정 API
 
 ==== HTTP Request
 include::{snippets}/court-update/http-request.adoc[]
@@ -22,7 +22,7 @@ include::{snippets}/court-update/http-response.adoc[]
 include::{snippets}/court-update/response-fields.adoc[]
 
 [[court-delete]]
-== 구장 삭제 API
+=== 구장 삭제 API
 
 ==== HTTP Request
 include::{snippets}/court-delete/http-request.adoc[]
