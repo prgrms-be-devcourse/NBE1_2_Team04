@@ -6,13 +6,13 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import team4.footwithme.docs.RestDocsSupport;
 import team4.footwithme.member.domain.MemberRole;
-import team4.footwithme.resevation.api.MWParticipantApi;
-import team4.footwithme.resevation.api.request.MWParticipantUpdateRequest;
+import team4.footwithme.resevation.api.ParticipantApi;
+import team4.footwithme.resevation.api.request.ParticipantUpdateRequest;
 import team4.footwithme.resevation.domain.ParticipantRole;
-import team4.footwithme.resevation.service.MWParticipantServiceImpl;
-import team4.footwithme.resevation.service.request.MWParticipantUpdateServiceRequest;
-import team4.footwithme.resevation.service.response.MWParticipantMemberInfo;
-import team4.footwithme.resevation.service.response.MWParticipantResponse;
+import team4.footwithme.resevation.service.ParticipantService;
+import team4.footwithme.resevation.service.request.ParticipantUpdateServiceRequest;
+import team4.footwithme.resevation.service.response.ParticipantMemberInfo;
+import team4.footwithme.resevation.service.response.ParticipantResponse;
 import team4.footwithme.security.WithMockPrincipalDetail;
 
 import java.util.ArrayList;
@@ -29,12 +29,12 @@ import static org.springframework.restdocs.request.RequestDocumentation.paramete
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class MWParticipantApiDocs extends RestDocsSupport {
-    private final MWParticipantServiceImpl participantService = mock(MWParticipantServiceImpl.class);
+public class ParticipantApiDocs extends RestDocsSupport {
+    private final ParticipantService participantService = mock(ParticipantService.class);
 
     @Override
     protected Object initController() {
-        return new MWParticipantApi(participantService);
+        return new ParticipantApi(participantService);
     }
 
     //매칭 예약 용병 인원을 추가할 수 있다.
@@ -44,11 +44,11 @@ public class MWParticipantApiDocs extends RestDocsSupport {
     void applyMercenary() throws Exception {
         Long mercenaryId = 1L;
 
-        MWParticipantResponse response = new MWParticipantResponse(
+        ParticipantResponse response = new ParticipantResponse(
                 1L,
                 1L,
                 ParticipantRole.PENDING,
-                new MWParticipantMemberInfo(
+                new ParticipantMemberInfo(
                         1L,
                         "a@a.com",
                         "이름1",
@@ -102,11 +102,11 @@ public class MWParticipantApiDocs extends RestDocsSupport {
     void joinReservation() throws Exception {
         Long reservationId = 1L;
 
-        MWParticipantResponse response = new MWParticipantResponse(
+        ParticipantResponse response = new ParticipantResponse(
                 1L,
                 1L,
                 ParticipantRole.PENDING,
-                new MWParticipantMemberInfo(
+                new ParticipantMemberInfo(
                         1L,
                         "a@a.com",
                         "이름1",
@@ -189,16 +189,16 @@ public class MWParticipantApiDocs extends RestDocsSupport {
     @WithMockPrincipalDetail(email = "a@a.com")
     void updateParticipant() throws Exception {
         Long participantId = 1L;
-        MWParticipantUpdateRequest request = new MWParticipantUpdateRequest(
+        ParticipantUpdateRequest request = new ParticipantUpdateRequest(
                 participantId,
                 ParticipantRole.ACCEPT
         );
 
-        MWParticipantResponse response = new MWParticipantResponse(
+        ParticipantResponse response = new ParticipantResponse(
                 1L,
                 1L,
                 ParticipantRole.ACCEPT,
-                new MWParticipantMemberInfo(
+                new ParticipantMemberInfo(
                         1L,
                         "a@a.com",
                         "이름1",
@@ -206,7 +206,7 @@ public class MWParticipantApiDocs extends RestDocsSupport {
                 )
         );
 
-        given(participantService.updateMercenaryParticipant(any(MWParticipantUpdateServiceRequest.class), any()))
+        given(participantService.updateMercenaryParticipant(any(ParticipantUpdateServiceRequest.class), any()))
                 .willReturn(response);
 
         mockMvc.perform(put("/api/v1/participant")
@@ -255,11 +255,11 @@ public class MWParticipantApiDocs extends RestDocsSupport {
     void getAcceptParticipant() throws Exception {
         Long reservationId = 1L;
 
-        MWParticipantResponse response = new MWParticipantResponse(
+        ParticipantResponse response = new ParticipantResponse(
                 1L,
                 1L,
                 ParticipantRole.ACCEPT,
-                new MWParticipantMemberInfo(
+                new ParticipantMemberInfo(
                         1L,
                         "a@a.com",
                         "이름1",
@@ -267,7 +267,7 @@ public class MWParticipantApiDocs extends RestDocsSupport {
                 )
         );
 
-        List<MWParticipantResponse> participantResponses = new ArrayList<>();
+        List<ParticipantResponse> participantResponses = new ArrayList<>();
 
         participantResponses.add(response);
 
@@ -316,11 +316,11 @@ public class MWParticipantApiDocs extends RestDocsSupport {
     void getPendingParticipant() throws Exception {
         Long reservationId = 1L;
 
-        MWParticipantResponse response = new MWParticipantResponse(
+        ParticipantResponse response = new ParticipantResponse(
                 1L,
                 1L,
                 ParticipantRole.PENDING,
-                new MWParticipantMemberInfo(
+                new ParticipantMemberInfo(
                         1L,
                         "a@a.com",
                         "이름1",
@@ -328,7 +328,7 @@ public class MWParticipantApiDocs extends RestDocsSupport {
                 )
         );
 
-        List<MWParticipantResponse> participantResponses = new ArrayList<>();
+        List<ParticipantResponse> participantResponses = new ArrayList<>();
 
         participantResponses.add(response);
 
@@ -377,11 +377,11 @@ public class MWParticipantApiDocs extends RestDocsSupport {
     void getAllParticipant() throws Exception {
         Long reservationId = 1L;
 
-        MWParticipantResponse response = new MWParticipantResponse(
+        ParticipantResponse response = new ParticipantResponse(
                 1L,
                 1L,
                 ParticipantRole.IGNORE,
-                new MWParticipantMemberInfo(
+                new ParticipantMemberInfo(
                         1L,
                         "a@a.com",
                         "이름1",
@@ -389,7 +389,7 @@ public class MWParticipantApiDocs extends RestDocsSupport {
                 )
         );
 
-        List<MWParticipantResponse> participantResponses = new ArrayList<>();
+        List<ParticipantResponse> participantResponses = new ArrayList<>();
 
         participantResponses.add(response);
 

@@ -9,11 +9,11 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.restdocs.request.RequestDocumentation;
 import team4.footwithme.docs.RestDocsSupport;
-import team4.footwithme.resevation.api.MWMercenaryApi;
-import team4.footwithme.resevation.api.request.MWMercenaryRequest;
-import team4.footwithme.resevation.service.MercenaryServiceImpl;
-import team4.footwithme.resevation.service.request.MWMercenaryServiceRequest;
-import team4.footwithme.resevation.service.response.MWMercenaryResponse;
+import team4.footwithme.resevation.api.MercenaryApi;
+import team4.footwithme.resevation.api.request.MercenaryRequest;
+import team4.footwithme.resevation.service.MercenaryService;
+import team4.footwithme.resevation.service.request.MercenaryServiceRequest;
+import team4.footwithme.resevation.service.response.MercenaryResponse;
 import team4.footwithme.security.WithMockPrincipalDetail;
 
 import java.util.ArrayList;
@@ -30,12 +30,12 @@ import static org.springframework.restdocs.request.RequestDocumentation.paramete
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class MWMercenaryApiDocs extends RestDocsSupport {
-    private final MercenaryServiceImpl mercenaryService = mock(MercenaryServiceImpl.class);
+public class MercenaryApiDocs extends RestDocsSupport {
+    private final MercenaryService mercenaryService = mock(MercenaryService.class);
 
     @Override
     protected Object initController() {
-        return new MWMercenaryApi(mercenaryService);
+        return new MercenaryApi(mercenaryService);
     }
 
     //용병 게시판을 추가할 수 있다.
@@ -44,18 +44,18 @@ public class MWMercenaryApiDocs extends RestDocsSupport {
     @WithMockPrincipalDetail(email = "a@a.com")
     void createMercenary() throws Exception {
 
-        MWMercenaryRequest request = new MWMercenaryRequest(
+        MercenaryRequest request = new MercenaryRequest(
                 1L,
                 "용병 구합니다"
         );
 
-        MWMercenaryResponse response = new MWMercenaryResponse(
+        MercenaryResponse response = new MercenaryResponse(
                 1L,
                 1L,
                 "(10/08 09:00)(스타 구장) 용병 구합니다"
         );
 
-        given(mercenaryService.createMercenary(any(MWMercenaryServiceRequest.class),any()))
+        given(mercenaryService.createMercenary(any(MercenaryServiceRequest.class),any()))
                 .willReturn(response);
 
         mockMvc.perform(post("/api/v1/mercenary")
@@ -125,7 +125,7 @@ public class MWMercenaryApiDocs extends RestDocsSupport {
     void getMercenary() throws Exception {
         Long mercenaryId = 1L;
 
-        MWMercenaryResponse response = new MWMercenaryResponse(
+        MercenaryResponse response = new MercenaryResponse(
                 1L,
                 1L,
                 "(10/08 09:00)(스타 구장) 용병 구합니다"
@@ -167,19 +167,19 @@ public class MWMercenaryApiDocs extends RestDocsSupport {
         int page = 1;
         int size = 1;
 
-        MWMercenaryResponse response = new MWMercenaryResponse(
+        MercenaryResponse response = new MercenaryResponse(
                 1L,
                 1L,
                 "(10/08 09:00)(스타 구장) 용병 구합니다"
         );
 
-        List<MWMercenaryResponse> responseList = new ArrayList<>();
+        List<MercenaryResponse> responseList = new ArrayList<>();
 
         responseList.add(response);
 
         PageRequest pageRequest = PageRequest.of(page-1, size);
 
-        Page<MWMercenaryResponse> responsePage = new PageImpl<>(responseList, pageRequest, 1);
+        Page<MercenaryResponse> responsePage = new PageImpl<>(responseList, pageRequest, 1);
 
         given(mercenaryService.getMercenaries(any(PageRequest.class)))
                 .willReturn(responsePage);

@@ -8,22 +8,22 @@ import team4.footwithme.resevation.domain.ReservationStatus;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
-
-public record YYReservationInfoDetailsResponse(
+// TODO :: ReservationInfoDetailsResponse 이름 변경 부탁
+public record ReservationInfoDetailsResponse(
         String courtName,
         String matchTeamName,
         LocalDateTime matchDate,
-        List<YYParticipantResponse> participants,
+        List<ParticipantInfoResponse> participants,
         ParticipantGender gender,
         ReservationStatus status
 ) {
-    public static YYReservationInfoDetailsResponse of(Reservation reservation, List<Participant> participants, String matchTeamName) {
+    public static ReservationInfoDetailsResponse of(Reservation reservation, List<Participant> participants, String matchTeamName) {
 
-        List<YYParticipantResponse> participantResponses = participants.stream()
-                .map(YYParticipantResponse::from)
+        List<ParticipantInfoResponse> participantResponses = participants.stream()
+                .map(ParticipantInfoResponse::from)
                 .collect(Collectors.toList());
 
-        return new YYReservationInfoDetailsResponse(
+        return new ReservationInfoDetailsResponse(
                 reservation.getCourt().getName(),
                 matchTeamName,
                 reservation.getMatchDate(),

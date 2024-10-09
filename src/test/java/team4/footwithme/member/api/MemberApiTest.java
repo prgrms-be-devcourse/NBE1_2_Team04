@@ -104,7 +104,6 @@ class MemberApiTest extends ApiTestSupport {
                 .willReturn(response);
 
         //then
-
         mockMvc.perform(put("/api/v1/members/update")
                         .header("Authorization", "Bearer " + "AccessToken")
                         .content(objectMapper.writeValueAsString(request))

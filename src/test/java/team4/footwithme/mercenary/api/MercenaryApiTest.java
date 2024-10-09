@@ -8,9 +8,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import team4.footwithme.ApiTestSupport;
 import team4.footwithme.member.domain.Member;
-import team4.footwithme.resevation.api.request.MWMercenaryRequest;
-import team4.footwithme.resevation.service.request.MWMercenaryServiceRequest;
-import team4.footwithme.resevation.service.response.MWMercenaryResponse;
+import team4.footwithme.resevation.api.request.MercenaryRequest;
+import team4.footwithme.resevation.service.request.MercenaryServiceRequest;
+import team4.footwithme.resevation.service.response.MercenaryResponse;
 import team4.footwithme.security.WithMockPrincipalDetail;
 
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class MWMercenaryApiTest extends ApiTestSupport {
+public class MercenaryApiTest extends ApiTestSupport {
 
     //용병 게시판을 추가할 수 있다.
     @DisplayName("용병 게시판을 추가할 수 있다.")
@@ -31,18 +31,18 @@ public class MWMercenaryApiTest extends ApiTestSupport {
     @WithMockPrincipalDetail(email = "a@a.com")
     void createMercenary() throws Exception {
 
-        MWMercenaryRequest request = new MWMercenaryRequest(
+        MercenaryRequest request = new MercenaryRequest(
                 1L,
                 "용병 구합니다"
         );
 
-        MWMercenaryResponse response = new MWMercenaryResponse(
+        MercenaryResponse response = new MercenaryResponse(
                 1L,
                 1L,
                 "(10/08 09:00)(스타 구장) 용병 구합니다"
         );
 
-        given(mercenaryService.createMercenary(any(MWMercenaryServiceRequest.class),any(Member.class)))
+        given(mercenaryService.createMercenary(any(MercenaryServiceRequest.class),any(Member.class)))
                 .willReturn(response);
 
         mockMvc.perform(post("/api/v1/mercenary")
@@ -85,7 +85,7 @@ public class MWMercenaryApiTest extends ApiTestSupport {
     void getMercenary() throws Exception {
         Long mercenaryId = 1L;
 
-        MWMercenaryResponse response = new MWMercenaryResponse(
+        MercenaryResponse response = new MercenaryResponse(
                 1L,
                 1L,
                 "(10/08 09:00)(스타 구장) 용병 구합니다"
@@ -114,19 +114,19 @@ public class MWMercenaryApiTest extends ApiTestSupport {
         int page = 1;
         int size = 1;
 
-        MWMercenaryResponse response = new MWMercenaryResponse(
+        MercenaryResponse response = new MercenaryResponse(
                 1L,
                 1L,
                 "(10/08 09:00)(스타 구장) 용병 구합니다"
         );
 
-        List<MWMercenaryResponse> responseList = new ArrayList<>();
+        List<MercenaryResponse> responseList = new ArrayList<>();
 
         responseList.add(response);
 
         PageRequest pageRequest = PageRequest.of(page-1, size);
 
-        Page<MWMercenaryResponse> responsePage = new PageImpl<>(responseList, pageRequest, 1);
+        Page<MercenaryResponse> responsePage = new PageImpl<>(responseList, pageRequest, 1);
 
         given(mercenaryService.getMercenaries(any(PageRequest.class)))
                 .willReturn(responsePage);
