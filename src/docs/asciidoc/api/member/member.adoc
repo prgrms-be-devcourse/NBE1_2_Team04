@@ -1,0 +1,65 @@
+[[member-join]]
+=== 회원 가입 API
+
+=== HTTP Request
+include::{snippets}/member-join/http-request.adoc[]
+include::{snippets}/member-join/request-fields.adoc[]
+
+=== HTTP Response
+include::{snippets}/member-join/http-response.adoc[]
+include::{snippets}/member-join/response-fields.adoc[]
+
+
+[[memeber-login]]
+=== 로그인 API
+
+=== HTTP Request
+include::{snippets}/member-login/http-request.adoc[]
+include::{snippets}/member-login/request-fields.adoc[]
+
+=== HTTP Response
+include::{snippets}/member-login/http-response.adoc[]
+include::{snippets}/member-login/response-fields.adoc[]
+
+[[member-logout]]
+=== 로그아웃 API
+
+=== HTTP Request
+include::{snippets}/member-logout/http-request.adoc[]
+
+=== HTTP Response
+include::{snippets}/member-logout/http-response.adoc[]
+include::{snippets}/member-logout/response-fields.adoc[]
+
+[[member-reissue]]
+=== 토큰 재발급 API
+
+=== HTTP Request
+include::{snippets}/member-reissue/http-request.adoc[]
+
+=== HTTP Response
+include::{snippets}/member-reissue/http-response.adoc[]
+include::{snippets}/member-reissue/response-fields.adoc[]
+
+[[member-update]]
+=== 멤버 정보 수정 API
+
+=== HTTP Request
+include::{snippets}/member-update/http-request.adoc[]
+include::{snippets}/member-update/request-fields.adoc[]
+
+=== HTTP Response
+include::{snippets}/member-update/http-response.adoc[]
+include::{snippets}/member-update/response-fields.adoc[]
+
+[[member-update-password]]
+=== 멤버 비밀번호 변경 API
+
+=== HTTP Request
+include::{snippets}/member-update-password/http-request.adoc[]
+include::{snippets}/member-update-password/request-fields.adoc[]
+
+
+=== HTTP Response
+include::{snippets}/member-update-password/http-response.adoc[]
+include::{snippets}/member-update-password/response-fields.adoc[]
