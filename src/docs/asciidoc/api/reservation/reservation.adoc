@@ -1,0 +1,23 @@
+= 예약 API Documentation
+
+[[reservation-info-get]]
+== 팀 일정 전체조회 API
+
+=== HTTP Request
+include::{snippets}/reservation-info-get/http-request.adoc[]
+include::{snippets}/reservation-info-get/path-parameters.adoc[]
+
+=== HTTP Response
+include::{snippets}/reservation-info-get/http-response.adoc[]
+include::{snippets}/reservation-info-get/response-fields.adoc[]
+
+[[reservation-detailInfo-get]]
+== 팀 일정 상세 조회 API
+
+=== HTTP Request
+include::{snippets}/reservation-detailInfo-get/http-request.adoc[]
+include::{snippets}/reservation-detailInfo-get/path-parameters.adoc[]
+
+=== HTTP Response
+include::{snippets}/reservation-detailInfo-get/http-response.adoc[]
+include::{snippets}/reservation-detailInfo-get/response-fields.adoc[]
