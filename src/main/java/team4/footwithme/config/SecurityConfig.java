@@ -52,28 +52,29 @@ public class SecurityConfig {
         httpSecurity
             .httpBasic(AbstractHttpConfigurer::disable)
             .csrf(AbstractHttpConfigurer::disable)
-            .formLogin(FormLoginConfigurer::disable)
+                .formLogin(FormLoginConfigurer::disable)
             .sessionManagement((sessionManagement) -> sessionManagement
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
             .authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
-                .requestMatchers("/api/v1/members/join", "/api/v1/members/login").permitAll()
-                .requestMatchers("/api/v1/court/**", "/api/v1/stadium/**").permitAll()
-                .requestMatchers("/api/v1/team/{teamId}/info").permitAll()
-                .requestMatchers("/api/v1/merchant/**").hasAuthority(MemberRole.MERCHANT.getText())
-                .anyRequest().authenticated()
+                    .requestMatchers("/api/v1/members/join", "/api/v1/members/login").permitAll()
+                    .requestMatchers("/api/v1/court/**", "/api/v1/stadium/**").permitAll()
+                    .requestMatchers("/api/v1/team/{teamId}/info").permitAll()
+                    .requestMatchers("/ws").permitAll() // 이거 추가
+                    .requestMatchers("/api/v1/merchant/**").hasAuthority(MemberRole.MERCHANT.getText())
+                    .anyRequest().authenticated()
             )
-            .oauth2Login(customConfigurer -> customConfigurer
-                .userInfoEndpoint(endpointConfig -> endpointConfig.userService(customOAuth2UserService))
-                .successHandler(customOAuth2LoginSuccessHandler))
-            .headers((headerConfig) ->
+                .oauth2Login(customConfigurer -> customConfigurer
+                        .userInfoEndpoint(endpointConfig -> endpointConfig.userService(customOAuth2UserService))
+                        .successHandler(customOAuth2LoginSuccessHandler))
+            .headers((headerConfig)->
                 headerConfig.frameOptions((HeadersConfigurer.FrameOptionsConfig::sameOrigin)
                 )
             )
             .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
-            .addFilterBefore(exceptionHandlerFilter, JwtTokenFilter.class)
-            .exceptionHandling((exceptionHandling) -> exceptionHandling
-                .accessDeniedHandler(accessDeniedHandler()));
+                .addFilterBefore(exceptionHandlerFilter, JwtTokenFilter.class)
+                .exceptionHandling((exceptionHandling) -> exceptionHandling
+                        .accessDeniedHandler(accessDeniedHandler()));
 
         return httpSecurity.build();
     }
@@ -85,9 +86,9 @@ public class SecurityConfig {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             response.setContentType("application/json");
             ApiResponse apiResponse = ApiResponse.of(
-                HttpStatus.FORBIDDEN,
-                "권한이 없습니다.",
-                null
+                    HttpStatus.FORBIDDEN,
+                    "권한이 없습니다.",
+                    null
             );
 
             String jsonResponse = objectMapper.writeValueAsString(apiResponse);
