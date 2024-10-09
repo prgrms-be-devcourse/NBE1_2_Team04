@@ -69,8 +69,7 @@ public class StadiumServiceImpl implements StadiumService {
 
     @Override
     @Transactional
-    public StadiumDetailResponse registerStadium(StadiumRegisterServiceRequest request, Long memberId) {
-        Member member = (Member) findEntityByIdOrThrowException(memberRepository, memberId, ExceptionMessage.MEMBER_NOT_FOUND);
+    public StadiumDetailResponse registerStadium(StadiumRegisterServiceRequest request, Member member) {
         Stadium stadium = Stadium.create(member, request.name(), request.address(), request.phoneNumber(), request.description(),
                 request.latitude(), request.longitude());
 
@@ -80,18 +79,18 @@ public class StadiumServiceImpl implements StadiumService {
 
     @Override
     @Transactional
-    public StadiumDetailResponse updateStadium(StadiumUpdateServiceRequest request, Long memberId, Long stadiumId) {
-        Stadium stadium = validateStadiumOwnership(memberId, stadiumId);
-        stadium.updateStadium(memberId, request.name(), request.address(), request.phoneNumber(), request.description(),
+    public StadiumDetailResponse updateStadium(StadiumUpdateServiceRequest request, Member member, Long stadiumId) {
+        Stadium stadium = validateStadiumOwnership(member.getMemberId(), stadiumId);
+        stadium.updateStadium(member.getMemberId(), request.name(), request.address(), request.phoneNumber(), request.description(),
                 request.latitude(), request.longitude());
         return StadiumDetailResponse.from(stadium);
     }
 
     @Override
     @Transactional
-    public void deleteStadium(Long memberId, Long stadiumId) {
-        Stadium stadium = validateStadiumOwnership(memberId, stadiumId);
-        stadium.deleteStadium(memberId);
+    public void deleteStadium(Member member, Long stadiumId) {
+        Stadium stadium = validateStadiumOwnership(member.getMemberId(), stadiumId);
+        stadium.deleteStadium(member.getMemberId());
         List<Court> courts = courtRepository.findActiveByStadiumId(stadiumId);
         if (!courts.isEmpty()) courtRepository.deleteAll(courts);
         stadiumRepository.delete(stadium);

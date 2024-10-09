@@ -27,7 +27,7 @@ public class CourtMerchantApi {
             @Validated @RequestBody CourtRegisterRequest request,
             @AuthenticationPrincipal PrincipalDetails currentUser) {
 
-        return ApiResponse.created(courtService.registerCourt(request.toServiceRequest(), currentUser.getMember().getMemberId()));
+        return ApiResponse.created(courtService.registerCourt(request.toServiceRequest(), currentUser.getMember()));
     }
 
     //@PreAuthorize("hasRole('ROLE_MERCHANT')")
@@ -37,7 +37,7 @@ public class CourtMerchantApi {
             @Validated @RequestBody CourtUpdateRequest request,
             @AuthenticationPrincipal PrincipalDetails currentUser) {
 
-        return ApiResponse.ok(courtService.updateCourt(request.toServiceRequest(), currentUser.getMember().getMemberId(), courtId));
+        return ApiResponse.ok(courtService.updateCourt(request.toServiceRequest(), currentUser.getMember(), courtId));
     }
 
     //@PreAuthorize("hasRole('ROLE_MERCHANT')")
@@ -46,7 +46,7 @@ public class CourtMerchantApi {
             @PathVariable Long courtId,
             @Validated @RequestBody CourtDeleteRequest request,
             @AuthenticationPrincipal PrincipalDetails currentUser) {
-        courtService.deleteCourt(request.toServiceRequest(), currentUser.getMember().getMemberId(), courtId);
+        courtService.deleteCourt(request.toServiceRequest(), currentUser.getMember(), courtId);
         return ApiResponse.ok(null);
     }
 }

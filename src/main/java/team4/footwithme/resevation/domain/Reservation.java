@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLDelete(sql = "UPDATE reservation SET is_deleted = TRUE WHERE reservation_id = ?")
+@SQLDelete(sql = "UPDATE reservation SET is_deleted = 'TRUE' WHERE reservation_id = ?")
 @Entity
 public class Reservation extends BaseEntity {
 
@@ -66,6 +66,11 @@ public class Reservation extends BaseEntity {
             .reservationStatus(reservationStatus)
             .gender(gender)
             .build();
+    }
+
+
+    public void updateStatus(ReservationStatus reservationStatus) {
+        this.reservationStatus = reservationStatus;
     }
 
     public static Reservation createMaleReadyReservation(Court court, Member member, Team team, LocalDateTime matchDate) {
@@ -135,5 +140,4 @@ public class Reservation extends BaseEntity {
             .gender(ParticipantGender.MIXED)
             .build();
     }
-
 }

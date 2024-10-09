@@ -12,5 +12,4 @@ public enum ReservationStatus {
     READY("인원이 6명 시작 되면 READY");
 
     private final String description;
-
 }

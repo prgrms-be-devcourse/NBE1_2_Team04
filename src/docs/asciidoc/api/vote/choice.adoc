@@ -1,0 +1,24 @@
+[[choice-create]]
+=== Choice 생성
+
+==== HTTP Request
+include::{snippets}/choice-create/http-request.adoc[]
+include::{snippets}/choice-create/request-fields.adoc[]
+include::{snippets}/choice-create/path-parameters.adoc[]
+include::{snippets}/choice-create/request-fields.adoc[]
+
+==== HTTP Response
+include::{snippets}/choice-create/http-response.adoc[]
+include::{snippets}/choice-create/response-fields.adoc[]
+
+
+[[choice-delete]]
+=== Choice 삭제
+
+==== HTTP Request
+include::{snippets}/choice-delete/http-request.adoc[]
+include::{snippets}/choice-delete/path-parameters.adoc[]
+
+==== HTTP Response
+include::{snippets}/choice-delete/http-response.adoc[]
+include::{snippets}/choice-delete/response-fields.adoc[]

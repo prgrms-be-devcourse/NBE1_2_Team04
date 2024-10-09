@@ -1,5 +1,5 @@
 [[court-get-all]]
-=== 구장 전체 목록 조회 API
+== 구장 전체 목록 조회 API
 
 ==== HTTP Request
 include::{snippets}/court-get-all/http-request.adoc[]

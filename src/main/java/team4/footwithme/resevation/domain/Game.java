@@ -11,7 +11,7 @@ import team4.footwithme.global.domain.BaseEntity;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLDelete(sql = "UPDATE game SET is_deleted = TRUE WHERE game_id = ?")
+@SQLDelete(sql = "UPDATE game SET is_deleted = 'TRUE' WHERE game_id = ?")
 @Entity
 public class Game extends BaseEntity {
 
@@ -44,6 +44,10 @@ public class Game extends BaseEntity {
             .secondTeamReservation(secondTeamReservation)
             .gameStatus(gameStatus)
             .build();
+    }
+
+    public void update(GameStatus gameStatus) {
+        this.gameStatus = gameStatus;
     }
 
 }

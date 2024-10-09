@@ -2,19 +2,17 @@ package team4.footwithme.vote.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import team4.footwithme.chat.domain.QChat;
-import team4.footwithme.global.domain.IsDeleted;
 import team4.footwithme.vote.domain.Vote;
-import team4.footwithme.vote.domain.VoteItemLocate;
 
 import java.util.List;
 import java.util.Optional;
 
-import static team4.footwithme.global.domain.IsDeleted.*;
+import static team4.footwithme.global.domain.IsDeleted.FALSE;
 import static team4.footwithme.vote.domain.QChoice.choice;
 import static team4.footwithme.vote.domain.QVote.vote;
 import static team4.footwithme.vote.domain.QVoteItem.voteItem;
-import static team4.footwithme.vote.domain.VoteStatus.*;
+import static team4.footwithme.vote.domain.VoteStatus.CLOSED;
+import static team4.footwithme.vote.domain.VoteStatus.OPENED;
 
 @RequiredArgsConstructor
 public class CustomVoteRepositoryImpl implements CustomVoteRepository {
@@ -56,5 +54,14 @@ public class CustomVoteRepositoryImpl implements CustomVoteRepository {
                 .and(vote.voteStatus.eq(CLOSED)))
             .orderBy(vote.updatedAt.desc())
             .fetchOne();
+    }
+
+    @Override
+    public List<Vote> findAllByTeamId(Long teamId) {
+        return queryFactory.select(vote)
+            .from(vote)
+            .where(vote.teamId.eq(teamId)
+                .and(vote.isDeleted.eq(FALSE)))
+            .fetch();
     }
 }

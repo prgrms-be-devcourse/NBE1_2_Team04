@@ -124,7 +124,7 @@ class CourtServiceImplTest extends IntegrationTestSupport {
                 price
         );
 
-        CourtDetailResponse response = courtService.registerCourt(request, testMember.getMemberId());
+        CourtDetailResponse response = courtService.registerCourt(request, testMember);
 
         assertThat(response).isNotNull();
         assertThat(response)
@@ -155,7 +155,7 @@ class CourtServiceImplTest extends IntegrationTestSupport {
                 updatedPrice
         );
 
-        CourtDetailResponse response = courtService.updateCourt(request, testMember.getMemberId(), court.getCourtId());
+        CourtDetailResponse response = courtService.updateCourt(request, testMember, court.getCourtId());
 
         assertThat(response).isNotNull();
         assertThat(response)
@@ -193,7 +193,7 @@ class CourtServiceImplTest extends IntegrationTestSupport {
                 testStadium.getStadiumId()
         );
 
-        courtService.deleteCourt(request, testMember.getMemberId(), court.getCourtId());
+        courtService.deleteCourt(request, testMember, court.getCourtId());
 
         Optional<Court> deletedCourt = courtRepository.findById(court.getCourtId());
         assertThat(deletedCourt).isEmpty();
@@ -220,7 +220,7 @@ class CourtServiceImplTest extends IntegrationTestSupport {
                 price
         );
 
-        assertThatThrownBy(() -> courtService.registerCourt(request, testMember.getMemberId()))
+        assertThatThrownBy(() -> courtService.registerCourt(request, testMember))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ExceptionMessage.STADIUM_NOT_FOUND.getText());
     }
@@ -238,7 +238,7 @@ class CourtServiceImplTest extends IntegrationTestSupport {
 
         Long invalidCourtId = -1L;
 
-        assertThatThrownBy(() -> courtService.updateCourt(request, testMember.getMemberId(), invalidCourtId))
+        assertThatThrownBy(() -> courtService.updateCourt(request, testMember, invalidCourtId))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ExceptionMessage.COURT_NOT_FOUND.getText());
     }
@@ -252,7 +252,7 @@ class CourtServiceImplTest extends IntegrationTestSupport {
 
         Long invalidCourtId = -1L;
 
-        assertThatThrownBy(() -> courtService.deleteCourt(request, testMember.getMemberId(), invalidCourtId))
+        assertThatThrownBy(() -> courtService.deleteCourt(request, testMember, invalidCourtId))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ExceptionMessage.COURT_NOT_FOUND.getText());
     }
@@ -283,7 +283,7 @@ class CourtServiceImplTest extends IntegrationTestSupport {
                 price
         );
 
-        assertThatThrownBy(() -> courtService.registerCourt(request, anotherMember.getMemberId()))
+        assertThatThrownBy(() -> courtService.registerCourt(request, anotherMember))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ExceptionMessage.STADIUM_NOT_OWNED_BY_MEMBER.getText());
     }
@@ -316,7 +316,7 @@ class CourtServiceImplTest extends IntegrationTestSupport {
                 updatedPrice
         );
 
-        assertThatThrownBy(() -> courtService.updateCourt(request, anotherMember.getMemberId(), court.getCourtId()))
+        assertThatThrownBy(() -> courtService.updateCourt(request, anotherMember, court.getCourtId()))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ExceptionMessage.STADIUM_NOT_OWNED_BY_MEMBER.getText());
     }
@@ -345,7 +345,7 @@ class CourtServiceImplTest extends IntegrationTestSupport {
                 testStadium.getStadiumId()
         );
 
-        assertThatThrownBy(() -> courtService.deleteCourt(request, anotherMember.getMemberId(), court.getCourtId()))
+        assertThatThrownBy(() -> courtService.deleteCourt(request, anotherMember, court.getCourtId()))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ExceptionMessage.STADIUM_NOT_OWNED_BY_MEMBER.getText());
     }

@@ -167,7 +167,7 @@ class StadiumServiceImplTest extends IntegrationTestSupport {
                 37.456, 126.705
         );
 
-        StadiumDetailResponse response = stadiumService.registerStadium(request, testMember.getMemberId());
+        StadiumDetailResponse response = stadiumService.registerStadium(request, testMember);
 
         assertThat(response).isNotNull();
         assertThat(response)
@@ -189,7 +189,7 @@ class StadiumServiceImplTest extends IntegrationTestSupport {
                 38.0, 128.0
         );
 
-        StadiumDetailResponse response = stadiumService.updateStadium(request, testMember.getMemberId(), stadium.getStadiumId());
+        StadiumDetailResponse response = stadiumService.updateStadium(request, testMember, stadium.getStadiumId());
 
         assertThat(response).isNotNull();
         assertThat(response)
@@ -213,7 +213,7 @@ class StadiumServiceImplTest extends IntegrationTestSupport {
     void deleteStadium() {
         Stadium stadium = stadiumRepository.findAll().get(0);
 
-        stadiumService.deleteStadium(testMember.getMemberId(), stadium.getStadiumId());
+        stadiumService.deleteStadium(testMember, stadium.getStadiumId());
 
         Optional<Stadium> deletedStadium = stadiumRepository.findById(stadium.getStadiumId());
         assertThat(deletedStadium).isEmpty();
@@ -239,7 +239,7 @@ class StadiumServiceImplTest extends IntegrationTestSupport {
 
         Long invalidStadiumId = -1L;
 
-        assertThatThrownBy(() -> stadiumService.updateStadium(request, testMember.getMemberId(), invalidStadiumId))
+        assertThatThrownBy(() -> stadiumService.updateStadium(request, testMember, invalidStadiumId))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ExceptionMessage.STADIUM_NOT_FOUND.getText());
     }
@@ -269,7 +269,7 @@ class StadiumServiceImplTest extends IntegrationTestSupport {
                 0.0, 0.0
         );
 
-        assertThatThrownBy(() -> stadiumService.updateStadium(request, anotherMember.getMemberId(), stadium.getStadiumId()))
+        assertThatThrownBy(() -> stadiumService.updateStadium(request, anotherMember, stadium.getStadiumId()))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ExceptionMessage.STADIUM_NOT_OWNED_BY_MEMBER.getText());
     }
@@ -279,7 +279,7 @@ class StadiumServiceImplTest extends IntegrationTestSupport {
     void deleteStadium_whenStadiumDoesNotExist() {
         Long invalidStadiumId = -1L;
 
-        assertThatThrownBy(() -> stadiumService.deleteStadium(testMember.getMemberId(), invalidStadiumId))
+        assertThatThrownBy(() -> stadiumService.deleteStadium(testMember, invalidStadiumId))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ExceptionMessage.STADIUM_NOT_FOUND.getText());
     }
@@ -304,7 +304,7 @@ class StadiumServiceImplTest extends IntegrationTestSupport {
 
         Stadium stadium = stadiumRepository.findAll().get(0);
 
-        assertThatThrownBy(() -> stadiumService.deleteStadium(anotherMember.getMemberId(), stadium.getStadiumId()))
+        assertThatThrownBy(() -> stadiumService.deleteStadium(anotherMember, stadium.getStadiumId()))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ExceptionMessage.STADIUM_NOT_OWNED_BY_MEMBER.getText());
     }
