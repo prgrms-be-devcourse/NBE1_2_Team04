@@ -1,12 +1,18 @@
 package team4.footwithme.resevation.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import team4.footwithme.chat.service.event.ReservationMemberJoinEvent;
 import team4.footwithme.chat.service.event.ReservationMembersJoinEvent;
 import team4.footwithme.chat.service.event.ReservationPublishedEvent;
+import team4.footwithme.global.exception.CustomException;
+import team4.footwithme.global.exception.ExceptionMessage;
+import team4.footwithme.global.repository.CustomGlobalRepository;
 import team4.footwithme.member.domain.Gender;
 import team4.footwithme.member.domain.Member;
 import team4.footwithme.member.repository.MemberRepository;
@@ -14,9 +20,12 @@ import team4.footwithme.resevation.domain.Mercenary;
 import team4.footwithme.resevation.domain.Participant;
 import team4.footwithme.resevation.domain.ParticipantRole;
 import team4.footwithme.resevation.domain.Reservation;
+import team4.footwithme.resevation.domain.ReservationStatus;
 import team4.footwithme.resevation.repository.MercenaryRepository;
 import team4.footwithme.resevation.repository.ParticipantRepository;
 import team4.footwithme.resevation.repository.ReservationRepository;
+import team4.footwithme.resevation.service.response.ReservationsResponse;
+import team4.footwithme.resevation.service.ReservationService;
 import team4.footwithme.stadium.domain.Court;
 import team4.footwithme.stadium.repository.CourtRepository;
 import team4.footwithme.team.domain.Team;
@@ -24,8 +33,8 @@ import team4.footwithme.team.repository.TeamRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ReservationServiceImpl implements ReservationService {
@@ -37,6 +46,20 @@ public class ReservationServiceImpl implements ReservationService {
     private final ParticipantRepository participantRepository;
     private final MercenaryRepository mercenaryRepository;
     private final ApplicationEventPublisher eventPublisher;
+
+    @Transactional(readOnly = true)
+    public Slice<ReservationsResponse> findReadyReservations(Long reservationId, Integer page) {
+        PageRequest pageRequest = PageRequest.of(page, 10, Sort.by(Sort.Direction.ASC, "createdAt"));
+        Reservation reservation = (Reservation) findEntityByIdOrThrowException(reservationRepository, reservationId, ExceptionMessage.RESERVATION_NOT_FOUND);
+
+        if (reservation.getReservationStatus() != ReservationStatus.READY) {
+            throw new CustomException(ExceptionMessage.RESERVATION_STATUS_NOT_READY.getText());
+        }
+
+        return reservationRepository.findByMatchDateAndCourtAndReservationStatus(
+                        reservation.getMatchDate(), reservation.getCourt(), ReservationStatus.READY, pageRequest)
+                .map(ReservationsResponse::from);
+    }
 
     @Transactional
     @Override
@@ -72,7 +95,6 @@ public class ReservationServiceImpl implements ReservationService {
             }
             else {
                 reservation = Reservation.createMixedReadyReservation(court, member, team, matchDate);
-
             }
             Reservation savedReservation = reservationRepository.save(reservation);
             List<Participant> participants = participantMembers.stream()
@@ -103,6 +125,13 @@ public class ReservationServiceImpl implements ReservationService {
             eventPublisher.publishEvent(new ReservationPublishedEvent("예약 채팅방", savedReservation.getReservationId()));
             eventPublisher.publishEvent(new ReservationMembersJoinEvent(participants, savedReservation.getReservationId()));
         }
+    }
 
+    private <T> T findEntityByIdOrThrowException(CustomGlobalRepository<T> repository, Long id, ExceptionMessage exceptionMessage) {
+        return repository.findActiveById(id)
+                .orElseThrow(() -> {
+                    log.warn(">>>> {} : {} <<<<", id, exceptionMessage);
+                    return new IllegalArgumentException(exceptionMessage.getText());
+                });
     }
 }

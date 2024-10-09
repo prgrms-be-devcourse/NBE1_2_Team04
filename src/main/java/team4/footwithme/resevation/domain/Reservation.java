@@ -68,6 +68,11 @@ public class Reservation extends BaseEntity {
             .build();
     }
 
+
+    public void updateStatus(ReservationStatus reservationStatus) {
+        this.reservationStatus = reservationStatus;
+    }
+
     public static Reservation createMaleReadyReservation(Court court, Member member, Team team, LocalDateTime matchDate) {
         return Reservation.builder()
             .court(court)
@@ -135,5 +140,4 @@ public class Reservation extends BaseEntity {
             .gender(ParticipantGender.MIXED)
             .build();
     }
-
 }

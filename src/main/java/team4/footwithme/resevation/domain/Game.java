@@ -46,4 +46,8 @@ public class Game extends BaseEntity {
             .build();
     }
 
+    public void update(GameStatus gameStatus) {
+        this.gameStatus = gameStatus;
+    }
+
 }

@@ -33,6 +33,10 @@ public enum ExceptionMessage {
     // Reservation
     RESERVATION_NOT_FOUND("해당 매칭 예약을 찾을 수 없습니다."),
     RESERVATION_NOT_MEMBER("해당 매칭 예약 수정 권한이 없습니다."),
+    RESERVATION_STATUS_NOT_READY("해당 예약은 준비 상태가 아닙니다."),
+    RESERVATION_MEMBER_NOT_MATCH("예약자만이 예약을 신청할 수 있습니다."),
+    RESERVATION_CONFLICT("해당 예약은 더 이상 사용할 수 없습니다."),
+    RESERVATION_SUCCESS("예약에 성공했습니다."),
     PARTICIPANT_NOT_MEMBER("해당 매칭 예약의 참가 인원 수정 권한이 없습니다."),
     PARTICIPANT_NOT_IN_MEMBER("해당 회원이 매칭 예약에 존재하지 않습니다."),
     PARTICIPANT_IN_MEMBER("해당 회원이 매칭 예약에 이미 존재합니다."),
@@ -40,9 +44,10 @@ public enum ExceptionMessage {
     SAME_PARTICIPANT_ROLE("참가자의 역할과 수정하려는 역할이 동일합니다."),
 
     // Mercenary
-    MERCENARY_NOT_FOUND("해당 용병 게시판을 찾을 수 없습니다.")
+    MERCENARY_NOT_FOUND("해당 용병 게시판을 찾을 수 없습니다."),
 
-
+    //Game
+    GAME_NOT_FOUND("해당 게임을 찾을 수 없습니다.")
     ;
     private final String text;
 }
