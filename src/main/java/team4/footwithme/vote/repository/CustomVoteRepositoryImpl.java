@@ -52,8 +52,9 @@ public class CustomVoteRepositoryImpl implements CustomVoteRepository {
         return queryFactory.select(vote)
             .where(vote.isDeleted.eq(FALSE)
                 .and(vote.voteStatus.eq(CLOSED)))
+            .from(vote)
             .orderBy(vote.updatedAt.desc())
-            .fetchOne();
+            .fetchFirst();
     }
 
     @Override

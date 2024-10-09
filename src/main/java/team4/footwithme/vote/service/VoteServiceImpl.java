@@ -22,8 +22,10 @@ import team4.footwithme.vote.service.response.AllVoteResponse;
 import team4.footwithme.vote.service.response.VoteItemResponse;
 import team4.footwithme.vote.service.response.VoteResponse;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 
@@ -146,7 +148,12 @@ public class VoteServiceImpl implements VoteService {
         Vote vote = voteRepository.findNotDeletedVoteById(voteId)
             .orElseThrow(() -> new IllegalArgumentException("해당하는 투표가 없습니다."));
         vote.checkWriterFromMemberId(member.getMemberId());
+        if (vote.getVoteItems().get(0) instanceof VoteItemDate) {
+            makeReservation(vote);
+            log.info("makeReservation 실행됐음");
+        }
         vote.updateVoteStatusToClose();
+        log.info("updateVoteStatusToClose 실행됐음");
         cancelTaskInSchedulerFromVoteId(voteId);
         return VoteResponse.of(vote, convertVoteItemsToResponseFrom(vote.getVoteItems()));
     }
@@ -245,6 +252,42 @@ public class VoteServiceImpl implements VoteService {
         }
         scheduledTask.cancel(false);
         scheduledTasks.remove(voteId);
+    }
+
+    @Override
+    public void makeReservation(Vote vote) {
+        Long voteItemDateId = choiceRepository.maxChoiceCountByVoteId(vote.getVoteId());
+        List<Long> memberIds = choiceRepository.findMemberIdsByVoteItemId(voteItemDateId);
+        Optional<VoteItemDate> voteItemDate = vote.getVoteItems().stream()
+            .filter(voteItem -> voteItem.getVoteItemId().equals(voteItemDateId))
+            .map(VoteItemDate.class::cast)
+            .findFirst();
+        Long memberId = vote.getMemberId();
+
+        if (voteItemDate.isEmpty()) {
+            throw new IllegalArgumentException("해당하는 일정이 없습니다.");
+        }
+        LocalDateTime matchDate = voteItemDate.get().getTime();
+        Long teamId = vote.getTeamId();
+
+        Vote locateVote = voteRepository.findRecentlyVoteByTeamId(teamId);
+        Long voteItemLocateId = choiceRepository.maxChoiceCountByVoteId(locateVote.getVoteId());
+        Optional<VoteItemLocate> voteItemLocate = locateVote.getVoteItems().stream()
+            .filter(voteItem -> voteItem.getVoteItemId().equals(voteItemLocateId))
+            .map(VoteItemLocate.class::cast)
+            .findFirst();
+        if (voteItemLocate.isEmpty()) {
+            throw new IllegalArgumentException("해당하는 구장 아이디가 없습니다.");
+        }
+        Long courtId = voteItemLocate.get().getCourtId();
+
+        eventPublisher.publishEvent(new EndVoteEvent(
+            courtId,    // 투표에서 선택 된 코트ID
+            memberId,   // 투표 생성자
+            teamId,     // 팀 ID
+            matchDate,  // 투표에서 선택 된 일정
+            memberIds   // 투표 참여자
+        ));
     }
 
 }

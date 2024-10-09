@@ -1,0 +1,45 @@
+[[mercenary-create]]
+=== Mercenary 생성
+
+==== HTTP Request
+include::{snippets}/mercenary-create/http-request.adoc[]
+include::{snippets}/mercenary-create/request-fields.adoc[]
+include::{snippets}/mercenary-create/path-parameters.adoc[]
+
+==== HTTP Response
+include::{snippets}/mercenary-create/http-response.adoc[]
+include::{snippets}/mercenary-create/response-fields.adoc[]
+
+[[mercenary-delete]]
+=== Mercenary 삭제
+
+==== HTTP Request
+include::{snippets}/mercenary-delete/http-request.adoc[]
+include::{snippets}/mercenary-delete/path-parameters.adoc[]
+
+==== HTTP Response
+include::{snippets}/mercenary-delete/http-response.adoc[]
+include::{snippets}/mercenary-delete/response-fields.adoc[]
+
+[[mercenary-get-all]]
+=== Mercenary 전체 조회
+
+==== HTTP Request
+include::{snippets}/mercenary-get-all/http-request.adoc[]
+include::{snippets}/mercenary-get-all/query-parameters.adoc[]
+
+==== HTTP Response
+include::{snippets}/mercenary-get-all/http-response.adoc[]
+include::{snippets}/mercenary-get-all/response-fields.adoc[]
+
+[[mercenary-get-single]]
+=== Mercenary 단일 조회
+
+==== HTTP Request
+include::{snippets}/mercenary-get-single/http-request.adoc[]
+include::{snippets}/mercenary-get-single/path-parameters.adoc[]
+
+
+==== HTTP Response
+include::{snippets}/mercenary-get-single/http-response.adoc[]
+include::{snippets}/mercenary-get-single/response-fields.adoc[]
