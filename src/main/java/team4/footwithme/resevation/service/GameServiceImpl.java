@@ -47,6 +47,10 @@ public class GameServiceImpl implements GameService {
 
     @Transactional
     public String updateGameStatus(Member member, GameStatusUpdateServiceRequest request) {
+        if(!(request.status() == GameStatus.READY || request.status() == GameStatus.IGNORE)) {
+            throw new IllegalArgumentException(ExceptionMessage.GAME_STATUS_NOT_VALID.getText());
+        }
+
         Game game = (Game) findEntityByIdOrThrowException(gameRepository, request.gameId(), ExceptionMessage.GAME_NOT_FOUND);
 
         game.update(request.status());
