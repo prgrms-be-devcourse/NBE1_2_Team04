@@ -102,7 +102,6 @@ public class GameApiDocs extends RestDocsSupport {
     @WithMockPrincipalDetail(email = "user@example.com", role = team4.footwithme.member.domain.MemberRole.USER)
     @DisplayName("게임 목록 조회 API")
     void getPendingGames() throws Exception {
-        // Mock 데이터 설정
         GameDetailResponse game1 = new GameDetailResponse(1L, 1L, 2L, team4.footwithme.resevation.domain.GameStatus.READY);
         GameDetailResponse game2 = new GameDetailResponse(2L, 3L, 4L, team4.footwithme.resevation.domain.GameStatus.IGNORE);
 
@@ -110,10 +109,8 @@ public class GameApiDocs extends RestDocsSupport {
         Pageable pageable = PageRequest.of(0, 10);
         Slice<GameDetailResponse> games = new SliceImpl<>(gameList, pageable, false);
 
-        // Mock 서비스 메서드 설정
         given(gameService.findPendingGames(any(), eq(1L), anyInt())).willReturn(games);
 
-        // 테스트 수행
         mockMvc.perform(get("/api/v1/game/game")
                         .param("page", "0")
                         .param("reservationId", "1")

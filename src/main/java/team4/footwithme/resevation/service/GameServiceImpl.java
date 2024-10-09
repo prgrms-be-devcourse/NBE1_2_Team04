@@ -60,7 +60,7 @@ public class GameServiceImpl implements GameService {
             Reservation secondReservation = (Reservation) findEntityByIdOrThrowException(reservationRepository, game.getSecondTeamReservation().getReservationId(), ExceptionMessage.RESERVATION_NOT_FOUND);
 
             boolean isConflict = reservationRepository.findByMatchDateAndCourtAndReservationStatus(
-                            firstReservation.getMatchDate(), firstReservation.getCourt(), ReservationStatus.CONFIRMED, PageRequest.of(0, 1))
+                            -1L, firstReservation.getMatchDate(), firstReservation.getCourt(), ReservationStatus.CONFIRMED, PageRequest.of(0, 1))
                     .hasContent();
 
             if (isConflict) {

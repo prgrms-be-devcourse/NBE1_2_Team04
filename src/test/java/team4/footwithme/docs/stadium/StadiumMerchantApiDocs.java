@@ -30,7 +30,9 @@ public class StadiumMerchantApiDocs extends RestDocsSupport {
     private final StadiumService stadiumService = mock(StadiumService.class);
 
     @Override
-    protected Object initController() {return new StadiumMerchantApi(stadiumService);}
+    protected Object initController() {
+        return new StadiumMerchantApi(stadiumService);
+    }
 
     @Test
     @WithMockPrincipalDetail(email = "merchant@example.com", role = team4.footwithme.member.domain.MemberRole.MERCHANT)

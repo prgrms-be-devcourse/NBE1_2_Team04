@@ -3,23 +3,14 @@ package team4.footwithme.stadium.api;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import team4.footwithme.ApiTestSupport;
-import team4.footwithme.global.api.ApiResponse;
+import team4.footwithme.security.WithMockPrincipalDetail;
+import team4.footwithme.stadium.api.request.CourtDeleteRequest;
 import team4.footwithme.stadium.api.request.CourtRegisterRequest;
 import team4.footwithme.stadium.api.request.CourtUpdateRequest;
-import team4.footwithme.stadium.api.request.CourtDeleteRequest;
-import team4.footwithme.stadium.service.CourtService;
-import team4.footwithme.stadium.service.StadiumService;
 import team4.footwithme.stadium.service.response.CourtDetailResponse;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import team4.footwithme.security.WithMockPrincipalDetail;
 
 import java.math.BigDecimal;
 

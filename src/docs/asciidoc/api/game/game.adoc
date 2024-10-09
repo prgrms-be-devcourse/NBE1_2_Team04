@@ -3,10 +3,10 @@
 
 ==== HTTP Request
 include::{snippets}/game-register/http-request.adoc[]
+include::{snippets}/game-register/request-fields.adoc[]
 
 ==== HTTP Response
 include::{snippets}/game-register/http-response.adoc[]
-include::{snippets}/game-register/request-fields.adoc[]
 include::{snippets}/game-register/response-fields.adoc[]
 
 [[game-status-update]]
@@ -14,10 +14,10 @@ include::{snippets}/game-register/response-fields.adoc[]
 
 ==== HTTP Request
 include::{snippets}/game-status-update/http-request.adoc[]
+include::{snippets}/game-status-update/request-fields.adoc[]
 
 ==== HTTP Response
 include::{snippets}/game-status-update/http-response.adoc[]
-include::{snippets}/game-status-update/request-fields.adoc[]
 include::{snippets}/game-status-update/response-fields.adoc[]
 
 [[game-get-pending]]

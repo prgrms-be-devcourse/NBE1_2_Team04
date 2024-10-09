@@ -57,7 +57,7 @@ public class ReservationServiceImpl implements ReservationService {
         }
 
         return reservationRepository.findByMatchDateAndCourtAndReservationStatus(
-                        reservation.getMatchDate(), reservation.getCourt(), ReservationStatus.READY, pageRequest)
+                        reservationId, reservation.getMatchDate(), reservation.getCourt(), ReservationStatus.READY, pageRequest)
                 .map(ReservationsResponse::from);
     }
 
