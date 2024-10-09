@@ -25,4 +25,6 @@ public interface GameRepository extends JpaRepository<Game, Long>, CustomGlobalR
     @Query("SELECT g FROM Game g WHERE g.isDeleted = 'false' AND g.gameId = :id")
     Optional<Game> findActiveById(@Param("id") Long id);
 
+    @Query("UPDATE Game g SET g.isDeleted = 'TRUE' WHERE g.secondTeamReservation = :reservation")
+    void softDeleteBySecondTeamReservation(@Param("reservation") Reservation reservation);
 }

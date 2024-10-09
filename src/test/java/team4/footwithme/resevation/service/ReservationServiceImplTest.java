@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Slice;
 import org.springframework.transaction.annotation.Transactional;
 import team4.footwithme.IntegrationTestSupport;
-import team4.footwithme.global.exception.CustomException;
 import team4.footwithme.global.exception.ExceptionMessage;
 import team4.footwithme.member.domain.*;
 import team4.footwithme.member.repository.MemberRepository;
@@ -267,7 +266,7 @@ class ReservationServiceImplTest extends IntegrationTestSupport {
         reservationRepository.save(reservation);
 
         assertThatThrownBy(() -> reservationService.findReadyReservations(reservation.getReservationId(), 0))
-                .isInstanceOf(CustomException.class)
+                .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ExceptionMessage.RESERVATION_STATUS_NOT_READY.getText());
     }
 

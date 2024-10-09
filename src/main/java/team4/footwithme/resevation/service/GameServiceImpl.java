@@ -7,7 +7,6 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import team4.footwithme.global.exception.CustomException;
 import team4.footwithme.global.exception.ExceptionMessage;
 import team4.footwithme.global.repository.CustomGlobalRepository;
 import team4.footwithme.member.domain.Member;
@@ -47,7 +46,7 @@ public class GameServiceImpl implements GameService {
 
     @Transactional
     public String updateGameStatus(Member member, GameStatusUpdateServiceRequest request) {
-        if(!(request.status() == GameStatus.READY || request.status() == GameStatus.IGNORE)) {
+        if (!(request.status() == GameStatus.READY || request.status() == GameStatus.IGNORE)) {
             throw new IllegalArgumentException(ExceptionMessage.GAME_STATUS_NOT_VALID.getText());
         }
 
@@ -59,6 +58,10 @@ public class GameServiceImpl implements GameService {
             Reservation firstReservation = (Reservation) findEntityByIdOrThrowException(reservationRepository, game.getFirstTeamReservation().getReservationId(), ExceptionMessage.RESERVATION_NOT_FOUND);
             Reservation secondReservation = (Reservation) findEntityByIdOrThrowException(reservationRepository, game.getSecondTeamReservation().getReservationId(), ExceptionMessage.RESERVATION_NOT_FOUND);
 
+            if (firstReservation.getReservationStatus() != ReservationStatus.READY || secondReservation.getReservationStatus() != ReservationStatus.READY) {
+                throw new IllegalArgumentException(ExceptionMessage.RESERVATION_STATUS_NOT_READY.getText());
+            }
+
             boolean isConflict = reservationRepository.findByMatchDateAndCourtAndReservationStatus(
                             -1L, firstReservation.getMatchDate(), firstReservation.getCourt(), ReservationStatus.CONFIRMED, PageRequest.of(0, 1))
                     .hasContent();
@@ -67,14 +70,17 @@ public class GameServiceImpl implements GameService {
                 game.update(GameStatus.IGNORE);
                 firstReservation.updateStatus(ReservationStatus.CANCELLED);
                 secondReservation.updateStatus(ReservationStatus.CANCELLED);
+                gameRepository.softDeleteBySecondTeamReservation(secondReservation);
                 return ExceptionMessage.RESERVATION_CONFLICT.getText();
             }
 
             firstReservation.updateStatus(ReservationStatus.CONFIRMED);
             secondReservation.updateStatus(ReservationStatus.CONFIRMED);
+            gameRepository.softDeleteBySecondTeamReservation(secondReservation);
             return ExceptionMessage.RESERVATION_SUCCESS.getText();
         }
 
+        gameRepository.delete(game);
         return "해당 매칭을 거절하였습니다.";
     }
 
