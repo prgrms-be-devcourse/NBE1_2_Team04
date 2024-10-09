@@ -1,6 +1,7 @@
 package team4.footwithme.vote.service;
 
 import team4.footwithme.member.domain.Member;
+import team4.footwithme.vote.domain.Vote;
 import team4.footwithme.vote.service.request.ChoiceCreateServiceRequest;
 import team4.footwithme.vote.service.request.VoteCourtCreateServiceRequest;
 import team4.footwithme.vote.service.request.VoteDateCreateServiceRequest;
@@ -29,4 +30,6 @@ public interface VoteService {
     VoteResponse closeVote(Long voteId, Member member);
 
     List<AllVoteResponse> getAllVotes(Long teamId);
+
+    void makeReservation(Vote vote);
 }
