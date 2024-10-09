@@ -16,6 +16,10 @@ import team4.footwithme.member.api.MemberApi;
 import team4.footwithme.member.jwt.JwtTokenFilter;
 import team4.footwithme.member.service.CookieService;
 import team4.footwithme.member.service.MemberService;
+import team4.footwithme.resevation.api.MWMercenaryApi;
+import team4.footwithme.resevation.api.MWParticipantApi;
+import team4.footwithme.resevation.service.MWParticipantServiceImpl;
+import team4.footwithme.resevation.service.MercenaryServiceImpl;
 import team4.footwithme.stadium.api.CourtMerchantApi;
 import team4.footwithme.stadium.api.StadiumMerchantApi;
 import team4.footwithme.stadium.service.CourtService;
@@ -24,7 +28,7 @@ import team4.footwithme.vote.api.VoteApi;
 import team4.footwithme.vote.service.VoteService;
 
 @WebMvcTest(controllers = {
-    VoteApi.class, ChatApi.class, ChatroomApi.class, ChatMemberApi.class, StadiumMerchantApi.class, CourtMerchantApi.class, MemberApi.class
+    VoteApi.class, ChatApi.class, ChatroomApi.class, ChatMemberApi.class, MWMercenaryApi.class, MWParticipantApi.class, StadiumMerchantApi.class, CourtMerchantApi.class, MemberApi.class,
 })
 @AutoConfigureMockMvc(addFilters = false)
 public abstract class ApiTestSupport {
@@ -46,6 +50,12 @@ public abstract class ApiTestSupport {
 
     @MockBean
     protected ChatMemberService chatMemberService;
+
+    @MockBean
+    protected MercenaryServiceImpl mercenaryService;
+
+    @MockBean
+    protected MWParticipantServiceImpl participantService;
 
     @MockBean
     protected JwtTokenFilter jwtTokenFilter;
