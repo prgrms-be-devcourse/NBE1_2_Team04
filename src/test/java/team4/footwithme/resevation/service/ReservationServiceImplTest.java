@@ -1,17 +1,19 @@
 package team4.footwithme.resevation.service;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Slice;
 import org.springframework.transaction.annotation.Transactional;
 import team4.footwithme.IntegrationTestSupport;
+import team4.footwithme.global.exception.ExceptionMessage;
 import team4.footwithme.member.domain.*;
 import team4.footwithme.member.repository.MemberRepository;
 import team4.footwithme.resevation.domain.*;
 import team4.footwithme.resevation.repository.MercenaryRepository;
 import team4.footwithme.resevation.repository.ParticipantRepository;
 import team4.footwithme.resevation.repository.ReservationRepository;
+import team4.footwithme.resevation.service.response.ReservationsResponse;
 import team4.footwithme.stadium.domain.Court;
 import team4.footwithme.stadium.domain.Stadium;
 import team4.footwithme.stadium.repository.CourtRepository;
@@ -23,8 +25,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @Transactional
 class ReservationServiceImplTest extends IntegrationTestSupport {
@@ -81,7 +83,7 @@ class ReservationServiceImplTest extends IntegrationTestSupport {
         Team savedTeam = teamRepository.save(team);
 
         //when
-        reservationService.createReservation(member1.getMemberId(),court1.getCourtId(),savedTeam.getTeamId(), LocalDateTime.now().plusDays(1),List.of(member2.getMemberId(), member3.getMemberId(), member4.getMemberId(), member5.getMemberId(), member6.getMemberId(), member7.getMemberId()));
+        reservationService.createReservation(member1.getMemberId(), court1.getCourtId(), savedTeam.getTeamId(), LocalDateTime.now().plusDays(1), List.of(member2.getMemberId(), member3.getMemberId(), member4.getMemberId(), member5.getMemberId(), member6.getMemberId(), member7.getMemberId()));
         //then
         List<Reservation> reservations = reservationRepository.findAll();
         List<Participant> participants = participantRepository.findAll();
@@ -114,7 +116,7 @@ class ReservationServiceImplTest extends IntegrationTestSupport {
         Team savedTeam = teamRepository.save(team);
 
         //when
-        reservationService.createReservation(member1.getMemberId(),court1.getCourtId(),savedTeam.getTeamId(), LocalDateTime.now().plusDays(1),List.of(member1.getMemberId(), member2.getMemberId(), member3.getMemberId(), member4.getMemberId()));
+        reservationService.createReservation(member1.getMemberId(), court1.getCourtId(), savedTeam.getTeamId(), LocalDateTime.now().plusDays(1), List.of(member1.getMemberId(), member2.getMemberId(), member3.getMemberId(), member4.getMemberId()));
         //then
         List<Reservation> reservations = reservationRepository.findAll();
         List<Participant> participants = participantRepository.findAll();
@@ -154,7 +156,7 @@ class ReservationServiceImplTest extends IntegrationTestSupport {
         Team savedTeam = teamRepository.save(team);
 
         //when
-        reservationService.createReservation(member1.getMemberId(),court1.getCourtId(),savedTeam.getTeamId(), LocalDateTime.now().plusDays(1),List.of(member2.getMemberId(), member3.getMemberId(), member4.getMemberId(), member5.getMemberId(), member6.getMemberId(), member7.getMemberId()));
+        reservationService.createReservation(member1.getMemberId(), court1.getCourtId(), savedTeam.getTeamId(), LocalDateTime.now().plusDays(1), List.of(member2.getMemberId(), member3.getMemberId(), member4.getMemberId(), member5.getMemberId(), member6.getMemberId(), member7.getMemberId()));
         //then
         List<Reservation> reservations = reservationRepository.findAll();
         List<Participant> participants = participantRepository.findAll();
@@ -189,17 +191,83 @@ class ReservationServiceImplTest extends IntegrationTestSupport {
         Team savedTeam = teamRepository.save(team);
 
         //when
-        reservationService.createReservation(member1.getMemberId(),court1.getCourtId(),savedTeam.getTeamId(), LocalDateTime.now().plusDays(1),List.of(member1.getMemberId(), member2.getMemberId(), member3.getMemberId(), member4.getMemberId()));
+        reservationService.createReservation(member1.getMemberId(), court1.getCourtId(), savedTeam.getTeamId(), LocalDateTime.now().plusDays(1), List.of(member1.getMemberId(), member2.getMemberId(), member3.getMemberId(), member4.getMemberId()));
         //then
         List<Reservation> reservations = reservationRepository.findAll();
         List<Participant> participants = participantRepository.findAll();
         List<Mercenary> mercenaries = mercenaryRepository.findAll();
 
         assertThat(reservations).hasSize(1)
-            .extracting(Reservation::getGender)
-            .containsExactly(ParticipantGender.FEMALE);
+                .extracting(Reservation::getGender)
+                .containsExactly(ParticipantGender.FEMALE);
         assertThat(participants).hasSize(4);
         assertThat(mercenaries).hasSize(1);
+    }
+
+    @DisplayName("READY 상태의 예약을 조회한다.")
+    @Test
+    void findReadyReservations() {
+        Member stadiumCreatorMember = Member.create("test@gmail.com", "1234", "test", "010-1234-5678", LoginProvider.ORIGINAL, "test", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE);
+        memberRepository.save(stadiumCreatorMember);
+        Stadium stadium = Stadium.create(stadiumCreatorMember, "최강 풋살장", "서울시 강남구 어딘가", "01010101010", "최고임", 54.123, 10.123);
+        stadiumRepository.save(stadium);
+        Court court = Court.create(stadium, "야외 구장 A", "다양한 물품 제공", BigDecimal.TEN);
+        courtRepository.save(court);
+        Team team = Team.create(stadium.getStadiumId(), "팀이름", "팀 설명", 1, 1, 1, "서울");
+        Team savedTeam = teamRepository.save(team);
+
+        Reservation reservation1 = Reservation.builder()
+                .court(court)
+                .member(stadiumCreatorMember)
+                .matchDate(LocalDateTime.parse("2024-10-01T10:00"))
+                .reservationStatus(ReservationStatus.READY)
+                .team(savedTeam)
+                .gender(ParticipantGender.MALE)
+                .build();
+        reservationRepository.save(reservation1);
+
+        Reservation reservation2 = Reservation.builder()
+                .court(court)
+                .member(stadiumCreatorMember)
+                .matchDate(LocalDateTime.parse("2024-10-01T10:00"))
+                .reservationStatus(ReservationStatus.READY)
+                .team(savedTeam)
+                .gender(ParticipantGender.MALE)
+                .build();
+        reservationRepository.save(reservation2);
+
+        Slice<ReservationsResponse> readyReservations = reservationService.findReadyReservations(reservation1.getReservationId(), 0);
+
+        assertThat(readyReservations).isNotEmpty();
+        assertThat(readyReservations.getNumberOfElements()).isEqualTo(1);
+    }
+
+
+    @DisplayName("READY 상태가 아닌 예약을 조회하려고 하면 예외가 발생한다.")
+    @Test
+    void findReadyReservations_NotReadyStatus_ThrowsException() {
+        Member stadiumCreatorMember = Member.create("test@gmail.com", "1234", "test", "010-1234-5678", LoginProvider.ORIGINAL, "test", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE);
+        memberRepository.save(stadiumCreatorMember);
+        Stadium stadium = Stadium.create(stadiumCreatorMember, "최강 풋살장", "서울시 강남구 어딘가", "01010101010", "최고임", 54.123, 10.123);
+        stadiumRepository.save(stadium);
+        Court court = Court.create(stadium, "야외 구장 A", "다양한 물품 제공", BigDecimal.TEN);
+        courtRepository.save(court);
+        Team team = Team.create(stadium.getStadiumId(), "팀이름", "팀 설명", 1, 1, 1, "서울");
+        Team savedTeam = teamRepository.save(team);
+
+        Reservation reservation = Reservation.builder()
+                .court(court)
+                .member(stadiumCreatorMember)
+                .matchDate(LocalDateTime.now().plusDays(1))
+                .reservationStatus(ReservationStatus.CONFIRMED)
+                .team(savedTeam)
+                .gender(ParticipantGender.MALE)
+                .build();
+        reservationRepository.save(reservation);
+
+        assertThatThrownBy(() -> reservationService.findReadyReservations(reservation.getReservationId(), 0))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(ExceptionMessage.RESERVATION_STATUS_NOT_READY.getText());
     }
 
 }

@@ -11,8 +11,6 @@ import team4.footwithme.IntegrationTestSupport;
 import team4.footwithme.member.domain.*;
 import team4.footwithme.member.repository.MemberRepository;
 import team4.footwithme.resevation.domain.*;
-import team4.footwithme.resevation.repository.GameRepository;
-import team4.footwithme.resevation.repository.ReservationRepository;
 import team4.footwithme.stadium.domain.Court;
 import team4.footwithme.stadium.domain.Stadium;
 import team4.footwithme.stadium.repository.CourtRepository;
@@ -130,7 +128,7 @@ class GameRepositoryTest extends IntegrationTestSupport {
         reservationRepository.save(reservation4);
 
         game1 = Game.create(reservation1, reservation2, GameStatus.PENDING);
-        game2 = Game.create(reservation3, reservation4,GameStatus.READY);
+        game2 = Game.create(reservation3, reservation4, GameStatus.READY);
 
         gameRepository.save(game1);
         gameRepository.save(game2);

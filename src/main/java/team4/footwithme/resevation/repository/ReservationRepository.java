@@ -20,8 +20,9 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long>,
     @Query("SELECT r FROM Reservation r WHERE r.isDeleted = 'false' AND r.reservationId = :id")
     Optional<Reservation> findActiveById(@Param("id") Long id);
 
-    @Query("SELECT r FROM Reservation r WHERE r.isDeleted = 'FALSE' AND r.matchDate = :matchDate AND r.court = :court AND r.reservationStatus = :reservationStatus")
+    @Query("SELECT r FROM Reservation r WHERE r.isDeleted = 'FALSE' AND r.matchDate = :matchDate AND r.court = :court AND r.reservationStatus = :reservationStatus AND r.reservationId != :id")
     Slice<Reservation> findByMatchDateAndCourtAndReservationStatus(
+            @Param("id") Long id,
             @Param("matchDate") LocalDateTime matchDate,
             @Param("court") Court court,
             @Param("reservationStatus") ReservationStatus reservationStatus,

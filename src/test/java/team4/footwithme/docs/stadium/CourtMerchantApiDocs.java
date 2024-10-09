@@ -7,9 +7,9 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import team4.footwithme.docs.RestDocsSupport;
 import team4.footwithme.security.WithMockPrincipalDetail;
 import team4.footwithme.stadium.api.CourtMerchantApi;
+import team4.footwithme.stadium.api.request.CourtDeleteRequest;
 import team4.footwithme.stadium.api.request.CourtRegisterRequest;
 import team4.footwithme.stadium.api.request.CourtUpdateRequest;
-import team4.footwithme.stadium.api.request.CourtDeleteRequest;
 import team4.footwithme.stadium.service.CourtService;
 import team4.footwithme.stadium.service.request.CourtRegisterServiceRequest;
 import team4.footwithme.stadium.service.response.CourtDetailResponse;
@@ -33,7 +33,9 @@ public class CourtMerchantApiDocs extends RestDocsSupport {
     private final CourtService courtService = mock(CourtService.class);
 
     @Override
-    protected Object initController() {return new CourtMerchantApi(courtService);}
+    protected Object initController() {
+        return new CourtMerchantApi(courtService);
+    }
 
     @Test
     @WithMockPrincipalDetail(email = "merchant@example.com", role = team4.footwithme.member.domain.MemberRole.MERCHANT)

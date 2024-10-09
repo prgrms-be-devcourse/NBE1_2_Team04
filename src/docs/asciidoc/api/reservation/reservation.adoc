@@ -21,3 +21,14 @@ include::{snippets}/reservation-detailInfo-get/path-parameters.adoc[]
 === HTTP Response
 include::{snippets}/reservation-detailInfo-get/http-response.adoc[]
 include::{snippets}/reservation-detailInfo-get/response-fields.adoc[]
+
+[[reservation-get-ready]]
+== 준비 중인 예약 목록 조회 API
+
+==== HTTP Request
+include::{snippets}/reservation-get-ready/http-request.adoc[]
+include::{snippets}/reservation-get-ready/query-parameters.adoc[]
+
+==== HTTP Response
+include::{snippets}/reservation-get-ready/http-response.adoc[]
+include::{snippets}/reservation-get-ready/response-fields.adoc[]

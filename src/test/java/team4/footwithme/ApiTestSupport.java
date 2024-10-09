@@ -16,8 +16,12 @@ import team4.footwithme.member.api.MemberApi;
 import team4.footwithme.member.jwt.JwtTokenFilter;
 import team4.footwithme.member.service.CookieService;
 import team4.footwithme.member.service.MemberService;
+import team4.footwithme.resevation.api.GameApi;
+import team4.footwithme.resevation.api.ReservationApi;
 import team4.footwithme.resevation.api.MWMercenaryApi;
 import team4.footwithme.resevation.api.MWParticipantApi;
+import team4.footwithme.resevation.service.GameService;
+import team4.footwithme.resevation.service.ReservationService;
 import team4.footwithme.resevation.service.MWParticipantServiceImpl;
 import team4.footwithme.resevation.service.MercenaryServiceImpl;
 import team4.footwithme.stadium.api.CourtMerchantApi;
@@ -28,7 +32,7 @@ import team4.footwithme.vote.api.VoteApi;
 import team4.footwithme.vote.service.VoteService;
 
 @WebMvcTest(controllers = {
-    VoteApi.class, ChatApi.class, ChatroomApi.class, ChatMemberApi.class, MWMercenaryApi.class, MWParticipantApi.class, StadiumMerchantApi.class, CourtMerchantApi.class, MemberApi.class,
+    VoteApi.class, ChatApi.class, ChatroomApi.class, ChatMemberApi.class, StadiumMerchantApi.class, CourtMerchantApi.class, GameApi.class, ReservationApi.class, MemberApi.class, MWMercenaryApi.class, MWParticipantApi.class
 })
 @AutoConfigureMockMvc(addFilters = false)
 public abstract class ApiTestSupport {
@@ -65,6 +69,12 @@ public abstract class ApiTestSupport {
 
     @MockBean
     protected StadiumService stadiumService;
+
+    @MockBean
+    protected GameService gameService;
+
+    @MockBean
+    protected ReservationService reservationService;
 
     @MockBean
     protected MemberService memberService;
