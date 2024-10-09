@@ -1,0 +1,76 @@
+[[participant-create-mercenary]]
+=== Participant 용병 생성
+
+==== HTTP Request
+include::{snippets}/participant-create-mercenary/http-request.adoc[]
+include::{snippets}/participant-create-mercenary/path-parameters.adoc[]
+
+==== HTTP Response
+include::{snippets}/participant-create-mercenary/http-response.adoc[]
+include::{snippets}/participant-create-mercenary/response-fields.adoc[]
+
+[[participant-create-reservation]]
+=== Participant 팀원 생성
+
+==== HTTP Request
+include::{snippets}/participant-create-reservation/http-request.adoc[]
+include::{snippets}/participant-create-reservation/path-parameters.adoc[]
+
+==== HTTP Response
+include::{snippets}/participant-create-reservation/http-response.adoc[]
+include::{snippets}/participant-create-reservation/response-fields.adoc[]
+
+[[participant-update]]
+=== Participant 역할 수정
+
+==== HTTP Request
+include::{snippets}/participant-update/http-request.adoc[]
+include::{snippets}/participant-update/request-fields.adoc[]
+
+==== HTTP Response
+include::{snippets}/participant-update/http-response.adoc[]
+include::{snippets}/participant-update/response-fields.adoc[]
+
+[[participant-delete]]
+=== Participant 삭제
+
+==== HTTP Request
+include::{snippets}/participant-delete/http-request.adoc[]
+include::{snippets}/participant-delete/path-parameters.adoc[]
+
+==== HTTP Response
+include::{snippets}/participant-delete/http-response.adoc[]
+include::{snippets}/participant-delete/response-fields.adoc[]
+
+[[participant-get-accept]]
+=== Participant 확정 인원 조회
+
+==== HTTP Request
+include::{snippets}/participant-get-accept/http-request.adoc[]
+include::{snippets}/participant-get-accept/path-parameters.adoc[]
+
+==== HTTP Response
+include::{snippets}/participant-get-accept/http-response.adoc[]
+include::{snippets}/participant-get-accept/response-fields.adoc[]
+
+[[participant-get-pending]]
+=== Participant 용병 대기 인원 조회
+
+==== HTTP Request
+include::{snippets}/participant-get-pending/http-request.adoc[]
+include::{snippets}/participant-get-pending/path-parameters.adoc[]
+
+==== HTTP Response
+include::{snippets}/participant-get-pending/http-response.adoc[]
+include::{snippets}/participant-get-pending/response-fields.adoc[]
+
+[[participant-get-all]]
+=== Participant 전체 조회
+
+==== HTTP Request
+include::{snippets}/participant-get-all/http-request.adoc[]
+include::{snippets}/participant-get-all/path-parameters.adoc[]
+
+==== HTTP Response
+include::{snippets}/participant-get-all/http-response.adoc[]
+include::{snippets}/participant-get-all/response-fields.adoc[]

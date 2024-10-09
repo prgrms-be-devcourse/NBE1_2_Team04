@@ -27,8 +27,8 @@ public class Mercenary extends BaseEntity {
 
     @Builder
     private Mercenary(Reservation reservation, String description) {
-        this.reservation = reservation;
         this.description = description;
+        this.reservation = reservation;
     }
 
     public static Mercenary create(Reservation reservation, String description) {
