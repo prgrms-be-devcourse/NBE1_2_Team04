@@ -4,14 +4,14 @@ import team4.footwithme.resevation.domain.Reservation;
 import team4.footwithme.resevation.domain.ReservationStatus;
 
 import java.time.LocalDateTime;
-
-public record YYReservationInfoResponse(
+// TODO :: ReservationInfoResponse 이름 변경 부탁
+public record ReservationInfoResponse(
         String courtName,
         LocalDateTime matchDate,
         ReservationStatus status
 ) {
-    public static YYReservationInfoResponse from(Reservation reservation) {
-        return new YYReservationInfoResponse(
+    public static ReservationInfoResponse from(Reservation reservation) {
+        return new ReservationInfoResponse(
                 reservation.getCourt().getName(),
                 reservation.getMatchDate(),
                 reservation.getReservationStatus()

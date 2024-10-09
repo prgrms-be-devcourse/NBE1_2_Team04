@@ -230,10 +230,7 @@ class GameServiceImplTest extends IntegrationTestSupport {
         assertThat(result).isEqualTo("해당 매칭을 거절하였습니다.");
 
         Optional<Game> updatedGame = gameRepository.findById(testGame.getGameId());
-        assertThat(updatedGame).isPresent();
-        updatedGame.ifPresent(game -> {
-            assertThat(game.getGameStatus()).isEqualTo(GameStatus.IGNORE);
-        });
+        assertThat(updatedGame).isEmpty();
     }
 
     @Test

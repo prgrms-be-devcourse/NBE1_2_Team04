@@ -12,6 +12,7 @@ import team4.footwithme.resevation.domain.ReservationStatus;
 import team4.footwithme.stadium.domain.Court;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -27,4 +28,10 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long>,
             @Param("court") Court court,
             @Param("reservationStatus") ReservationStatus reservationStatus,
             PageRequest pageRequest);
+
+    @Query("select r from Reservation r where r.isDeleted = 'false' and r.reservationId = :id")
+    Optional<Reservation> findByReservationId(@Param("id") Long reservationId);
+
+    @Query("select r from Reservation r where r.isDeleted = 'false' and r.team.teamId = :teamId")
+    List<Reservation> findByTeamTeamId(@Param("teamId")Long teamId);
 }

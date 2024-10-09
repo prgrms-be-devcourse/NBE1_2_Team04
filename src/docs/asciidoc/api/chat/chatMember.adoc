@@ -1,5 +1,5 @@
 [[chat-member-create]]
-== Chat Member 생성
+=== Chat Member 생성
 
 ==== HTTP Request
 include::{snippets}/chat-member-create/http-request.adoc[]
@@ -10,7 +10,7 @@ include::{snippets}/chat-member-create/http-response.adoc[]
 include::{snippets}/chat-member-create/response-fields.adoc[]
 
 [[chat-member-delete]]
-== Chat Member 삭제
+=== Chat Member 삭제
 
 ==== HTTP Request
 include::{snippets}/chat-member-delete/http-request.adoc[]

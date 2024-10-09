@@ -9,10 +9,10 @@ import team4.footwithme.global.exception.ExceptionMessage;
 import team4.footwithme.member.domain.Member;
 import team4.footwithme.resevation.domain.Mercenary;
 import team4.footwithme.resevation.domain.Reservation;
-import team4.footwithme.resevation.repository.MWReservationRepository;
 import team4.footwithme.resevation.repository.MercenaryRepository;
-import team4.footwithme.resevation.service.request.MWMercenaryServiceRequest;
-import team4.footwithme.resevation.service.response.MWMercenaryResponse;
+import team4.footwithme.resevation.repository.ReservationRepository;
+import team4.footwithme.resevation.service.request.MercenaryServiceRequest;
+import team4.footwithme.resevation.service.response.MercenaryResponse;
 
 import java.time.format.DateTimeFormatter;
 
@@ -20,29 +20,31 @@ import java.time.format.DateTimeFormatter;
 @RequiredArgsConstructor
 public class MercenaryServiceImpl implements MercenaryService{
     private final MercenaryRepository mercenaryRepository;
-    private final MWReservationRepository reservationRepository;
+    private final ReservationRepository reservationRepository;
 
     /**
      * 용병 게시판 생성
      * 예약자만 생성 가능
      */
     @Transactional
-    public MWMercenaryResponse createMercenary(MWMercenaryServiceRequest request, Member member) {
+    @Override
+    public MercenaryResponse createMercenary(MercenaryServiceRequest request, Member member) {
         Reservation reservation = getReservationByReservationId(request.reservationId());
 
         checkReservationCreatedBy(reservation, member);
 
-        return new MWMercenaryResponse(mercenaryRepository.save(Mercenary.create(reservation, makeDescription(request.description(), reservation))));
+        return new MercenaryResponse(mercenaryRepository.save(Mercenary.create(reservation, makeDescription(request.description(), reservation))));
     }
 
     /**
      * 단일 용병 게시판 조회
      */
     @Transactional(readOnly = true)
-    public MWMercenaryResponse getMercenary(Long mercenaryId) {
+    @Override
+    public MercenaryResponse getMercenary(Long mercenaryId) {
         Mercenary mercenary = getMercenaryByMercenaryId(mercenaryId);
 
-        return new MWMercenaryResponse(mercenary);
+        return new MercenaryResponse(mercenary);
     }
 
     /**
@@ -51,9 +53,10 @@ public class MercenaryServiceImpl implements MercenaryService{
      * 리스트 및 페이징
      */
     @Transactional(readOnly = true)
-    public Page<MWMercenaryResponse> getMercenaries(Pageable pageable) {
+    @Override
+    public Page<MercenaryResponse> getMercenaries(Pageable pageable) {
         Page<Mercenary> mercenaries = mercenaryRepository.findAllToPage(pageable);
-        return mercenaries.map(MWMercenaryResponse::new);
+        return mercenaries.map(MercenaryResponse::new);
     }
 
     /**
@@ -61,6 +64,7 @@ public class MercenaryServiceImpl implements MercenaryService{
      * 팀장만 삭제 가능
      */
     @Transactional
+    @Override
     public Long deleteMercenary(Long mercenaryId, Member member) {
         Mercenary mercenary = getMercenaryByMercenaryId(mercenaryId);
 

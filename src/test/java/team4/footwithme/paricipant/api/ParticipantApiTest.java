@@ -6,11 +6,11 @@ import org.springframework.http.MediaType;
 import team4.footwithme.ApiTestSupport;
 import team4.footwithme.member.domain.Member;
 import team4.footwithme.member.domain.MemberRole;
-import team4.footwithme.resevation.api.request.MWParticipantUpdateRequest;
+import team4.footwithme.resevation.api.request.ParticipantUpdateRequest;
 import team4.footwithme.resevation.domain.ParticipantRole;
-import team4.footwithme.resevation.service.request.MWParticipantUpdateServiceRequest;
-import team4.footwithme.resevation.service.response.MWParticipantMemberInfo;
-import team4.footwithme.resevation.service.response.MWParticipantResponse;
+import team4.footwithme.resevation.service.request.ParticipantUpdateServiceRequest;
+import team4.footwithme.resevation.service.response.ParticipantMemberInfo;
+import team4.footwithme.resevation.service.response.ParticipantResponse;
 import team4.footwithme.security.WithMockPrincipalDetail;
 
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class MWParticipantApiTest extends ApiTestSupport {
+public class ParticipantApiTest extends ApiTestSupport {
 
     //매칭 예약 용병 인원을 추가할 수 있다.
     @DisplayName("매칭 예약 용병 인원을 추가할 수 있다.")
@@ -32,11 +32,11 @@ public class MWParticipantApiTest extends ApiTestSupport {
     void applyMercenary() throws Exception {
         Long mercenaryId = 1L;
 
-        MWParticipantResponse response = new MWParticipantResponse(
+        ParticipantResponse response = new ParticipantResponse(
                 1L,
                 1L,
                 ParticipantRole.PENDING,
-                new MWParticipantMemberInfo(
+                new ParticipantMemberInfo(
                         1L,
                         "a@a.com",
                         "이름1",
@@ -72,11 +72,11 @@ public class MWParticipantApiTest extends ApiTestSupport {
     void joinReservation() throws Exception {
         Long reservationId = 1L;
 
-        MWParticipantResponse response = new MWParticipantResponse(
+        ParticipantResponse response = new ParticipantResponse(
                 1L,
                 1L,
                 ParticipantRole.PENDING,
-                new MWParticipantMemberInfo(
+                new ParticipantMemberInfo(
                         1L,
                         "a@a.com",
                         "이름1",
@@ -131,16 +131,16 @@ public class MWParticipantApiTest extends ApiTestSupport {
     @WithMockPrincipalDetail(email = "a@a.com")
     void updateParticipant() throws Exception {
         Long participantId = 1L;
-        MWParticipantUpdateRequest request = new MWParticipantUpdateRequest(
+        ParticipantUpdateRequest request = new ParticipantUpdateRequest(
                 participantId,
                 ParticipantRole.ACCEPT
         );
 
-        MWParticipantResponse response = new MWParticipantResponse(
+        ParticipantResponse response = new ParticipantResponse(
                 1L,
                 1L,
                 ParticipantRole.ACCEPT,
-                new MWParticipantMemberInfo(
+                new ParticipantMemberInfo(
                         1L,
                         "a@a.com",
                         "이름1",
@@ -148,7 +148,7 @@ public class MWParticipantApiTest extends ApiTestSupport {
                 )
         );
 
-        given(participantService.updateMercenaryParticipant(any(MWParticipantUpdateServiceRequest.class), any(Member.class)))
+        given(participantService.updateMercenaryParticipant(any(ParticipantUpdateServiceRequest.class), any(Member.class)))
                 .willReturn(response);
 
         mockMvc.perform(put("/api/v1/participant")
@@ -178,11 +178,11 @@ public class MWParticipantApiTest extends ApiTestSupport {
     void getAcceptParticipant() throws Exception {
         Long reservationId = 1L;
 
-        MWParticipantResponse response = new MWParticipantResponse(
+        ParticipantResponse response = new ParticipantResponse(
                 1L,
                 1L,
                 ParticipantRole.ACCEPT,
-                new MWParticipantMemberInfo(
+                new ParticipantMemberInfo(
                         1L,
                         "a@a.com",
                         "이름1",
@@ -190,7 +190,7 @@ public class MWParticipantApiTest extends ApiTestSupport {
                 )
         );
 
-        List<MWParticipantResponse> participantResponses = new ArrayList<>();
+        List<ParticipantResponse> participantResponses = new ArrayList<>();
 
         participantResponses.add(response);
 
@@ -221,11 +221,11 @@ public class MWParticipantApiTest extends ApiTestSupport {
     void getPendingParticipant() throws Exception {
         Long reservationId = 1L;
 
-        MWParticipantResponse response = new MWParticipantResponse(
+        ParticipantResponse response = new ParticipantResponse(
                 1L,
                 1L,
                 ParticipantRole.PENDING,
-                new MWParticipantMemberInfo(
+                new ParticipantMemberInfo(
                         1L,
                         "a@a.com",
                         "이름1",
@@ -233,7 +233,7 @@ public class MWParticipantApiTest extends ApiTestSupport {
                 )
         );
 
-        List<MWParticipantResponse> participantResponses = new ArrayList<>();
+        List<ParticipantResponse> participantResponses = new ArrayList<>();
 
         participantResponses.add(response);
 
@@ -264,11 +264,11 @@ public class MWParticipantApiTest extends ApiTestSupport {
     void getAllParticipant() throws Exception {
         Long reservationId = 1L;
 
-        MWParticipantResponse response = new MWParticipantResponse(
+        ParticipantResponse response = new ParticipantResponse(
                 1L,
                 1L,
                 ParticipantRole.IGNORE,
-                new MWParticipantMemberInfo(
+                new ParticipantMemberInfo(
                         1L,
                         "a@a.com",
                         "이름1",
@@ -276,7 +276,7 @@ public class MWParticipantApiTest extends ApiTestSupport {
                 )
         );
 
-        List<MWParticipantResponse> participantResponses = new ArrayList<>();
+        List<ParticipantResponse> participantResponses = new ArrayList<>();
 
         participantResponses.add(response);
 

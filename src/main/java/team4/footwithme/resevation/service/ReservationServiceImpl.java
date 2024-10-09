@@ -8,6 +8,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import team4.footwithme.chat.service.event.ReservationDeletedEvent;
 import team4.footwithme.chat.service.event.ReservationMembersJoinEvent;
 import team4.footwithme.chat.service.event.ReservationPublishedEvent;
 import team4.footwithme.global.exception.ExceptionMessage;
@@ -16,10 +17,10 @@ import team4.footwithme.member.domain.Gender;
 import team4.footwithme.member.domain.Member;
 import team4.footwithme.member.repository.MemberRepository;
 import team4.footwithme.resevation.domain.*;
-import team4.footwithme.resevation.repository.MercenaryRepository;
-import team4.footwithme.resevation.repository.ParticipantRepository;
-import team4.footwithme.resevation.repository.ReservationRepository;
+import team4.footwithme.resevation.repository.*;
 import team4.footwithme.resevation.service.response.ReservationsResponse;
+import team4.footwithme.resevation.service.response.ReservationInfoDetailsResponse;
+import team4.footwithme.resevation.service.response.ReservationInfoResponse;
 import team4.footwithme.stadium.domain.Court;
 import team4.footwithme.stadium.repository.CourtRepository;
 import team4.footwithme.team.domain.Team;
@@ -27,6 +28,7 @@ import team4.footwithme.team.repository.TeamRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -40,6 +42,7 @@ public class ReservationServiceImpl implements ReservationService {
     private final ParticipantRepository participantRepository;
     private final MercenaryRepository mercenaryRepository;
     private final ApplicationEventPublisher eventPublisher;
+    private final GameRepository gameRepository;
 
     @Transactional(readOnly = true)
     public Slice<ReservationsResponse> findReadyReservations(Long reservationId, Integer page) {
@@ -116,6 +119,41 @@ public class ReservationServiceImpl implements ReservationService {
         }
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<ReservationInfoResponse> getTeamReservationInfo(Long teamId) {
+
+        List<Reservation> reservations = findByTeamTeamIdOrThrowException(teamId);
+
+        List<ReservationInfoResponse> list = reservations.stream()
+                .map(ReservationInfoResponse::from)
+                .collect(Collectors.toList());
+
+        return list;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ReservationInfoDetailsResponse getTeamReservationInfoDetails(Long reservationId) {
+        Reservation reservation = reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 예약을 찾을 수 없습니다."));
+
+        List<Participant> participants = participantRepository.findParticipantsByReservationId(reservationId);
+
+        //상대팀 조회
+        Reservation matchedTeam = gameRepository.findFirstTeamReservationBySecondTeamReservationId(reservationId)
+                .orElse(null);
+        //상대팀 이름 --> 없으면 null
+        String matchTeamName;
+        if(matchedTeam == null) {
+            matchTeamName = null;
+        } else{
+            matchTeamName = matchedTeam.getTeam().getName();
+        }
+
+        return ReservationInfoDetailsResponse.of(reservation, participants, matchTeamName);
+    }
+
     private <T> T findEntityByIdOrThrowException(CustomGlobalRepository<T> repository, Long id, ExceptionMessage exceptionMessage) {
         return repository.findActiveById(id)
                 .orElseThrow(() -> {
@@ -123,4 +161,56 @@ public class ReservationServiceImpl implements ReservationService {
                     return new IllegalArgumentException(exceptionMessage.getText());
                 });
     }
+
+    public List<Reservation> findByTeamTeamIdOrThrowException(Long teamId) {
+        List<Reservation> result = reservationRepository.findByTeamTeamId(teamId);
+        if(result.isEmpty()){
+            throw new IllegalArgumentException("해당 팀이 존재하지 않습니다.");
+        }
+        return result;
+    }
+
+    @Transactional
+    @Override
+    public Long deleteReservation(Long reservationId, Member member) {
+        Reservation reservation = reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 예약입니다."));
+
+        if(reservation.getReservationStatus() != ReservationStatus.RECRUITING){
+            throw new IllegalArgumentException("취소할 수 없는 예약 입니다.");
+        }
+
+        if(!reservation.getMember().getMemberId().equals(member.getMemberId())){
+            throw new IllegalArgumentException("예약한 사람만이 취소할 수 있습니다.");
+        }
+
+        deleteGames(reservationId);
+        deleteMercenaries(reservationId);
+        deleteParticipants(reservationId);
+
+        reservationRepository.delete(reservation);
+        eventPublisher.publishEvent(new ReservationDeletedEvent(reservationId));
+
+        return reservationId;
+    }
+
+    @Transactional
+    public void deleteGames(Long reservationId){
+        List<Game> games = gameRepository.findAllByReservationId(reservationId);
+        gameRepository.deleteAllInBatch(games);
+    }
+
+    @Transactional
+    public void deleteMercenaries(Long reservationId){
+        List<Mercenary> mercenaries = mercenaryRepository.findAllMercenaryByReservationId(reservationId);
+        mercenaryRepository.deleteAllInBatch(mercenaries);
+    }
+
+    @Transactional
+    public void deleteParticipants(Long reservationId){
+        List<Participant> participants = participantRepository.findAllByReservationId(reservationId);
+        participantRepository.deleteAllInBatch(participants);
+    }
+
+
 }

@@ -3,18 +3,18 @@ package team4.footwithme.resevation.service.response;
 import team4.footwithme.resevation.domain.Participant;
 import team4.footwithme.resevation.domain.ParticipantRole;
 
-public record MWParticipantResponse(
+public record ParticipantResponse(
         Long participantId,
         Long reservationId,
         ParticipantRole role,
-        MWParticipantMemberInfo memberInfo
+        ParticipantMemberInfo memberInfo
         ) {
-    public MWParticipantResponse(Participant participant) {
+    public ParticipantResponse(Participant participant) {
         this(
                 participant.getParticipantId(),
                 participant.getReservation().getReservationId(),
                 participant.getParticipantRole(),
-                new MWParticipantMemberInfo(participant.getMember())
+                new ParticipantMemberInfo(participant.getMember())
         );
     }
 }
