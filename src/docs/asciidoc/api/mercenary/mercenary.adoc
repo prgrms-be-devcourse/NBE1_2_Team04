@@ -4,7 +4,6 @@
 ==== HTTP Request
 include::{snippets}/mercenary-create/http-request.adoc[]
 include::{snippets}/mercenary-create/request-fields.adoc[]
-include::{snippets}/mercenary-create/path-parameters.adoc[]
 
 ==== HTTP Response
 include::{snippets}/mercenary-create/http-response.adoc[]
