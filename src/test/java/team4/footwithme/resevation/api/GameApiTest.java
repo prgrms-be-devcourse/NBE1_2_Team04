@@ -28,12 +28,12 @@ class GameApiTest extends ApiTestSupport {
         Mockito.when(gameService.registerGame(any(), any())).thenReturn(response);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/game/register")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value("201"))
-                .andExpect(jsonPath("$.status").value("CREATED"));
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.code").value("201"))
+            .andExpect(jsonPath("$.status").value("CREATED"));
     }
 
     @Test
@@ -45,12 +45,12 @@ class GameApiTest extends ApiTestSupport {
         Mockito.when(gameService.updateGameStatus(any(), any())).thenReturn("게임 상태가 업데이트되었습니다.");
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/game/status")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value("200"))
-                .andExpect(jsonPath("$.status").value("OK"));
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.code").value("200"))
+            .andExpect(jsonPath("$.status").value("OK"));
     }
 
     @Test
@@ -60,12 +60,12 @@ class GameApiTest extends ApiTestSupport {
         GameRegisterRequest request = new GameRegisterRequest(null, null);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/game/register")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andDo(print())
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value(400))
-                .andExpect(jsonPath("$.message").exists());
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.code").value(400))
+            .andExpect(jsonPath("$.message").exists());
     }
 
     @Test
@@ -75,11 +75,11 @@ class GameApiTest extends ApiTestSupport {
         GameStatusUpdateRequest request = new GameStatusUpdateRequest(1L, null); // 상태 필드가 누락됨
 
         mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/game/status")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andDo(print())
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value(400))
-                .andExpect(jsonPath("$.message").exists());
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+            .andDo(print())
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.code").value(400))
+            .andExpect(jsonPath("$.message").exists());
     }
 }

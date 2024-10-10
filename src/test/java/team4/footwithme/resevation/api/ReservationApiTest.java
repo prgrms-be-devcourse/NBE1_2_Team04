@@ -37,13 +37,13 @@ class ReservationApiTest extends ApiTestSupport {
         when(reservationService.findReadyReservations(eq(1L), eq(0))).thenReturn(reservations);
 
         mockMvc.perform(get("/api/v1/reservation/ready")
-                        .param("reservationId", "1")
-                        .param("page", "0"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.content[0].reservationId").value(2L))
-                .andExpect(jsonPath("$.data.content[0].courtId").value(1L))
-                .andExpect(jsonPath("$.data.content[0].memberId").value(2L))
-                .andExpect(jsonPath("$.data.content[0].teamId").value(2L))
-                .andExpect(jsonPath("$.data.content[0].gender").value("MALE"));
+                .param("reservationId", "1")
+                .param("page", "0"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.content[0].reservationId").value(2L))
+            .andExpect(jsonPath("$.data.content[0].courtId").value(1L))
+            .andExpect(jsonPath("$.data.content[0].memberId").value(2L))
+            .andExpect(jsonPath("$.data.content[0].teamId").value(2L))
+            .andExpect(jsonPath("$.data.content[0].gender").value("MALE"));
     }
 }

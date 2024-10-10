@@ -13,11 +13,11 @@ import java.util.Optional;
 public interface MemberRepository extends JpaRepository<Member, Long>, CustomMemberRepository, CustomGlobalRepository {
 
     @Query("select m from Member m where m.isDeleted = 'false' and m.memberId = :id")
-    Optional<Member> findByMemberId(@Param("id")Long memberId);
-  
-  @Query("select m from Member m where m.isDeleted = 'false' and m.email = :email")
+    Optional<Member> findByMemberId(@Param("id") Long memberId);
+
+    @Query("select m from Member m where m.isDeleted = 'false' and m.email = :email")
     Optional<Member> findByEmail(String email);
 
     @Query("select m from Member m where m.isDeleted = 'false' and m.memberId = :id")
-    Optional<Member> findActiveById(@Param("id")Long memberId);
+    Optional<Member> findActiveById(@Param("id") Long memberId);
 }

@@ -2,7 +2,6 @@ package team4.footwithme.stadium.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.jpa.repository.support.JpaRepositoryFactory;
 import team4.footwithme.global.domain.IsDeleted;
 
 import java.util.List;

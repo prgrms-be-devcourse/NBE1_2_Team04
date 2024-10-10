@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = StadiumApi.class, excludeFilters = {
-        @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = JwtTokenFilter.class)
+    @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = JwtTokenFilter.class)
 })
 @AutoConfigureMockMvc(addFilters = false)
 class StadiumApiTest extends ApiTestSupport {
@@ -59,11 +59,11 @@ class StadiumApiTest extends ApiTestSupport {
         when(stadiumService.getStadiumList(eq(0), eq("STADIUM"))).thenReturn(stadiums);
 
         mockMvc.perform(get("/api/v1/stadium/stadiums")
-                        .param("page", "0")
-                        .param("sort", "STADIUM"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.content[0].name").value("Stadium1"))
-                .andExpect(jsonPath("$.data.content[1].name").value("Stadium2"));
+                .param("page", "0")
+                .param("sort", "STADIUM"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.content[0].name").value("Stadium1"))
+            .andExpect(jsonPath("$.data.content[1].name").value("Stadium2"));
     }
 
     @Test
@@ -72,9 +72,9 @@ class StadiumApiTest extends ApiTestSupport {
         when(stadiumService.getStadiumDetail(eq(1L))).thenReturn(stadiumDetail);
 
         mockMvc.perform(get("/api/v1/stadium/stadiums/1/detail"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.name").value("Stadium1"))
-                .andExpect(jsonPath("$.data.address").value("seoul"));
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.name").value("Stadium1"))
+            .andExpect(jsonPath("$.data.address").value("seoul"));
     }
 
     @Test
@@ -84,11 +84,11 @@ class StadiumApiTest extends ApiTestSupport {
         when(stadiumService.getStadiumsByName(eq("Stadium1"), eq(0), eq("STADIUM"))).thenReturn(stadiums);
 
         mockMvc.perform(get("/api/v1/stadium/stadiums/search/name")
-                        .param("query", "Stadium1")
-                        .param("page", "0")
-                        .param("sort", "STADIUM"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.content[0].name").value("Stadium1"));
+                .param("query", "Stadium1")
+                .param("page", "0")
+                .param("sort", "STADIUM"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.content[0].name").value("Stadium1"));
     }
 
     @Test
@@ -98,11 +98,11 @@ class StadiumApiTest extends ApiTestSupport {
         when(stadiumService.getStadiumsByAddress(eq("seoul"), eq(0), eq("STADIUM"))).thenReturn(stadiums);
 
         mockMvc.perform(get("/api/v1/stadium/stadiums/search/address")
-                        .param("query", "seoul")
-                        .param("page", "0")
-                        .param("sort", "STADIUM"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.content[0].address").value("seoul"));
+                .param("query", "seoul")
+                .param("page", "0")
+                .param("sort", "STADIUM"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.content[0].address").value("seoul"));
     }
 
     @Test
@@ -113,12 +113,12 @@ class StadiumApiTest extends ApiTestSupport {
         when(stadiumService.getStadiumsWithinDistance(any(), eq(0), eq("STADIUM"))).thenReturn(stadiums);
 
         mockMvc.perform(post("/api/v1/stadium/stadiums/search/location")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request))
-                        .param("page", "0")
-                        .param("sort", "STADIUM"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.content[0].name").value("Stadium1"));
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request))
+                .param("page", "0")
+                .param("sort", "STADIUM"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.content[0].name").value("Stadium1"));
     }
 
     @Test
@@ -127,12 +127,12 @@ class StadiumApiTest extends ApiTestSupport {
         StadiumSearchByLocationRequest invalidRequest = new StadiumSearchByLocationRequest(1000.0, 0.0, 50.0);
 
         mockMvc.perform(post("/api/v1/stadium/stadiums/search/location")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(invalidRequest))
-                        .param("page", "0")
-                        .param("sort", "STADIUM"))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("위도 값은 90도 이하이어야 합니다."));
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(invalidRequest))
+                .param("page", "0")
+                .param("sort", "STADIUM"))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.message").value("위도 값은 90도 이하이어야 합니다."));
     }
 
     @Test
@@ -141,11 +141,11 @@ class StadiumApiTest extends ApiTestSupport {
         StadiumSearchByLocationRequest invalidRequest = new StadiumSearchByLocationRequest(0.0, -1000.0, 50.0);
 
         mockMvc.perform(post("/api/v1/stadium/stadiums/search/location")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(invalidRequest))
-                        .param("page", "0")
-                        .param("sort", "STADIUM"))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("경도 값은 -180도 이상이어야 합니다."));
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(invalidRequest))
+                .param("page", "0")
+                .param("sort", "STADIUM"))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.message").value("경도 값은 -180도 이상이어야 합니다."));
     }
 }

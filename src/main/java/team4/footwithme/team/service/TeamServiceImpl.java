@@ -6,8 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team4.footwithme.chat.service.event.TeamDeletedEvent;
 import team4.footwithme.chat.service.event.TeamPublishedEvent;
-import team4.footwithme.global.domain.IsDeleted;
-import team4.footwithme.member.domain.*;
+import team4.footwithme.member.domain.Member;
 import team4.footwithme.member.repository.MemberRepository;
 import team4.footwithme.team.domain.*;
 import team4.footwithme.team.repository.TeamMemberRepository;
@@ -76,7 +75,7 @@ public class TeamServiceImpl implements TeamService {
         List<TeamRate> teamRates = teamRateRepository.findEvaluationsByTeam(teamEntity);
         List<String> evaluations = new ArrayList<>();
 
-        for(TeamRate teamRate : teamRates){
+        for (TeamRate teamRate : teamRates) {
             evaluations.add(teamRate.getEvaluation());
         }
 
@@ -134,20 +133,20 @@ public class TeamServiceImpl implements TeamService {
     }
 
 
-    public Team findTeamByIdOrThrowException(long id){
+    public Team findTeamByIdOrThrowException(long id) {
         Team team = teamRepository.findByTeamId(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 팀이 존재하지 않습니다."));
+            .orElseThrow(() -> new IllegalArgumentException("해당 팀이 존재하지 않습니다."));
         return team;
     }
 
-    public TeamMember findTeamMemberByIdOrThrowException(Long teamId, Long memberId){
+    public TeamMember findTeamMemberByIdOrThrowException(Long teamId, Long memberId) {
         TeamMember teamMember = teamMemberRepository.findByTeamIdAndMemberId(teamId, memberId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 팀원입니다."));
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 팀원입니다."));
         return teamMember;
     }
 
-    public void checkAuthority(Long teamId, TeamMember teamMember){
-        if(teamMember.getTeam().getTeamId() != teamId || teamMember.getRole() != TeamMemberRole.CREATOR) {
+    public void checkAuthority(Long teamId, TeamMember teamMember) {
+        if (teamMember.getTeam().getTeamId() != teamId || teamMember.getRole() != TeamMemberRole.CREATOR) {
             throw new IllegalArgumentException("접근 권한이 없습니다.");
         }
     }

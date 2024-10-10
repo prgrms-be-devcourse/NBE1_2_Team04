@@ -24,29 +24,29 @@ public class ChatMemberApiTest extends ApiTestSupport {
     @Test
     public void addChatMember() throws Exception {
         ChatMemberRequest request = new ChatMemberRequest(
-                1L,
-                1L
+            1L,
+            1L
         );
 
         ChatMemberResponse response = new ChatMemberResponse(
-                1L,
-                1L
+            1L,
+            1L
         );
 
         given(chatMemberService.joinChatMember(any(ChatMemberServiceRequest.class)))
-                .willReturn(response);
+            .willReturn(response);
 
         mockMvc.perform(post("/api/v1/chat/member").with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value("201"))
-                .andExpect(jsonPath("$.status").value("CREATED"))
-                .andExpect(jsonPath("$.message").value("CREATED"))
-                .andExpect(jsonPath("$.data").isMap())
-                .andExpect(jsonPath("$.data.chatroomId").value(1L))
-                .andExpect(jsonPath("$.data.memberId").value(1L));
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.code").value("201"))
+            .andExpect(jsonPath("$.status").value("CREATED"))
+            .andExpect(jsonPath("$.message").value("CREATED"))
+            .andExpect(jsonPath("$.data").isMap())
+            .andExpect(jsonPath("$.data.chatroomId").value(1L))
+            .andExpect(jsonPath("$.data.memberId").value(1L));
     }
 
     // 채팅방에서 멤버가 퇴장할 수 있다.
@@ -54,28 +54,28 @@ public class ChatMemberApiTest extends ApiTestSupport {
     @Test
     public void removeChatMember() throws Exception {
         ChatMemberRequest request = new ChatMemberRequest(
-                1L,
-                1L
+            1L,
+            1L
         );
 
         ChatMemberResponse response = new ChatMemberResponse(
-                1L,
-                1L
+            1L,
+            1L
         );
 
         given(chatMemberService.leaveChatMember(any(ChatMemberServiceRequest.class)))
-                .willReturn(response);
+            .willReturn(response);
 
         mockMvc.perform(delete("/api/v1/chat/member").with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value("200"))
-                .andExpect(jsonPath("$.status").value("OK"))
-                .andExpect(jsonPath("$.message").value("OK"))
-                .andExpect(jsonPath("$.data").isMap())
-                .andExpect(jsonPath("$.data.chatroomId").value(1L))
-                .andExpect(jsonPath("$.data.memberId").value(1L));
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.code").value("200"))
+            .andExpect(jsonPath("$.status").value("OK"))
+            .andExpect(jsonPath("$.message").value("OK"))
+            .andExpect(jsonPath("$.data").isMap())
+            .andExpect(jsonPath("$.data.chatroomId").value(1L))
+            .andExpect(jsonPath("$.data.memberId").value(1L));
     }
 }

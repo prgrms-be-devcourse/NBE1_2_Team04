@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import team4.footwithme.docs.RestDocsSupport;
-import team4.footwithme.member.domain.Member;
 import team4.footwithme.vote.api.ChoiceApi;
 import team4.footwithme.vote.api.request.ChoiceCreateRequest;
 import team4.footwithme.vote.service.VoteService;
@@ -53,7 +52,7 @@ public class ChoiceApiDocs extends RestDocsSupport {
                 endAt,
                 "진행 중",
                 List.of(
-                    new VoteItemResponse(1L, "2021-12-25 12:00", List.of(1L,2L)),
+                    new VoteItemResponse(1L, "2021-12-25 12:00", List.of(1L, 2L)),
                     new VoteItemResponse(2L, "2021-12-26 12:00", List.of(1L)),
                     new VoteItemResponse(3L, "2021-12-27 12:00", List.of())
                 )
@@ -116,7 +115,7 @@ public class ChoiceApiDocs extends RestDocsSupport {
                 endAt,
                 "진행 중",
                 List.of(
-                    new VoteItemResponse(1L, "2021-12-25 12:00", List.of(1L,2L)),
+                    new VoteItemResponse(1L, "2021-12-25 12:00", List.of(1L, 2L)),
                     new VoteItemResponse(2L, "2021-12-26 12:00", List.of(1L)),
                     new VoteItemResponse(3L, "2021-12-27 12:00", List.of())
                 )

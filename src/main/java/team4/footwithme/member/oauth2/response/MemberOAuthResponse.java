@@ -4,15 +4,15 @@ import team4.footwithme.member.domain.LoginProvider;
 import team4.footwithme.member.domain.Member;
 
 public record MemberOAuthResponse(
-        LoginProvider provider,
-        String snsId,
-        String email
+    LoginProvider provider,
+    String snsId,
+    String email
 ) {
-    public static MemberOAuthResponse from(Member member){
+    public static MemberOAuthResponse from(Member member) {
         return new MemberOAuthResponse(
-                member.getLoginType().getLoginProvider(),
-                member.getLoginType().getSnsId(),
-                member.getEmail()
+            member.getLoginType().getLoginProvider(),
+            member.getLoginType().getSnsId(),
+            member.getEmail()
         );
     }
 }

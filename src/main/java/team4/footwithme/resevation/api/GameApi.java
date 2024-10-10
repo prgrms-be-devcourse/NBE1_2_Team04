@@ -21,23 +21,23 @@ public class GameApi {
 
     @PostMapping("/register")
     public ApiResponse<GameDetailResponse> registerGame(
-            @AuthenticationPrincipal PrincipalDetails currentUser,
-            @Valid @RequestBody GameRegisterRequest request) {
+        @AuthenticationPrincipal PrincipalDetails currentUser,
+        @Valid @RequestBody GameRegisterRequest request) {
         return ApiResponse.created(gameService.registerGame(currentUser.getMember(), request.toServiceRequest()));
     }
 
     @GetMapping("/game")
     public ApiResponse<Slice<GameDetailResponse>> getPendingGames(
-            @AuthenticationPrincipal PrincipalDetails currentUser,
-            @RequestParam(defaultValue = "0", required = false) Integer page,
-            @RequestParam Long reservationId) {
+        @AuthenticationPrincipal PrincipalDetails currentUser,
+        @RequestParam(defaultValue = "0", required = false) Integer page,
+        @RequestParam Long reservationId) {
         return ApiResponse.ok(gameService.findPendingGames(currentUser.getMember(), reservationId, page));
     }
 
     @PutMapping("/status")
     public ApiResponse<String> updateGameStatus(
-            @AuthenticationPrincipal PrincipalDetails currentUser,
-            @Valid @RequestBody GameStatusUpdateRequest request) {
+        @AuthenticationPrincipal PrincipalDetails currentUser,
+        @Valid @RequestBody GameStatusUpdateRequest request) {
         return ApiResponse.ok(gameService.updateGameStatus(currentUser.getMember(), request.toServiceRequest()));
     }
 

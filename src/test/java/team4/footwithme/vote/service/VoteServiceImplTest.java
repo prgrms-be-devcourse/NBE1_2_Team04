@@ -1,7 +1,6 @@
 package team4.footwithme.vote.service;
 
 import jakarta.persistence.EntityManager;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,8 +21,8 @@ import team4.footwithme.vote.repository.ChoiceRepository;
 import team4.footwithme.vote.repository.VoteItemRepository;
 import team4.footwithme.vote.repository.VoteRepository;
 import team4.footwithme.vote.service.request.ChoiceCreateServiceRequest;
-import team4.footwithme.vote.service.request.VoteDateCreateServiceRequest;
 import team4.footwithme.vote.service.request.VoteCourtCreateServiceRequest;
+import team4.footwithme.vote.service.request.VoteDateCreateServiceRequest;
 import team4.footwithme.vote.service.request.VoteUpdateServiceRequest;
 import team4.footwithme.vote.service.response.AllVoteResponse;
 import team4.footwithme.vote.service.response.VoteResponse;
@@ -226,7 +225,7 @@ class VoteServiceImplTest extends IntegrationTestSupport {
             .hasSize(3)
             .extracting("voteItemId", "content", "memberIds")
             .containsExactlyInAnyOrder(
-                tuple(savedVoteItems.get(0).getVoteItemId(), "야외 구장 A", List.of(choices.get(0).getMemberId(),choices.get(2).getMemberId())),
+                tuple(savedVoteItems.get(0).getVoteItemId(), "야외 구장 A", List.of(choices.get(0).getMemberId(), choices.get(2).getMemberId())),
                 tuple(savedVoteItems.get(1).getVoteItemId(), "야외 구장 B", List.of(choices.get(0).getMemberId())),
                 tuple(savedVoteItems.get(2).getVoteItemId(), "야외 구장 C", List.of())
             );

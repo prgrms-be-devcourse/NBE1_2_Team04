@@ -18,7 +18,7 @@ import java.time.format.DateTimeFormatter;
 
 @Service
 @RequiredArgsConstructor
-public class MercenaryServiceImpl implements MercenaryService{
+public class MercenaryServiceImpl implements MercenaryService {
     private final MercenaryRepository mercenaryRepository;
     private final ReservationRepository reservationRepository;
 
@@ -77,24 +77,24 @@ public class MercenaryServiceImpl implements MercenaryService{
 
     private String makeDescription(String description, Reservation reservation) {
         return reservation.getMatchDate().format(DateTimeFormatter.ofPattern("'('MM'/'dd HH':'mm')'")) +
-                "(" +
-                reservation.getCourt().getStadium().getName() +
-                ") " +
-                description;
+            "(" +
+            reservation.getCourt().getStadium().getName() +
+            ") " +
+            description;
     }
 
     private Reservation getReservationByReservationId(Long reservationId) {
         return reservationRepository.findByReservationId(reservationId)
-                .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.RESERVATION_NOT_FOUND.getText()));
+            .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.RESERVATION_NOT_FOUND.getText()));
     }
 
     private Mercenary getMercenaryByMercenaryId(Long mercenaryId) {
         return mercenaryRepository.findByMercenaryId(mercenaryId)
-                .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.MERCENARY_NOT_FOUND.getText()));
+            .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.MERCENARY_NOT_FOUND.getText()));
     }
 
     private void checkReservationCreatedBy(Reservation reservation, Member member) {
-        if(!reservation.getMember().getMemberId().equals(member.getMemberId())) {
+        if (!reservation.getMember().getMemberId().equals(member.getMemberId())) {
             throw new IllegalArgumentException(ExceptionMessage.RESERVATION_NOT_MEMBER.getText());
         }
     }

@@ -30,9 +30,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(final StompEndpointRegistry registry) {
         registry
-                .addEndpoint("/ws")     // 엔드포인트: /ws
-                .setAllowedOriginPatterns("*")
-                .setAllowedOrigins("*");
+            .addEndpoint("/ws")     // 엔드포인트: /ws
+            .setAllowedOriginPatterns("*")
+            .setAllowedOrigins("*");
 //                .withSockJS();
     }
 }

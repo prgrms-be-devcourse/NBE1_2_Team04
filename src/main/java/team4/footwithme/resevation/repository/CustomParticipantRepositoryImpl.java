@@ -16,22 +16,22 @@ public class CustomParticipantRepositoryImpl implements CustomParticipantReposit
 
     public List<Participant> findParticipantByReservationIdAndRole(Long reservationId) {
         return queryFactory
-                .select(participant)
-                .from(participant)
-                .where(participant.isDeleted.eq(IsDeleted.FALSE)
-                        .and(participant.reservation.reservationId.eq(reservationId))
-                        .and(participant.participantRole.eq(ParticipantRole.MEMBER)
-                                .or(participant.participantRole.eq(ParticipantRole.ACCEPT))))
-                .fetch();
+            .select(participant)
+            .from(participant)
+            .where(participant.isDeleted.eq(IsDeleted.FALSE)
+                .and(participant.reservation.reservationId.eq(reservationId))
+                .and(participant.participantRole.eq(ParticipantRole.MEMBER)
+                    .or(participant.participantRole.eq(ParticipantRole.ACCEPT))))
+            .fetch();
     }
 
     public List<Participant> findParticipantMercenaryByReservationId(Long reservationId) {
         return queryFactory
-                .select(participant)
-                .from(participant)
-                .where(participant.isDeleted.eq(IsDeleted.FALSE)
-                        .and(participant.reservation.reservationId.eq(reservationId))
-                        .and(participant.participantRole.eq(ParticipantRole.PENDING)))
-                .fetch();
+            .select(participant)
+            .from(participant)
+            .where(participant.isDeleted.eq(IsDeleted.FALSE)
+                .and(participant.reservation.reservationId.eq(reservationId))
+                .and(participant.participantRole.eq(ParticipantRole.PENDING)))
+            .fetch();
     }
 }

@@ -48,7 +48,6 @@ public enum ExceptionMessage {
 
     //Game
     GAME_NOT_FOUND("해당 게임을 찾을 수 없습니다."),
-    GAME_STATUS_NOT_VALID("게임 상태는 READY 또는 IGNORE만 가능합니다.")
-    ;
+    GAME_STATUS_NOT_VALID("게임 상태는 READY 또는 IGNORE만 가능합니다.");
     private final String text;
 }

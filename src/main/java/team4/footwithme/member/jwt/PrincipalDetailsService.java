@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import team4.footwithme.member.domain.Member;
 import team4.footwithme.member.repository.MemberRepository;
 
-import java.util.Collection;
 import java.util.Collections;
 
 @Service
@@ -22,7 +21,7 @@ public class PrincipalDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일 입니다."));
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일 입니다."));
 
         GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(member.getMemberRole().getText());
 

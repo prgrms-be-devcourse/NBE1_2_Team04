@@ -4,8 +4,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import team4.footwithme.stadium.domain.Stadium;
 
-import java.util.List;
-
 public interface CustomStadiumRepository {
 
     Slice<Stadium> findStadiumsByLocation(Double latitude, Double longitude, Double distance, Pageable pageable);

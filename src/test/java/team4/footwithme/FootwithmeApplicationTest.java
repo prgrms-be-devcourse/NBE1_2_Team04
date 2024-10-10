@@ -9,5 +9,5 @@ class FootwithmeApplicationTest {
     @Test
     void contextLoads() {
     }
-  
+
 }

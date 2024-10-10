@@ -10,7 +10,9 @@ import java.lang.annotation.RetentionPolicy;
 @WithSecurityContext(factory = CustomSecurityContextFactory.class)
 public @interface WithMockPrincipalDetail {
     String email();
+
     MemberRole role() default MemberRole.USER;
+
     String password() default "12345678a!";
 
 }

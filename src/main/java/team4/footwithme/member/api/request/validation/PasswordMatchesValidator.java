@@ -2,6 +2,7 @@ package team4.footwithme.member.api.request.validation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+
 import java.lang.reflect.Field;
 
 public class PasswordMatchesValidator implements ConstraintValidator<PasswordMatches, Object> {
@@ -28,7 +29,7 @@ public class PasswordMatchesValidator implements ConstraintValidator<PasswordMat
             String passwordValue = (String) password.get(value);
             String passwordConfirmValue = (String) passwordConfirm.get(value);
 
-            if(passwordValue == null && passwordConfirmValue == null){ // OAuth 2.0 로그인 일 시
+            if (passwordValue == null && passwordConfirmValue == null) { // OAuth 2.0 로그인 일 시
                 return true;
             }
 

@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ParticipantRepository extends JpaRepository<Participant,Long> , CustomParticipantRepository{
+public interface ParticipantRepository extends JpaRepository<Participant, Long>, CustomParticipantRepository {
     @Query("select p from Participant p where p.isDeleted = 'false' and p.reservation.reservationId = :id")
     List<Participant> findParticipantsByReservationId(@Param("id") Long reservationId);
 

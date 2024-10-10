@@ -20,8 +20,8 @@ public class CourtApi {
 
     @GetMapping("/")
     public ApiResponse<Slice<CourtsResponse>> getAllCourts(
-            @RequestParam(defaultValue = "0", required = false) Integer page,
-            @RequestParam(defaultValue = "COURT", required = false) @CourtAllowedValues String sort) {
+        @RequestParam(defaultValue = "0", required = false) Integer page,
+        @RequestParam(defaultValue = "COURT", required = false) @CourtAllowedValues String sort) {
         Slice<CourtsResponse> courts = courtService.getAllCourts(page, sort);
         return ApiResponse.ok(courts);
     }
@@ -29,9 +29,9 @@ public class CourtApi {
 
     @GetMapping("/{stadiumId}/courts")
     public ApiResponse<Slice<CourtsResponse>> getCourtsByStadiumId(
-            @PathVariable Long stadiumId,
-            @RequestParam(defaultValue = "0", required = false) Integer page,
-            @RequestParam(defaultValue = "COURT", required = false) @CourtAllowedValues String sort) {
+        @PathVariable Long stadiumId,
+        @RequestParam(defaultValue = "0", required = false) Integer page,
+        @RequestParam(defaultValue = "COURT", required = false) @CourtAllowedValues String sort) {
         Slice<CourtsResponse> courts = courtService.getCourtsByStadiumId(stadiumId, page, sort);
         return ApiResponse.ok(courts);
     }

@@ -46,9 +46,9 @@ class CustomStadiumRepositoryImplTest extends IntegrationTestSupport {
         Slice<Stadium> result = stadiumRepository.findStadiumsByLocation(searchLatitude, searchLongitude, distance, pageable);
 
         assertThat(result.getContent())
-                .hasSize(2)
-                .extracting(Stadium::getName)
-                .containsExactlyInAnyOrder("Stadium1", "Stadium3");
+            .hasSize(2)
+            .extracting(Stadium::getName)
+            .containsExactlyInAnyOrder("Stadium1", "Stadium3");
     }
 
     @DisplayName("주어진 위치와 거리 밖의 풋살장은 조회되지 않는다.")
@@ -75,9 +75,9 @@ class CustomStadiumRepositoryImplTest extends IntegrationTestSupport {
 
 
         assertThat(result.getContent())
-                .hasSize(1)
-                .extracting(Stadium::getName)
-                .containsExactly("Stadium1");
+            .hasSize(1)
+            .extracting(Stadium::getName)
+            .containsExactly("Stadium1");
     }
 
     @DisplayName("페이지네이션이 정상적으로 동작한다.")
@@ -104,7 +104,7 @@ class CustomStadiumRepositoryImplTest extends IntegrationTestSupport {
 
 
         assertThat(result.getContent())
-                .hasSize(2);
+            .hasSize(2);
         assertThat(result.hasNext()).isTrue();
     }
 

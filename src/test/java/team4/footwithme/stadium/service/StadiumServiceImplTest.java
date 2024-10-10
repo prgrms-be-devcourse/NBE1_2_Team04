@@ -40,28 +40,28 @@ class StadiumServiceImplTest extends IntegrationTestSupport {
     @BeforeEach
     void setUp() {
         testMember = Member.builder()
-                .email("test@example.com")
-                .password("password")
-                .name("Test User")
-                .phoneNumber("010-1234-5678")
-                .loginType(LoginType.builder()
-                        .loginProvider(LoginProvider.ORIGINAL)
-                        .snsId("example@example.com")
-                        .build())
-                .gender(Gender.MALE)
-                .memberRole(MemberRole.USER)
-                .termsAgreed(TermsAgreed.AGREE)
-                .build();
+            .email("test@example.com")
+            .password("password")
+            .name("Test User")
+            .phoneNumber("010-1234-5678")
+            .loginType(LoginType.builder()
+                .loginProvider(LoginProvider.ORIGINAL)
+                .snsId("example@example.com")
+                .build())
+            .gender(Gender.MALE)
+            .memberRole(MemberRole.USER)
+            .termsAgreed(TermsAgreed.AGREE)
+            .build();
         memberRepository.save(testMember);
 
         Stadium stadium1 = Stadium.create(testMember, "Stadium1", "seoul", "010-1111-1111", "Description1",
-                37.5642135, 127.0016985);
+            37.5642135, 127.0016985);
 
         Stadium stadium2 = Stadium.create(testMember, "Stadium2", "busan", "010-2222-2222", "Description2",
-                35.1379222, 129.05562775);
+            35.1379222, 129.05562775);
 
         Stadium stadium3 = Stadium.create(testMember, "Stadium3", "daejeon", "010-3333-3333", "Description3",
-                36.3504119, 127.3845475);
+            36.3504119, 127.3845475);
 
         stadiumRepository.save(stadium1);
         stadiumRepository.save(stadium2);
@@ -74,9 +74,9 @@ class StadiumServiceImplTest extends IntegrationTestSupport {
         Slice<StadiumsResponse> result = stadiumService.getStadiumList(0, "name");
 
         assertThat(result.getContent())
-                .hasSize(3)
-                .extracting(StadiumsResponse::name)
-                .containsExactly("Stadium1", "Stadium2", "Stadium3");
+            .hasSize(3)
+            .extracting(StadiumsResponse::name)
+            .containsExactly("Stadium1", "Stadium2", "Stadium3");
     }
 
     @Test
@@ -88,14 +88,14 @@ class StadiumServiceImplTest extends IntegrationTestSupport {
 
         assertThat(response).isNotNull();
         assertThat(response)
-                .extracting(
-                        StadiumDetailResponse::name,
-                        StadiumDetailResponse::address,
-                        StadiumDetailResponse::phoneNumber,
-                        StadiumDetailResponse::latitude,
-                        StadiumDetailResponse::longitude
-                )
-                .containsExactly("Stadium1", "seoul", "010-1111-1111", 37.5642135, 127.0016985);
+            .extracting(
+                StadiumDetailResponse::name,
+                StadiumDetailResponse::address,
+                StadiumDetailResponse::phoneNumber,
+                StadiumDetailResponse::latitude,
+                StadiumDetailResponse::longitude
+            )
+            .containsExactly("Stadium1", "seoul", "010-1111-1111", 37.5642135, 127.0016985);
     }
 
     @Test
@@ -104,9 +104,9 @@ class StadiumServiceImplTest extends IntegrationTestSupport {
         Slice<StadiumsResponse> result = stadiumService.getStadiumsByName("2", 0, "name");
 
         assertThat(result.getContent())
-                .hasSize(1)
-                .extracting(StadiumsResponse::name)
-                .containsExactly("Stadium2");
+            .hasSize(1)
+            .extracting(StadiumsResponse::name)
+            .containsExactly("Stadium2");
     }
 
     @Test
@@ -115,9 +115,9 @@ class StadiumServiceImplTest extends IntegrationTestSupport {
         Slice<StadiumsResponse> result = stadiumService.getStadiumsByAddress("seo", 0, "name");
 
         assertThat(result.getContent())
-                .hasSize(1)
-                .extracting(StadiumsResponse::name)
-                .containsExactly("Stadium1");
+            .hasSize(1)
+            .extracting(StadiumsResponse::name)
+            .containsExactly("Stadium1");
     }
 
     @Test
@@ -128,17 +128,17 @@ class StadiumServiceImplTest extends IntegrationTestSupport {
         Double distance = 100.0;
 
         StadiumSearchByLocationServiceRequest request = new StadiumSearchByLocationServiceRequest(
-                searchLatitude,
-                searchLongitude,
-                distance
+            searchLatitude,
+            searchLongitude,
+            distance
         );
 
         Slice<StadiumsResponse> result = stadiumService.getStadiumsWithinDistance(request, 0, "name");
 
         assertThat(result.getContent())
-                .hasSize(1)
-                .extracting(StadiumsResponse::name)
-                .containsExactly("Stadium1");
+            .hasSize(1)
+            .extracting(StadiumsResponse::name)
+            .containsExactly("Stadium1");
     }
 
     @Test
@@ -149,9 +149,9 @@ class StadiumServiceImplTest extends IntegrationTestSupport {
         Double distance = 1.0;
 
         StadiumSearchByLocationServiceRequest request = new StadiumSearchByLocationServiceRequest(
-                searchLatitude,
-                searchLongitude,
-                distance
+            searchLatitude,
+            searchLongitude,
+            distance
         );
 
         Slice<StadiumsResponse> result = stadiumService.getStadiumsWithinDistance(request, 0, "name");
@@ -163,19 +163,19 @@ class StadiumServiceImplTest extends IntegrationTestSupport {
     @DisplayName("풋살장을 정상적으로 등록해야 한다")
     void registerStadium() {
         StadiumRegisterServiceRequest request = new StadiumRegisterServiceRequest(
-                "New Stadium", "Incheon", "010-4444-4444", "New Description",
-                37.456, 126.705
+            "New Stadium", "Incheon", "010-4444-4444", "New Description",
+            37.456, 126.705
         );
 
         StadiumDetailResponse response = stadiumService.registerStadium(request, testMember);
 
         assertThat(response).isNotNull();
         assertThat(response)
-                .extracting(
-                        StadiumDetailResponse::name,
-                        StadiumDetailResponse::address
-                )
-                .containsExactly("New Stadium", "Incheon");
+            .extracting(
+                StadiumDetailResponse::name,
+                StadiumDetailResponse::address
+            )
+            .containsExactly("New Stadium", "Incheon");
         assertThat(stadiumRepository.findById(response.stadiumId())).isPresent();
     }
 
@@ -185,27 +185,27 @@ class StadiumServiceImplTest extends IntegrationTestSupport {
         Stadium stadium = stadiumRepository.findAll().get(0);
 
         StadiumUpdateServiceRequest request = new StadiumUpdateServiceRequest(
-                "Updated Stadium", "Updated Address", "010-9999-9999", "Updated Description",
-                38.0, 128.0
+            "Updated Stadium", "Updated Address", "010-9999-9999", "Updated Description",
+            38.0, 128.0
         );
 
         StadiumDetailResponse response = stadiumService.updateStadium(request, testMember, stadium.getStadiumId());
 
         assertThat(response).isNotNull();
         assertThat(response)
-                .extracting(
-                        StadiumDetailResponse::name,
-                        StadiumDetailResponse::address
-                )
-                .containsExactly("Updated Stadium", "Updated Address");
+            .extracting(
+                StadiumDetailResponse::name,
+                StadiumDetailResponse::address
+            )
+            .containsExactly("Updated Stadium", "Updated Address");
 
         Stadium updatedStadium = stadiumRepository.findById(stadium.getStadiumId()).orElseThrow();
         assertThat(updatedStadium)
-                .extracting(
-                        Stadium::getName,
-                        Stadium::getAddress
-                )
-                .containsExactly("Updated Stadium", "Updated Address");
+            .extracting(
+                Stadium::getName,
+                Stadium::getAddress
+            )
+            .containsExactly("Updated Stadium", "Updated Address");
     }
 
     @Test
@@ -225,53 +225,53 @@ class StadiumServiceImplTest extends IntegrationTestSupport {
         Long invalidId = -1L;
 
         assertThatThrownBy(() -> stadiumService.getStadiumDetail(invalidId))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ExceptionMessage.STADIUM_NOT_FOUND.getText());
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage(ExceptionMessage.STADIUM_NOT_FOUND.getText());
     }
 
     @Test
     @DisplayName("존재하지 않는 풋살장을 수정할 때 IllegalArgumentException이 발생해야 한다")
     void updateStadium_whenStadiumDoesNotExist() {
         StadiumUpdateServiceRequest request = new StadiumUpdateServiceRequest(
-                "Non-existent Stadium", "Nowhere", "000-0000-0000", "No Description",
-                0.0, 0.0
+            "Non-existent Stadium", "Nowhere", "000-0000-0000", "No Description",
+            0.0, 0.0
         );
 
         Long invalidStadiumId = -1L;
 
         assertThatThrownBy(() -> stadiumService.updateStadium(request, testMember, invalidStadiumId))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ExceptionMessage.STADIUM_NOT_FOUND.getText());
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage(ExceptionMessage.STADIUM_NOT_FOUND.getText());
     }
 
     @Test
     @DisplayName("다른 회원의 풋살장을 수정할 때 IllegalArgumentException이 발생해야 한다")
     void updateStadium_whenMemberDoesNotOwnStadium() {
         Member anotherMember = Member.builder()
-                .email("another@example.com")
-                .password("password")
-                .name("Another User")
-                .phoneNumber("010-5678-1234")
-                .loginType(LoginType.builder()
-                        .loginProvider(LoginProvider.ORIGINAL)
-                        .snsId("another@example.com")
-                        .build())
-                .gender(Gender.FEMALE)
-                .memberRole(MemberRole.USER)
-                .termsAgreed(TermsAgreed.AGREE)
-                .build();
+            .email("another@example.com")
+            .password("password")
+            .name("Another User")
+            .phoneNumber("010-5678-1234")
+            .loginType(LoginType.builder()
+                .loginProvider(LoginProvider.ORIGINAL)
+                .snsId("another@example.com")
+                .build())
+            .gender(Gender.FEMALE)
+            .memberRole(MemberRole.USER)
+            .termsAgreed(TermsAgreed.AGREE)
+            .build();
         memberRepository.save(anotherMember);
 
         Stadium stadium = stadiumRepository.findAll().get(0);
 
         StadiumUpdateServiceRequest request = new StadiumUpdateServiceRequest(
-                "Unauthorized Update", "Unauthorized Address", "000-0000-0000", "Unauthorized",
-                0.0, 0.0
+            "Unauthorized Update", "Unauthorized Address", "000-0000-0000", "Unauthorized",
+            0.0, 0.0
         );
 
         assertThatThrownBy(() -> stadiumService.updateStadium(request, anotherMember, stadium.getStadiumId()))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ExceptionMessage.STADIUM_NOT_OWNED_BY_MEMBER.getText());
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage(ExceptionMessage.STADIUM_NOT_OWNED_BY_MEMBER.getText());
     }
 
     @Test
@@ -280,32 +280,32 @@ class StadiumServiceImplTest extends IntegrationTestSupport {
         Long invalidStadiumId = -1L;
 
         assertThatThrownBy(() -> stadiumService.deleteStadium(testMember, invalidStadiumId))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ExceptionMessage.STADIUM_NOT_FOUND.getText());
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage(ExceptionMessage.STADIUM_NOT_FOUND.getText());
     }
 
     @Test
     @DisplayName("다른 회원의 풋살장을 삭제할 때 IllegalArgumentException이 발생해야 한다")
     void deleteStadium_whenMemberDoesNotOwnStadium() {
         Member anotherMember = Member.builder()
-                .email("another@example.com")
-                .password("password")
-                .name("Another User")
-                .phoneNumber("010-5678-1234")
-                .loginType(LoginType.builder()
-                        .loginProvider(LoginProvider.ORIGINAL)
-                        .snsId("another@example.com")
-                        .build())
-                .gender(Gender.FEMALE)
-                .memberRole(MemberRole.USER)
-                .termsAgreed(TermsAgreed.AGREE)
-                .build();
+            .email("another@example.com")
+            .password("password")
+            .name("Another User")
+            .phoneNumber("010-5678-1234")
+            .loginType(LoginType.builder()
+                .loginProvider(LoginProvider.ORIGINAL)
+                .snsId("another@example.com")
+                .build())
+            .gender(Gender.FEMALE)
+            .memberRole(MemberRole.USER)
+            .termsAgreed(TermsAgreed.AGREE)
+            .build();
         memberRepository.save(anotherMember);
 
         Stadium stadium = stadiumRepository.findAll().get(0);
 
         assertThatThrownBy(() -> stadiumService.deleteStadium(anotherMember, stadium.getStadiumId()))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ExceptionMessage.STADIUM_NOT_OWNED_BY_MEMBER.getText());
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage(ExceptionMessage.STADIUM_NOT_OWNED_BY_MEMBER.getText());
     }
 }

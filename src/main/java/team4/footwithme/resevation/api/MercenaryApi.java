@@ -19,23 +19,23 @@ public class MercenaryApi {
     private final MercenaryService mercenaryService;
 
     @PostMapping
-    public ApiResponse<MercenaryResponse> createMercenary(@RequestBody @Valid MercenaryRequest request, @AuthenticationPrincipal PrincipalDetails principalDetails){
+    public ApiResponse<MercenaryResponse> createMercenary(@RequestBody @Valid MercenaryRequest request, @AuthenticationPrincipal PrincipalDetails principalDetails) {
         return ApiResponse.created(mercenaryService.createMercenary(request.toServiceRequest(), principalDetails.getMember()));
     }
 
     @GetMapping("/{mercenaryId}")
-    public ApiResponse<MercenaryResponse> getMercenary(@PathVariable Long mercenaryId){
+    public ApiResponse<MercenaryResponse> getMercenary(@PathVariable Long mercenaryId) {
         return ApiResponse.ok(mercenaryService.getMercenary(mercenaryId));
     }
 
     @GetMapping
-    public ApiResponse<Page<MercenaryResponse>> getMercenaries(@RequestParam int page, @RequestParam int size){
-        PageRequest pageRequest = PageRequest.of(page-1, size);
+    public ApiResponse<Page<MercenaryResponse>> getMercenaries(@RequestParam int page, @RequestParam int size) {
+        PageRequest pageRequest = PageRequest.of(page - 1, size);
         return ApiResponse.ok(mercenaryService.getMercenaries(pageRequest));
     }
 
     @DeleteMapping("/{mercenaryId}")
-    public ApiResponse<Long> deleteMercenary(@PathVariable Long mercenaryId, @AuthenticationPrincipal PrincipalDetails principalDetails){
+    public ApiResponse<Long> deleteMercenary(@PathVariable Long mercenaryId, @AuthenticationPrincipal PrincipalDetails principalDetails) {
         return ApiResponse.ok(mercenaryService.deleteMercenary(mercenaryId, principalDetails.getMember()));
     }
 }

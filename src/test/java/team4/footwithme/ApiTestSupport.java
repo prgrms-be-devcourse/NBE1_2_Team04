@@ -85,9 +85,9 @@ public abstract class ApiTestSupport {
     // MockBean 통해서 실제 빈을 대체하는 가짜 빈을 주입
     // 사용하는 서비스들은 모두 MockBean으로 주입
     /*
-    * ex)
-    * @MockBean
-    * private ProductService productService;
+     * ex)
+     * @MockBean
+     * private ProductService productService;
      */
 
 }

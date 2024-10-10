@@ -35,32 +35,32 @@ class MemberApiTest extends ApiTestSupport {
     @Test
     void join() throws Exception {
         //given
-        JoinRequest request = new JoinRequest("test@naver.com", "!test1234","!test1234", "test", "010-1234-1234", LoginProvider.ORIGINAL, "",  Gender.MALE, MemberRole.USER, TermsAgreed.AGREE);
+        JoinRequest request = new JoinRequest("test@naver.com", "!test1234", "!test1234", "test", "010-1234-1234", LoginProvider.ORIGINAL, "", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE);
 
         MemberResponse response = new MemberResponse(1L, "test@naver.com", "test", "010-1234-1234", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE);
 
         //when
         given(memberService.join(any(JoinServiceRequest.class)))
-                .willReturn(response);
+            .willReturn(response);
 
         //then
 
         mockMvc.perform(post("/api/v1/members/join")
                 .content(objectMapper.writeValueAsString(request))
                 .contentType(MediaType.APPLICATION_JSON)
-                        .with(csrf()))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value("201"))
-                .andExpect(jsonPath("$.status").value("CREATED"))
-                .andExpect(jsonPath("$.message").value("CREATED"))
-                .andExpect(jsonPath("$.data.memberId").value(1L))
-                .andExpect(jsonPath("$.data.email").value("test@naver.com"))
-                .andExpect(jsonPath("$.data.name").value("test"))
-                .andExpect(jsonPath("$.data.phoneNumber").value("010-1234-1234"))
-                .andExpect(jsonPath("$.data.gender").value("MALE"))
-                .andExpect(jsonPath("$.data.memberRole").value("USER"))
-                .andExpect(jsonPath("$.data.termsAgreed").value("AGREE"));
+                .with(csrf()))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.code").value("201"))
+            .andExpect(jsonPath("$.status").value("CREATED"))
+            .andExpect(jsonPath("$.message").value("CREATED"))
+            .andExpect(jsonPath("$.data.memberId").value(1L))
+            .andExpect(jsonPath("$.data.email").value("test@naver.com"))
+            .andExpect(jsonPath("$.data.name").value("test"))
+            .andExpect(jsonPath("$.data.phoneNumber").value("010-1234-1234"))
+            .andExpect(jsonPath("$.data.gender").value("MALE"))
+            .andExpect(jsonPath("$.data.memberRole").value("USER"))
+            .andExpect(jsonPath("$.data.termsAgreed").value("AGREE"));
     }
 
     @DisplayName("로그인을 진행한다.")
@@ -73,21 +73,21 @@ class MemberApiTest extends ApiTestSupport {
 
         //when
         given(memberService.login(any(LoginServiceRequest.class)))
-                .willReturn(response);
+            .willReturn(response);
 
         //then
 
         mockMvc.perform(post("/api/v1/members/login")
-                        .content(objectMapper.writeValueAsString(request))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .with(csrf()))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value("200"))
-                .andExpect(jsonPath("$.status").value("OK"))
-                .andExpect(jsonPath("$.message").value("OK"))
-                .andExpect(jsonPath("$.data.accessToken").value("accessToken"))
-                .andExpect(jsonPath("$.data.refreshToken").value("refreshToken"));
+                .content(objectMapper.writeValueAsString(request))
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(csrf()))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.code").value("200"))
+            .andExpect(jsonPath("$.status").value("OK"))
+            .andExpect(jsonPath("$.message").value("OK"))
+            .andExpect(jsonPath("$.data.accessToken").value("accessToken"))
+            .andExpect(jsonPath("$.data.refreshToken").value("refreshToken"));
     }
 
     @DisplayName("이름, 전화번호, 성별을 수정한다.")
@@ -101,26 +101,26 @@ class MemberApiTest extends ApiTestSupport {
 
         //when
         given(memberService.update(any(Member.class), any(UpdateServiceRequest.class)))
-                .willReturn(response);
+            .willReturn(response);
 
         //then
         mockMvc.perform(put("/api/v1/members/update")
-                        .header("Authorization", "Bearer " + "AccessToken")
-                        .content(objectMapper.writeValueAsString(request))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .with(csrf()))  // CSRF 토큰 추가
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value("200"))
-                .andExpect(jsonPath("$.status").value("OK"))
-                .andExpect(jsonPath("$.message").value("OK"))
-                .andExpect(jsonPath("$.data.memberId").value(1L))
-                .andExpect(jsonPath("$.data.email").value("test@naver.com"))
-                .andExpect(jsonPath("$.data.name").value("문가박"))
-                .andExpect(jsonPath("$.data.phoneNumber").value("010-1221-1221"))
-                .andExpect(jsonPath("$.data.gender").value("FEMALE"))
-                .andExpect(jsonPath("$.data.memberRole").value("USER"))
-                .andExpect(jsonPath("$.data.termsAgreed").value("AGREE"));
+                .header("Authorization", "Bearer " + "AccessToken")
+                .content(objectMapper.writeValueAsString(request))
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(csrf()))  // CSRF 토큰 추가
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.code").value("200"))
+            .andExpect(jsonPath("$.status").value("OK"))
+            .andExpect(jsonPath("$.message").value("OK"))
+            .andExpect(jsonPath("$.data.memberId").value(1L))
+            .andExpect(jsonPath("$.data.email").value("test@naver.com"))
+            .andExpect(jsonPath("$.data.name").value("문가박"))
+            .andExpect(jsonPath("$.data.phoneNumber").value("010-1221-1221"))
+            .andExpect(jsonPath("$.data.gender").value("FEMALE"))
+            .andExpect(jsonPath("$.data.memberRole").value("USER"))
+            .andExpect(jsonPath("$.data.termsAgreed").value("AGREE"));
     }
 
     @DisplayName("비밀번호를 수정한다.")
@@ -134,21 +134,21 @@ class MemberApiTest extends ApiTestSupport {
 
         //when
         given(memberService.updatePassword(any(Member.class), any(UpdatePasswordServiceRequest.class)))
-                .willReturn(response);
+            .willReturn(response);
 
         //then
 
         mockMvc.perform(put("/api/v1/members/update-password")
-                        .header("Authorization", "Bearer " + "AccessToken")
-                        .content(objectMapper.writeValueAsString(request))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .with(csrf()))  // CSRF 토큰 추가
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value("200"))
-                .andExpect(jsonPath("$.status").value("OK"))
-                .andExpect(jsonPath("$.message").value("OK"))
-                .andExpect(jsonPath("$.data").value(response));
+                .header("Authorization", "Bearer " + "AccessToken")
+                .content(objectMapper.writeValueAsString(request))
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(csrf()))  // CSRF 토큰 추가
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.code").value("200"))
+            .andExpect(jsonPath("$.status").value("OK"))
+            .andExpect(jsonPath("$.message").value("OK"))
+            .andExpect(jsonPath("$.data").value(response));
     }
 
     @DisplayName("토큰 재발급을 진행한다.")
@@ -160,23 +160,23 @@ class MemberApiTest extends ApiTestSupport {
 
         //when
         given(memberService.reissue(any(HttpServletRequest.class), eq(refreshToken)))
-                .willReturn(response);
+            .willReturn(response);
 
         //then
 
         mockMvc.perform(post("/api/v1/members/reissue")
-                        .header("Authorization", "Bearer " + "AccessToken")
-                        .header("refresh_token", refreshToken)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .with(csrf()))  // CSRF 토큰 추가
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value("200"))
-                .andExpect(jsonPath("$.status").value("OK"))
-                .andExpect(jsonPath("$.message").value("OK"))
-                .andExpect(jsonPath("$.data.accessToken").value("accessToken"))
-                .andExpect(jsonPath("$.data.refreshToken").value("refreshToken"))
-                .andExpect(jsonPath("$.data.refreshTokenExpirationTime").value(16655L));
+                .header("Authorization", "Bearer " + "AccessToken")
+                .header("refresh_token", refreshToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(csrf()))  // CSRF 토큰 추가
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.code").value("200"))
+            .andExpect(jsonPath("$.status").value("OK"))
+            .andExpect(jsonPath("$.message").value("OK"))
+            .andExpect(jsonPath("$.data.accessToken").value("accessToken"))
+            .andExpect(jsonPath("$.data.refreshToken").value("refreshToken"))
+            .andExpect(jsonPath("$.data.refreshTokenExpirationTime").value(16655L));
     }
 
 }

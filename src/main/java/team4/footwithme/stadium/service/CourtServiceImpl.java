@@ -60,10 +60,10 @@ public class CourtServiceImpl implements CourtService {
     public CourtDetailResponse registerCourt(CourtRegisterServiceRequest request, Member member) {
         validateStadiumOwnership(request.stadiumId(), member.getMemberId()).createCourt(member.getMemberId());
         Court court = Court.create(
-                (Stadium) findEntityByIdOrThrowException(stadiumRepository, request.stadiumId(), ExceptionMessage.STADIUM_NOT_FOUND),
-                request.name(),
-                request.description(),
-                request.price_per_hour()
+            (Stadium) findEntityByIdOrThrowException(stadiumRepository, request.stadiumId(), ExceptionMessage.STADIUM_NOT_FOUND),
+            request.name(),
+            request.description(),
+            request.price_per_hour()
         );
         courtRepository.save(court);
         return CourtDetailResponse.from(court);
@@ -94,9 +94,9 @@ public class CourtServiceImpl implements CourtService {
 
     private <T> T findEntityByIdOrThrowException(CustomGlobalRepository<T> repository, Long id, ExceptionMessage exceptionMessage) {
         return repository.findActiveById(id)
-                .orElseThrow(() -> {
-                    log.warn(">>>> {} : {} <<<<", id, exceptionMessage);
-                    return new IllegalArgumentException(exceptionMessage.getText());
-                });
+            .orElseThrow(() -> {
+                log.warn(">>>> {} : {} <<<<", id, exceptionMessage);
+                return new IllegalArgumentException(exceptionMessage.getText());
+            });
     }
 }

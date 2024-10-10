@@ -62,7 +62,7 @@ public class ChatMemberServiceImpl implements ChatMemberService {
         addChatMember(member, chatroom);
     }
 
-    private ChatMemberResponse addChatMember(Member member, Chatroom chatroom){
+    private ChatMemberResponse addChatMember(Member member, Chatroom chatroom) {
         checkMemberNotInChatroom(member, chatroom);
 
         ChatMember chatMember = chatMemberRepository.save(ChatMember.create(member, chatroom));
@@ -111,15 +111,15 @@ public class ChatMemberServiceImpl implements ChatMemberService {
      */
     @Override
     @Transactional
-    public void joinChatMembers(List<Member> members, Chatroom chatroom){
+    public void joinChatMembers(List<Member> members, Chatroom chatroom) {
 
         List<Long> oldMembersId = chatMemberRepository.findByChatroom(chatroom)
-                .stream().map(chatMember -> chatMember.getMember().getMemberId()).collect(Collectors.toList());
+            .stream().map(chatMember -> chatMember.getMember().getMemberId()).collect(Collectors.toList());
 
         List<ChatMember> chatMembers = new ArrayList<>();
 
         for (Member member : members) {
-            if(oldMembersId.contains(member.getMemberId())) {
+            if (oldMembersId.contains(member.getMemberId())) {
                 continue;
             }
             chatMembers.add(ChatMember.create(member, chatroom));
@@ -209,34 +209,34 @@ public class ChatMemberServiceImpl implements ChatMemberService {
     }
 
     private void checkMemberInChatroom(Member member, Chatroom chatroom) {
-        if(!chatMemberRepository.existByMemberAndChatroom(member, chatroom)) {
+        if (!chatMemberRepository.existByMemberAndChatroom(member, chatroom)) {
             throw new IllegalArgumentException(ExceptionMessage.MEMBER_NOT_IN_CHATROOM.getText());
         }
     }
 
     private void checkMemberNotInChatroom(Member member, Chatroom chatroom) {
-        if(chatMemberRepository.existByMemberAndChatroom(member, chatroom)) {
+        if (chatMemberRepository.existByMemberAndChatroom(member, chatroom)) {
             throw new IllegalArgumentException(ExceptionMessage.MEMBER_IN_CHATROOM.getText());
         }
     }
 
     private Member getMember(Long memberId) {
         return memberRepository.findByMemberId(memberId)
-                .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.MEMBER_NOT_FOUND.getText()));
+            .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.MEMBER_NOT_FOUND.getText()));
     }
 
     private Chatroom getChatroomByChatroomId(Long chatroomId) {
         return chatroomRepository.findByChatroomId(chatroomId)
-                .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.CHATROOM_NOT_FOUND.getText()));
+            .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.CHATROOM_NOT_FOUND.getText()));
     }
 
     private Chatroom getChatroomByTeamId(Long teamId) {
         return chatroomRepository.findByTeamId(teamId)
-                .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.CHATROOM_NOT_FOUND.getText()));
+            .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.CHATROOM_NOT_FOUND.getText()));
     }
 
     private Chatroom getChatroomByReservationId(Long reservationId) {
         return chatroomRepository.findByReservationId(reservationId)
-                .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.CHATROOM_NOT_FOUND.getText()));
+            .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.CHATROOM_NOT_FOUND.getText()));
     }
 }

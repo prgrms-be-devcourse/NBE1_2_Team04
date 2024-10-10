@@ -5,12 +5,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import team4.footwithme.docs.RestDocsSupport;
-import team4.footwithme.member.domain.Member;
 import team4.footwithme.vote.api.VoteApi;
 import team4.footwithme.vote.api.request.*;
 import team4.footwithme.vote.service.VoteService;
-import team4.footwithme.vote.service.request.VoteDateCreateServiceRequest;
 import team4.footwithme.vote.service.request.VoteCourtCreateServiceRequest;
+import team4.footwithme.vote.service.request.VoteDateCreateServiceRequest;
 import team4.footwithme.vote.service.request.VoteUpdateServiceRequest;
 import team4.footwithme.vote.service.response.AllVoteResponse;
 import team4.footwithme.vote.service.response.VoteItemResponse;
@@ -118,7 +117,7 @@ public class VoteApiDocs extends RestDocsSupport {
                 "연말 행사 투표",
                 endAt,
                 "진행 중",
-                List.of(new VoteItemResponse(1L, "최강 풋살장", List.of(1L,2L)),
+                List.of(new VoteItemResponse(1L, "최강 풋살장", List.of(1L, 2L)),
                     new VoteItemResponse(2L, "열정 풋살장", List.of(1L))
                 )
             ));
@@ -178,7 +177,7 @@ public class VoteApiDocs extends RestDocsSupport {
                     endAt,
                     "진행 중",
                     List.of(
-                        new VoteItemResponse(1L, "2021-12-25 12:00", List.of(1L,2L)),
+                        new VoteItemResponse(1L, "2021-12-25 12:00", List.of(1L, 2L)),
                         new VoteItemResponse(2L, "2021-12-26 12:00", List.of(1L)),
                         new VoteItemResponse(3L, "2021-12-27 12:00", List.of())
                     )
@@ -246,7 +245,7 @@ public class VoteApiDocs extends RestDocsSupport {
                     endAt,
                     "진행 중",
                     List.of(
-                        new VoteItemResponse(1L, "2021-12-25 12:00", List.of(1L,2L)),
+                        new VoteItemResponse(1L, "2021-12-25 12:00", List.of(1L, 2L)),
                         new VoteItemResponse(2L, "2021-12-26 12:00", List.of(1L)),
                         new VoteItemResponse(3L, "2021-12-27 12:00", List.of())
                     )
@@ -340,7 +339,7 @@ public class VoteApiDocs extends RestDocsSupport {
                     endAt,
                     "진행 중",
                     List.of(
-                        new VoteItemResponse(1L, "2021-12-25 12:00", List.of(1L,2L)),
+                        new VoteItemResponse(1L, "2021-12-25 12:00", List.of(1L, 2L)),
                         new VoteItemResponse(2L, "2021-12-26 12:00", List.of(1L)),
                         new VoteItemResponse(3L, "2021-12-27 12:00", List.of())
                     )
@@ -404,7 +403,7 @@ public class VoteApiDocs extends RestDocsSupport {
                     endAt,
                     "마감",
                     List.of(
-                        new VoteItemResponse(1L, "2021-12-25 12:00", List.of(1L,2L)),
+                        new VoteItemResponse(1L, "2021-12-25 12:00", List.of(1L, 2L)),
                         new VoteItemResponse(2L, "2021-12-26 12:00", List.of(1L)),
                         new VoteItemResponse(3L, "2021-12-27 12:00", List.of())
                     )
@@ -472,7 +471,7 @@ public class VoteApiDocs extends RestDocsSupport {
                     )
                 ));
 
-        mockMvc.perform(get("/api/v1/votes/all/{teamId}",1L)
+        mockMvc.perform(get("/api/v1/votes/all/{teamId}", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
             )
             .andExpect(status().isOk())

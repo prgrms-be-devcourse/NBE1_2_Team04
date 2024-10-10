@@ -5,16 +5,16 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
-import org.springframework.security.test.context.support.WithMockUser;
 import team4.footwithme.docs.RestDocsSupport;
 import team4.footwithme.member.api.MemberApi;
 import team4.footwithme.member.api.request.JoinRequest;
 import team4.footwithme.member.api.request.LoginRequest;
 import team4.footwithme.member.api.request.UpdatePasswordRequest;
 import team4.footwithme.member.api.request.UpdateRequest;
-import team4.footwithme.member.domain.*;
-import team4.footwithme.member.jwt.JwtTokenUtil;
-import team4.footwithme.member.jwt.PrincipalDetails;
+import team4.footwithme.member.domain.Gender;
+import team4.footwithme.member.domain.LoginProvider;
+import team4.footwithme.member.domain.MemberRole;
+import team4.footwithme.member.domain.TermsAgreed;
 import team4.footwithme.member.jwt.response.TokenResponse;
 import team4.footwithme.member.service.CookieService;
 import team4.footwithme.member.service.MemberService;
@@ -24,8 +24,6 @@ import team4.footwithme.member.service.request.UpdatePasswordServiceRequest;
 import team4.footwithme.member.service.request.UpdateServiceRequest;
 import team4.footwithme.member.service.response.LoginResponse;
 import team4.footwithme.member.service.response.MemberResponse;
-
-import java.security.Principal;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -57,7 +55,7 @@ public class MemberApiDocs extends RestDocsSupport {
 
         //when
         given(memberService.join(any(JoinServiceRequest.class)))
-                .willReturn(response);
+            .willReturn(response);
 
         //then
         mockMvc.perform(post("/api/v1/members/join")
@@ -106,7 +104,7 @@ public class MemberApiDocs extends RestDocsSupport {
 
         //when
         given(memberService.login(any(LoginServiceRequest.class)))
-                .willReturn(response);
+            .willReturn(response);
 
         //then
         mockMvc.perform(post("/api/v1/members/login")
@@ -135,136 +133,136 @@ public class MemberApiDocs extends RestDocsSupport {
 
     @DisplayName("로그아웃을 진행하는 API")
     @Test
-    void logoutMember() throws Exception{
+    void logoutMember() throws Exception {
         //given
         String response = "Success Logout";
 
         //when
         given(memberService.logout(any(HttpServletRequest.class)))
-                .willReturn(response);
+            .willReturn(response);
 
         //then
         mockMvc.perform(delete("/api/v1/members/logout")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .header("Authorization", "Access Token"))
-                .andExpect(status().isOk())
-                .andDo(document("member-logout",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        responseFields(
-                                fieldWithPath("code").type(JsonFieldType.NUMBER).description("코드"),
-                                fieldWithPath("status").type(JsonFieldType.STRING).description("상태"),
-                                fieldWithPath("message").type(JsonFieldType.STRING).description("메시지"),
-                                fieldWithPath("data").type(JsonFieldType.STRING).description("성공 메세지")
-                        )
-                ));
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Access Token"))
+            .andExpect(status().isOk())
+            .andDo(document("member-logout",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                responseFields(
+                    fieldWithPath("code").type(JsonFieldType.NUMBER).description("코드"),
+                    fieldWithPath("status").type(JsonFieldType.STRING).description("상태"),
+                    fieldWithPath("message").type(JsonFieldType.STRING).description("메시지"),
+                    fieldWithPath("data").type(JsonFieldType.STRING).description("성공 메세지")
+                )
+            ));
 
     }
 
     @DisplayName("토큰 갱신을 진행하는 API")
     @Test
-    void reissueToken() throws Exception{
+    void reissueToken() throws Exception {
         //given
         TokenResponse response = new TokenResponse("ACCESS_TOKEN", "REFERSH_TOKEN", 66666L);
 
         //when
         given(memberService.reissue(any(HttpServletRequest.class), any(String.class)))
-                .willReturn(response);
+            .willReturn(response);
 
         //then
         mockMvc.perform(post("/api/v1/members/reissue")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .header("Authorization", "Access Token"))
-                .andExpect(status().isOk())
-                .andDo(document("member-reissue",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        responseFields(
-                                fieldWithPath("code").type(JsonFieldType.NUMBER).description("코드"),
-                                fieldWithPath("status").type(JsonFieldType.STRING).description("상태"),
-                                fieldWithPath("message").type(JsonFieldType.STRING).description("메시지"),
-                                fieldWithPath("data.accessToken").type(JsonFieldType.STRING).description("액세스 토큰"),
-                                fieldWithPath("data.refreshToken").type(JsonFieldType.STRING).description("리프레쉬 토큰"),
-                                fieldWithPath("data.refreshTokenExpirationTime").type(JsonFieldType.NUMBER).description("리프레쉬 토큰 만료 시간")
-                        )
-                ));
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Access Token"))
+            .andExpect(status().isOk())
+            .andDo(document("member-reissue",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                responseFields(
+                    fieldWithPath("code").type(JsonFieldType.NUMBER).description("코드"),
+                    fieldWithPath("status").type(JsonFieldType.STRING).description("상태"),
+                    fieldWithPath("message").type(JsonFieldType.STRING).description("메시지"),
+                    fieldWithPath("data.accessToken").type(JsonFieldType.STRING).description("액세스 토큰"),
+                    fieldWithPath("data.refreshToken").type(JsonFieldType.STRING).description("리프레쉬 토큰"),
+                    fieldWithPath("data.refreshTokenExpirationTime").type(JsonFieldType.NUMBER).description("리프레쉬 토큰 만료 시간")
+                )
+            ));
 
     }
 
 
     @DisplayName("이름, 전화번호, 성별 수정을 진행하는 API")
     @Test
-    void updateMember() throws Exception{
+    void updateMember() throws Exception {
         //given
         UpdateRequest request = new UpdateRequest("mjk", "010-2222-2222", Gender.FEMALE);
         MemberResponse response = new MemberResponse(1L, "test@naver.com", "test", "010-1234-1234", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE);
 
         //when
         given(memberService.update(any(), any(UpdateServiceRequest.class)))
-                .willReturn(response);
+            .willReturn(response);
 
         //then
         mockMvc.perform(put("/api/v1/members/update")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .header("Authorization", "Access Token")
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk())
-                .andDo(document("member-update",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        requestFields(
-                                fieldWithPath("name").type(JsonFieldType.STRING).description("이름"),
-                                fieldWithPath("phoneNumber").type(JsonFieldType.STRING).description("전화 번호"),
-                                fieldWithPath("gender").type(JsonFieldType.STRING).description("성별")
-                        ),
-                        responseFields(
-                                fieldWithPath("code").type(JsonFieldType.NUMBER).description("코드"),
-                                fieldWithPath("status").type(JsonFieldType.STRING).description("상태"),
-                                fieldWithPath("message").type(JsonFieldType.STRING).description("메시지"),
-                                fieldWithPath("data.memberId").type(JsonFieldType.NUMBER).description("멤버 ID"),
-                                fieldWithPath("data.email").type(JsonFieldType.STRING).description("이메일"),
-                                fieldWithPath("data.name").type(JsonFieldType.STRING).description("이름"),
-                                fieldWithPath("data.phoneNumber").type(JsonFieldType.STRING).description("휴대폰 번호"),
-                                fieldWithPath("data.gender").type(JsonFieldType.STRING).description("성별"),
-                                fieldWithPath("data.memberRole").type(JsonFieldType.STRING).description("권한"),
-                                fieldWithPath("data.termsAgreed").type(JsonFieldType.STRING).description("정보 제공 동의")
-                        )
-                ));
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Access Token")
+                .content(objectMapper.writeValueAsString(request)))
+            .andExpect(status().isOk())
+            .andDo(document("member-update",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                requestFields(
+                    fieldWithPath("name").type(JsonFieldType.STRING).description("이름"),
+                    fieldWithPath("phoneNumber").type(JsonFieldType.STRING).description("전화 번호"),
+                    fieldWithPath("gender").type(JsonFieldType.STRING).description("성별")
+                ),
+                responseFields(
+                    fieldWithPath("code").type(JsonFieldType.NUMBER).description("코드"),
+                    fieldWithPath("status").type(JsonFieldType.STRING).description("상태"),
+                    fieldWithPath("message").type(JsonFieldType.STRING).description("메시지"),
+                    fieldWithPath("data.memberId").type(JsonFieldType.NUMBER).description("멤버 ID"),
+                    fieldWithPath("data.email").type(JsonFieldType.STRING).description("이메일"),
+                    fieldWithPath("data.name").type(JsonFieldType.STRING).description("이름"),
+                    fieldWithPath("data.phoneNumber").type(JsonFieldType.STRING).description("휴대폰 번호"),
+                    fieldWithPath("data.gender").type(JsonFieldType.STRING).description("성별"),
+                    fieldWithPath("data.memberRole").type(JsonFieldType.STRING).description("권한"),
+                    fieldWithPath("data.termsAgreed").type(JsonFieldType.STRING).description("정보 제공 동의")
+                )
+            ));
 
     }
 
     @DisplayName("비밀번호 수정을 진행하는 API")
     @Test
-    void updatePassword() throws Exception{
+    void updatePassword() throws Exception {
         //given
         UpdatePasswordRequest request = new UpdatePasswordRequest("!test123", "Test1234!", "Test1234!");
         String response = "Success Change Password";
 
         //when
         given(memberService.updatePassword(any(), any(UpdatePasswordServiceRequest.class)))
-                .willReturn(response);
+            .willReturn(response);
 
         //then
         mockMvc.perform(put("/api/v1/members/update-password")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .header("Authorization", "Access Token")
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk())
-                .andDo(document("member-update-password",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        requestFields(
-                                fieldWithPath("prePassword").type(JsonFieldType.STRING).description("이전 비밀번호"),
-                                fieldWithPath("newPassword").type(JsonFieldType.STRING).description("새 비밀번호"),
-                                fieldWithPath("newPasswordConfirm").type(JsonFieldType.STRING).description("새 비밀번호 확인")
-                        ),
-                        responseFields(
-                                fieldWithPath("code").type(JsonFieldType.NUMBER).description("코드"),
-                                fieldWithPath("status").type(JsonFieldType.STRING).description("상태"),
-                                fieldWithPath("message").type(JsonFieldType.STRING).description("메시지"),
-                                fieldWithPath("data").type(JsonFieldType.STRING).description("성공 메시지")
-                        )
-                ));
+                .contentType(MediaType.APPLICATION_JSON)
+                .header("Authorization", "Access Token")
+                .content(objectMapper.writeValueAsString(request)))
+            .andExpect(status().isOk())
+            .andDo(document("member-update-password",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                requestFields(
+                    fieldWithPath("prePassword").type(JsonFieldType.STRING).description("이전 비밀번호"),
+                    fieldWithPath("newPassword").type(JsonFieldType.STRING).description("새 비밀번호"),
+                    fieldWithPath("newPasswordConfirm").type(JsonFieldType.STRING).description("새 비밀번호 확인")
+                ),
+                responseFields(
+                    fieldWithPath("code").type(JsonFieldType.NUMBER).description("코드"),
+                    fieldWithPath("status").type(JsonFieldType.STRING).description("상태"),
+                    fieldWithPath("message").type(JsonFieldType.STRING).description("메시지"),
+                    fieldWithPath("data").type(JsonFieldType.STRING).description("성공 메시지")
+                )
+            ));
 
     }
 }

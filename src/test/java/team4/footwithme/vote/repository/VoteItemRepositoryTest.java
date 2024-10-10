@@ -72,7 +72,7 @@ class VoteItemRepositoryTest extends IntegrationTestSupport {
 
         //then
         Assertions.assertThat(findVoteItems).hasSize(3)
-            .extracting("voteItemId","courtId","vote.voteId")
+            .extracting("voteItemId", "courtId", "vote.voteId")
             .containsExactlyInAnyOrder(
                 Assertions.tuple(savedVoteItems.get(0).getVoteItemId(), savedVoteItems.get(0).getCourtId(), savedVote.getVoteId()),
                 Assertions.tuple(savedVoteItems.get(1).getVoteItemId(), savedVoteItems.get(1).getCourtId(), savedVote.getVoteId()),

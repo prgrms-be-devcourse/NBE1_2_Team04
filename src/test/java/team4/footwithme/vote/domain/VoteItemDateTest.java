@@ -33,7 +33,7 @@ class VoteItemDateTest {
         Vote vote = Vote.create(1L, 1L, "투표 제목", endAt);
         //when
         //then
-        Assertions.assertThatIllegalArgumentException().isThrownBy(()->VoteItemDate.create(vote, endAt.minusDays(1)))
+        Assertions.assertThatIllegalArgumentException().isThrownBy(() -> VoteItemDate.create(vote, endAt.minusDays(1)))
             .withMessage("투표 종료 시간보다 이른 시간을 선택할 수 없습니다.");
     }
 

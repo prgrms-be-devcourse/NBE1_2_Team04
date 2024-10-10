@@ -24,7 +24,6 @@ import team4.footwithme.stadium.service.response.StadiumsResponse;
 import team4.footwithme.stadium.util.SortFieldMapper;
 
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -64,14 +63,14 @@ public class StadiumServiceImpl implements StadiumService {
     public Slice<StadiumsResponse> getStadiumsWithinDistance(StadiumSearchByLocationServiceRequest request, Integer page, String sort) {
         Pageable pageable = PageRequest.of(page, 10, Sort.by(SortFieldMapper.getDatabaseField(sort)));
         return stadiumRepository.findStadiumsByLocation(request.latitude(), request.longitude(), request.distance(), pageable)
-                .map(StadiumsResponse::from);
+            .map(StadiumsResponse::from);
     }
 
     @Override
     @Transactional
     public StadiumDetailResponse registerStadium(StadiumRegisterServiceRequest request, Member member) {
         Stadium stadium = Stadium.create(member, request.name(), request.address(), request.phoneNumber(), request.description(),
-                request.latitude(), request.longitude());
+            request.latitude(), request.longitude());
 
         stadiumRepository.save(stadium);
         return StadiumDetailResponse.from(stadium);
@@ -82,7 +81,7 @@ public class StadiumServiceImpl implements StadiumService {
     public StadiumDetailResponse updateStadium(StadiumUpdateServiceRequest request, Member member, Long stadiumId) {
         Stadium stadium = validateStadiumOwnership(member.getMemberId(), stadiumId);
         stadium.updateStadium(member.getMemberId(), request.name(), request.address(), request.phoneNumber(), request.description(),
-                request.latitude(), request.longitude());
+            request.latitude(), request.longitude());
         return StadiumDetailResponse.from(stadium);
     }
 
@@ -103,9 +102,9 @@ public class StadiumServiceImpl implements StadiumService {
 
     private <T> T findEntityByIdOrThrowException(CustomGlobalRepository<T> repository, Long id, ExceptionMessage exceptionMessage) {
         return repository.findActiveById(id)
-                .orElseThrow(() -> {
-                    log.warn(">>>> {} : {} <<<<", id, exceptionMessage);
-                    return new IllegalArgumentException(exceptionMessage.getText());
-                });
+            .orElseThrow(() -> {
+                log.warn(">>>> {} : {} <<<<", id, exceptionMessage);
+                return new IllegalArgumentException(exceptionMessage.getText());
+            });
     }
 }

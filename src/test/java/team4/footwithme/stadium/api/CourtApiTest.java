@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = CourtApi.class, excludeFilters = {
-        @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = JwtTokenFilter.class)
+    @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = JwtTokenFilter.class)
 })
 @AutoConfigureMockMvc(addFilters = false)
 class CourtApiTest extends ApiTestSupport {
@@ -49,11 +49,11 @@ class CourtApiTest extends ApiTestSupport {
         when(courtService.getAllCourts(eq(0), eq("COURT"))).thenReturn(courts);
 
         mockMvc.perform(get("/api/v1/court/")
-                        .param("page", "0")
-                        .param("sort", "COURT"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.content[0].name").value("Court1"))
-                .andExpect(jsonPath("$.data.content[1].name").value("Court2"));
+                .param("page", "0")
+                .param("sort", "COURT"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.content[0].name").value("Court1"))
+            .andExpect(jsonPath("$.data.content[1].name").value("Court2"));
     }
 
     @Test
@@ -63,10 +63,10 @@ class CourtApiTest extends ApiTestSupport {
         when(courtService.getCourtsByStadiumId(eq(1L), eq(0), eq("COURT"))).thenReturn(courts);
 
         mockMvc.perform(get("/api/v1/court/1/courts")
-                        .param("page", "0")
-                        .param("sort", "COURT"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.content[0].name").value("Court1"));
+                .param("page", "0")
+                .param("sort", "COURT"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.content[0].name").value("Court1"));
     }
 
     @Test
@@ -75,13 +75,13 @@ class CourtApiTest extends ApiTestSupport {
         Long invalidStadiumId = -1L;
 
         when(courtService.getCourtsByStadiumId(eq(invalidStadiumId), eq(0), eq("COURT")))
-                .thenThrow(new IllegalArgumentException(ExceptionMessage.STADIUM_NOT_FOUND.getText()));
+            .thenThrow(new IllegalArgumentException(ExceptionMessage.STADIUM_NOT_FOUND.getText()));
 
         mockMvc.perform(get("/api/v1/court/{stadiumId}/courts", invalidStadiumId)
-                        .param("page", "0")
-                        .param("sort", "COURT"))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value(ExceptionMessage.STADIUM_NOT_FOUND.getText()));
+                .param("page", "0")
+                .param("sort", "COURT"))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.message").value(ExceptionMessage.STADIUM_NOT_FOUND.getText()));
     }
 
     @Test
@@ -90,9 +90,9 @@ class CourtApiTest extends ApiTestSupport {
         when(courtService.getCourtByCourtId(eq(1L))).thenReturn(courtDetail);
 
         mockMvc.perform(get("/api/v1/court/1/detail"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.name").value("Court1"))
-                .andExpect(jsonPath("$.data.description").value("Description1"));
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.data.name").value("Court1"))
+            .andExpect(jsonPath("$.data.description").value("Description1"));
     }
 
     @Test
@@ -101,10 +101,10 @@ class CourtApiTest extends ApiTestSupport {
         Long invalidCourtId = -1L;
 
         when(courtService.getCourtByCourtId(eq(invalidCourtId)))
-                .thenThrow(new IllegalArgumentException(ExceptionMessage.COURT_NOT_FOUND.getText()));
+            .thenThrow(new IllegalArgumentException(ExceptionMessage.COURT_NOT_FOUND.getText()));
 
         mockMvc.perform(get("/api/v1/court/{courtId}/detail", invalidCourtId))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value(ExceptionMessage.COURT_NOT_FOUND.getText()));
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.message").value(ExceptionMessage.COURT_NOT_FOUND.getText()));
     }
 }

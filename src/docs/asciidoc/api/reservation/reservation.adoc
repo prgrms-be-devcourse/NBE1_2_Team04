@@ -30,3 +30,14 @@ include::{snippets}/reservation-get-ready/query-parameters.adoc[]
 ==== HTTP Response
 include::{snippets}/reservation-get-ready/http-response.adoc[]
 include::{snippets}/reservation-get-ready/response-fields.adoc[]
+
+[[reservation-delete]]
+=== 예약 취소 API
+
+==== HTTP Request
+include::{snippets}/reservation-delete/http-request.adoc[]
+include::{snippets}/reservation-delete/path-parameters.adoc[]
+
+==== HTTP Response
+include::{snippets}/reservation-delete/http-response.adoc[]
+include::{snippets}/reservation-delete/response-fields.adoc[]

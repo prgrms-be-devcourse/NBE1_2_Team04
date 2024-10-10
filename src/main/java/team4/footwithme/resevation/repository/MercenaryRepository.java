@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface MercenaryRepository extends JpaRepository<Mercenary,Long>, CustomMercenaryRepository {
+public interface MercenaryRepository extends JpaRepository<Mercenary, Long>, CustomMercenaryRepository {
     @Query("select m from Mercenary m where m.isDeleted = 'false' and m.mercenaryId = :id")
     Optional<Mercenary> findByMercenaryId(@Param("id") Long mercenaryId);
 
