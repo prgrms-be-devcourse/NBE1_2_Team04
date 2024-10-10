@@ -19,7 +19,7 @@ public class CourtAllowedValuesValidator implements ConstraintValidator<CourtAll
         if (!VALID_SORT_FIELDS.contains(value)) {
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate(
-                    "정렬 기준은 다음과 같습니다: " + VALID_SORT_FIELDS
+                "정렬 기준은 다음과 같습니다: " + VALID_SORT_FIELDS
             ).addConstraintViolation();
             return false;
         }

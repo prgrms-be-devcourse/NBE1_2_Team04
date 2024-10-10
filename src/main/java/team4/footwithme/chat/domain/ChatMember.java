@@ -5,9 +5,9 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
 import team4.footwithme.global.domain.BaseEntity;
 import team4.footwithme.member.domain.Member;
-import org.hibernate.annotations.SQLDelete;
 
 @Getter
 @Entity
@@ -35,8 +35,8 @@ public class ChatMember extends BaseEntity {
 
     public static ChatMember create(Member member, Chatroom chatRoom) {
         return ChatMember.builder()
-                .member(member)
-                .chatRoom(chatRoom)
-                .build();
+            .member(member)
+            .chatRoom(chatRoom)
+            .build();
     }
 }

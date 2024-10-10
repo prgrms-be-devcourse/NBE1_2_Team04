@@ -101,18 +101,19 @@ public class ChatServiceImpl implements ChatService {
      * 채팅방에 소속된 멤버인지 검증하는 메소드
      */
     private void checkMemberInChatroom(Member member, Chatroom chatroom) {
-        if(!chatMemberRepository.existByMemberAndChatroom(member, chatroom)) {
+        if (!chatMemberRepository.existByMemberAndChatroom(member, chatroom)) {
             throw new IllegalArgumentException(ExceptionMessage.MEMBER_NOT_IN_CHATROOM.getText());
         }
     }
 
     /**
      * 채팅을 작성한 멤버인지 검증하는 메소드
+     *
      * @param member
      * @param chat
      */
-    private void checkChatByMember(Member member, Chat chat){
-        if(!chat.getMember().equals(member)){
+    private void checkChatByMember(Member member, Chat chat) {
+        if (!chat.getMember().equals(member)) {
             throw new IllegalArgumentException(ExceptionMessage.UNAUTHORIZED_MESSAGE_EDIT.getText());
         }
     }
@@ -126,6 +127,6 @@ public class ChatServiceImpl implements ChatService {
     }
 
     private Chat getChat(Long chatId) {
-        return chatRepository.findByChatId(chatId).orElseThrow(()-> new IllegalArgumentException(ExceptionMessage.CHAT_NOT_FOUND.getText()));
+        return chatRepository.findByChatId(chatId).orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.CHAT_NOT_FOUND.getText()));
     }
 }

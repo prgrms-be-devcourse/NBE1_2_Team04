@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import team4.footwithme.global.domain.BaseEntity;
-import org.hibernate.annotations.SQLDelete;
 
 
 @Getter
@@ -77,37 +76,37 @@ public class Member extends BaseEntity {
 
     public static Member createTemporary(String email, String name, LoginProvider loginProvider, String snsId) {
         return Member.builder()
-                .email(email)
-                .loginType(LoginType.builder()
-                        .loginProvider(loginProvider)
-                        .snsId(snsId)
-                        .build())
-                .name(name)
-                .memberRole(MemberRole.GUEST)
-                .termsAgreed(TermsAgreed.DISAGREE)
-                .build();
+            .email(email)
+            .loginType(LoginType.builder()
+                .loginProvider(loginProvider)
+                .snsId(snsId)
+                .build())
+            .name(name)
+            .memberRole(MemberRole.GUEST)
+            .termsAgreed(TermsAgreed.DISAGREE)
+            .build();
     }
 
 
-    public void update(String name, String phoneNumber, Gender gender){
-        if(name != null) {
+    public void update(String name, String phoneNumber, Gender gender) {
+        if (name != null) {
             this.name = name;
         }
 
-        if(gender != null) {
+        if (gender != null) {
             this.gender = gender;
         }
 
-        if(phoneNumber != null) {
+        if (phoneNumber != null) {
             this.phoneNumber = phoneNumber;
         }
     }
 
-    public void encodePassword(PasswordEncoder passwordEncoder){
+    public void encodePassword(PasswordEncoder passwordEncoder) {
         this.password = passwordEncoder.encode(password);
     }
 
-    public void changePassword(String password){
+    public void changePassword(String password) {
         this.password = password;
 
     }

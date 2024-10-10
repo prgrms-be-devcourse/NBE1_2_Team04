@@ -31,27 +31,27 @@ public class ChatroomApiTest extends ApiTestSupport {
 
         //response
         ChatroomResponse response = new ChatroomResponse(
-                1L,
-                "채팅방 1"
+            1L,
+            "채팅방 1"
         );
 
         given(chatroomService.createChatroom(any(ChatroomServiceRequest.class)))
-                .willReturn(new ChatroomResponse(
-                        1L,
-                        "채팅방 1"
-                ));
+            .willReturn(new ChatroomResponse(
+                1L,
+                "채팅방 1"
+            ));
 
         mockMvc.perform(post("/api/v1/chat/room")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value("201"))
-                .andExpect(jsonPath("$.status").value("CREATED"))
-                .andExpect(jsonPath("$.message").value("CREATED"))
-                .andExpect(jsonPath("$.data").isMap())
-                .andExpect(jsonPath("$.data.chatroomId").value(1L))
-                .andExpect(jsonPath("$.data.name").value("채팅방 1"));
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.code").value("201"))
+            .andExpect(jsonPath("$.status").value("CREATED"))
+            .andExpect(jsonPath("$.message").value("CREATED"))
+            .andExpect(jsonPath("$.data").isMap())
+            .andExpect(jsonPath("$.data.chatroomId").value(1L))
+            .andExpect(jsonPath("$.data.name").value("채팅방 1"));
     }
 
     //기존 채팅방을 수정한다.
@@ -65,25 +65,25 @@ public class ChatroomApiTest extends ApiTestSupport {
 
         //response
         ChatroomResponse response = new ChatroomResponse(
-                1L,
-                "채팅방 2"
+            1L,
+            "채팅방 2"
         );
 
         given(chatroomService.updateChatroom(eq(1L), any(ChatroomServiceRequest.class)))
-                .willReturn(response);
+            .willReturn(response);
 
         mockMvc.perform(put("/api/v1/chat/room/{chatroomId}", 1L)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request))
-                )
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value("200"))
-                .andExpect(jsonPath("$.status").value("OK"))
-                .andExpect(jsonPath("$.message").value("OK"))
-                .andExpect(jsonPath("$.data").isMap())
-                .andExpect(jsonPath("$.data.chatroomId").value(1L))
-                .andExpect(jsonPath("$.data.name").value("채팅방 2"));
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request))
+            )
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.code").value("200"))
+            .andExpect(jsonPath("$.status").value("OK"))
+            .andExpect(jsonPath("$.message").value("OK"))
+            .andExpect(jsonPath("$.data").isMap())
+            .andExpect(jsonPath("$.data.chatroomId").value(1L))
+            .andExpect(jsonPath("$.data.name").value("채팅방 2"));
     }
 
     //기존 채팅방을 삭제한다.
@@ -95,16 +95,16 @@ public class ChatroomApiTest extends ApiTestSupport {
         Chatroom chatroom = Chatroom.create("채팅방 1");
 
         given(chatroomService.deleteChatroomByChatroomId(chatroomId))
-                .willReturn(chatroomId);
+            .willReturn(chatroomId);
 
         mockMvc.perform(delete("/api/v1/chat/room/{chatroomId}", 1L)
-                        .contentType(MediaType.APPLICATION_JSON)
-                )
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value("200"))
-                .andExpect(jsonPath("$.status").value("OK"))
-                .andExpect(jsonPath("$.message").value("OK"))
-                .andExpect(jsonPath("$.data").value(1L));
+                .contentType(MediaType.APPLICATION_JSON)
+            )
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.code").value("200"))
+            .andExpect(jsonPath("$.status").value("OK"))
+            .andExpect(jsonPath("$.message").value("OK"))
+            .andExpect(jsonPath("$.data").value(1L));
     }
 }

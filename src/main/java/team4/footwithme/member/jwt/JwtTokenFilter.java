@@ -1,6 +1,5 @@
 package team4.footwithme.member.jwt;
 
-import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -21,23 +20,34 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public class JwtTokenFilter extends OncePerRequestFilter {
 
+    public static final String ACCESS_TOKEN = "Authorization";
+    public static final String REFRESH_TOKEN = "refresh_token";
+    private static final String COOKIE_REFRESH_TOKEN = "refreshToken";
     private final JwtTokenUtil jwtTokenUtil;
     private final RedisTemplate redisTemplate;
 
-    private static final String COOKIE_REFRESH_TOKEN = "refreshToken";
-    public static final String ACCESS_TOKEN = "Authorization";
-    public static final String REFRESH_TOKEN = "refresh_token";
+    public static String getRefreshTokenByRequest(HttpServletRequest request) {
+        Cookie cookies[] = request.getCookies();
+
+        if (cookies != null && cookies.length != 0) {
+            return Arrays.stream(cookies)
+                .filter(c -> c.getName().equals(COOKIE_REFRESH_TOKEN)).findFirst().map(Cookie::getValue)
+                .orElse(null);
+        }
+
+        return null;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String cookie_refreshToken = getRefreshTokenByRequest(request);
         String accessToken = jwtTokenUtil.getHeaderToken(request, ACCESS_TOKEN);
         String refreshToken = jwtTokenUtil.getHeaderToken(request, REFRESH_TOKEN);
-        if(cookie_refreshToken != null){
-            processSecurity(accessToken ,cookie_refreshToken, response);
+        if (cookie_refreshToken != null) {
+            processSecurity(accessToken, cookie_refreshToken, response);
         }
 
-        if(cookie_refreshToken == null){
+        if (cookie_refreshToken == null) {
             processSecurity(accessToken, refreshToken, response);
         }
 
@@ -65,18 +75,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     public void setAuthentication(String email) {
         Authentication authentication = jwtTokenUtil.createAuthentication(email);
         SecurityContextHolder.getContext().setAuthentication(authentication);
-    }
-
-    public static String getRefreshTokenByRequest(HttpServletRequest request) {
-        Cookie cookies[] = request.getCookies();
-
-        if(cookies != null && cookies.length != 0){
-            return Arrays.stream(cookies)
-                    .filter(c -> c.getName().equals(COOKIE_REFRESH_TOKEN)).findFirst().map(Cookie::getValue)
-                    .orElse(null);
-        }
-
-        return null;
     }
 
 

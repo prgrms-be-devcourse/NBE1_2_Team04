@@ -5,7 +5,7 @@ import team4.footwithme.team.domain.TeamMember;
 import java.util.List;
 
 public record TeamMembersJoinEvent(
-        List<TeamMember> members,
-        Long teamId
+    List<TeamMember> members,
+    Long teamId
 ) {
 }

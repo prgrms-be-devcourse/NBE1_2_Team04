@@ -39,7 +39,7 @@ public class MemberServiceImpl implements MemberService {
 
         Member member = serviceRequest.toEntity();
 
-        if(member.getPassword() != null){ // OAUth 2 회원가입 시 Password 가 null로 들어옴
+        if (member.getPassword() != null) { // OAUth 2 회원가입 시 Password 가 null로 들어옴
             member.encodePassword(jwtSecurityConfig.passwordEncoder());
         }
 
@@ -74,7 +74,7 @@ public class MemberServiceImpl implements MemberService {
 
         jwtTokenUtil.tokenValidation(accessToken);
 
-        if(redisTemplate.opsForValue().get(email) != null){
+        if (redisTemplate.opsForValue().get(email) != null) {
             redisTemplate.delete(email);
         }
 
@@ -86,7 +86,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public TokenResponse reissue(HttpServletRequest request, String refreshToken) {
-        if(refreshToken == null || refreshToken.isEmpty()){
+        if (refreshToken == null || refreshToken.isEmpty()) {
             refreshToken = JwtTokenFilter.getRefreshTokenByRequest(request); // 헤더에 없을 경우 쿠키에서 꺼내 씀
         }
 
@@ -96,8 +96,8 @@ public class MemberServiceImpl implements MemberService {
         long refreshTokenExpirationTime = jwtTokenUtil.getExpiration(refreshToken);
 
         return TokenResponse.of(newAccessToken,
-                refreshToken,
-                refreshTokenExpirationTime);
+            refreshToken,
+            refreshTokenExpirationTime);
     }
 
     @Override
@@ -113,7 +113,7 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public String updatePassword(Member member, UpdatePasswordServiceRequest serviceRequest) {
 
-        if(!jwtSecurityConfig.passwordEncoder().matches(serviceRequest.prePassword(), member.getPassword())) {
+        if (!jwtSecurityConfig.passwordEncoder().matches(serviceRequest.prePassword(), member.getPassword())) {
             throw new IllegalArgumentException("이전 패스워드가 일치하지 않습니다.");
         }
         member.changePassword(passwordEncoder.encode(serviceRequest.newPassword()));

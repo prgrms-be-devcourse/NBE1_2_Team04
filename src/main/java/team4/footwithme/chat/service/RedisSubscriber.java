@@ -10,7 +10,7 @@ import team4.footwithme.chat.service.response.ChatResponse;
 
 @Service
 @RequiredArgsConstructor
-public class RedisSubscriber{
+public class RedisSubscriber {
 
     private final ObjectMapper objectMapper;
     private final SimpMessageSendingOperations messagingTemplate;

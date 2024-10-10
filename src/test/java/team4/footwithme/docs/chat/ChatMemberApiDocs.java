@@ -34,44 +34,44 @@ public class ChatMemberApiDocs extends RestDocsSupport {
     @Test
     public void addChatMember() throws Exception {
         ChatMemberRequest request = new ChatMemberRequest(
-                1L,
-                1L
+            1L,
+            1L
         );
 
         ChatMemberResponse response = new ChatMemberResponse(
-                1L,
-                1L
+            1L,
+            1L
         );
 
         given(chatMemberService.joinChatMember(any(ChatMemberServiceRequest.class)))
-                .willReturn(response);
+            .willReturn(response);
 
         mockMvc.perform(post("/api/v1/chat/member")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk())
-                .andDo(document("chat-member-create",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        requestFields(
-                                fieldWithPath("chatroomId").description("채팅방 ID"),
-                                fieldWithPath("memberId").description("회원 ID")
-                        ),
-                        responseFields(
-                                fieldWithPath("code").type(JsonFieldType.NUMBER)
-                                        .description("코드"),
-                                fieldWithPath("status").type(JsonFieldType.STRING)
-                                        .description("상태"),
-                                fieldWithPath("message").type(JsonFieldType.STRING)
-                                        .description("메시지"),
-                                fieldWithPath("data").type(JsonFieldType.OBJECT)
-                                        .description("응답 데이터"),
-                                fieldWithPath("data.chatroomId").type(JsonFieldType.NUMBER)
-                                        .description("채팅방 ID"),
-                                fieldWithPath("data.memberId").type(JsonFieldType.NUMBER)
-                                        .description("회원 ID")
-                        )
-                ));
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+            .andExpect(status().isOk())
+            .andDo(document("chat-member-create",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                requestFields(
+                    fieldWithPath("chatroomId").description("채팅방 ID"),
+                    fieldWithPath("memberId").description("회원 ID")
+                ),
+                responseFields(
+                    fieldWithPath("code").type(JsonFieldType.NUMBER)
+                        .description("코드"),
+                    fieldWithPath("status").type(JsonFieldType.STRING)
+                        .description("상태"),
+                    fieldWithPath("message").type(JsonFieldType.STRING)
+                        .description("메시지"),
+                    fieldWithPath("data").type(JsonFieldType.OBJECT)
+                        .description("응답 데이터"),
+                    fieldWithPath("data.chatroomId").type(JsonFieldType.NUMBER)
+                        .description("채팅방 ID"),
+                    fieldWithPath("data.memberId").type(JsonFieldType.NUMBER)
+                        .description("회원 ID")
+                )
+            ));
     }
 
     // 채팅방을 퇴장하는 API
@@ -79,43 +79,43 @@ public class ChatMemberApiDocs extends RestDocsSupport {
     @Test
     public void removeChatMember() throws Exception {
         ChatMemberRequest request = new ChatMemberRequest(
-                1L,
-                1L
+            1L,
+            1L
         );
 
         ChatMemberResponse response = new ChatMemberResponse(
-                1L,
-                1L
+            1L,
+            1L
         );
 
         given(chatMemberService.leaveChatMember(any(ChatMemberServiceRequest.class)))
-                .willReturn(response);
+            .willReturn(response);
 
         mockMvc.perform(delete("/api/v1/chat/member")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk())
-                .andDo(document("chat-member-delete",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        requestFields(
-                                fieldWithPath("chatroomId").description("채팅방 ID"),
-                                fieldWithPath("memberId").description("회원 ID")
-                        ),
-                        responseFields(
-                                fieldWithPath("code").type(JsonFieldType.NUMBER)
-                                        .description("코드"),
-                                fieldWithPath("status").type(JsonFieldType.STRING)
-                                        .description("상태"),
-                                fieldWithPath("message").type(JsonFieldType.STRING)
-                                        .description("메시지"),
-                                fieldWithPath("data").type(JsonFieldType.OBJECT)
-                                        .description("응답 데이터"),
-                                fieldWithPath("data.chatroomId").type(JsonFieldType.NUMBER)
-                                        .description("채팅방 ID"),
-                                fieldWithPath("data.memberId").type(JsonFieldType.NUMBER)
-                                        .description("회원 ID")
-                        )
-                ));
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+            .andExpect(status().isOk())
+            .andDo(document("chat-member-delete",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                requestFields(
+                    fieldWithPath("chatroomId").description("채팅방 ID"),
+                    fieldWithPath("memberId").description("회원 ID")
+                ),
+                responseFields(
+                    fieldWithPath("code").type(JsonFieldType.NUMBER)
+                        .description("코드"),
+                    fieldWithPath("status").type(JsonFieldType.STRING)
+                        .description("상태"),
+                    fieldWithPath("message").type(JsonFieldType.STRING)
+                        .description("메시지"),
+                    fieldWithPath("data").type(JsonFieldType.OBJECT)
+                        .description("응답 데이터"),
+                    fieldWithPath("data.chatroomId").type(JsonFieldType.NUMBER)
+                        .description("채팅방 ID"),
+                    fieldWithPath("data.memberId").type(JsonFieldType.NUMBER)
+                        .description("회원 ID")
+                )
+            ));
     }
 }

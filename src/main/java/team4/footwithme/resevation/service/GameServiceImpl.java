@@ -63,8 +63,8 @@ public class GameServiceImpl implements GameService {
             }
 
             boolean isConflict = reservationRepository.findByMatchDateAndCourtAndReservationStatus(
-                            -1L, firstReservation.getMatchDate(), firstReservation.getCourt(), ReservationStatus.CONFIRMED, PageRequest.of(0, 1))
-                    .hasContent();
+                    -1L, firstReservation.getMatchDate(), firstReservation.getCourt(), ReservationStatus.CONFIRMED, PageRequest.of(0, 1))
+                .hasContent();
 
             if (isConflict) {
                 game.update(GameStatus.IGNORE);
@@ -93,16 +93,16 @@ public class GameServiceImpl implements GameService {
 
         PageRequest pageRequest = PageRequest.of(page, 10, Sort.by(Sort.Direction.ASC, "createdAt"));
         return gameRepository.findBySecondReservationAndStatus(
-                        reservation, GameStatus.PENDING, pageRequest)
-                .map(GameDetailResponse::from);
+                reservation, GameStatus.PENDING, pageRequest)
+            .map(GameDetailResponse::from);
     }
 
 
     private <T> T findEntityByIdOrThrowException(CustomGlobalRepository<T> repository, Long id, ExceptionMessage exceptionMessage) {
         return repository.findActiveById(id)
-                .orElseThrow(() -> {
-                    log.warn(">>>> {} : {} <<<<", id, exceptionMessage);
-                    return new IllegalArgumentException(exceptionMessage.getText());
-                });
+            .orElseThrow(() -> {
+                log.warn(">>>> {} : {} <<<<", id, exceptionMessage);
+                return new IllegalArgumentException(exceptionMessage.getText());
+            });
     }
 }

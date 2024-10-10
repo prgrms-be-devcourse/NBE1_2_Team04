@@ -18,12 +18,12 @@ public class CustomChatMemberRepositoryImpl implements CustomChatMemberRepositor
     @Override
     public Boolean existByMemberAndChatroom(Member member, Chatroom chatroom) {
         Integer count = queryFactory
-                .selectOne()
-                .from(chatMember)
-                .where(chatMember.isDeleted.eq(IsDeleted.FALSE)
-                        .and(chatMember.chatRoom.eq(chatroom))
-                        .and(chatMember.member.eq(member)))
-                .fetchFirst();
+            .selectOne()
+            .from(chatMember)
+            .where(chatMember.isDeleted.eq(IsDeleted.FALSE)
+                .and(chatMember.chatRoom.eq(chatroom))
+                .and(chatMember.member.eq(member)))
+            .fetchFirst();
 
         return count != null;
     }
@@ -31,9 +31,9 @@ public class CustomChatMemberRepositoryImpl implements CustomChatMemberRepositor
     @Override
     public List<ChatMember> findByChatroom(Chatroom chatroom) {
         return queryFactory.select(chatMember)
-                .from(chatMember)
-                .where(chatMember.isDeleted.eq(IsDeleted.FALSE)
-                        .and(chatMember.chatRoom.eq(chatroom)))
-                .fetch();
+            .from(chatMember)
+            .where(chatMember.isDeleted.eq(IsDeleted.FALSE)
+                .and(chatMember.chatRoom.eq(chatroom)))
+            .fetch();
     }
 }

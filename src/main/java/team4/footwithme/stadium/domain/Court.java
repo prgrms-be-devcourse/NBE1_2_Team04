@@ -45,11 +45,11 @@ public class Court extends BaseEntity {
 
     public static Court create(Stadium stadium, String name, String description, BigDecimal pricePerHour) {
         return Court.builder()
-                .stadium(stadium)
-                .name(name)
-                .description(description)
-                .pricePerHour(pricePerHour)
-                .build();
+            .stadium(stadium)
+            .name(name)
+            .description(description)
+            .pricePerHour(pricePerHour)
+            .build();
     }
 
     public void updateCourt(Long stadiumId, Long memberId, String name, String description, BigDecimal pricePerHour) {

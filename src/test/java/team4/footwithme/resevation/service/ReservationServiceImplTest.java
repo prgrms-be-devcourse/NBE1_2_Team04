@@ -133,8 +133,8 @@ class ReservationServiceImplTest extends IntegrationTestSupport {
         List<Mercenary> mercenaries = mercenaryRepository.findAll();
 
         assertThat(reservations).hasSize(1)
-                .extracting(Reservation::getGender)
-                .containsExactly(ParticipantGender.MALE);
+            .extracting(Reservation::getGender)
+            .containsExactly(ParticipantGender.MALE);
         assertThat(participants).hasSize(4);
         assertThat(mercenaries).hasSize(1);
     }
@@ -172,8 +172,8 @@ class ReservationServiceImplTest extends IntegrationTestSupport {
         List<Participant> participants = participantRepository.findAll();
 
         assertThat(reservations).hasSize(1)
-                .extracting(Reservation::getGender)
-                .containsExactly(ParticipantGender.MIXED);
+            .extracting(Reservation::getGender)
+            .containsExactly(ParticipantGender.MIXED);
         assertThat(participants).hasSize(6);
     }
 
@@ -208,8 +208,8 @@ class ReservationServiceImplTest extends IntegrationTestSupport {
         List<Mercenary> mercenaries = mercenaryRepository.findAll();
 
         assertThat(reservations).hasSize(1)
-                .extracting(Reservation::getGender)
-                .containsExactly(ParticipantGender.FEMALE);
+            .extracting(Reservation::getGender)
+            .containsExactly(ParticipantGender.FEMALE);
         assertThat(participants).hasSize(4);
         assertThat(mercenaries).hasSize(1);
     }
@@ -227,23 +227,23 @@ class ReservationServiceImplTest extends IntegrationTestSupport {
         Team savedTeam = teamRepository.save(team);
 
         Reservation reservation1 = Reservation.builder()
-                .court(court)
-                .member(stadiumCreatorMember)
-                .matchDate(LocalDateTime.parse("2024-10-01T10:00"))
-                .reservationStatus(ReservationStatus.READY)
-                .team(savedTeam)
-                .gender(ParticipantGender.MALE)
-                .build();
+            .court(court)
+            .member(stadiumCreatorMember)
+            .matchDate(LocalDateTime.parse("2024-10-01T10:00"))
+            .reservationStatus(ReservationStatus.READY)
+            .team(savedTeam)
+            .gender(ParticipantGender.MALE)
+            .build();
         reservationRepository.save(reservation1);
 
         Reservation reservation2 = Reservation.builder()
-                .court(court)
-                .member(stadiumCreatorMember)
-                .matchDate(LocalDateTime.parse("2024-10-01T10:00"))
-                .reservationStatus(ReservationStatus.READY)
-                .team(savedTeam)
-                .gender(ParticipantGender.MALE)
-                .build();
+            .court(court)
+            .member(stadiumCreatorMember)
+            .matchDate(LocalDateTime.parse("2024-10-01T10:00"))
+            .reservationStatus(ReservationStatus.READY)
+            .team(savedTeam)
+            .gender(ParticipantGender.MALE)
+            .build();
         reservationRepository.save(reservation2);
 
         Slice<ReservationsResponse> readyReservations = reservationService.findReadyReservations(reservation1.getReservationId(), 0);
@@ -266,23 +266,23 @@ class ReservationServiceImplTest extends IntegrationTestSupport {
         Team savedTeam = teamRepository.save(team);
 
         Reservation reservation = Reservation.builder()
-                .court(court)
-                .member(stadiumCreatorMember)
-                .matchDate(LocalDateTime.now().plusDays(1))
-                .reservationStatus(ReservationStatus.CONFIRMED)
-                .team(savedTeam)
-                .gender(ParticipantGender.MALE)
-                .build();
+            .court(court)
+            .member(stadiumCreatorMember)
+            .matchDate(LocalDateTime.now().plusDays(1))
+            .reservationStatus(ReservationStatus.CONFIRMED)
+            .team(savedTeam)
+            .gender(ParticipantGender.MALE)
+            .build();
         reservationRepository.save(reservation);
 
         assertThatThrownBy(() -> reservationService.findReadyReservations(reservation.getReservationId(), 0))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ExceptionMessage.RESERVATION_STATUS_NOT_READY.getText());
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage(ExceptionMessage.RESERVATION_STATUS_NOT_READY.getText());
     }
 
     @DisplayName("예약을 취소한다.")
     @Test
-    void deleteReservation(){
+    void deleteReservation() {
         //given
         Member manager = Member.create("test@naver.com", "!test1234", "test", "010-1234-1234", LoginProvider.ORIGINAL, "", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE);
         Member member3 = Member.create("test3@naver.com", "!test1234", "test3", "010-1234-1234", LoginProvider.ORIGINAL, "", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE);
@@ -299,8 +299,8 @@ class ReservationServiceImplTest extends IntegrationTestSupport {
 
         Court court = Court.create(stadium, "A번 구장", "잔디 구장", BigDecimal.valueOf(5000));
 
-        Reservation reservation = Reservation.create(court, manager, team, LocalDateTime.of(2024, 10, 20, 12,00,00), ReservationStatus.RECRUITING, ParticipantGender.MALE);
-        Reservation reservation2 = Reservation.create(court, manager, team2, LocalDateTime.of(2024, 10, 20, 12,00,00), ReservationStatus.RECRUITING, ParticipantGender.MALE);
+        Reservation reservation = Reservation.create(court, manager, team, LocalDateTime.of(2024, 10, 20, 12, 00, 00), ReservationStatus.RECRUITING, ParticipantGender.MALE);
+        Reservation reservation2 = Reservation.create(court, manager, team2, LocalDateTime.of(2024, 10, 20, 12, 00, 00), ReservationStatus.RECRUITING, ParticipantGender.MALE);
 
 
         Participant participant1 = Participant.create(reservation, manager, ParticipantRole.MEMBER);
@@ -310,7 +310,7 @@ class ReservationServiceImplTest extends IntegrationTestSupport {
         Participant participant5 = Participant.create(reservation, member6, ParticipantRole.MEMBER);
         Participant participant6 = Participant.create(reservation, member7, ParticipantRole.MEMBER);
 
-        Mercenary mercenary = Mercenary.create(reservation,"용병 구합니다");
+        Mercenary mercenary = Mercenary.create(reservation, "용병 구합니다");
 
         Game game = Game.create(reservation, reservation2, GameStatus.READY);
 
@@ -342,7 +342,7 @@ class ReservationServiceImplTest extends IntegrationTestSupport {
 
     @DisplayName("예약을 삭제할 때 일치하지 않는 사용자가 요청하면 예외를 던진다.")
     @Test
-    void deleteReservationThrowByMemberDoesNotMatch(){
+    void deleteReservationThrowByMemberDoesNotMatch() {
         //given
         Member manager = Member.create("test@naver.com", "!test1234", "test", "010-1234-1234", LoginProvider.ORIGINAL, "", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE);
         Member member3 = Member.create("test3@naver.com", "!test1234", "test3", "010-1234-1234", LoginProvider.ORIGINAL, "", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE);
@@ -359,8 +359,8 @@ class ReservationServiceImplTest extends IntegrationTestSupport {
 
         Court court = Court.create(stadium, "A번 구장", "잔디 구장", BigDecimal.valueOf(5000));
 
-        Reservation reservation = Reservation.create(court, manager, team, LocalDateTime.of(2024, 10, 20, 12,00,00), ReservationStatus.RECRUITING, ParticipantGender.MALE);
-        Reservation reservation2 = Reservation.create(court, manager, team2, LocalDateTime.of(2024, 10, 20, 12,00,00), ReservationStatus.RECRUITING, ParticipantGender.MALE);
+        Reservation reservation = Reservation.create(court, manager, team, LocalDateTime.of(2024, 10, 20, 12, 00, 00), ReservationStatus.RECRUITING, ParticipantGender.MALE);
+        Reservation reservation2 = Reservation.create(court, manager, team2, LocalDateTime.of(2024, 10, 20, 12, 00, 00), ReservationStatus.RECRUITING, ParticipantGender.MALE);
 
 
         Participant participant1 = Participant.create(reservation, manager, ParticipantRole.MEMBER);
@@ -370,7 +370,7 @@ class ReservationServiceImplTest extends IntegrationTestSupport {
         Participant participant5 = Participant.create(reservation, member6, ParticipantRole.MEMBER);
         Participant participant6 = Participant.create(reservation, member7, ParticipantRole.MEMBER);
 
-        Mercenary mercenary = Mercenary.create(reservation,"용병 구합니다");
+        Mercenary mercenary = Mercenary.create(reservation, "용병 구합니다");
 
         Game game = Game.create(reservation, reservation2, GameStatus.READY);
 
@@ -387,13 +387,13 @@ class ReservationServiceImplTest extends IntegrationTestSupport {
 
         //when & then
         assertThrows(IllegalArgumentException.class,
-                () -> reservationService.deleteReservation(reservation.getReservationId(), member7),
-                "일치하지 않는 사용자가 요청할 경우 IllegalArgumentException이 발생해야 합니다.");
+            () -> reservationService.deleteReservation(reservation.getReservationId(), member7),
+            "일치하지 않는 사용자가 요청할 경우 IllegalArgumentException이 발생해야 합니다.");
     }
 
     @DisplayName("예약을 삭제할 때 이미 Confirm 된 예약을 취소할 때 예외를 던진다.")
     @Test
-    void deleteReservationThrowByAlreadyConfirmedReservation(){
+    void deleteReservationThrowByAlreadyConfirmedReservation() {
         //given
         Member manager = Member.create("test@naver.com", "!test1234", "test", "010-1234-1234", LoginProvider.ORIGINAL, "", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE);
         Member member3 = Member.create("test3@naver.com", "!test1234", "test3", "010-1234-1234", LoginProvider.ORIGINAL, "", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE);
@@ -410,8 +410,8 @@ class ReservationServiceImplTest extends IntegrationTestSupport {
 
         Court court = Court.create(stadium, "A번 구장", "잔디 구장", BigDecimal.valueOf(5000));
 
-        Reservation reservation = Reservation.create(court, manager, team, LocalDateTime.of(2024, 10, 20, 12,00,00), ReservationStatus.CONFIRMED, ParticipantGender.MALE);
-        Reservation reservation2 = Reservation.create(court, manager, team2, LocalDateTime.of(2024, 10, 20, 12,00,00), ReservationStatus.RECRUITING, ParticipantGender.MALE);
+        Reservation reservation = Reservation.create(court, manager, team, LocalDateTime.of(2024, 10, 20, 12, 00, 00), ReservationStatus.CONFIRMED, ParticipantGender.MALE);
+        Reservation reservation2 = Reservation.create(court, manager, team2, LocalDateTime.of(2024, 10, 20, 12, 00, 00), ReservationStatus.RECRUITING, ParticipantGender.MALE);
 
 
         Participant participant1 = Participant.create(reservation, manager, ParticipantRole.MEMBER);
@@ -421,7 +421,7 @@ class ReservationServiceImplTest extends IntegrationTestSupport {
         Participant participant5 = Participant.create(reservation, member6, ParticipantRole.MEMBER);
         Participant participant6 = Participant.create(reservation, member7, ParticipantRole.MEMBER);
 
-        Mercenary mercenary = Mercenary.create(reservation,"용병 구합니다");
+        Mercenary mercenary = Mercenary.create(reservation, "용병 구합니다");
 
 
         Game game = Game.create(reservation, reservation2, GameStatus.READY);
@@ -439,8 +439,8 @@ class ReservationServiceImplTest extends IntegrationTestSupport {
 
         //when & then
         assertThrows(IllegalArgumentException.class,
-                () -> reservationService.deleteReservation(reservation.getReservationId(), manager),
-                "일치하지 않는 사용자가 요청할 경우 IllegalArgumentException이 발생해야 합니다.");
+            () -> reservationService.deleteReservation(reservation.getReservationId(), manager),
+            "일치하지 않는 사용자가 요청할 경우 IllegalArgumentException이 발생해야 합니다.");
     }
 
 }

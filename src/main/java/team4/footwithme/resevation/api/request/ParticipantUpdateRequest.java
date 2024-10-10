@@ -5,10 +5,10 @@ import team4.footwithme.resevation.domain.ParticipantRole;
 import team4.footwithme.resevation.service.request.ParticipantUpdateServiceRequest;
 
 public record ParticipantUpdateRequest(
-        @NotNull
-        Long participantId,
-        @NotNull
-        ParticipantRole role
+    @NotNull
+    Long participantId,
+    @NotNull
+    ParticipantRole role
 ) {
     public ParticipantUpdateServiceRequest toServiceResponse() {
         return new ParticipantUpdateServiceRequest(participantId, role);

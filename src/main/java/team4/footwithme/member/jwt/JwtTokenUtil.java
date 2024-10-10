@@ -29,36 +29,32 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class JwtTokenUtil {
 
-    private final PrincipalDetailsService userDetailService;
-    private final MemberRepository memberRepository;
-    private final RedisTemplate redisTemplate;
-
-
     public static final String ACCESS_TOKEN = "Authorization";
     public static final String REFRESH_TOKEN = "refresh_token";
     public static final String BEARER_PREFIX = "Bearer ";
-
     public static final long ACCESS_TIME = Duration.ofMinutes(30).toMillis(); // 만료시간 30분
     public static final long REFRESH_TIME = Duration.ofDays(14).toMillis(); // 만료시간 2주
-
+    private final PrincipalDetailsService userDetailService;
+    private final MemberRepository memberRepository;
+    private final RedisTemplate redisTemplate;
     @Value("${jwt.secret}")
     private String secretKey;
     private Key key;
 
     @PostConstruct
-    public void init(){
+    public void init() {
         byte[] bytes = Base64.getDecoder().decode(secretKey);
         key = Keys.hmacShaKeyFor(bytes);
     }
 
     public String getHeaderToken(HttpServletRequest request, String type) {
-        if(type.equals(ACCESS_TOKEN))
+        if (type.equals(ACCESS_TOKEN))
             return resolveToken(request);
 
         return request.getHeader(REFRESH_TOKEN);
     }
 
-    public TokenResponse createToken(String email){
+    public TokenResponse createToken(String email) {
         MemberRole role = getRoleFromEmail(email);
 
         String accessToken = createAccessToken(email, role);
@@ -72,37 +68,37 @@ public class JwtTokenUtil {
 
 
         return Jwts.builder()
-                .setSubject(email)
-                .claim("role", role.name())
-                .setExpiration(new Date(date.getTime() + ACCESS_TIME))
-                .setIssuedAt(date)
-                .signWith(SignatureAlgorithm.HS256, key)
-                .compact();
+            .setSubject(email)
+            .claim("role", role.name())
+            .setExpiration(new Date(date.getTime() + ACCESS_TIME))
+            .setIssuedAt(date)
+            .signWith(SignatureAlgorithm.HS256, key)
+            .compact();
     }
 
-    public String reCreateAccessToken(String refreshToken){
+    public String reCreateAccessToken(String refreshToken) {
         Date date = new Date();
         String email = getEmailFromToken(refreshToken);
         MemberRole role = getRoleFromEmail(email);
 
         return Jwts.builder()
-                .setSubject(email)
-                .claim("role", role.name())
-                .setExpiration(new Date(date.getTime() + ACCESS_TIME))
-                .setIssuedAt(date)
-                .signWith(key, SignatureAlgorithm.HS256)
-                .compact();
+            .setSubject(email)
+            .claim("role", role.name())
+            .setExpiration(new Date(date.getTime() + ACCESS_TIME))
+            .setIssuedAt(date)
+            .signWith(key, SignatureAlgorithm.HS256)
+            .compact();
     }
 
-    public String createRefreshToken(String email, MemberRole role){
+    public String createRefreshToken(String email, MemberRole role) {
         Date date = new Date();
 
         String refreshToken = Jwts.builder()
-                .setSubject(email)
-                .setExpiration(new Date(date.getTime() + REFRESH_TIME))
-                .setIssuedAt(date)
-                .signWith(key, SignatureAlgorithm.HS256)
-                .compact();
+            .setSubject(email)
+            .setExpiration(new Date(date.getTime() + REFRESH_TIME))
+            .setIssuedAt(date)
+            .signWith(key, SignatureAlgorithm.HS256)
+            .compact();
 
         return refreshToken;
     }
@@ -121,7 +117,7 @@ public class JwtTokenUtil {
 
     private MemberRole getRoleFromEmail(String email) {
         Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자 입니다."));
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자 입니다."));
 
         return member.getMemberRole();
     }
@@ -133,44 +129,44 @@ public class JwtTokenUtil {
     public String resolveToken(HttpServletRequest request) {
         String token = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-        if(StringUtils.hasText(token)) {
-            if(token.startsWith(BEARER_PREFIX)) {
+        if (StringUtils.hasText(token)) {
+            if (token.startsWith(BEARER_PREFIX)) {
                 return token.substring(7).trim();
-                }
-            return token;
             }
-
-            return null;
+            return token;
         }
 
-        public void tokenValidation(String token) {
-            try {
-                Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-
-            } catch (SecurityException | MalformedJwtException e) {
-                throw new JwtException("유효하지 않은 JWT 토큰입니다.");
-            } catch (ExpiredJwtException e) {
-                throw new JwtException ("만료된 JWT 입니다.");
-            } catch (UnsupportedJwtException e) {
-                throw new JwtException ("지원하지 않은 JWT 입니다.");
-            } catch (IllegalArgumentException e) {
-                throw new JwtException ("JWT 값이 비어있습니다.");
-            } catch (Exception e) {
-                throw new RuntimeException(e.getMessage());
-            }
+        return null;
     }
 
-    public void refreshTokenValidation(String refreshToken){
+    public void tokenValidation(String token) {
+        try {
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+
+        } catch (SecurityException | MalformedJwtException e) {
+            throw new JwtException("유효하지 않은 JWT 토큰입니다.");
+        } catch (ExpiredJwtException e) {
+            throw new JwtException("만료된 JWT 입니다.");
+        } catch (UnsupportedJwtException e) {
+            throw new JwtException("지원하지 않은 JWT 입니다.");
+        } catch (IllegalArgumentException e) {
+            throw new JwtException("JWT 값이 비어있습니다.");
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    public void refreshTokenValidation(String refreshToken) {
         tokenValidation(refreshToken);
         String email = getEmailFromToken(refreshToken);
         String redisRefreshToken = null;
 
         Object redisRefresh = redisTemplate.opsForValue().get(email);
 
-        if(redisRefresh != null)
+        if (redisRefresh != null)
             redisRefreshToken = redisRefresh.toString();
 
-        if(redisRefreshToken == null)
+        if (redisRefreshToken == null)
             throw new JwtException("유효하지 않은 JWT 토큰입니다.");
 
     }

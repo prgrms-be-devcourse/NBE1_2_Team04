@@ -11,7 +11,6 @@ import team4.footwithme.member.api.request.JoinRequest;
 import team4.footwithme.member.api.request.LoginRequest;
 import team4.footwithme.member.api.request.UpdatePasswordRequest;
 import team4.footwithme.member.api.request.UpdateRequest;
-import team4.footwithme.member.domain.Member;
 import team4.footwithme.member.jwt.JwtTokenUtil;
 import team4.footwithme.member.jwt.PrincipalDetails;
 import team4.footwithme.member.jwt.response.TokenResponse;
@@ -29,12 +28,12 @@ public class MemberApi {
     private final CookieService cookieService;
 
     @PostMapping("/join")
-    public ApiResponse<MemberResponse> join(@RequestBody @Valid JoinRequest request){
+    public ApiResponse<MemberResponse> join(@RequestBody @Valid JoinRequest request) {
         return ApiResponse.created(memberService.join(request.toServiceRequest()));
     }
 
     @PostMapping("/login")
-    public ApiResponse<LoginResponse> login(@RequestBody @Valid LoginRequest request, HttpServletResponse response){
+    public ApiResponse<LoginResponse> login(@RequestBody @Valid LoginRequest request, HttpServletResponse response) {
         LoginResponse loginResponse = memberService.login(request.toServiceRequest());
         cookieService.setHeader(response, loginResponse.refreshToken());   // 쿠키에 refreshToken 저장
 
@@ -48,7 +47,7 @@ public class MemberApi {
 
     @PostMapping("/reissue")
     public ApiResponse<TokenResponse> reissue(HttpServletRequest request, HttpServletResponse response,
-                                  @RequestHeader(name = JwtTokenUtil.REFRESH_TOKEN, defaultValue = "") String refreshToken){
+                                              @RequestHeader(name = JwtTokenUtil.REFRESH_TOKEN, defaultValue = "") String refreshToken) {
         TokenResponse tokenResponse = memberService.reissue(request, refreshToken);
         cookieService.setHeader(response, tokenResponse.refreshToken()); // 쿠키에 refreshToken 저장
 
@@ -57,14 +56,14 @@ public class MemberApi {
 
     @PutMapping("/update")
     public ApiResponse<MemberResponse> update(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                 @RequestBody @Valid UpdateRequest request){
+                                              @RequestBody @Valid UpdateRequest request) {
 
         return ApiResponse.ok(memberService.update(principalDetails.getMember(), request.toServiceRequest()));
     }
 
     @PutMapping("/update-password")
     public ApiResponse<String> updatePassword(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                              @RequestBody @Valid UpdatePasswordRequest request){
+                                              @RequestBody @Valid UpdatePasswordRequest request) {
 
         return ApiResponse.ok(memberService.updatePassword(principalDetails.getMember(), request.toServiceRequest()));
     }

@@ -41,7 +41,7 @@ public class ChatApi {
      */
     @GetMapping("/{chatroomId}")
     public ApiResponse<Slice<ChatResponse>> getChatting(@PathVariable Long chatroomId, @RequestParam int page, @RequestParam int size, @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        PageRequest pageRequest = PageRequest.of(page-1, size, Sort.by("createdAt").descending());
+        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("createdAt").descending());
         return ApiResponse.ok(chatService.getChatList(chatroomId, pageRequest, principalDetails.getMember()));
     }
 

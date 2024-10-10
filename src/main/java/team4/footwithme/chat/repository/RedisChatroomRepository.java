@@ -11,13 +11,10 @@ import team4.footwithme.chat.domain.Chatroom;
 @Repository
 @RequiredArgsConstructor
 public class RedisChatroomRepository implements CommandLineRunner {
-    private final ChatroomRepository chatroomRepository;
-
-    private final RedisTemplate<String, Object> redisTemplate;
-
-    private HashOperations<String, Long, Chatroom> opsHashChatRoom;
-
     private static final String CHAT_ROOMS = "CHAT_ROOM";
+    private final ChatroomRepository chatroomRepository;
+    private final RedisTemplate<String, Object> redisTemplate;
+    private HashOperations<String, Long, Chatroom> opsHashChatRoom;
 
     @PostConstruct
     private void start() {
@@ -32,7 +29,7 @@ public class RedisChatroomRepository implements CommandLineRunner {
     private void init() {
         // 서버 재시작 시 embeddedRedis 초기화되기 때문
         chatroomRepository.findAll().forEach(chatroom -> {
-            if (findChatroomFromRedis(chatroom.getChatroomId())==null) {
+            if (findChatroomFromRedis(chatroom.getChatroomId()) == null) {
                 createChatRoom(chatroom);
             }
         });

@@ -41,38 +41,38 @@ public class ChatroomApiDocs extends RestDocsSupport {
 
         //response
         ChatroomResponse response = new ChatroomResponse(
-                1L,
-                "채팅방 1"
+            1L,
+            "채팅방 1"
         );
 
         given(chatroomService.createChatroom(any(ChatroomServiceRequest.class)))
-                .willReturn(response);
+            .willReturn(response);
 
         mockMvc.perform(post("/api/v1/chat/room")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk())
-                .andDo(document("chatroom-create",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        requestFields(
-                                fieldWithPath("name").description("채팅방 이름")
-                        ),
-                        responseFields(
-                                fieldWithPath("code").type(JsonFieldType.NUMBER)
-                                        .description("코드"),
-                                fieldWithPath("status").type(JsonFieldType.STRING)
-                                        .description("상태"),
-                                fieldWithPath("message").type(JsonFieldType.STRING)
-                                        .description("메시지"),
-                                fieldWithPath("data").type(JsonFieldType.OBJECT)
-                                        .description("응답 데이터"),
-                                fieldWithPath("data.chatroomId").type(JsonFieldType.NUMBER)
-                                        .description("채팅방 ID"),
-                                fieldWithPath("data.name").type(JsonFieldType.STRING)
-                                        .description("채팅방 이름")
-                        )
-                ));
+            .andExpect(status().isOk())
+            .andDo(document("chatroom-create",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                requestFields(
+                    fieldWithPath("name").description("채팅방 이름")
+                ),
+                responseFields(
+                    fieldWithPath("code").type(JsonFieldType.NUMBER)
+                        .description("코드"),
+                    fieldWithPath("status").type(JsonFieldType.STRING)
+                        .description("상태"),
+                    fieldWithPath("message").type(JsonFieldType.STRING)
+                        .description("메시지"),
+                    fieldWithPath("data").type(JsonFieldType.OBJECT)
+                        .description("응답 데이터"),
+                    fieldWithPath("data.chatroomId").type(JsonFieldType.NUMBER)
+                        .description("채팅방 ID"),
+                    fieldWithPath("data.name").type(JsonFieldType.STRING)
+                        .description("채팅방 이름")
+                )
+            ));
     }
 
     // 기존 채팅방을 수정한다.
@@ -84,45 +84,45 @@ public class ChatroomApiDocs extends RestDocsSupport {
 
         //response
         ChatroomResponse response = new ChatroomResponse(
-                1L,
-                "채팅방 2"
+            1L,
+            "채팅방 2"
         );
 
         given(chatroomService.updateChatroom(eq(1L), any(ChatroomServiceRequest.class)))
-                .willReturn(new ChatroomResponse(
-                        1L,
-                        "채팅방 2"
-                ));
+            .willReturn(new ChatroomResponse(
+                1L,
+                "채팅방 2"
+            ));
 
         mockMvc.perform(put("/api/v1/chat/room/{chatroomId}", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request))
-        )
-                .andExpect(status().isOk())
-                .andDo(document("chatroom-update",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        requestFields(
-                                fieldWithPath("name").description("채팅방 이름")
-                        ),
-                        pathParameters(
-                                parameterWithName("chatroomId").description("채팅방 ID")
-                        ),
-                        responseFields(
-                                fieldWithPath("code").type(JsonFieldType.NUMBER)
-                                        .description("코드"),
-                                fieldWithPath("status").type(JsonFieldType.STRING)
-                                        .description("상태"),
-                                fieldWithPath("message").type(JsonFieldType.STRING)
-                                        .description("메시지"),
-                                fieldWithPath("data").type(JsonFieldType.OBJECT)
-                                        .description("응답 데이터"),
-                                fieldWithPath("data.chatroomId").type(JsonFieldType.NUMBER)
-                                        .description("채팅방 ID"),
-                                fieldWithPath("data.name").type(JsonFieldType.STRING)
-                                        .description("채팅방 이름")
-                        )
-                ));
+            )
+            .andExpect(status().isOk())
+            .andDo(document("chatroom-update",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                requestFields(
+                    fieldWithPath("name").description("채팅방 이름")
+                ),
+                pathParameters(
+                    parameterWithName("chatroomId").description("채팅방 ID")
+                ),
+                responseFields(
+                    fieldWithPath("code").type(JsonFieldType.NUMBER)
+                        .description("코드"),
+                    fieldWithPath("status").type(JsonFieldType.STRING)
+                        .description("상태"),
+                    fieldWithPath("message").type(JsonFieldType.STRING)
+                        .description("메시지"),
+                    fieldWithPath("data").type(JsonFieldType.OBJECT)
+                        .description("응답 데이터"),
+                    fieldWithPath("data.chatroomId").type(JsonFieldType.NUMBER)
+                        .description("채팅방 ID"),
+                    fieldWithPath("data.name").type(JsonFieldType.STRING)
+                        .description("채팅방 이름")
+                )
+            ));
     }
 
     // 기존 채팅방을 삭제한다.
@@ -132,28 +132,28 @@ public class ChatroomApiDocs extends RestDocsSupport {
         long chatroomId = 1L;
 
         given(chatroomService.deleteChatroomByChatroomId(chatroomId))
-                .willReturn(chatroomId);
+            .willReturn(chatroomId);
 
         mockMvc.perform(delete("/api/v1/chat/room/{chatroomId}", 1L)
-                        .contentType(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+            )
+            .andExpect(status().isOk())
+            .andDo(document("chatroom-delete",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                pathParameters(
+                    parameterWithName("chatroomId").description("채팅방 ID")
+                ),
+                responseFields(
+                    fieldWithPath("code").type(JsonFieldType.NUMBER)
+                        .description("코드"),
+                    fieldWithPath("status").type(JsonFieldType.STRING)
+                        .description("상태"),
+                    fieldWithPath("message").type(JsonFieldType.STRING)
+                        .description("메시지"),
+                    fieldWithPath("data").type(JsonFieldType.NUMBER)
+                        .description("응답 데이터 삭제한 채팅방 ID")
                 )
-                .andExpect(status().isOk())
-                .andDo(document("chatroom-delete",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        pathParameters(
-                                parameterWithName("chatroomId").description("채팅방 ID")
-                        ),
-                        responseFields(
-                                fieldWithPath("code").type(JsonFieldType.NUMBER)
-                                        .description("코드"),
-                                fieldWithPath("status").type(JsonFieldType.STRING)
-                                        .description("상태"),
-                                fieldWithPath("message").type(JsonFieldType.STRING)
-                                        .description("메시지"),
-                                fieldWithPath("data").type(JsonFieldType.NUMBER)
-                                        .description("응답 데이터 삭제한 채팅방 ID")
-                        )
-                ));
+            ));
     }
 }

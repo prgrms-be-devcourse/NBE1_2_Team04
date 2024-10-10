@@ -1,17 +1,15 @@
 package team4.footwithme.resevation.api;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import team4.footwithme.global.api.ApiResponse;
 import team4.footwithme.member.jwt.PrincipalDetails;
 import team4.footwithme.resevation.service.ReservationService;
-import team4.footwithme.resevation.service.response.ReservationsResponse;
-import team4.footwithme.resevation.service.response.ReservationInfoResponse;
 import team4.footwithme.resevation.service.response.ReservationInfoDetailsResponse;
+import team4.footwithme.resevation.service.response.ReservationInfoResponse;
+import team4.footwithme.resevation.service.response.ReservationsResponse;
 
 import java.util.List;
 
@@ -24,8 +22,8 @@ public class ReservationApi {
 
     @GetMapping("/ready")
     public ApiResponse<Slice<ReservationsResponse>> getReadyReservations(
-            @RequestParam Long reservationId,
-            @RequestParam(defaultValue = "0", required = false) Integer page) {
+        @RequestParam Long reservationId,
+        @RequestParam(defaultValue = "0", required = false) Integer page) {
         return ApiResponse.ok(reservationService.findReadyReservations(reservationId, page));
     }
 
@@ -46,8 +44,8 @@ public class ReservationApi {
     }
 
     @DeleteMapping("/{reservationId}")
-    public ApiResponse<Long> deleteReservation (@PathVariable(value = "reservationId") Long reservationId,
-                                                @AuthenticationPrincipal PrincipalDetails principalDetails){
+    public ApiResponse<Long> deleteReservation(@PathVariable(value = "reservationId") Long reservationId,
+                                               @AuthenticationPrincipal PrincipalDetails principalDetails) {
         return ApiResponse.ok(reservationService.deleteReservation(reservationId, principalDetails.getMember()));
     }
 }

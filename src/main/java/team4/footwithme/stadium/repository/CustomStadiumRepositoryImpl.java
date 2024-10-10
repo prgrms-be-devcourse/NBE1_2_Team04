@@ -13,8 +13,6 @@ import team4.footwithme.stadium.domain.Stadium;
 
 import java.util.List;
 
-import static team4.footwithme.stadium.domain.QStadium.stadium;
-
 @RequiredArgsConstructor
 public class CustomStadiumRepositoryImpl implements CustomStadiumRepository {
 
@@ -33,19 +31,19 @@ public class CustomStadiumRepositoryImpl implements CustomStadiumRepository {
 
     private NumberTemplate<Double> calculateHaversineDistance(Double latitude, Double longitude, QStadium stadium) {
         return Expressions.numberTemplate(Double.class,
-                "(6371 * acos(cos(radians({0})) * cos(radians({1})) * cos(radians({2}) - radians({3})) + sin(radians({0})) * sin(radians({1}))))",
-                latitude, stadium.position.latitude, stadium.position.longitude, longitude);
+            "(6371 * acos(cos(radians({0})) * cos(radians({1})) * cos(radians({2}) - radians({3})) + sin(radians({0})) * sin(radians({1}))))",
+            latitude, stadium.position.latitude, stadium.position.longitude, longitude);
     }
 
     private List<Stadium> fetchStadiumsByLocation(NumberTemplate<Double> haversineDistance, Double distance, Pageable pageable) {
         QStadium stadium = QStadium.stadium;
         return queryFactory
-                .selectFrom(stadium)
-                .where(haversineDistance.loe(distance)
-                        .and(stadium.isDeleted.eq(IsDeleted.FALSE)))
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize() + 1)
-                .fetch();
+            .selectFrom(stadium)
+            .where(haversineDistance.loe(distance)
+                .and(stadium.isDeleted.eq(IsDeleted.FALSE)))
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize() + 1)
+            .fetch();
     }
 
     private Slice<Stadium> createSlice(List<Stadium> stadiums, Pageable pageable) {

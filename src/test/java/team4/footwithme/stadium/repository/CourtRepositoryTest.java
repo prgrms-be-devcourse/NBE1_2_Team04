@@ -39,7 +39,7 @@ class CourtRepositoryTest extends IntegrationTestSupport {
     @BeforeEach
     void setUp() {
         testMember = Member.create("test@example.com", "password", "Test User", "010-1234-5678",
-                LoginProvider.ORIGINAL, "test@example.com", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE);
+            LoginProvider.ORIGINAL, "test@example.com", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE);
         memberRepository.save(testMember);
 
         testStadium = Stadium.create(testMember, "Test Stadium", "seoul", "010-1111-1111", "Description", 37.5665, 126.9780);
@@ -60,9 +60,9 @@ class CourtRepositoryTest extends IntegrationTestSupport {
         Slice<Court> courts = courtRepository.findByStadium_StadiumId(testStadium.getStadiumId(), PageRequest.of(0, 10));
 
         assertThat(courts.getContent())
-                .hasSize(3)
-                .extracting(Court::getName)
-                .containsExactlyInAnyOrder("Court1", "Court2", "Court3");
+            .hasSize(3)
+            .extracting(Court::getName)
+            .containsExactlyInAnyOrder("Court1", "Court2", "Court3");
     }
 
     @Test
@@ -73,9 +73,9 @@ class CourtRepositoryTest extends IntegrationTestSupport {
         Slice<Court> courts = courtRepository.findByStadium_StadiumId(testStadium.getStadiumId(), PageRequest.of(0, 10));
 
         assertThat(courts.getContent())
-                .hasSize(2)
-                .extracting(Court::getName)
-                .containsExactlyInAnyOrder("Court1", "Court3");
+            .hasSize(2)
+            .extracting(Court::getName)
+            .containsExactlyInAnyOrder("Court1", "Court3");
     }
 
     @Test
@@ -84,9 +84,9 @@ class CourtRepositoryTest extends IntegrationTestSupport {
         Slice<Court> courts = courtRepository.findAllActive(PageRequest.of(0, 10));
 
         assertThat(courts.getContent())
-                .hasSize(3)
-                .extracting(Court::getName)
-                .containsExactlyInAnyOrder("Court1", "Court2", "Court3");
+            .hasSize(3)
+            .extracting(Court::getName)
+            .containsExactlyInAnyOrder("Court1", "Court2", "Court3");
     }
 
     @Test
@@ -97,9 +97,9 @@ class CourtRepositoryTest extends IntegrationTestSupport {
         Slice<Court> courts = courtRepository.findAllActive(PageRequest.of(0, 10));
 
         assertThat(courts.getContent())
-                .hasSize(2)
-                .extracting(Court::getName)
-                .containsExactlyInAnyOrder("Court2", "Court3");
+            .hasSize(2)
+            .extracting(Court::getName)
+            .containsExactlyInAnyOrder("Court2", "Court3");
     }
 
     @Test

@@ -70,7 +70,7 @@ public class ChatroomServiceImpl implements ChatroomService {
      */
     @Transactional
     @Override
-    public Long deleteChatroomByChatroomId(Long chatroomId){
+    public Long deleteChatroomByChatroomId(Long chatroomId) {
         Chatroom chatroom = getChatroomByChatroomId(chatroomId);
 
         return deleteChatroom(chatroom);
@@ -78,7 +78,7 @@ public class ChatroomServiceImpl implements ChatroomService {
 
     @Transactional
     @Override
-    public Long deleteTeamChatroom(Long teamId){
+    public Long deleteTeamChatroom(Long teamId) {
         Chatroom chatroom = getChatroomByTeamId(teamId);
 
         return deleteChatroom(chatroom);
@@ -86,7 +86,7 @@ public class ChatroomServiceImpl implements ChatroomService {
 
     @Transactional
     @Override
-    public Long deleteReservationChatroom(Long reservationId){
+    public Long deleteReservationChatroom(Long reservationId) {
         Chatroom chatroom = getChatroomByReservationId(reservationId);
 
         return deleteChatroom(chatroom);
@@ -105,7 +105,7 @@ public class ChatroomServiceImpl implements ChatroomService {
         return new ChatroomResponse(chatroom);
     }
 
-    private Long deleteChatroom(Chatroom chatroom){
+    private Long deleteChatroom(Chatroom chatroom) {
         redisChatroomRepository.deleteChatroomFromRedis(chatroom.getChatroomId());
 
         chatroomRepository.deleteById(chatroom.getChatroomId());
@@ -114,16 +114,16 @@ public class ChatroomServiceImpl implements ChatroomService {
 
     private Chatroom getChatroomByChatroomId(Long chatroomId) {
         return chatroomRepository.findByChatroomId(chatroomId)
-                .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.CHATROOM_NOT_FOUND.getText()));
+            .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.CHATROOM_NOT_FOUND.getText()));
     }
 
     private Chatroom getChatroomByTeamId(Long teamId) {
         return chatroomRepository.findByTeamId(teamId)
-                .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.CHATROOM_NOT_FOUND.getText()));
+            .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.CHATROOM_NOT_FOUND.getText()));
     }
 
     private Chatroom getChatroomByReservationId(Long reservationId) {
         return chatroomRepository.findByReservationId(reservationId)
-                .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.CHATROOM_NOT_FOUND.getText()));
+            .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.CHATROOM_NOT_FOUND.getText()));
     }
 }

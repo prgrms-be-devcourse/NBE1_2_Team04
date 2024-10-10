@@ -31,13 +31,13 @@ public class EmbeddedRedisConfig {
     @PostConstruct
     public void redisServer() throws IOException {
         int port = isRedisRunning() ? findAvailablePort() : redisPort;
-        if(isArmMac()) {
+        if (isArmMac()) {
             redisServer = new RedisServer(getRedisServerExecutable(), redisPort);
         } else {
             redisServer = RedisServer.builder()
-                    .port(port)
-                    .setting("maxmemory 128M")
-                    .build();
+                .port(port)
+                .setting("maxmemory 128M")
+                .build();
             redisServer.start();
         }
     }
@@ -49,13 +49,14 @@ public class EmbeddedRedisConfig {
         }
     }
 
-    private File getRedisServerExecutable(){
+    private File getRedisServerExecutable() {
         try {
             return new File("src/main/resources/binary/redis/redis-server-6.2.5-mac-arm64");
         } catch (Exception e) {
             throw new NoSuchElementException("Redis Server Executable File Not Found");
         }
     }
+
     private boolean isArmMac() {
         return Objects.equals(System.getProperty("os.arch"), "aarch64")
             && Objects.equals(System.getProperty("os.name"), "Mac OS X");

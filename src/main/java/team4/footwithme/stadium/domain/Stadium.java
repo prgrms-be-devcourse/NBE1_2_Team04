@@ -53,16 +53,16 @@ public class Stadium extends BaseEntity {
 
     public static Stadium create(Member member, String name, String address, String phoneNumber, String description, double latitude, double longitude) {
         return Stadium.builder()
-                .member(member)
-                .name(name)
-                .address(address)
-                .phoneNumber(phoneNumber)
-                .description(description)
-                .position(Position.builder()
-                        .latitude(latitude)
-                        .longitude(longitude)
-                        .build())
-                .build();
+            .member(member)
+            .name(name)
+            .address(address)
+            .phoneNumber(phoneNumber)
+            .description(description)
+            .position(Position.builder()
+                .latitude(latitude)
+                .longitude(longitude)
+                .build())
+            .build();
     }
 
     public void updateStadium(Long memberId, String name, String address, String phoneNumber, String description, Double latitude, Double longitude) {

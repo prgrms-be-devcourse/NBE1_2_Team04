@@ -13,7 +13,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 @Transactional
 class CustomVoteRepositoryImplTest extends IntegrationTestSupport {
@@ -71,7 +72,7 @@ class CustomVoteRepositoryImplTest extends IntegrationTestSupport {
         List<Vote> savedVotes = voteRepository.findOpenedVotes();
         //then
         assertThat(savedVotes)
-            .extracting("voteId", "title", "endAt", "isDeleted","voteStatus")
+            .extracting("voteId", "title", "endAt", "isDeleted", "voteStatus")
             .containsExactlyInAnyOrder(
                 tuple(vote1.getVoteId(), "title", endAt, IsDeleted.FALSE, VoteStatus.OPENED),
                 tuple(vote2.getVoteId(), "title", endAt, IsDeleted.FALSE, VoteStatus.OPENED)

@@ -17,9 +17,13 @@ public class PrincipalDetails implements UserDetails {
         this.authorities = authorities;
     }
 
-    public Member getMember() { return this.member; }
+    public Member getMember() {
+        return this.member;
+    }
 
-    public MemberRole getMemberRole() { return member.getMemberRole(); }
+    public MemberRole getMemberRole() {
+        return member.getMemberRole();
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
