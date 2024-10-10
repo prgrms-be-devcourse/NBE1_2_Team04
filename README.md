@@ -384,7 +384,7 @@
 
 ## 8. API 명세서
 
-###  [REST Docs](docs/Foot%20With%20Me%20REST%20API%20문서.pdf)
+###  [REST Docs](docs/FootWithMeRESTAPI.pdf)
 
 ---
 
