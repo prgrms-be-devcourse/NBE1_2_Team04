@@ -45,9 +45,9 @@ public class CustomOAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSucc
 
         // 최초 로그인인 경우
         if (member.getMemberRole() == MemberRole.GUEST) {
-            ApiResponse<MemberOAuthResponse> apiResponse =  ApiResponse.of(
-                    HttpStatus.OK,
-                    MemberOAuthResponse.from(member)
+            ApiResponse<MemberOAuthResponse> apiResponse = ApiResponse.of(
+                HttpStatus.OK,
+                MemberOAuthResponse.from(member)
             );
             String jsonResponse = objectMapper.writeValueAsString(apiResponse);
             response.getWriter().write(jsonResponse);
@@ -56,11 +56,11 @@ public class CustomOAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSucc
         // 회원 가입 기록이 있으면
         TokenResponse tokenResponse = jwtTokenUtil.createToken(member.getEmail());
 
-        ApiResponse<TokenResponse> apiResponse =  ApiResponse.of(
-                HttpStatus.OK,
-                tokenResponse
+        ApiResponse<TokenResponse> apiResponse = ApiResponse.of(
+            HttpStatus.OK,
+            tokenResponse
         );
-        
+
         // Redis에 RefreshToken 저장
         redisTemplate.opsForValue().set(member.getEmail(), tokenResponse.refreshToken(), tokenResponse.refreshTokenExpirationTime(), TimeUnit.MICROSECONDS);
         cookieService.setHeader(response, tokenResponse.refreshToken()); // 쿠키에 refreshToken 저장

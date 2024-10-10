@@ -17,9 +17,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BindException.class)
     protected ApiResponse<Object> bindException(BindException e) {
         return ApiResponse.of(
-                HttpStatus.BAD_REQUEST,
-                e.getBindingResult().getAllErrors().get(0).getDefaultMessage(),
-                null
+            HttpStatus.BAD_REQUEST,
+            e.getBindingResult().getAllErrors().get(0).getDefaultMessage(),
+            null
         );
     }
 
@@ -27,9 +27,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalArgumentException.class)
     protected ApiResponse<Object> illegalArgumentException(IllegalArgumentException e) {
         return ApiResponse.of(
-                HttpStatus.BAD_REQUEST,
-                e.getMessage(),
-                null
+            HttpStatus.BAD_REQUEST,
+            e.getMessage(),
+            null
         );
     }
 
@@ -37,13 +37,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HandlerMethodValidationException.class)
     public ApiResponse<Object> handleHandlerMethodValidationException(HandlerMethodValidationException e) {
         String message = e.getAllErrors().stream()
-                .map(error -> error.getDefaultMessage())
-                .collect(Collectors.joining(", "));
+            .map(error -> error.getDefaultMessage())
+            .collect(Collectors.joining(", "));
 
         return ApiResponse.of(
-                HttpStatus.BAD_REQUEST,
-                message,
-                null
+            HttpStatus.BAD_REQUEST,
+            message,
+            null
         );
     }
 }

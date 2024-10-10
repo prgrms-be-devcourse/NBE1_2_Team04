@@ -4,11 +4,9 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import team4.footwithme.global.domain.IsDeleted;
 import team4.footwithme.member.domain.Gender;
-import team4.footwithme.member.domain.QMember;
-import static team4.footwithme.team.domain.QTeamMember.teamMember;
-import static team4.footwithme.member.domain.QMember.member;
 
-import java.util.List;
+import static team4.footwithme.member.domain.QMember.member;
+import static team4.footwithme.team.domain.QTeamMember.teamMember;
 
 @RequiredArgsConstructor
 public class CustomTeamRepositoryImpl implements CustomTeamRepository {
@@ -18,22 +16,22 @@ public class CustomTeamRepositoryImpl implements CustomTeamRepository {
     @Override
     public Long countMaleByMemberId(Long teamId) {
         return queryFactory
-                .select(teamMember.count())
-                .from(teamMember).join(member).on(teamMember.member.memberId.eq(member.memberId))
-                .where(member.gender.eq(Gender.MALE)
-                        .and(teamMember.isDeleted.eq(IsDeleted.FALSE))
-                        .and(teamMember.team.teamId.eq(teamId)))
-                .fetchOne();
+            .select(teamMember.count())
+            .from(teamMember).join(member).on(teamMember.member.memberId.eq(member.memberId))
+            .where(member.gender.eq(Gender.MALE)
+                .and(teamMember.isDeleted.eq(IsDeleted.FALSE))
+                .and(teamMember.team.teamId.eq(teamId)))
+            .fetchOne();
     }
 
     @Override
     public Long countFemaleByMemberId(Long teamId) {
         return queryFactory
-                .select(teamMember.count())
-                .from(teamMember).join(member).on(teamMember.member.memberId.eq(member.memberId))
-                .where(member.gender.eq(Gender.FEMALE)
-                        .and(teamMember.isDeleted.eq(IsDeleted.FALSE))
-                        .and(teamMember.team.teamId.eq(teamId)))
-                .fetchOne();
+            .select(teamMember.count())
+            .from(teamMember).join(member).on(teamMember.member.memberId.eq(member.memberId))
+            .where(member.gender.eq(Gender.FEMALE)
+                .and(teamMember.isDeleted.eq(IsDeleted.FALSE))
+                .and(teamMember.team.teamId.eq(teamId)))
+            .fetchOne();
     }
 }

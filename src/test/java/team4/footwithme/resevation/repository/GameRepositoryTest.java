@@ -65,13 +65,13 @@ class GameRepositoryTest extends IntegrationTestSupport {
     @BeforeEach
     void setUp() {
         testMember = Member.create("test@example.com", "password", "Test User", "010-1234-5678",
-                LoginProvider.ORIGINAL, "test@example.com", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE);
+            LoginProvider.ORIGINAL, "test@example.com", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE);
         memberRepository.save(testMember);
 
 
         memberRepository.save(
-                Member.create("teamLeader@gmail.com", "123456", "팀장", "010-1111-1111",
-                        LoginProvider.ORIGINAL, "test", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE)
+            Member.create("teamLeader@gmail.com", "123456", "팀장", "010-1111-1111",
+                LoginProvider.ORIGINAL, "test", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE)
         );
 
         testStadium = Stadium.create(testMember, "Test Stadium", "Seoul", "010-1111-1111", "Test Description", 37.5665, 126.9780);
@@ -81,45 +81,45 @@ class GameRepositoryTest extends IntegrationTestSupport {
         courtRepository.save(testCourt);
 
         Member leader = memberRepository.findByEmail("teamLeader@gmail.com")
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자 입니다."));
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자 입니다."));
 
         team = teamRepository.save(Team.create(null, "팀명", "팀 설명", 0, 0, 0, "선호지역"));
         teamMemberRepository.save(TeamMember.createCreator(team, leader));
 
         reservation1 = Reservation.builder()
-                .member(testMember)
-                .matchDate(LocalDateTime.parse("2024-10-01T10:00"))
-                .court(testCourt)
-                .reservationStatus(ReservationStatus.READY)
-                .gender(ParticipantGender.MALE)
-                .team(team)
-                .build();
+            .member(testMember)
+            .matchDate(LocalDateTime.parse("2024-10-01T10:00"))
+            .court(testCourt)
+            .reservationStatus(ReservationStatus.READY)
+            .gender(ParticipantGender.MALE)
+            .team(team)
+            .build();
 
         reservation2 = Reservation.builder()
-                .member(testMember)
-                .matchDate(LocalDateTime.parse("2024-10-01T10:00"))
-                .court(testCourt)
-                .reservationStatus(ReservationStatus.READY)
-                .gender(ParticipantGender.MALE)
-                .team(team)
-                .build();
+            .member(testMember)
+            .matchDate(LocalDateTime.parse("2024-10-01T10:00"))
+            .court(testCourt)
+            .reservationStatus(ReservationStatus.READY)
+            .gender(ParticipantGender.MALE)
+            .team(team)
+            .build();
 
         reservation3 = Reservation.builder()
-                .member(testMember)
-                .matchDate(LocalDateTime.parse("2024-10-01T10:00"))
-                .court(testCourt)
-                .reservationStatus(ReservationStatus.READY)
-                .gender(ParticipantGender.MALE)
-                .team(team)
-                .build();
+            .member(testMember)
+            .matchDate(LocalDateTime.parse("2024-10-01T10:00"))
+            .court(testCourt)
+            .reservationStatus(ReservationStatus.READY)
+            .gender(ParticipantGender.MALE)
+            .team(team)
+            .build();
         reservation4 = Reservation.builder()
-                .member(testMember)
-                .matchDate(LocalDateTime.parse("2024-10-01T10:00"))
-                .court(testCourt)
-                .reservationStatus(ReservationStatus.READY)
-                .gender(ParticipantGender.MALE)
-                .team(team)
-                .build();
+            .member(testMember)
+            .matchDate(LocalDateTime.parse("2024-10-01T10:00"))
+            .court(testCourt)
+            .reservationStatus(ReservationStatus.READY)
+            .gender(ParticipantGender.MALE)
+            .team(team)
+            .build();
 
 
         reservationRepository.save(reservation1);
@@ -159,9 +159,9 @@ class GameRepositoryTest extends IntegrationTestSupport {
         Slice<Game> games = gameRepository.findBySecondReservationAndStatus(reservation2, GameStatus.PENDING, PageRequest.of(0, 10));
 
         assertThat(games.getContent())
-                .hasSize(1)
-                .extracting(Game::getGameStatus)
-                .containsExactly(GameStatus.PENDING);
+            .hasSize(1)
+            .extracting(Game::getGameStatus)
+            .containsExactly(GameStatus.PENDING);
     }
 
     @Test

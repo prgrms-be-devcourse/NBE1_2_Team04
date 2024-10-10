@@ -23,11 +23,11 @@ public class CustomMemberRepositoryImpl implements CustomMemberRepository {
     @Override
     public Boolean existByEmail(String email) {
         Integer count = queryFactory
-                .selectOne()
-                .from(member)
-                .where(member.email.eq(email)
-                        .and(member.isDeleted.eq(IsDeleted.FALSE)))
-                .fetchFirst();
+            .selectOne()
+            .from(member)
+            .where(member.email.eq(email)
+                .and(member.isDeleted.eq(IsDeleted.FALSE)))
+            .fetchFirst();
 
         return count != null;
     }

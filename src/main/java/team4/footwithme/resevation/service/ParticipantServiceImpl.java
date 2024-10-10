@@ -27,7 +27,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class ParticipantServiceImpl implements ParticipantService{
+public class ParticipantServiceImpl implements ParticipantService {
     private final MercenaryRepository mercenaryRepository;
     private final ReservationRepository reservationRepository;
     private final ParticipantRepository participantRepository;
@@ -42,7 +42,7 @@ public class ParticipantServiceImpl implements ParticipantService{
      */
     @Override
     @Transactional
-    public ParticipantResponse createMercenaryParticipant(Long mercenaryId, Member member){
+    public ParticipantResponse createMercenaryParticipant(Long mercenaryId, Member member) {
         Mercenary mercenary = getMercenaryByMercenaryId(mercenaryId);
 
         checkParticipantMercenaryByReservationIdAndMemberId(mercenary.getReservation().getReservationId(), member.getMemberId());
@@ -57,7 +57,7 @@ public class ParticipantServiceImpl implements ParticipantService{
      */
     @Override
     @Transactional
-    public ParticipantResponse createParticipant(Long reservationId, Member member){
+    public ParticipantResponse createParticipant(Long reservationId, Member member) {
         Reservation reservation = getReservationByReservationId(reservationId);
 
         getTeamMember(reservation.getTeam(), member);
@@ -75,11 +75,11 @@ public class ParticipantServiceImpl implements ParticipantService{
      * 채팅방에도 추가해주기
      */
     @Transactional
-    public void createParticipants(Long reservationId, List<Member> Members){
+    public void createParticipants(Long reservationId, List<Member> Members) {
         Reservation reservation = getReservationByReservationId(reservationId);
 
         List<Participant> participants = new ArrayList<>();
-        for(Member member : Members){
+        for (Member member : Members) {
             participants.add(Participant.create(reservation, member, ParticipantRole.MEMBER));
         }
 
@@ -93,7 +93,7 @@ public class ParticipantServiceImpl implements ParticipantService{
      * 채팅방에서도 삭제는 예약(채팅방) 삭제 이벤트로 발생함
      */
     @Transactional
-    public void deleteParticipants(Long reservationId){
+    public void deleteParticipants(Long reservationId) {
         List<Participant> participants = participantRepository.findParticipantsByReservationId(reservationId);
 
         participantRepository.deleteAll(participants);
@@ -107,15 +107,15 @@ public class ParticipantServiceImpl implements ParticipantService{
      */
     @Override
     @Transactional
-    public Long deleteParticipant(Long reservationId, Member member){
+    public Long deleteParticipant(Long reservationId, Member member) {
         List<Participant> participants = participantRepository.findParticipantsByReservationId(reservationId);
 
-        if(participants.size()<7){
+        if (participants.size() < 7) {
             throw new IllegalArgumentException(ExceptionMessage.PARTICIPANT_NOT_MEMBER.getText());
         }
 
         Participant participant = participants.stream().filter(p -> p.getMember().getMemberId().equals(member.getMemberId())).findFirst()
-                .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.PARTICIPANT_NOT_IN_MEMBER.getText()));
+            .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.PARTICIPANT_NOT_IN_MEMBER.getText()));
 
         participantRepository.delete(participant);
 
@@ -134,18 +134,18 @@ public class ParticipantServiceImpl implements ParticipantService{
      */
     @Override
     @Transactional
-    public ParticipantResponse updateMercenaryParticipant(ParticipantUpdateServiceRequest request, Member member){
+    public ParticipantResponse updateMercenaryParticipant(ParticipantUpdateServiceRequest request, Member member) {
         Participant participant = getParticipantByParticipantId(request.participantId());
 
         checkReservationCreatedBy(participant.getReservation(), member);
 
-        if(participant.getParticipantRole().equals(request.role())){
+        if (participant.getParticipantRole().equals(request.role())) {
             throw new IllegalArgumentException(ExceptionMessage.SAME_PARTICIPANT_ROLE.getText());
         }
 
         participant.updateRole(request.role());
 
-        if(request.role() == ParticipantRole.ACCEPT){
+        if (request.role() == ParticipantRole.ACCEPT) {
             publisher.publishEvent(new ReservationMemberJoinEvent(member, participant.getReservation().getReservationId()));
         }
 
@@ -158,7 +158,7 @@ public class ParticipantServiceImpl implements ParticipantService{
      */
     @Override
     @Transactional(readOnly = true)
-    public List<ParticipantResponse> getAcceptParticipants(Long reservationId){
+    public List<ParticipantResponse> getAcceptParticipants(Long reservationId) {
         List<Participant> participants = participantRepository.findParticipantByReservationIdAndRole(reservationId);
 
         return participants.stream().map(ParticipantResponse::new).toList();
@@ -170,7 +170,7 @@ public class ParticipantServiceImpl implements ParticipantService{
      */
     @Override
     @Transactional(readOnly = true)
-    public List<ParticipantResponse> getParticipants(Long reservationId){
+    public List<ParticipantResponse> getParticipants(Long reservationId) {
         List<Participant> participants = participantRepository.findParticipantsByReservationId(reservationId);
 
         return participants.stream().map(ParticipantResponse::new).toList();
@@ -182,7 +182,7 @@ public class ParticipantServiceImpl implements ParticipantService{
      */
     @Override
     @Transactional(readOnly = true)
-    public List<ParticipantResponse> getParticipantsMercenary(Long reservationId){
+    public List<ParticipantResponse> getParticipantsMercenary(Long reservationId) {
         List<Participant> participants = participantRepository.findParticipantMercenaryByReservationId(reservationId);
 
         return participants.stream().map(ParticipantResponse::new).toList();
@@ -190,38 +190,38 @@ public class ParticipantServiceImpl implements ParticipantService{
 
     private Reservation getReservationByReservationId(Long reservationId) {
         return reservationRepository.findByReservationId(reservationId)
-                .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.RESERVATION_NOT_FOUND.getText()));
+            .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.RESERVATION_NOT_FOUND.getText()));
     }
 
     private Mercenary getMercenaryByMercenaryId(Long mercenaryId) {
         return mercenaryRepository.findByMercenaryId(mercenaryId)
-                .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.MERCENARY_NOT_FOUND.getText()));
+            .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.MERCENARY_NOT_FOUND.getText()));
     }
 
     private Participant getParticipantByParticipantId(Long participantId) {
         return participantRepository.findParticipantsByParticipantId(participantId)
-                .orElseThrow(()->new IllegalArgumentException(ExceptionMessage.PARTICIPANT_NOT_IN_MEMBER.getText()));
+            .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.PARTICIPANT_NOT_IN_MEMBER.getText()));
     }
 
     private TeamMember getTeamMember(Team team, Member member) {
         return teamMemberRepository.findByTeamIdAndMemberId(team.getTeamId(), member.getMemberId())
-                .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.MEMBER_NOT_IN_TEAM.getText()));
+            .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.MEMBER_NOT_IN_TEAM.getText()));
     }
 
     private void checkReservationCreatedBy(Reservation reservation, Member member) {
-        if(!reservation.getMember().getMemberId().equals(member.getMemberId())) {
+        if (!reservation.getMember().getMemberId().equals(member.getMemberId())) {
             throw new IllegalArgumentException(ExceptionMessage.RESERVATION_NOT_MEMBER.getText());
         }
     }
 
     private void checkParticipantByReservationIdAndMemberId(Long reservationId, Long memberId) {
-        if(participantRepository.findParticipantsByReservationIdAndMemberId(reservationId, memberId).isPresent()){
+        if (participantRepository.findParticipantsByReservationIdAndMemberId(reservationId, memberId).isPresent()) {
             throw new IllegalArgumentException(ExceptionMessage.PARTICIPANT_IN_MEMBER.getText());
         }
     }
 
     private void checkParticipantMercenaryByReservationIdAndMemberId(Long reservationId, Long memberId) {
-        if(participantRepository.findParticipantsByReservationIdAndMemberId(reservationId, memberId).isPresent()){
+        if (participantRepository.findParticipantsByReservationIdAndMemberId(reservationId, memberId).isPresent()) {
             throw new IllegalArgumentException(ExceptionMessage.MERCENARY_IN_RESERVATION.getText());
         }
     }

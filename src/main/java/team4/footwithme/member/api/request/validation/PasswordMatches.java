@@ -13,8 +13,12 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface PasswordMatches {
     String message() default "패스워드가 일치하지 않습니다.";
+
     String passwordField();
+
     String passwordConfirmField();
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
 }

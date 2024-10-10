@@ -42,45 +42,45 @@ public class CourtMerchantApiDocs extends RestDocsSupport {
     @DisplayName("구장 등록 API")
     void registerCourt() throws Exception {
         CourtRegisterRequest request = new CourtRegisterRequest(
-                1L,
-                "Test Court",
-                "Test Description",
-                new BigDecimal(50000)
+            1L,
+            "Test Court",
+            "Test Description",
+            new BigDecimal(50000)
         );
         CourtDetailResponse response = new CourtDetailResponse(
-                1L,
-                1L,
-                "Test Court",
-                "Test Description",
-                new BigDecimal(50000)
+            1L,
+            1L,
+            "Test Court",
+            "Test Description",
+            new BigDecimal(50000)
         );
 
         given(courtService.registerCourt(any(CourtRegisterServiceRequest.class), any())).willReturn(response);
 
         mockMvc.perform(post("/api/v1/merchant/court/register")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk())
-                .andDo(document("court-register",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        requestFields(
-                                fieldWithPath("stadiumId").type(JsonFieldType.NUMBER).description("풋살장 ID"),
-                                fieldWithPath("name").type(JsonFieldType.STRING).description("구장 이름"),
-                                fieldWithPath("description").type(JsonFieldType.STRING).optional().description("구장 설명"),
-                                fieldWithPath("price_per_hour").type(JsonFieldType.NUMBER).description("시간당 가격")
-                        ),
-                        responseFields(
-                                fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
-                                fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
-                                fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
-                                fieldWithPath("data.courtId").type(JsonFieldType.NUMBER).description("구장 ID"),
-                                fieldWithPath("data.stadiumId").type(JsonFieldType.NUMBER).description("풋살장 ID"),
-                                fieldWithPath("data.name").type(JsonFieldType.STRING).description("구장 이름"),
-                                fieldWithPath("data.description").type(JsonFieldType.STRING).description("구장 설명"),
-                                fieldWithPath("data.price_per_hour").type(JsonFieldType.NUMBER).description("시간당 가격")
-                        )
-                ));
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+            .andExpect(status().isOk())
+            .andDo(document("court-register",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                requestFields(
+                    fieldWithPath("stadiumId").type(JsonFieldType.NUMBER).description("풋살장 ID"),
+                    fieldWithPath("name").type(JsonFieldType.STRING).description("구장 이름"),
+                    fieldWithPath("description").type(JsonFieldType.STRING).optional().description("구장 설명"),
+                    fieldWithPath("price_per_hour").type(JsonFieldType.NUMBER).description("시간당 가격")
+                ),
+                responseFields(
+                    fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
+                    fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
+                    fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
+                    fieldWithPath("data.courtId").type(JsonFieldType.NUMBER).description("구장 ID"),
+                    fieldWithPath("data.stadiumId").type(JsonFieldType.NUMBER).description("풋살장 ID"),
+                    fieldWithPath("data.name").type(JsonFieldType.STRING).description("구장 이름"),
+                    fieldWithPath("data.description").type(JsonFieldType.STRING).description("구장 설명"),
+                    fieldWithPath("data.price_per_hour").type(JsonFieldType.NUMBER).description("시간당 가격")
+                )
+            ));
     }
 
     @Test
@@ -89,48 +89,48 @@ public class CourtMerchantApiDocs extends RestDocsSupport {
     void updateCourt() throws Exception {
         Long courtId = 1L;
         CourtUpdateRequest request = new CourtUpdateRequest(
-                1L,
-                "Updated Court",
-                "Updated Description",
-                new BigDecimal(60000)
+            1L,
+            "Updated Court",
+            "Updated Description",
+            new BigDecimal(60000)
         );
         CourtDetailResponse response = new CourtDetailResponse(
-                courtId,
-                1L,
-                "Updated Court",
-                "Updated Description",
-                new BigDecimal(60000)
+            courtId,
+            1L,
+            "Updated Court",
+            "Updated Description",
+            new BigDecimal(60000)
         );
 
         given(courtService.updateCourt(any(), any(), eq(courtId))).willReturn(response);
 
         mockMvc.perform(put("/api/v1/merchant/court/{courtId}", courtId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk())
-                .andDo(document("court-update",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        pathParameters(
-                                parameterWithName("courtId").description("수정할 구장 ID")
-                        ),
-                        requestFields(
-                                fieldWithPath("stadiumId").type(JsonFieldType.NUMBER).description("풋살장 ID"),
-                                fieldWithPath("name").type(JsonFieldType.STRING).description("구장 이름"),
-                                fieldWithPath("description").type(JsonFieldType.STRING).optional().description("구장 설명"),
-                                fieldWithPath("price_per_hour").type(JsonFieldType.NUMBER).description("시간당 가격")
-                        ),
-                        responseFields(
-                                fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
-                                fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
-                                fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
-                                fieldWithPath("data.courtId").type(JsonFieldType.NUMBER).description("구장 ID"),
-                                fieldWithPath("data.stadiumId").type(JsonFieldType.NUMBER).description("풋살장 ID"),
-                                fieldWithPath("data.name").type(JsonFieldType.STRING).description("구장 이름"),
-                                fieldWithPath("data.description").type(JsonFieldType.STRING).description("구장 설명"),
-                                fieldWithPath("data.price_per_hour").type(JsonFieldType.NUMBER).description("시간당 가격")
-                        )
-                ));
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+            .andExpect(status().isOk())
+            .andDo(document("court-update",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                pathParameters(
+                    parameterWithName("courtId").description("수정할 구장 ID")
+                ),
+                requestFields(
+                    fieldWithPath("stadiumId").type(JsonFieldType.NUMBER).description("풋살장 ID"),
+                    fieldWithPath("name").type(JsonFieldType.STRING).description("구장 이름"),
+                    fieldWithPath("description").type(JsonFieldType.STRING).optional().description("구장 설명"),
+                    fieldWithPath("price_per_hour").type(JsonFieldType.NUMBER).description("시간당 가격")
+                ),
+                responseFields(
+                    fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
+                    fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
+                    fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
+                    fieldWithPath("data.courtId").type(JsonFieldType.NUMBER).description("구장 ID"),
+                    fieldWithPath("data.stadiumId").type(JsonFieldType.NUMBER).description("풋살장 ID"),
+                    fieldWithPath("data.name").type(JsonFieldType.STRING).description("구장 이름"),
+                    fieldWithPath("data.description").type(JsonFieldType.STRING).description("구장 설명"),
+                    fieldWithPath("data.price_per_hour").type(JsonFieldType.NUMBER).description("시간당 가격")
+                )
+            ));
     }
 
     @Test
@@ -141,24 +141,24 @@ public class CourtMerchantApiDocs extends RestDocsSupport {
         CourtDeleteRequest request = new CourtDeleteRequest(1L);
 
         mockMvc.perform(delete("/api/v1/merchant/court/{courtId}", courtId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk())
-                .andDo(document("court-delete",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        pathParameters(
-                                parameterWithName("courtId").description("삭제할 구장 ID")
-                        ),
-                        requestFields(
-                                fieldWithPath("stadiumId").type(JsonFieldType.NUMBER).description("구장의 풋살장 ID")
-                        ),
-                        responseFields(
-                                fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
-                                fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
-                                fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
-                                fieldWithPath("data").type(JsonFieldType.NULL).description("삭제된 데이터 (항상 null)")
-                        )
-                ));
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+            .andExpect(status().isOk())
+            .andDo(document("court-delete",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                pathParameters(
+                    parameterWithName("courtId").description("삭제할 구장 ID")
+                ),
+                requestFields(
+                    fieldWithPath("stadiumId").type(JsonFieldType.NUMBER).description("구장의 풋살장 ID")
+                ),
+                responseFields(
+                    fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
+                    fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
+                    fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
+                    fieldWithPath("data").type(JsonFieldType.NULL).description("삭제된 데이터 (항상 null)")
+                )
+            ));
     }
 }

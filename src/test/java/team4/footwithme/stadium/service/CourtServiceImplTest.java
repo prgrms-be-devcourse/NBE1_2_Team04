@@ -47,18 +47,18 @@ class CourtServiceImplTest extends IntegrationTestSupport {
     @BeforeEach
     void setUp() {
         testMember = Member.builder()
-                .email("test@example.com")
-                .password("password")
-                .name("Test User")
-                .phoneNumber("010-1234-5678")
-                .loginType(LoginType.builder()
-                        .loginProvider(LoginProvider.ORIGINAL)
-                        .snsId("test@example.com")
-                        .build())
-                .gender(Gender.MALE)
-                .memberRole(MemberRole.USER)
-                .termsAgreed(TermsAgreed.AGREE)
-                .build();
+            .email("test@example.com")
+            .password("password")
+            .name("Test User")
+            .phoneNumber("010-1234-5678")
+            .loginType(LoginType.builder()
+                .loginProvider(LoginProvider.ORIGINAL)
+                .snsId("test@example.com")
+                .build())
+            .gender(Gender.MALE)
+            .memberRole(MemberRole.USER)
+            .termsAgreed(TermsAgreed.AGREE)
+            .build();
         memberRepository.save(testMember);
 
         testStadium = Stadium.create(testMember, "Test Stadium", "Test Address", "010-1111-1111", "Test Description", 37.5665, 126.9780);
@@ -76,9 +76,9 @@ class CourtServiceImplTest extends IntegrationTestSupport {
         Slice<CourtsResponse> result = courtService.getCourtsByStadiumId(testStadium.getStadiumId(), 0, "name");
 
         assertThat(result.getContent())
-                .hasSize(2)
-                .extracting(CourtsResponse::name)
-                .containsExactly("Court1", "Court2");
+            .hasSize(2)
+            .extracting(CourtsResponse::name)
+            .containsExactly("Court1", "Court2");
     }
 
     @Test
@@ -87,9 +87,9 @@ class CourtServiceImplTest extends IntegrationTestSupport {
         Slice<CourtsResponse> result = courtService.getAllCourts(0, "name");
 
         assertThat(result.getContent())
-                .hasSize(2)
-                .extracting(CourtsResponse::name)
-                .containsExactly("Court1", "Court2");
+            .hasSize(2)
+            .extracting(CourtsResponse::name)
+            .containsExactly("Court1", "Court2");
     }
 
     @Test
@@ -101,16 +101,16 @@ class CourtServiceImplTest extends IntegrationTestSupport {
 
         assertThat(response).isNotNull();
         assertThat(response)
-                .extracting(
-                        CourtDetailResponse::name,
-                        CourtDetailResponse::description,
-                        CourtDetailResponse::price_per_hour
-                )
-                .containsExactly(
-                        court.getName(),
-                        court.getDescription(),
-                        court.getPricePerHour()
-                );
+            .extracting(
+                CourtDetailResponse::name,
+                CourtDetailResponse::description,
+                CourtDetailResponse::price_per_hour
+            )
+            .containsExactly(
+                court.getName(),
+                court.getDescription(),
+                court.getPricePerHour()
+            );
     }
 
     @Test
@@ -118,26 +118,26 @@ class CourtServiceImplTest extends IntegrationTestSupport {
     void registerCourt() {
         BigDecimal price = new BigDecimal("20000");
         CourtRegisterServiceRequest request = new CourtRegisterServiceRequest(
-                testStadium.getStadiumId(),
-                "New Court",
-                "New Description",
-                price
+            testStadium.getStadiumId(),
+            "New Court",
+            "New Description",
+            price
         );
 
         CourtDetailResponse response = courtService.registerCourt(request, testMember);
 
         assertThat(response).isNotNull();
         assertThat(response)
-                .extracting(
-                        CourtDetailResponse::name,
-                        CourtDetailResponse::description,
-                        CourtDetailResponse::price_per_hour
-                )
-                .containsExactly(
-                        "New Court",
-                        "New Description",
-                        price
-                );
+            .extracting(
+                CourtDetailResponse::name,
+                CourtDetailResponse::description,
+                CourtDetailResponse::price_per_hour
+            )
+            .containsExactly(
+                "New Court",
+                "New Description",
+                price
+            );
 
         assertThat(courtRepository.findById(response.courtId())).isPresent();
     }
@@ -149,39 +149,39 @@ class CourtServiceImplTest extends IntegrationTestSupport {
 
         BigDecimal updatedPrice = new BigDecimal("25000");
         CourtUpdateServiceRequest request = new CourtUpdateServiceRequest(
-                testStadium.getStadiumId(),
-                "Updated Court",
-                "Updated Description",
-                updatedPrice
+            testStadium.getStadiumId(),
+            "Updated Court",
+            "Updated Description",
+            updatedPrice
         );
 
         CourtDetailResponse response = courtService.updateCourt(request, testMember, court.getCourtId());
 
         assertThat(response).isNotNull();
         assertThat(response)
-                .extracting(
-                        CourtDetailResponse::name,
-                        CourtDetailResponse::description,
-                        CourtDetailResponse::price_per_hour
-                )
-                .containsExactly(
-                        "Updated Court",
-                        "Updated Description",
-                        updatedPrice
-                );
+            .extracting(
+                CourtDetailResponse::name,
+                CourtDetailResponse::description,
+                CourtDetailResponse::price_per_hour
+            )
+            .containsExactly(
+                "Updated Court",
+                "Updated Description",
+                updatedPrice
+            );
 
         Court updatedCourt = courtRepository.findById(court.getCourtId()).orElseThrow();
         assertThat(updatedCourt)
-                .extracting(
-                        Court::getName,
-                        Court::getDescription,
-                        Court::getPricePerHour
-                )
-                .containsExactly(
-                        "Updated Court",
-                        "Updated Description",
-                        updatedPrice
-                );
+            .extracting(
+                Court::getName,
+                Court::getDescription,
+                Court::getPricePerHour
+            )
+            .containsExactly(
+                "Updated Court",
+                "Updated Description",
+                updatedPrice
+            );
     }
 
     @Test
@@ -190,7 +190,7 @@ class CourtServiceImplTest extends IntegrationTestSupport {
         Court court = courtRepository.findAll().get(0);
 
         CourtDeleteServiceRequest request = new CourtDeleteServiceRequest(
-                testStadium.getStadiumId()
+            testStadium.getStadiumId()
         );
 
         courtService.deleteCourt(request, testMember, court.getCourtId());
@@ -205,8 +205,8 @@ class CourtServiceImplTest extends IntegrationTestSupport {
         Long invalidCourtId = -1L;
 
         assertThatThrownBy(() -> courtService.getCourtByCourtId(invalidCourtId))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ExceptionMessage.COURT_NOT_FOUND.getText());
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage(ExceptionMessage.COURT_NOT_FOUND.getText());
     }
 
     @Test
@@ -214,15 +214,15 @@ class CourtServiceImplTest extends IntegrationTestSupport {
     void registerCourt_whenStadiumDoesNotExist() {
         BigDecimal price = new BigDecimal("20000");
         CourtRegisterServiceRequest request = new CourtRegisterServiceRequest(
-                -1L,
-                "New Court",
-                "New Description",
-                price
+            -1L,
+            "New Court",
+            "New Description",
+            price
         );
 
         assertThatThrownBy(() -> courtService.registerCourt(request, testMember))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ExceptionMessage.STADIUM_NOT_FOUND.getText());
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage(ExceptionMessage.STADIUM_NOT_FOUND.getText());
     }
 
     @Test
@@ -230,123 +230,123 @@ class CourtServiceImplTest extends IntegrationTestSupport {
     void updateCourt_whenCourtDoesNotExist() {
         BigDecimal updatedPrice = new BigDecimal("25000");
         CourtUpdateServiceRequest request = new CourtUpdateServiceRequest(
-                testStadium.getStadiumId(),
-                "Updated Court",
-                "Updated Description",
-                updatedPrice
+            testStadium.getStadiumId(),
+            "Updated Court",
+            "Updated Description",
+            updatedPrice
         );
 
         Long invalidCourtId = -1L;
 
         assertThatThrownBy(() -> courtService.updateCourt(request, testMember, invalidCourtId))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ExceptionMessage.COURT_NOT_FOUND.getText());
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage(ExceptionMessage.COURT_NOT_FOUND.getText());
     }
 
     @Test
     @DisplayName("존재하지 않는 구장을 삭제할 때 IllegalArgumentException이 발생해야 한다")
     void deleteCourt_whenCourtDoesNotExist() {
         CourtDeleteServiceRequest request = new CourtDeleteServiceRequest(
-                testStadium.getStadiumId()
+            testStadium.getStadiumId()
         );
 
         Long invalidCourtId = -1L;
 
         assertThatThrownBy(() -> courtService.deleteCourt(request, testMember, invalidCourtId))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ExceptionMessage.COURT_NOT_FOUND.getText());
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage(ExceptionMessage.COURT_NOT_FOUND.getText());
     }
 
     @Test
     @DisplayName("다른 회원의 풋살장에 구장을 등록할 때 IllegalArgumentException이 발생해야 한다")
     void registerCourt_whenMemberDoesNotOwnStadium() {
         Member anotherMember = Member.builder()
-                .email("another@example.com")
-                .password("password")
-                .name("Another User")
-                .phoneNumber("010-5678-1234")
-                .loginType(LoginType.builder()
-                        .loginProvider(LoginProvider.ORIGINAL)
-                        .snsId("another@example.com")
-                        .build())
-                .gender(Gender.FEMALE)
-                .memberRole(MemberRole.USER)
-                .termsAgreed(TermsAgreed.AGREE)
-                .build();
+            .email("another@example.com")
+            .password("password")
+            .name("Another User")
+            .phoneNumber("010-5678-1234")
+            .loginType(LoginType.builder()
+                .loginProvider(LoginProvider.ORIGINAL)
+                .snsId("another@example.com")
+                .build())
+            .gender(Gender.FEMALE)
+            .memberRole(MemberRole.USER)
+            .termsAgreed(TermsAgreed.AGREE)
+            .build();
         memberRepository.save(anotherMember);
 
         BigDecimal price = new BigDecimal("20000");
         CourtRegisterServiceRequest request = new CourtRegisterServiceRequest(
-                testStadium.getStadiumId(),
-                "New Court",
-                "New Description",
-                price
+            testStadium.getStadiumId(),
+            "New Court",
+            "New Description",
+            price
         );
 
         assertThatThrownBy(() -> courtService.registerCourt(request, anotherMember))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ExceptionMessage.STADIUM_NOT_OWNED_BY_MEMBER.getText());
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage(ExceptionMessage.STADIUM_NOT_OWNED_BY_MEMBER.getText());
     }
 
     @Test
     @DisplayName("다른 회원의 풋살장의 구장을 수정할 때 IllegalArgumentException이 발생해야 한다")
     void updateCourt_whenMemberDoesNotOwnStadium() {
         Member anotherMember = Member.builder()
-                .email("another@example.com")
-                .password("password")
-                .name("Another User")
-                .phoneNumber("010-5678-1234")
-                .loginType(LoginType.builder()
-                        .loginProvider(LoginProvider.ORIGINAL)
-                        .snsId("another@example.com")
-                        .build())
-                .gender(Gender.FEMALE)
-                .memberRole(MemberRole.USER)
-                .termsAgreed(TermsAgreed.AGREE)
-                .build();
+            .email("another@example.com")
+            .password("password")
+            .name("Another User")
+            .phoneNumber("010-5678-1234")
+            .loginType(LoginType.builder()
+                .loginProvider(LoginProvider.ORIGINAL)
+                .snsId("another@example.com")
+                .build())
+            .gender(Gender.FEMALE)
+            .memberRole(MemberRole.USER)
+            .termsAgreed(TermsAgreed.AGREE)
+            .build();
         memberRepository.save(anotherMember);
 
         Court court = courtRepository.findAll().get(0);
 
         BigDecimal updatedPrice = new BigDecimal("0");
         CourtUpdateServiceRequest request = new CourtUpdateServiceRequest(
-                testStadium.getStadiumId(),
-                "Unauthorized Update",
-                "Unauthorized Description",
-                updatedPrice
+            testStadium.getStadiumId(),
+            "Unauthorized Update",
+            "Unauthorized Description",
+            updatedPrice
         );
 
         assertThatThrownBy(() -> courtService.updateCourt(request, anotherMember, court.getCourtId()))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ExceptionMessage.STADIUM_NOT_OWNED_BY_MEMBER.getText());
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage(ExceptionMessage.STADIUM_NOT_OWNED_BY_MEMBER.getText());
     }
 
     @Test
     @DisplayName("다른 회원의 풋살장의 구장을 삭제할 때 IllegalArgumentException이 발생해야 한다")
     void deleteCourt_whenMemberDoesNotOwnStadium() {
         Member anotherMember = Member.builder()
-                .email("another@example.com")
-                .password("password")
-                .name("Another User")
-                .phoneNumber("010-5678-1234")
-                .loginType(LoginType.builder()
-                        .loginProvider(LoginProvider.ORIGINAL)
-                        .snsId("another@example.com")
-                        .build())
-                .gender(Gender.FEMALE)
-                .memberRole(MemberRole.USER)
-                .termsAgreed(TermsAgreed.AGREE)
-                .build();
+            .email("another@example.com")
+            .password("password")
+            .name("Another User")
+            .phoneNumber("010-5678-1234")
+            .loginType(LoginType.builder()
+                .loginProvider(LoginProvider.ORIGINAL)
+                .snsId("another@example.com")
+                .build())
+            .gender(Gender.FEMALE)
+            .memberRole(MemberRole.USER)
+            .termsAgreed(TermsAgreed.AGREE)
+            .build();
         memberRepository.save(anotherMember);
 
         Court court = courtRepository.findAll().get(0);
 
         CourtDeleteServiceRequest request = new CourtDeleteServiceRequest(
-                testStadium.getStadiumId()
+            testStadium.getStadiumId()
         );
 
         assertThatThrownBy(() -> courtService.deleteCourt(request, anotherMember, court.getCourtId()))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ExceptionMessage.STADIUM_NOT_OWNED_BY_MEMBER.getText());
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage(ExceptionMessage.STADIUM_NOT_OWNED_BY_MEMBER.getText());
     }
 }

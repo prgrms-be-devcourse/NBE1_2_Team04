@@ -21,8 +21,8 @@ public class TeamChatroom extends Chatroom {
 
     public static TeamChatroom create(String name, Long teamId) {
         return TeamChatroom.builder()
-                .name(name)
-                .teamId(teamId)
-                .build();
+            .name(name)
+            .teamId(teamId)
+            .build();
     }
 }

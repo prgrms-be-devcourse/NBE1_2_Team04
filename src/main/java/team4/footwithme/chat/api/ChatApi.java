@@ -25,7 +25,6 @@ public class ChatApi {
     /**
      * 채팅 보내기
      */
-    // TODO : test를 위해 email을 변수로 설정함. 나중에 매개변수에 @AuthenticationPrincipal에서 이메일 빼오기
     @MessageMapping("/api/v1/chat/message")
     public void sendMessage(@Valid ChatRequest request, @Header("Authorization") String token) {
         chatService.sendMessage(request.toServiceRequest(), token);
@@ -41,7 +40,7 @@ public class ChatApi {
      */
     @GetMapping("/{chatroomId}")
     public ApiResponse<Slice<ChatResponse>> getChatting(@PathVariable Long chatroomId, @RequestParam int page, @RequestParam int size, @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        PageRequest pageRequest = PageRequest.of(page-1, size, Sort.by("createdAt").descending());
+        PageRequest pageRequest = PageRequest.of(page - 1, size, Sort.by("createdAt").descending());
         return ApiResponse.ok(chatService.getChatList(chatroomId, pageRequest, principalDetails.getMember()));
     }
 

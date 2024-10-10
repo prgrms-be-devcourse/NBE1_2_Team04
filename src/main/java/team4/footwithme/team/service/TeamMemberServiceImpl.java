@@ -19,11 +19,10 @@ import team4.footwithme.team.service.response.TeamResponse;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
-public class TeamMemberServiceImpl implements TeamMemberService{
+public class TeamMemberServiceImpl implements TeamMemberService {
 
 
     private final MemberRepository memberRepository;
@@ -45,16 +44,16 @@ public class TeamMemberServiceImpl implements TeamMemberService{
         List<TeamMember> teamMemberList = new ArrayList<>();
 
         //member 추가
-        for(String email : request.emails()){
+        for (String email : request.emails()) {
             Member member = memberRepository.findByEmail(email).orElse(null);
 
-            if(member == null){
+            if (member == null) {
                 continue;
             }
 
             TeamMember teamMember = teamMemberRepository.findByTeamIdAndMemberId(teamId, member.getMemberId()).orElse(null);
             //해당 멤버가 팀에 이미 존재 할 경우
-            if(teamMember != null){
+            if (teamMember != null) {
                 continue;
             }
 
@@ -65,10 +64,10 @@ public class TeamMemberServiceImpl implements TeamMemberService{
             teamMemberList.add(teamMember);
         }
         // 팀 멤버 채팅방 초대
-        if(teamMemberList.isEmpty()){
+        if (teamMemberList.isEmpty()) {
             return teamMembers;
         }
-        if(teamMemberList.size() == 1){
+        if (teamMemberList.size() == 1) {
             publisher.publishEvent(new TeamMemberJoinEvent(teamMemberList.get(0).getMember(), team.getTeamId()));
         } else {
             publisher.publishEvent(new TeamMembersJoinEvent(teamMemberList, team.getTeamId()));
@@ -86,7 +85,7 @@ public class TeamMemberServiceImpl implements TeamMemberService{
         List<TeamMember> teamMembers = teamMemberRepository.findTeamMembersByTeam(team);
         List<TeamResponse> membersInfo = new ArrayList<>();
 
-        for(TeamMember teamMember : teamMembers){
+        for (TeamMember teamMember : teamMembers) {
             membersInfo.add(TeamResponse.of(teamMember));
         }
         return membersInfo;
@@ -101,7 +100,7 @@ public class TeamMemberServiceImpl implements TeamMemberService{
         //현재 유저 정보
         TeamMember Creator = findByTeamIdAndMemberIdOrThrowException(teamId, member.getMemberId());
 
-        if(Creator.getRole() != TeamMemberRole.CREATOR){
+        if (Creator.getRole() != TeamMemberRole.CREATOR) {
             throw new IllegalArgumentException("삭제 권한이 없습니다");
         }
 
@@ -123,22 +122,22 @@ public class TeamMemberServiceImpl implements TeamMemberService{
     }
 
 
-    public Team findTeamByIdOrThrowException(long id){
+    public Team findTeamByIdOrThrowException(long id) {
         Team team = teamRepository.findByTeamId(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 팀이 존재하지 않습니다."));
+            .orElseThrow(() -> new IllegalArgumentException("해당 팀이 존재하지 않습니다."));
 
         return team;
     }
 
-    public TeamMember findTeamMemberByIdOrThrowException(long id){
+    public TeamMember findTeamMemberByIdOrThrowException(long id) {
         TeamMember teamMember = teamMemberRepository.findByTeamMemberId(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 팀원입니다."));
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 팀원입니다."));
         return teamMember;
     }
 
-    public TeamMember findByTeamIdAndMemberIdOrThrowException(long teamId, long memberId){
+    public TeamMember findByTeamIdAndMemberIdOrThrowException(long teamId, long memberId) {
         TeamMember teamMember = teamMemberRepository.findByTeamIdAndMemberId(teamId, memberId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 팀원입니다."));
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 팀원입니다."));
         return teamMember;
     }
 }

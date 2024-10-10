@@ -33,9 +33,9 @@ public class RedisConfig {
 
     @Bean
     public RedisMessageListenerContainer redisMessageListenerContainer(
-            RedisConnectionFactory connectionFactory,
-            MessageListenerAdapter listenerAdapter,
-            ChannelTopic channelTopic
+        RedisConnectionFactory connectionFactory,
+        MessageListenerAdapter listenerAdapter,
+        ChannelTopic channelTopic
     ) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
@@ -51,7 +51,7 @@ public class RedisConfig {
     @Primary
     @Bean
     public RedisTemplate<String, Object> redisTemplate
-            (RedisConnectionFactory connectionFactory) {
+        (RedisConnectionFactory connectionFactory) {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(connectionFactory);
         redisTemplate.setKeySerializer(new StringRedisSerializer());

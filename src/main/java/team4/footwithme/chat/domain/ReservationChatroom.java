@@ -21,8 +21,8 @@ public class ReservationChatroom extends Chatroom {
 
     public static ReservationChatroom create(String name, Long reservationId) {
         return ReservationChatroom.builder()
-                .name(name)
-                .reservationId(reservationId)
-                .build();
+            .name(name)
+            .reservationId(reservationId)
+            .build();
     }
 }

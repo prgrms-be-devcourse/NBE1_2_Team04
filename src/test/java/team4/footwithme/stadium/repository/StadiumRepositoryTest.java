@@ -33,7 +33,7 @@ class StadiumRepositoryTest extends IntegrationTestSupport {
     @BeforeEach
     void setUp() {
         testMember = Member.create("test@example.com", "password", "Test User", "010-1234-5678",
-                LoginProvider.ORIGINAL, "test@example.com", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE);
+            LoginProvider.ORIGINAL, "test@example.com", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE);
         memberRepository.save(testMember);
 
         stadium1 = Stadium.create(testMember, "Stadium1", "seoul", "010-1111-1111", "Description1", 37.5665, 126.9780);
@@ -70,9 +70,9 @@ class StadiumRepositoryTest extends IntegrationTestSupport {
         Slice<Stadium> stadiums = stadiumRepository.findAllActiveStadiums(PageRequest.of(0, 10));
 
         assertThat(stadiums.getContent())
-                .hasSize(3)
-                .extracting(Stadium::getName)
-                .containsExactlyInAnyOrder("Stadium1", "Stadium2", "Stadium3");
+            .hasSize(3)
+            .extracting(Stadium::getName)
+            .containsExactlyInAnyOrder("Stadium1", "Stadium2", "Stadium3");
     }
 
     @Test
@@ -83,9 +83,9 @@ class StadiumRepositoryTest extends IntegrationTestSupport {
         Slice<Stadium> stadiums = stadiumRepository.findAllActiveStadiums(PageRequest.of(0, 10));
 
         assertThat(stadiums.getContent())
-                .hasSize(2)
-                .extracting(Stadium::getName)
-                .containsExactlyInAnyOrder("Stadium1", "Stadium3");
+            .hasSize(2)
+            .extracting(Stadium::getName)
+            .containsExactlyInAnyOrder("Stadium1", "Stadium3");
     }
 
     @Test
@@ -94,9 +94,9 @@ class StadiumRepositoryTest extends IntegrationTestSupport {
         Slice<Stadium> stadiums = stadiumRepository.findByNameContainingIgnoreCase("stadium", PageRequest.of(0, 10));
 
         assertThat(stadiums.getContent())
-                .hasSize(3)
-                .extracting(Stadium::getName)
-                .containsExactlyInAnyOrder("Stadium1", "Stadium2", "Stadium3");
+            .hasSize(3)
+            .extracting(Stadium::getName)
+            .containsExactlyInAnyOrder("Stadium1", "Stadium2", "Stadium3");
     }
 
     @Test
@@ -107,9 +107,9 @@ class StadiumRepositoryTest extends IntegrationTestSupport {
         Slice<Stadium> stadiums = stadiumRepository.findByNameContainingIgnoreCase("stadium", PageRequest.of(0, 10));
 
         assertThat(stadiums.getContent())
-                .hasSize(2)
-                .extracting(Stadium::getName)
-                .containsExactlyInAnyOrder("Stadium1", "Stadium2");
+            .hasSize(2)
+            .extracting(Stadium::getName)
+            .containsExactlyInAnyOrder("Stadium1", "Stadium2");
     }
 
     @Test
@@ -118,9 +118,9 @@ class StadiumRepositoryTest extends IntegrationTestSupport {
         Slice<Stadium> stadiums = stadiumRepository.findByAddressContainingIgnoreCase("Seoul", PageRequest.of(0, 10));
 
         assertThat(stadiums.getContent())
-                .hasSize(1)
-                .extracting(Stadium::getName)
-                .containsExactly("Stadium1");
+            .hasSize(1)
+            .extracting(Stadium::getName)
+            .containsExactly("Stadium1");
     }
 
     @Test

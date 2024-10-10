@@ -17,10 +17,13 @@ import team4.footwithme.member.domain.Gender;
 import team4.footwithme.member.domain.Member;
 import team4.footwithme.member.repository.MemberRepository;
 import team4.footwithme.resevation.domain.*;
-import team4.footwithme.resevation.repository.*;
-import team4.footwithme.resevation.service.response.ReservationsResponse;
+import team4.footwithme.resevation.repository.GameRepository;
+import team4.footwithme.resevation.repository.MercenaryRepository;
+import team4.footwithme.resevation.repository.ParticipantRepository;
+import team4.footwithme.resevation.repository.ReservationRepository;
 import team4.footwithme.resevation.service.response.ReservationInfoDetailsResponse;
 import team4.footwithme.resevation.service.response.ReservationInfoResponse;
+import team4.footwithme.resevation.service.response.ReservationsResponse;
 import team4.footwithme.stadium.domain.Court;
 import team4.footwithme.stadium.repository.CourtRepository;
 import team4.footwithme.team.domain.Team;
@@ -54,32 +57,32 @@ public class ReservationServiceImpl implements ReservationService {
         }
 
         return reservationRepository.findByMatchDateAndCourtAndReservationStatus(
-                        reservationId, reservation.getMatchDate(), reservation.getCourt(), ReservationStatus.READY, pageRequest)
-                .map(ReservationsResponse::from);
+                reservationId, reservation.getMatchDate(), reservation.getCourt(), ReservationStatus.READY, pageRequest)
+            .map(ReservationsResponse::from);
     }
 
     @Transactional
     @Override
     public void createReservation(Long memberId, Long courtId, Long teamId, LocalDateTime matchDate, List<Long> memberIds) {
         Court court = courtRepository.findActiveById(courtId).orElseThrow(
-                () -> new IllegalArgumentException("해당하는 구장이 없습니다.")
+            () -> new IllegalArgumentException("해당하는 구장이 없습니다.")
         );
         Member member = memberRepository.findActiveById(memberId).orElseThrow(
-                () -> new IllegalArgumentException("해당하는 회원이 없습니다.")
+            () -> new IllegalArgumentException("해당하는 회원이 없습니다.")
         );
         Team team = teamRepository.findById(teamId).orElseThrow(
-                () -> new IllegalArgumentException("해당하는 팀이 없습니다.")
+            () -> new IllegalArgumentException("해당하는 팀이 없습니다.")
         );
 
         List<Member> participantMembers = memberRepository.findAllById(memberIds);
 
         boolean allMale = participantMembers.stream()
-                .map(Member::getGender)
-                .allMatch(Gender.MALE::equals);
+            .map(Member::getGender)
+            .allMatch(Gender.MALE::equals);
 
         boolean allFemale = participantMembers.stream()
-                .map(Member::getGender)
-                .allMatch(Gender.FEMALE::equals);
+            .map(Member::getGender)
+            .allMatch(Gender.FEMALE::equals);
 
         Reservation reservation;
         if (memberIds.size() >= 6) {
@@ -93,8 +96,8 @@ public class ReservationServiceImpl implements ReservationService {
             }
             Reservation savedReservation = reservationRepository.save(reservation);
             List<Participant> participants = participantMembers.stream()
-                    .map(participantMember -> Participant.create(reservation, participantMember, ParticipantRole.MEMBER))
-                    .toList();
+                .map(participantMember -> Participant.create(reservation, participantMember, ParticipantRole.MEMBER))
+                .toList();
             participantRepository.saveAll(participants);
             eventPublisher.publishEvent(new ReservationPublishedEvent("예약 채팅방", savedReservation.getReservationId()));
             eventPublisher.publishEvent(new ReservationMembersJoinEvent(participants, savedReservation.getReservationId()));
@@ -109,8 +112,8 @@ public class ReservationServiceImpl implements ReservationService {
             }
             Reservation savedReservation = reservationRepository.save(reservation);
             List<Participant> participants = participantMembers.stream()
-                    .map(participantMember -> Participant.create(reservation, participantMember, ParticipantRole.MEMBER))
-                    .toList();
+                .map(participantMember -> Participant.create(reservation, participantMember, ParticipantRole.MEMBER))
+                .toList();
             participantRepository.saveAll(participants);
             Mercenary mercenary = Mercenary.createDefault(reservation);
             mercenaryRepository.save(mercenary);
@@ -126,8 +129,8 @@ public class ReservationServiceImpl implements ReservationService {
         List<Reservation> reservations = findByTeamTeamIdOrThrowException(teamId);
 
         List<ReservationInfoResponse> list = reservations.stream()
-                .map(ReservationInfoResponse::from)
-                .collect(Collectors.toList());
+            .map(ReservationInfoResponse::from)
+            .collect(Collectors.toList());
 
         return list;
     }
@@ -136,18 +139,18 @@ public class ReservationServiceImpl implements ReservationService {
     @Transactional(readOnly = true)
     public ReservationInfoDetailsResponse getTeamReservationInfoDetails(Long reservationId) {
         Reservation reservation = reservationRepository.findById(reservationId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 예약을 찾을 수 없습니다."));
+            .orElseThrow(() -> new IllegalArgumentException("해당 예약을 찾을 수 없습니다."));
 
         List<Participant> participants = participantRepository.findParticipantsByReservationId(reservationId);
 
         //상대팀 조회
         Reservation matchedTeam = gameRepository.findFirstTeamReservationBySecondTeamReservationId(reservationId)
-                .orElse(null);
+            .orElse(null);
         //상대팀 이름 --> 없으면 null
         String matchTeamName;
-        if(matchedTeam == null) {
+        if (matchedTeam == null) {
             matchTeamName = null;
-        } else{
+        } else {
             matchTeamName = matchedTeam.getTeam().getName();
         }
 
@@ -156,15 +159,15 @@ public class ReservationServiceImpl implements ReservationService {
 
     private <T> T findEntityByIdOrThrowException(CustomGlobalRepository<T> repository, Long id, ExceptionMessage exceptionMessage) {
         return repository.findActiveById(id)
-                .orElseThrow(() -> {
-                    log.warn(">>>> {} : {} <<<<", id, exceptionMessage);
-                    return new IllegalArgumentException(exceptionMessage.getText());
-                });
+            .orElseThrow(() -> {
+                log.warn(">>>> {} : {} <<<<", id, exceptionMessage);
+                return new IllegalArgumentException(exceptionMessage.getText());
+            });
     }
 
     public List<Reservation> findByTeamTeamIdOrThrowException(Long teamId) {
         List<Reservation> result = reservationRepository.findByTeamTeamId(teamId);
-        if(result.isEmpty()){
+        if (result.isEmpty()) {
             throw new IllegalArgumentException("해당 팀이 존재하지 않습니다.");
         }
         return result;
@@ -174,13 +177,13 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public Long deleteReservation(Long reservationId, Member member) {
         Reservation reservation = reservationRepository.findById(reservationId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 예약입니다."));
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 예약입니다."));
 
-        if(reservation.getReservationStatus() != ReservationStatus.RECRUITING){
+        if (reservation.getReservationStatus() != ReservationStatus.RECRUITING) {
             throw new IllegalArgumentException("취소할 수 없는 예약 입니다.");
         }
 
-        if(!reservation.getMember().getMemberId().equals(member.getMemberId())){
+        if (!reservation.getMember().getMemberId().equals(member.getMemberId())) {
             throw new IllegalArgumentException("예약한 사람만이 취소할 수 있습니다.");
         }
 
@@ -195,19 +198,19 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Transactional
-    public void deleteGames(Long reservationId){
+    public void deleteGames(Long reservationId) {
         List<Game> games = gameRepository.findAllByReservationId(reservationId);
         gameRepository.deleteAllInBatch(games);
     }
 
     @Transactional
-    public void deleteMercenaries(Long reservationId){
+    public void deleteMercenaries(Long reservationId) {
         List<Mercenary> mercenaries = mercenaryRepository.findAllMercenaryByReservationId(reservationId);
         mercenaryRepository.deleteAllInBatch(mercenaries);
     }
 
     @Transactional
-    public void deleteParticipants(Long reservationId){
+    public void deleteParticipants(Long reservationId) {
         List<Participant> participants = participantRepository.findAllByReservationId(reservationId);
         participantRepository.deleteAllInBatch(participants);
     }

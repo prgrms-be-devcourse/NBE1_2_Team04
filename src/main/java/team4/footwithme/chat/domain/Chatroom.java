@@ -21,7 +21,7 @@ public class Chatroom extends BaseEntity implements Serializable {
 
     @Serial
     private static final long serialVersionUID = -6846388362402032476L;
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long chatroomId;

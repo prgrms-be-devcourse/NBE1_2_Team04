@@ -29,24 +29,24 @@ public class CustomMercenaryRepositoryImpl implements CustomMercenaryRepository 
 
     private Long getCount() {
         return queryFactory
-                .select(mercenary.count())
-                .from(mercenary)
-                .where(mercenary.isDeleted.eq(IsDeleted.FALSE)
-                        .and(mercenary.reservation.reservationStatus.eq(ReservationStatus.RECRUITING))
-                )
-                .fetchOne();
+            .select(mercenary.count())
+            .from(mercenary)
+            .where(mercenary.isDeleted.eq(IsDeleted.FALSE)
+                .and(mercenary.reservation.reservationStatus.eq(ReservationStatus.RECRUITING))
+            )
+            .fetchOne();
     }
 
     private List<Mercenary> getMercenaryList(Pageable pageable) {
         return queryFactory
-                .select(mercenary)
-                .from(mercenary)
-                .where(mercenary.isDeleted.eq(IsDeleted.FALSE)
-                        .and(mercenary.reservation.reservationStatus.eq(ReservationStatus.RECRUITING))
-                )
-                .orderBy(mercenary.createdAt.desc())
-                .offset(pageable.getOffset())   // 페이지 번호
-                .limit(pageable.getPageSize() + 1)  // 페이지 사이즈
-                .fetch();
+            .select(mercenary)
+            .from(mercenary)
+            .where(mercenary.isDeleted.eq(IsDeleted.FALSE)
+                .and(mercenary.reservation.reservationStatus.eq(ReservationStatus.RECRUITING))
+            )
+            .orderBy(mercenary.createdAt.desc())
+            .offset(pageable.getOffset())   // 페이지 번호
+            .limit(pageable.getPageSize() + 1)  // 페이지 사이즈
+            .fetch();
     }
 }

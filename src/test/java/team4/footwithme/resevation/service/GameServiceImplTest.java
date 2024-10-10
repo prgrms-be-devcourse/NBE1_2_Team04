@@ -72,36 +72,36 @@ class GameServiceImplTest extends IntegrationTestSupport {
     @BeforeEach
     void setUp() {
         testMember1 = Member.builder()
-                .email("test1@example.com")
-                .password("password")
-                .name("Test User 1")
-                .phoneNumber("010-1234-5678")
-                .loginType(LoginType.builder()
-                        .loginProvider(LoginProvider.ORIGINAL)
-                        .snsId("test1@example.com")
-                        .build())
-                .gender(Gender.MALE)
-                .memberRole(MemberRole.USER)
-                .termsAgreed(TermsAgreed.AGREE)
-                .build();
+            .email("test1@example.com")
+            .password("password")
+            .name("Test User 1")
+            .phoneNumber("010-1234-5678")
+            .loginType(LoginType.builder()
+                .loginProvider(LoginProvider.ORIGINAL)
+                .snsId("test1@example.com")
+                .build())
+            .gender(Gender.MALE)
+            .memberRole(MemberRole.USER)
+            .termsAgreed(TermsAgreed.AGREE)
+            .build();
 
         testMember2 = Member.builder()
-                .email("test2@example.com")
-                .password("password")
-                .name("Test User 2")
-                .phoneNumber("010-1234-5678")
-                .loginType(LoginType.builder()
-                        .loginProvider(LoginProvider.ORIGINAL)
-                        .snsId("test2@example.com")
-                        .build())
-                .gender(Gender.MALE)
-                .memberRole(MemberRole.USER)
-                .termsAgreed(TermsAgreed.AGREE)
-                .build();
+            .email("test2@example.com")
+            .password("password")
+            .name("Test User 2")
+            .phoneNumber("010-1234-5678")
+            .loginType(LoginType.builder()
+                .loginProvider(LoginProvider.ORIGINAL)
+                .snsId("test2@example.com")
+                .build())
+            .gender(Gender.MALE)
+            .memberRole(MemberRole.USER)
+            .termsAgreed(TermsAgreed.AGREE)
+            .build();
 
         memberRepository.save(
-                Member.create("teamLeader@gmail.com", "123456", "팀장", "010-1111-1111",
-                        LoginProvider.ORIGINAL, "test", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE)
+            Member.create("teamLeader@gmail.com", "123456", "팀장", "010-1111-1111",
+                LoginProvider.ORIGINAL, "test", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE)
         );
 
 
@@ -115,28 +115,28 @@ class GameServiceImplTest extends IntegrationTestSupport {
         courtRepository.save(testCourt);
 
         Member leader = memberRepository.findByEmail("teamLeader@gmail.com")
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자 입니다."));
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자 입니다."));
 
         team = teamRepository.save(Team.create(null, "팀명", "팀 설명", 0, 0, 0, "선호지역"));
         teamMemberRepository.save(TeamMember.createCreator(team, leader));
 
         reservation1 = Reservation.builder()
-                .member(testMember1)
-                .matchDate(LocalDateTime.parse("2024-10-01T10:00"))
-                .court(testCourt)
-                .reservationStatus(ReservationStatus.READY)
-                .gender(ParticipantGender.MALE)
-                .team(team)
-                .build();
+            .member(testMember1)
+            .matchDate(LocalDateTime.parse("2024-10-01T10:00"))
+            .court(testCourt)
+            .reservationStatus(ReservationStatus.READY)
+            .gender(ParticipantGender.MALE)
+            .team(team)
+            .build();
 
         reservation2 = Reservation.builder()
-                .member(testMember2)
-                .matchDate(LocalDateTime.parse("2024-10-01T10:00"))
-                .court(testCourt)
-                .reservationStatus(ReservationStatus.READY)
-                .gender(ParticipantGender.MALE)
-                .team(team)
-                .build();
+            .member(testMember2)
+            .matchDate(LocalDateTime.parse("2024-10-01T10:00"))
+            .court(testCourt)
+            .reservationStatus(ReservationStatus.READY)
+            .gender(ParticipantGender.MALE)
+            .team(team)
+            .build();
 
         reservationRepository.save(reservation1);
         reservationRepository.save(reservation2);
@@ -167,35 +167,35 @@ class GameServiceImplTest extends IntegrationTestSupport {
     @DisplayName("예약한 회원이 일치하지 않으면 예외를 발생시켜야 한다")
     void registerGame_memberMismatch_throwsException() {
         Member anotherMember = Member.builder()
-                .email("another@example.com")
-                .password("password")
-                .name("Another User")
-                .phoneNumber("010-5678-1234")
-                .loginType(LoginType.builder()
-                        .loginProvider(LoginProvider.ORIGINAL)
-                        .snsId("another@example.com")
-                        .build())
-                .gender(Gender.FEMALE)
-                .memberRole(MemberRole.USER)
-                .termsAgreed(TermsAgreed.AGREE)
-                .build();
+            .email("another@example.com")
+            .password("password")
+            .name("Another User")
+            .phoneNumber("010-5678-1234")
+            .loginType(LoginType.builder()
+                .loginProvider(LoginProvider.ORIGINAL)
+                .snsId("another@example.com")
+                .build())
+            .gender(Gender.FEMALE)
+            .memberRole(MemberRole.USER)
+            .termsAgreed(TermsAgreed.AGREE)
+            .build();
         memberRepository.save(anotherMember);
 
         GameRegisterServiceRequest request = new GameRegisterServiceRequest(reservation1.getReservationId(), reservation2.getReservationId());
 
         assertThatThrownBy(() -> gameService.registerGame(anotherMember, request))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ExceptionMessage.RESERVATION_MEMBER_NOT_MATCH.getText());
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage(ExceptionMessage.RESERVATION_MEMBER_NOT_MATCH.getText());
     }
 
     @Test
     @DisplayName("게임 상태를 성공적으로 업데이트해야 한다. Ready")
     void updateGameStatus_success() {
         testGame = Game.builder()
-                .firstTeamReservation(reservation1)
-                .secondTeamReservation(reservation2)
-                .gameStatus(GameStatus.PENDING)
-                .build();
+            .firstTeamReservation(reservation1)
+            .secondTeamReservation(reservation2)
+            .gameStatus(GameStatus.PENDING)
+            .build();
 
         gameRepository.save(testGame);
 
@@ -216,10 +216,10 @@ class GameServiceImplTest extends IntegrationTestSupport {
     @DisplayName("게임 상태를 성공적으로 업데이트해야 한다. Ignore")
     void updateGameStatus_ignore() {
         testGame = Game.builder()
-                .firstTeamReservation(reservation1)
-                .secondTeamReservation(reservation2)
-                .gameStatus(GameStatus.PENDING)
-                .build();
+            .firstTeamReservation(reservation1)
+            .secondTeamReservation(reservation2)
+            .gameStatus(GameStatus.PENDING)
+            .build();
 
         gameRepository.save(testGame);
 
@@ -237,21 +237,21 @@ class GameServiceImplTest extends IntegrationTestSupport {
     @DisplayName("이미 예약이 존재한다면, 예약은 Canceled 되어야 한다.")
     void updateGameStatus_fail() {
         testGame = Game.builder()
-                .firstTeamReservation(reservation1)
-                .secondTeamReservation(reservation2)
-                .gameStatus(GameStatus.PENDING)
-                .build();
+            .firstTeamReservation(reservation1)
+            .secondTeamReservation(reservation2)
+            .gameStatus(GameStatus.PENDING)
+            .build();
 
         gameRepository.save(testGame);
 
         Reservation reservationOther = Reservation.builder()
-                .member(testMember1)
-                .matchDate(LocalDateTime.parse("2024-10-01T10:00"))
-                .court(testCourt)
-                .reservationStatus(ReservationStatus.CONFIRMED)
-                .gender(ParticipantGender.MALE)
-                .team(team)
-                .build();
+            .member(testMember1)
+            .matchDate(LocalDateTime.parse("2024-10-01T10:00"))
+            .court(testCourt)
+            .reservationStatus(ReservationStatus.CONFIRMED)
+            .gender(ParticipantGender.MALE)
+            .team(team)
+            .build();
 
         reservationRepository.save(reservationOther);
 
@@ -277,10 +277,10 @@ class GameServiceImplTest extends IntegrationTestSupport {
     @DisplayName("대기 중인 게임을 성공적으로 조회해야 한다")
     void findPendingGames_success() {
         testGame = Game.builder()
-                .firstTeamReservation(reservation1)
-                .secondTeamReservation(reservation2)
-                .gameStatus(GameStatus.PENDING)
-                .build();
+            .firstTeamReservation(reservation1)
+            .secondTeamReservation(reservation2)
+            .gameStatus(GameStatus.PENDING)
+            .build();
         gameRepository.save(testGame);
 
         Slice<GameDetailResponse> result = gameService.findPendingGames(testMember2, reservation2.getReservationId(), 0);
