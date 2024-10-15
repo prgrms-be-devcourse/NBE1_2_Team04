@@ -5,6 +5,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team4.footwithme.chat.service.event.TeamDeletedEvent;
+import team4.footwithme.chat.service.event.TeamMemberJoinEvent;
 import team4.footwithme.chat.service.event.TeamPublishedEvent;
 import team4.footwithme.member.domain.Member;
 import team4.footwithme.member.repository.MemberRepository;
@@ -59,6 +60,8 @@ public class TeamServiceImpl implements TeamService {
         publisher.publishEvent(new TeamPublishedEvent(createdTeam.getName(), createdTeam.getTeamId()));
 
         teamMemberRepository.save(TeamMember.createCreator(createdTeam, member));
+
+        publisher.publishEvent(new TeamMemberJoinEvent(member, createdTeam.getTeamId()));
 
         return TeamDefaultResponse.from(createdTeam);
     }
