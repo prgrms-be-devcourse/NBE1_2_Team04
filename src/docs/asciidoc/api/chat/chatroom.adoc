@@ -31,3 +31,13 @@ include::{snippets}/chatroom-delete/path-parameters.adoc[]
 ==== HTTP Response
 include::{snippets}/chatroom-delete/http-response.adoc[]
 include::{snippets}/chatroom-delete/response-fields.adoc[]
+
+[[chatroom-get]]
+=== 채팅방 조회
+
+==== HTTP Request
+include::{snippets}/chatroom-get/http-request.adoc[]
+
+==== HTTP Response
+include::{snippets}/chatroom-get/http-response.adoc[]
+include::{snippets}/chatroom-get/response-fields.adoc[]

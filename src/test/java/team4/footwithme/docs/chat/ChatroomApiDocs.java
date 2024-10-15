@@ -10,6 +10,9 @@ import team4.footwithme.chat.service.ChatroomService;
 import team4.footwithme.chat.service.request.ChatroomServiceRequest;
 import team4.footwithme.chat.service.response.ChatroomResponse;
 import team4.footwithme.docs.RestDocsSupport;
+import team4.footwithme.security.WithMockPrincipalDetail;
+
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -155,5 +158,44 @@ public class ChatroomApiDocs extends RestDocsSupport {
                         .description("응답 데이터 삭제한 채팅방 ID")
                 )
             ));
+    }
+
+    // 기존 채팅방을 수정한다.
+    @DisplayName("내가 참여한 채팅방을 조회하는 API")
+    @Test
+    @WithMockPrincipalDetail(email = "a@a.com")
+    void getMyChatroom() throws Exception {
+        //response
+        List<ChatroomResponse> responseList = List.of(
+                new ChatroomResponse(
+                        1L,
+                        "채팅방 1"
+                )
+        );
+
+        given(chatroomService.getMyChatroom(any())).willReturn(responseList);
+
+        mockMvc.perform(get("/api/v1/chat/room")
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
+                .andDo(document("chatroom-get",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        responseFields(
+                                fieldWithPath("code").type(JsonFieldType.NUMBER)
+                                        .description("코드"),
+                                fieldWithPath("status").type(JsonFieldType.STRING)
+                                        .description("상태"),
+                                fieldWithPath("message").type(JsonFieldType.STRING)
+                                        .description("메시지"),
+                                fieldWithPath("data").type(JsonFieldType.ARRAY)
+                                        .description("채팅방 리스트"),
+                                fieldWithPath("data[].chatroomId").type(JsonFieldType.NUMBER)
+                                        .description("채팅방 ID"),
+                                fieldWithPath("data[].name").type(JsonFieldType.STRING)
+                                        .description("채팅방 이름")
+                        )
+                ));
     }
 }

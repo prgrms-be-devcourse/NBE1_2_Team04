@@ -7,10 +7,12 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
 import team4.footwithme.docs.RestDocsSupport;
 import team4.footwithme.resevation.api.ReservationApi;
+import team4.footwithme.resevation.api.request.ReservationUpdateRequest;
 import team4.footwithme.resevation.domain.ParticipantGender;
 import team4.footwithme.resevation.domain.ParticipantRole;
 import team4.footwithme.resevation.domain.ReservationStatus;
 import team4.footwithme.resevation.service.ReservationService;
+import team4.footwithme.resevation.service.request.ReservationUpdateServiceRequest;
 import team4.footwithme.resevation.service.response.ParticipantInfoResponse;
 import team4.footwithme.resevation.service.response.ReservationInfoDetailsResponse;
 import team4.footwithme.resevation.service.response.ReservationInfoResponse;
@@ -26,12 +28,12 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -208,6 +210,9 @@ public class ReservationApiDocs extends RestDocsSupport {
             .andDo(document("reservation-delete",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
+                pathParameters(
+                        parameterWithName("reservationId").description("취소할 예약 ID")
+                ),
                 responseFields(
                     fieldWithPath("code").type(JsonFieldType.NUMBER)
                         .description("코드"),
@@ -219,6 +224,49 @@ public class ReservationApiDocs extends RestDocsSupport {
                         .description("삭제된 예약 ID")
                 )
             ));
+    }
+
+    @DisplayName("예약 상태 변경 API")
+    @Test
+    @WithMockPrincipalDetail(email = "user@example.com")
+    void updateReservationStatus() throws Exception {
+        Long teamId = 1L;
+
+        ReservationUpdateRequest request = new ReservationUpdateRequest(
+                1L,
+                ReservationStatus.READY
+        );
+
+        ReservationInfoResponse response = new ReservationInfoResponse(
+                "구장1",
+                LocalDateTime.of(2024, 11, 12, 15, 0, 0),
+                ReservationStatus.RECRUITING
+        );
+
+        given(reservationService.changeStatus(any(ReservationUpdateServiceRequest.class), any()))
+                .willReturn(response);
+
+        mockMvc.perform(put("/api/v1/reservation/update/status")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andDo(document("reservation-update-status",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestFields(
+                                fieldWithPath("reservationId").type(JsonFieldType.NUMBER).description("변경할 예약 ID"),
+                                fieldWithPath("status").type(JsonFieldType.STRING).description("변경할 예약 상태")
+                        ),
+                        responseFields(
+                                fieldWithPath("code").type(JsonFieldType.NUMBER).description("응답 코드"),
+                                fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("응답 메시지"),
+                                fieldWithPath("data").type(JsonFieldType.OBJECT).description("응답 데이터"),
+                                fieldWithPath("data.courtName").type(JsonFieldType.STRING).description("구장 이름"),
+                                fieldWithPath("data.matchDate").type(JsonFieldType.ARRAY).description("예약 날짜"),
+                                fieldWithPath("data.status").type(JsonFieldType.STRING).description("진행 상태")
+                        )
+                ));
     }
 
 }
