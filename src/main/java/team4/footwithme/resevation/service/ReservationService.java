@@ -2,6 +2,7 @@ package team4.footwithme.resevation.service;
 
 import org.springframework.data.domain.Slice;
 import team4.footwithme.member.domain.Member;
+import team4.footwithme.resevation.service.request.ReservationUpdateServiceRequest;
 import team4.footwithme.resevation.service.response.ReservationInfoDetailsResponse;
 import team4.footwithme.resevation.service.response.ReservationInfoResponse;
 import team4.footwithme.resevation.service.response.ReservationsResponse;
@@ -19,4 +20,6 @@ public interface ReservationService {
     ReservationInfoDetailsResponse getTeamReservationInfoDetails(Long reservationId);
 
     Long deleteReservation(Long reservationId, Member member);
+
+    ReservationInfoResponse changeStatus(ReservationUpdateServiceRequest request, Member member);
 }

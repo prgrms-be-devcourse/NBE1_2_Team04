@@ -21,6 +21,7 @@ import team4.footwithme.resevation.repository.GameRepository;
 import team4.footwithme.resevation.repository.MercenaryRepository;
 import team4.footwithme.resevation.repository.ParticipantRepository;
 import team4.footwithme.resevation.repository.ReservationRepository;
+import team4.footwithme.resevation.service.request.ReservationUpdateServiceRequest;
 import team4.footwithme.resevation.service.response.ReservationInfoDetailsResponse;
 import team4.footwithme.resevation.service.response.ReservationInfoResponse;
 import team4.footwithme.resevation.service.response.ReservationsResponse;
@@ -213,6 +214,25 @@ public class ReservationServiceImpl implements ReservationService {
     public void deleteParticipants(Long reservationId) {
         List<Participant> participants = participantRepository.findAllByReservationId(reservationId);
         participantRepository.deleteAllInBatch(participants);
+    }
+
+    /**
+     * 채팅방 상태 변경 API
+     * 채팅방장만 상태 변경 가능
+     */
+    @Transactional
+    @Override
+    public ReservationInfoResponse changeStatus(ReservationUpdateServiceRequest request, Member member) {
+        Reservation reservation = reservationRepository.findById(request.reservationId())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 예약입니다."));
+
+        if (!reservation.getMember().getMemberId().equals(member.getMemberId())) {
+            throw new IllegalArgumentException("예약한 사람만이 취소할 수 있습니다.");
+        }
+
+        reservation.updateStatus(request.status());
+
+        return ReservationInfoResponse.from(reservation);
     }
 
 
