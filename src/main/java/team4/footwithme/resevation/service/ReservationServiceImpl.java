@@ -217,8 +217,8 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     /**
-     * 채팅방 상태 변경 API
-     * 채팅방장만 상태 변경 가능
+     * 매칭 예약 상태 변경 API
+     * 예약 방장만 상태 변경 가능
      */
     @Transactional
     @Override
@@ -226,9 +226,7 @@ public class ReservationServiceImpl implements ReservationService {
         Reservation reservation = reservationRepository.findById(request.reservationId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 예약입니다."));
 
-        if (!reservation.getMember().getMemberId().equals(member.getMemberId())) {
-            throw new IllegalArgumentException("예약한 사람만이 취소할 수 있습니다.");
-        }
+        reservation.checkReservationOwner(member.getMemberId());
 
         reservation.updateStatus(request.status());
 

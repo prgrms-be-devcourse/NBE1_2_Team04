@@ -111,7 +111,7 @@ public class ChatroomServiceImpl implements ChatroomService {
     /**
      * 내가 참여한 채팅방 조회
      */
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public List<ChatroomResponse> getMyChatroom(Member member) {
         return chatroomRepository.findChatroomByMember(member).stream().map(ChatroomResponse::new).toList();
