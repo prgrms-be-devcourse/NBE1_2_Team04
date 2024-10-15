@@ -11,6 +11,9 @@ import team4.footwithme.chat.repository.RedisChatroomRepository;
 import team4.footwithme.chat.service.request.ChatroomServiceRequest;
 import team4.footwithme.chat.service.response.ChatroomResponse;
 import team4.footwithme.global.exception.ExceptionMessage;
+import team4.footwithme.member.domain.Member;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -103,6 +106,15 @@ public class ChatroomServiceImpl implements ChatroomService {
         chatroom.updateName(request.name());
 
         return new ChatroomResponse(chatroom);
+    }
+
+    /**
+     * 내가 참여한 채팅방 조회
+     */
+    @Transactional
+    @Override
+    public List<ChatroomResponse> getMyChatroom(Member member) {
+        return chatroomRepository.findChatroomByMember(member).stream().map(ChatroomResponse::new).toList();
     }
 
     private Long deleteChatroom(Chatroom chatroom) {
