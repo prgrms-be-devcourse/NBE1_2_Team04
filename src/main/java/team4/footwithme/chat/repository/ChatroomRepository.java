@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import team4.footwithme.chat.domain.Chatroom;
+import team4.footwithme.member.domain.Member;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,4 +29,7 @@ public interface ChatroomRepository extends JpaRepository<Chatroom, Long> {
 
     @Query("select c from Chatroom c where c.isDeleted = 'false'")
     List<Chatroom> findAll();
+
+    @Query("select c.chatRoom from ChatMember c where c.isDeleted='false' and c.member = :member")
+    List<Chatroom> findChatroomByMember(@Param("member") Member member);
 }

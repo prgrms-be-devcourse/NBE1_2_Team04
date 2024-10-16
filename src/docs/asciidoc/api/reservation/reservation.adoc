@@ -41,3 +41,14 @@ include::{snippets}/reservation-delete/path-parameters.adoc[]
 ==== HTTP Response
 include::{snippets}/reservation-delete/http-response.adoc[]
 include::{snippets}/reservation-delete/response-fields.adoc[]
+
+[[reservation-update-status]]
+=== 예약 상태 변경 API
+
+==== HTTP Request
+include::{snippets}/reservation-update-status/http-request.adoc[]
+include::{snippets}/reservation-update-status/request-fields.adoc[]
+
+==== HTTP Response
+include::{snippets}/reservation-update-status/http-response.adoc[]
+include::{snippets}/reservation-update-status/response-fields.adoc[]

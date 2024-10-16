@@ -139,4 +139,11 @@ public class Reservation extends BaseEntity {
     public void updateStatus(ReservationStatus reservationStatus) {
         this.reservationStatus = reservationStatus;
     }
+
+    public void checkReservationOwner(Long memberId){
+        if (this.member.getMemberId().equals(memberId)){
+            return;
+        }
+        throw new IllegalArgumentException("회의를 예약한 사람만 수정 및 삭제할 수 있습니다.");
+    }
 }

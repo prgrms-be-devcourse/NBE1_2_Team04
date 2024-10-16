@@ -2,11 +2,15 @@ package team4.footwithme.chat.api;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import team4.footwithme.chat.api.request.ChatroomRequest;
 import team4.footwithme.chat.service.ChatroomService;
 import team4.footwithme.chat.service.response.ChatroomResponse;
 import team4.footwithme.global.api.ApiResponse;
+import team4.footwithme.member.jwt.PrincipalDetails;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -37,5 +41,13 @@ public class ChatroomApi {
     @PutMapping("/{chatroomId}")
     public ApiResponse<ChatroomResponse> updateChatroom(@PathVariable("chatroomId") Long chatroomId, @RequestBody @Valid ChatroomRequest chatroomRequest) {
         return ApiResponse.ok(chatroomService.updateChatroom(chatroomId, chatroomRequest.toServiceRequest()));
+    }
+
+    /**
+     * 채팅방 조회
+     */
+    @GetMapping
+    public ApiResponse<List<ChatroomResponse>> getMyChatroomList(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        return ApiResponse.ok(chatroomService.getMyChatroom(principalDetails.getMember()));
     }
 }

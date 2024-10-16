@@ -1,11 +1,13 @@
 package team4.footwithme.resevation.api;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import team4.footwithme.global.api.ApiResponse;
 import team4.footwithme.member.jwt.PrincipalDetails;
+import team4.footwithme.resevation.api.request.ReservationUpdateRequest;
 import team4.footwithme.resevation.service.ReservationService;
 import team4.footwithme.resevation.service.response.ReservationInfoDetailsResponse;
 import team4.footwithme.resevation.service.response.ReservationInfoResponse;
@@ -47,5 +49,11 @@ public class ReservationApi {
     public ApiResponse<Long> deleteReservation(@PathVariable(value = "reservationId") Long reservationId,
                                                @AuthenticationPrincipal PrincipalDetails principalDetails) {
         return ApiResponse.ok(reservationService.deleteReservation(reservationId, principalDetails.getMember()));
+    }
+
+    @PutMapping("/update/status")
+    public ApiResponse<ReservationInfoResponse> updateReservationStatus(@RequestBody @Valid ReservationUpdateRequest request,
+                                                                       @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        return ApiResponse.ok(reservationService.changeStatus(request.toServiceRequest(), principalDetails.getMember()));
     }
 }
