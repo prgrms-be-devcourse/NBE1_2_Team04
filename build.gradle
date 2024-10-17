@@ -8,6 +8,7 @@ plugins {
     id 'org.jetbrains.kotlin.plugin.jpa' version '2.0.21'
     id 'org.jetbrains.kotlin.plugin.lombok' version '2.0.21'
     id 'io.freefair.lombok' version '8.10'
+    id 'org.jetbrains.kotlin.kapt' version '2.0.21'
 }
 
 group = 'team4'
@@ -58,10 +59,7 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testImplementation 'org.orbisgis:h2gis:2.2.0'
-
-
-
-
+    
     // RestDocs
     asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
@@ -89,6 +87,10 @@ dependencies {
     //Oauth2.0
     implementation group: 'org.springframework.security', name: 'spring-security-oauth2-client', version: '6.3.1'
 
+}
+
+kapt {
+    keepJavacAnnotationProcessors = true
 }
 
 tasks.named('test') {
