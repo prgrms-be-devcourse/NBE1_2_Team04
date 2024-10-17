@@ -1,8 +1,7 @@
-package team4.footwithme.member.repository;
+package team4.footwithme.member.repository
 
-public interface CustomMemberRepository {
+interface CustomMemberRepository {
+    fun findMemberIdByMemberEmail(email: String): Long?
 
-    Long findMemberIdByMemberEmail(String email);
-
-    Boolean existByEmail(String email);
+    fun existByEmail(email: String): Boolean
 }

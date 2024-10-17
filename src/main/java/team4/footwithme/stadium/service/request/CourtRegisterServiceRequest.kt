@@ -1,11 +1,11 @@
-package team4.footwithme.stadium.service.request;
+package team4.footwithme.stadium.service.request
 
-import java.math.BigDecimal;
+import java.math.BigDecimal
 
-public record CourtRegisterServiceRequest(
-    Long stadiumId,
-    String name,
-    String description,
-    BigDecimal price_per_hour
-) {
-}
+@JvmRecord
+data class CourtRegisterServiceRequest(
+    val stadiumId: Long?,
+    val name: String?,
+    val description: String,
+    val price_per_hour: BigDecimal?
+)

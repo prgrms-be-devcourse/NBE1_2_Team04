@@ -73,7 +73,7 @@ class CourtServiceImplTest extends IntegrationTestSupport {
     @Test
     @DisplayName("특정 풋살장의 구장 목록을 정상적으로 반환해야 한다")
     void getCourtsByStadiumId() {
-        Slice<CourtsResponse> result = courtService.getCourtsByStadiumId(testStadium.getStadiumId(), 0, "name");
+        Slice<CourtsResponse> result = courtService.getCourtsByStadiumId(testStadium.stadiumId, 0, "name");
 
         assertThat(result.getContent())
             .hasSize(2)
@@ -97,7 +97,7 @@ class CourtServiceImplTest extends IntegrationTestSupport {
     void getCourtByCourtId() {
         Court court = courtRepository.findAll().get(0);
 
-        CourtDetailResponse response = courtService.getCourtByCourtId(court.getCourtId());
+        CourtDetailResponse response = courtService.getCourtByCourtId(court.courtId);
 
         assertThat(response).isNotNull();
         assertThat(response)
@@ -118,7 +118,7 @@ class CourtServiceImplTest extends IntegrationTestSupport {
     void registerCourt() {
         BigDecimal price = new BigDecimal("20000");
         CourtRegisterServiceRequest request = new CourtRegisterServiceRequest(
-            testStadium.getStadiumId(),
+            testStadium.stadiumId,
             "New Court",
             "New Description",
             price
@@ -149,13 +149,13 @@ class CourtServiceImplTest extends IntegrationTestSupport {
 
         BigDecimal updatedPrice = new BigDecimal("25000");
         CourtUpdateServiceRequest request = new CourtUpdateServiceRequest(
-            testStadium.getStadiumId(),
+            testStadium.stadiumId,
             "Updated Court",
             "Updated Description",
             updatedPrice
         );
 
-        CourtDetailResponse response = courtService.updateCourt(request, testMember, court.getCourtId());
+        CourtDetailResponse response = courtService.updateCourt(request, testMember, court.courtId);
 
         assertThat(response).isNotNull();
         assertThat(response)
@@ -170,7 +170,7 @@ class CourtServiceImplTest extends IntegrationTestSupport {
                 updatedPrice
             );
 
-        Court updatedCourt = courtRepository.findById(court.getCourtId()).orElseThrow();
+        Court updatedCourt = courtRepository.findById(court.courtId).orElseThrow();
         assertThat(updatedCourt)
             .extracting(
                 Court::getName,
@@ -190,12 +190,12 @@ class CourtServiceImplTest extends IntegrationTestSupport {
         Court court = courtRepository.findAll().get(0);
 
         CourtDeleteServiceRequest request = new CourtDeleteServiceRequest(
-            testStadium.getStadiumId()
+            testStadium.stadiumId
         );
 
-        courtService.deleteCourt(request, testMember, court.getCourtId());
+        courtService.deleteCourt(request, testMember, court.courtId);
 
-        Optional<Court> deletedCourt = courtRepository.findById(court.getCourtId());
+        Optional<Court> deletedCourt = courtRepository.findById(court.courtId);
         assertThat(deletedCourt).isEmpty();
     }
 
@@ -206,7 +206,7 @@ class CourtServiceImplTest extends IntegrationTestSupport {
 
         assertThatThrownBy(() -> courtService.getCourtByCourtId(invalidCourtId))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage(ExceptionMessage.COURT_NOT_FOUND.getText());
+            .hasMessage(ExceptionMessage.COURT_NOT_FOUND.text);
     }
 
     @Test
@@ -222,7 +222,7 @@ class CourtServiceImplTest extends IntegrationTestSupport {
 
         assertThatThrownBy(() -> courtService.registerCourt(request, testMember))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage(ExceptionMessage.STADIUM_NOT_FOUND.getText());
+            .hasMessage(ExceptionMessage.STADIUM_NOT_FOUND.text);
     }
 
     @Test
@@ -230,7 +230,7 @@ class CourtServiceImplTest extends IntegrationTestSupport {
     void updateCourt_whenCourtDoesNotExist() {
         BigDecimal updatedPrice = new BigDecimal("25000");
         CourtUpdateServiceRequest request = new CourtUpdateServiceRequest(
-            testStadium.getStadiumId(),
+            testStadium.stadiumId,
             "Updated Court",
             "Updated Description",
             updatedPrice
@@ -240,21 +240,21 @@ class CourtServiceImplTest extends IntegrationTestSupport {
 
         assertThatThrownBy(() -> courtService.updateCourt(request, testMember, invalidCourtId))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage(ExceptionMessage.COURT_NOT_FOUND.getText());
+            .hasMessage(ExceptionMessage.COURT_NOT_FOUND.text);
     }
 
     @Test
     @DisplayName("존재하지 않는 구장을 삭제할 때 IllegalArgumentException이 발생해야 한다")
     void deleteCourt_whenCourtDoesNotExist() {
         CourtDeleteServiceRequest request = new CourtDeleteServiceRequest(
-            testStadium.getStadiumId()
+            testStadium.stadiumId
         );
 
         Long invalidCourtId = -1L;
 
         assertThatThrownBy(() -> courtService.deleteCourt(request, testMember, invalidCourtId))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage(ExceptionMessage.COURT_NOT_FOUND.getText());
+            .hasMessage(ExceptionMessage.COURT_NOT_FOUND.text);
     }
 
     @Test
@@ -277,7 +277,7 @@ class CourtServiceImplTest extends IntegrationTestSupport {
 
         BigDecimal price = new BigDecimal("20000");
         CourtRegisterServiceRequest request = new CourtRegisterServiceRequest(
-            testStadium.getStadiumId(),
+            testStadium.stadiumId,
             "New Court",
             "New Description",
             price
@@ -285,7 +285,7 @@ class CourtServiceImplTest extends IntegrationTestSupport {
 
         assertThatThrownBy(() -> courtService.registerCourt(request, anotherMember))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage(ExceptionMessage.STADIUM_NOT_OWNED_BY_MEMBER.getText());
+            .hasMessage(ExceptionMessage.STADIUM_NOT_OWNED_BY_MEMBER.text);
     }
 
     @Test
@@ -310,15 +310,15 @@ class CourtServiceImplTest extends IntegrationTestSupport {
 
         BigDecimal updatedPrice = new BigDecimal("0");
         CourtUpdateServiceRequest request = new CourtUpdateServiceRequest(
-            testStadium.getStadiumId(),
+            testStadium.stadiumId,
             "Unauthorized Update",
             "Unauthorized Description",
             updatedPrice
         );
 
-        assertThatThrownBy(() -> courtService.updateCourt(request, anotherMember, court.getCourtId()))
+        assertThatThrownBy(() -> courtService.updateCourt(request, anotherMember, court.courtId))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage(ExceptionMessage.STADIUM_NOT_OWNED_BY_MEMBER.getText());
+            .hasMessage(ExceptionMessage.STADIUM_NOT_OWNED_BY_MEMBER.text);
     }
 
     @Test
@@ -342,11 +342,11 @@ class CourtServiceImplTest extends IntegrationTestSupport {
         Court court = courtRepository.findAll().get(0);
 
         CourtDeleteServiceRequest request = new CourtDeleteServiceRequest(
-            testStadium.getStadiumId()
+            testStadium.stadiumId
         );
 
-        assertThatThrownBy(() -> courtService.deleteCourt(request, anotherMember, court.getCourtId()))
+        assertThatThrownBy(() -> courtService.deleteCourt(request, anotherMember, court.courtId))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage(ExceptionMessage.STADIUM_NOT_OWNED_BY_MEMBER.getText());
+            .hasMessage(ExceptionMessage.STADIUM_NOT_OWNED_BY_MEMBER.text);
     }
 }

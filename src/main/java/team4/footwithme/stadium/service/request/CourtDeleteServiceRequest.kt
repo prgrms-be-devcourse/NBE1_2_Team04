@@ -1,6 +1,6 @@
-package team4.footwithme.stadium.service.request;
+package team4.footwithme.stadium.service.request
 
-public record CourtDeleteServiceRequest(
-    Long stadiumId
-) {
-}
+@JvmRecord
+data class CourtDeleteServiceRequest(
+    val stadiumId: Long?
+)

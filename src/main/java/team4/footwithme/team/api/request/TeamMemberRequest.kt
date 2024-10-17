@@ -1,18 +1,15 @@
-package team4.footwithme.team.api.request;
+package team4.footwithme.team.api.request
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Email;
-import team4.footwithme.team.service.request.TeamMemberServiceRequest;
+import jakarta.validation.Valid
+import team4.footwithme.team.service.request.TeamMemberServiceRequest
 
-import java.util.List;
-
-public record TeamMemberRequest(
-    @Valid
-    List<@Email String> emails
+@JvmRecord
+data class TeamMemberRequest(
+    val emails: @Valid MutableList<String?>?
 ) {
-    public TeamMemberServiceRequest toServiceRequest() {
-        return new TeamMemberServiceRequest(
-            emails//List
-        );
+    fun toServiceRequest(): TeamMemberServiceRequest {
+        return TeamMemberServiceRequest(
+            emails //List
+        )
     }
 }

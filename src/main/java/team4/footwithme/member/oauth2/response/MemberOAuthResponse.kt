@@ -1,18 +1,21 @@
-package team4.footwithme.member.oauth2.response;
+package team4.footwithme.member.oauth2.response
 
-import team4.footwithme.member.domain.LoginProvider;
-import team4.footwithme.member.domain.Member;
+import team4.footwithme.member.domain.LoginProvider
+import team4.footwithme.member.domain.Member
 
-public record MemberOAuthResponse(
-    LoginProvider provider,
-    String snsId,
-    String email
+@JvmRecord
+data class MemberOAuthResponse(
+    val provider: LoginProvider?,
+    val snsId: String?,
+    val email: String?
 ) {
-    public static MemberOAuthResponse from(Member member) {
-        return new MemberOAuthResponse(
-            member.getLoginType().getLoginProvider(),
-            member.getLoginType().getSnsId(),
-            member.getEmail()
-        );
+    companion object {
+        fun from(member: Member?): MemberOAuthResponse {
+            return MemberOAuthResponse(
+                member!!.loginType!!.loginProvider,
+                member.loginType!!.snsId,
+                member.email
+            )
+        }
     }
 }

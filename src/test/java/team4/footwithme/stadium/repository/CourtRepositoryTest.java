@@ -57,7 +57,7 @@ class CourtRepositoryTest extends IntegrationTestSupport {
     @Test
     @DisplayName("findByStadium_StadiumId는 특정 풋살장의 구장를 조회한다")
     void findByStadium_StadiumId_returnsCourtsOfStadium() {
-        Slice<Court> courts = courtRepository.findByStadium_StadiumId(testStadium.getStadiumId(), PageRequest.of(0, 10));
+        Slice<Court> courts = courtRepository.findByStadium_StadiumId(testStadium.stadiumId, PageRequest.of(0, 10));
 
         assertThat(courts.getContent())
             .hasSize(3)
@@ -70,7 +70,7 @@ class CourtRepositoryTest extends IntegrationTestSupport {
     void findByStadium_StadiumId_doesNotReturnDeletedCourts() {
         courtRepository.delete(court2);
 
-        Slice<Court> courts = courtRepository.findByStadium_StadiumId(testStadium.getStadiumId(), PageRequest.of(0, 10));
+        Slice<Court> courts = courtRepository.findByStadium_StadiumId(testStadium.stadiumId, PageRequest.of(0, 10));
 
         assertThat(courts.getContent())
             .hasSize(2)
@@ -105,7 +105,7 @@ class CourtRepositoryTest extends IntegrationTestSupport {
     @Test
     @DisplayName("findActiveById는 활성화된 구장을 ID로 조회한다")
     void findActiveById_returnsActiveCourt() {
-        Optional<Court> foundCourt = courtRepository.findActiveById(court3.getCourtId());
+        Optional<Court> foundCourt = courtRepository.findActiveById(court3.courtId);
 
         assertThat(foundCourt).isPresent();
         assertThat(foundCourt.get()).isEqualTo(court3);
@@ -116,7 +116,7 @@ class CourtRepositoryTest extends IntegrationTestSupport {
     void findActiveById_doesNotReturnDeletedCourt() {
         courtRepository.delete(court3);
 
-        Optional<Court> foundCourt = courtRepository.findActiveById(court3.getCourtId());
+        Optional<Court> foundCourt = courtRepository.findActiveById(court3.courtId);
 
         assertThat(foundCourt).isNotPresent();
     }

@@ -1,50 +1,54 @@
-package team4.footwithme.global.exception;
+package team4.footwithme.global.exception
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.jsonwebtoken.JwtException;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
-import org.springframework.web.filter.OncePerRequestFilter;
-import team4.footwithme.global.api.ApiResponse;
-
-import java.io.IOException;
+import com.fasterxml.jackson.databind.ObjectMapper
+import io.jsonwebtoken.JwtException
+import jakarta.servlet.FilterChain
+import jakarta.servlet.ServletException
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import org.springframework.http.HttpStatus
+import org.springframework.stereotype.Component
+import org.springframework.web.filter.OncePerRequestFilter
+import team4.footwithme.global.api.ApiResponse
+import java.io.IOException
 
 @Component
-public class ExceptionHandlerFilter extends OncePerRequestFilter {
-
-    private static final Logger log = org.slf4j.LoggerFactory.getLogger(ExceptionHandlerFilter.class);
-
-    @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+class ExceptionHandlerFilter : OncePerRequestFilter() {
+    @Throws(ServletException::class, IOException::class)
+    override fun doFilterInternal(
+        request: HttpServletRequest,
+        response: HttpServletResponse,
+        filterChain: FilterChain
+    ) {
         try {
-            filterChain.doFilter(request, response);
-        } catch (JwtException e) {
-            log.error(e.getMessage());
-            setErrorResponse(HttpStatus.UNAUTHORIZED, response, e);
+            filterChain.doFilter(request, response)
+        } catch (e: JwtException) {
+            log.error(e.message)
+            setErrorResponse(HttpStatus.UNAUTHORIZED, response, e)
         }
     }
 
-    public void setErrorResponse(HttpStatus status, HttpServletResponse response, Throwable ex) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        response.setStatus(status.value());
-        response.setContentType("application/json");
-        ApiResponse apiResponse = ApiResponse.of(
+    fun setErrorResponse(status: HttpStatus, response: HttpServletResponse, ex: Throwable) {
+        val objectMapper = ObjectMapper()
+        response.status = status.value()
+        response.contentType = "application/json"
+        val apiResponse: ApiResponse<*> = ApiResponse.Companion.of<Any?>(
             HttpStatus.UNAUTHORIZED,
-            ex.getMessage(),
+            ex.message,
             null
-        );
+        )
         try {
-            String jsonResponse = objectMapper.writeValueAsString(apiResponse);
-            response.setCharacterEncoding("UTF-8");
-            response.getWriter().write(jsonResponse);
-        } catch (IOException e) {
-            e.printStackTrace();
+            val jsonResponse = objectMapper.writeValueAsString(apiResponse)
+            response.characterEncoding = "UTF-8"
+            response.writer.write(jsonResponse)
+        } catch (e: IOException) {
+            e.printStackTrace()
         }
+    }
+
+    companion object {
+        private val log: Logger = LoggerFactory.getLogger(ExceptionHandlerFilter::class.java)
     }
 }

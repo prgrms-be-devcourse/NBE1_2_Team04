@@ -1,9 +1,8 @@
-package team4.footwithme.config;
+package team4.footwithme.config
 
-import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.context.annotation.Configuration
+import org.springframework.scheduling.annotation.EnableAsync
 
 @EnableAsync
 @Configuration
-public class AsyncConfig {
-}
+class AsyncConfig

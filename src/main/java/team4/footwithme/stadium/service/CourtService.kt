@@ -1,23 +1,23 @@
-package team4.footwithme.stadium.service;
+package team4.footwithme.stadium.service
 
-import org.springframework.data.domain.Slice;
-import team4.footwithme.member.domain.Member;
-import team4.footwithme.stadium.service.request.CourtDeleteServiceRequest;
-import team4.footwithme.stadium.service.request.CourtRegisterServiceRequest;
-import team4.footwithme.stadium.service.request.CourtUpdateServiceRequest;
-import team4.footwithme.stadium.service.response.CourtDetailResponse;
-import team4.footwithme.stadium.service.response.CourtsResponse;
+import org.springframework.data.domain.Slice
+import team4.footwithme.member.domain.Member
+import team4.footwithme.stadium.service.request.CourtDeleteServiceRequest
+import team4.footwithme.stadium.service.request.CourtRegisterServiceRequest
+import team4.footwithme.stadium.service.request.CourtUpdateServiceRequest
+import team4.footwithme.stadium.service.response.CourtDetailResponse
+import team4.footwithme.stadium.service.response.CourtsResponse
 
-public interface CourtService {
-    Slice<CourtsResponse> getCourtsByStadiumId(Long stadiumId, Integer page, String sort);
+interface CourtService {
+    fun getCourtsByStadiumId(stadiumId: Long?, page: Int?, sort: String?): Slice<CourtsResponse>
 
-    Slice<CourtsResponse> getAllCourts(Integer page, String sort);
+    fun getAllCourts(page: Int?, sort: String?): Slice<CourtsResponse>
 
-    CourtDetailResponse getCourtByCourtId(Long courtId);
+    fun getCourtByCourtId(courtId: Long?): CourtDetailResponse
 
-    CourtDetailResponse registerCourt(CourtRegisterServiceRequest request, Member member);
+    fun registerCourt(request: CourtRegisterServiceRequest?, member: Member?): CourtDetailResponse
 
-    CourtDetailResponse updateCourt(CourtUpdateServiceRequest request, Member member, Long courtId);
+    fun updateCourt(request: CourtUpdateServiceRequest?, member: Member?, courtId: Long?): CourtDetailResponse
 
-    void deleteCourt(CourtDeleteServiceRequest request, Member member, Long courtId);
+    fun deleteCourt(request: CourtDeleteServiceRequest?, member: Member?, courtId: Long?)
 }

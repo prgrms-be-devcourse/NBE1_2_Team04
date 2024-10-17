@@ -1,13 +1,14 @@
-package team4.footwithme.resevation.api.request;
+package team4.footwithme.resevation.api.request
 
-import jakarta.validation.constraints.NotNull;
-import team4.footwithme.resevation.service.request.MercenaryServiceRequest;
+import jakarta.validation.constraints.NotNull
+import team4.footwithme.resevation.service.request.MercenaryServiceRequest
 
-public record MercenaryRequest(
-    @NotNull
-    Long reservationId,
-    String description) {
-    public MercenaryServiceRequest toServiceRequest() {
-        return new MercenaryServiceRequest(reservationId, description);
+@JvmRecord
+data class MercenaryRequest(
+    val reservationId: @NotNull Long?,
+    val description: String
+) {
+    fun toServiceRequest(): MercenaryServiceRequest {
+        return MercenaryServiceRequest(reservationId, description)
     }
 }

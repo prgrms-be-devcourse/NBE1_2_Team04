@@ -45,8 +45,8 @@ class JwtTokenUtilTest extends IntegrationTestSupport {
         TokenResponse tokenResponse = jwtTokenUtil.createToken(email);
 
         //when
-        String emailFromAccessToken = jwtTokenUtil.getEmailFromToken(tokenResponse.accessToken());
-        String emailFromRefreshToken = jwtTokenUtil.getEmailFromToken(tokenResponse.refreshToken());
+        String emailFromAccessToken = jwtTokenUtil.getEmailFromToken(tokenResponse.accessToken);
+        String emailFromRefreshToken = jwtTokenUtil.getEmailFromToken(tokenResponse.refreshToken);
 
         //then
         assertThat(emailFromAccessToken).isEqualTo(email);
@@ -62,7 +62,7 @@ class JwtTokenUtilTest extends IntegrationTestSupport {
         TokenResponse tokenResponse = jwtTokenUtil.createToken(email);
 
         //when
-        String reCreateAccessToken = jwtTokenUtil.reCreateAccessToken(tokenResponse.refreshToken());
+        String reCreateAccessToken = jwtTokenUtil.reCreateAccessToken(tokenResponse.refreshToken);
 
         //then
         assertThat(reCreateAccessToken).isNotNull();

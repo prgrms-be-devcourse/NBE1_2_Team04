@@ -1,10 +1,7 @@
-package team4.footwithme.stadium.repository;
+package team4.footwithme.stadium.repository
 
-import java.util.List;
+interface CustomCourtRepository {
+    fun findCourtNameByCourtId(courtId: Long?): String?
 
-public interface CustomCourtRepository {
-
-    String findCourtNameByCourtId(Long courtId);
-
-    Long countCourtByCourtIds(List<Long> courtIds);
+    fun countCourtByCourtIds(courtIds: List<Long?>?): Long?
 }

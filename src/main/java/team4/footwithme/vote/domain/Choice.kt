@@ -1,76 +1,65 @@
-package team4.footwithme.vote.domain;
+package team4.footwithme.vote.domain
 
-import jakarta.persistence.*;
+import jakarta.persistence.*
 
-@Table(indexes = {
-    @Index(name = "idx_choice_member_id", columnList = "memberId"),
-    @Index(name = "idx_choice_vote_item_id", columnList = "voteItemId")
-})
+@Table(
+    indexes = [Index(name = "idx_choice_member_id", columnList = "memberId"), Index(
+        name = "idx_choice_vote_item_id",
+        columnList = "voteItemId"
+    )]
+)
 @Entity
-public class Choice {
-
+class Choice {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long choiceId;
+    val choiceId: Long? = null
 
-    private Long memberId;
+    var memberId: Long? = null
+        
 
-    private Long voteItemId;
+    var voteItemId: Long? = null
+        
 
-    private Choice(Long memberId, Long voteItemId) {
-        this.memberId = memberId;
-        this.voteItemId = voteItemId;
+    private constructor(memberId: Long?, voteItemId: Long?) {
+        this.memberId = memberId
+        this.voteItemId = voteItemId
     }
 
-    protected Choice() {
-    }
+    protected constructor()
 
-    public static Choice create(Long memberId, Long voteItemId) {
-        return Choice.builder()
-            .memberId(memberId)
-            .voteItemId(voteItemId)
-            .build();
-    }
-
-    public static ChoiceBuilder builder() {
-        return new ChoiceBuilder();
-    }
-
-    public Long getChoiceId() {
-        return this.choiceId;
-    }
-
-    public Long getMemberId() {
-        return this.memberId;
-    }
-
-    public Long getVoteItemId() {
-        return this.voteItemId;
-    }
-
-    public static class ChoiceBuilder {
-        private Long memberId;
-        private Long voteItemId;
-
-        ChoiceBuilder() {
+    class ChoiceBuilder internal constructor() {
+        private var memberId: Long? = null
+        private var voteItemId: Long? = null
+        fun memberId(memberId: Long?): ChoiceBuilder {
+            this.memberId = memberId
+            return this
         }
 
-        public ChoiceBuilder memberId(Long memberId) {
-            this.memberId = memberId;
-            return this;
+        fun voteItemId(voteItemId: Long?): ChoiceBuilder {
+            this.voteItemId = voteItemId
+            return this
         }
 
-        public ChoiceBuilder voteItemId(Long voteItemId) {
-            this.voteItemId = voteItemId;
-            return this;
+        fun build(): Choice {
+            return Choice(this.memberId, this.voteItemId)
         }
 
-        public Choice build() {
-            return new Choice(this.memberId, this.voteItemId);
+        override fun toString(): String {
+            return "Choice.ChoiceBuilder(memberId=" + this.memberId + ", voteItemId=" + this.voteItemId + ")"
+        }
+    }
+
+    companion object {
+        @JvmStatic
+        fun create(memberId: Long?, voteItemId: Long?): Choice {
+            return builder()
+                .memberId(memberId)
+                .voteItemId(voteItemId)
+                .build()
         }
 
-        public String toString() {
-            return "Choice.ChoiceBuilder(memberId=" + this.memberId + ", voteItemId=" + this.voteItemId + ")";
+        fun builder(): ChoiceBuilder {
+            return ChoiceBuilder()
         }
     }
 }

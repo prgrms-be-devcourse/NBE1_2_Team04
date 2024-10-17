@@ -1,9 +1,8 @@
-package team4.footwithme.config;
+package team4.footwithme.config
 
-import org.springframework.context.annotation.Configuration;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.context.annotation.Configuration
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing
 
 @EnableJpaAuditing
 @Configuration
-public class JpaAuditingConfig {
-}
+class JpaAuditingConfig

@@ -1,20 +1,19 @@
-package team4.footwithme.resevation.service;
+package team4.footwithme.resevation.service
 
-import org.springframework.context.event.EventListener;
-import org.springframework.stereotype.Component;
-import team4.footwithme.vote.service.EndVoteEvent;
+import org.springframework.context.event.EventListener
+import org.springframework.stereotype.Component
+import team4.footwithme.vote.service.EndVoteEvent
 
 @Component
-public class ReservationEventHandler {
-
-    private final ReservationService reservationService;
-
-    public ReservationEventHandler(ReservationService reservationService) {
-        this.reservationService = reservationService;
-    }
-
+class ReservationEventHandler(private val reservationService: ReservationService) {
     @EventListener
-    public void handleReservationEvent(EndVoteEvent event) {
-        reservationService.createReservation(event.memberId(), event.courtId(), event.teamId(), event.matchDate(), event.memberIds());
+    fun handleReservationEvent(event: EndVoteEvent) {
+        reservationService.createReservation(
+            event.memberId,
+            event.courtId,
+            event.teamId!!,
+            event.matchDate,
+            event.memberIds!!
+        )
     }
 }

@@ -1,23 +1,25 @@
-package team4.footwithme.stadium.service.response;
+package team4.footwithme.stadium.service.response
 
-import team4.footwithme.stadium.domain.Court;
+import team4.footwithme.stadium.domain.Court
+import java.math.BigDecimal
 
-import java.math.BigDecimal;
-
-public record CourtDetailResponse(
-    Long courtId,
-    Long stadiumId,
-    String name,
-    String description,
-    BigDecimal price_per_hour
+@JvmRecord
+data class CourtDetailResponse(
+    val courtId: Long?,
+    val stadiumId: Long?,
+    val name: String?,
+    val description: String?,
+    val price_per_hour: BigDecimal?
 ) {
-    public static CourtDetailResponse from(Court court) {
-        return new CourtDetailResponse(
-            court.getCourtId(),
-            court.getStadium().getStadiumId(),
-            court.getName(),
-            court.getDescription(),
-            court.getPricePerHour()
-        );
+    companion object {
+        fun from(court: Court): CourtDetailResponse {
+            return CourtDetailResponse(
+                court.courtId,
+                court.stadium!!.stadiumId,
+                court.name,
+                court.description,
+                court.pricePerHour
+            )
+        }
     }
 }

@@ -1,36 +1,43 @@
-package team4.footwithme.resevation.service.response;
+package team4.footwithme.resevation.service.response
 
-import team4.footwithme.resevation.domain.Participant;
-import team4.footwithme.resevation.domain.ParticipantGender;
-import team4.footwithme.resevation.domain.Reservation;
-import team4.footwithme.resevation.domain.ReservationStatus;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
+import team4.footwithme.resevation.domain.*
+import java.time.LocalDateTime
+import java.util.function.Function
+import java.util.stream.Collectors
 
 // TODO :: ReservationInfoDetailsResponse 이름 변경 부탁
-public record ReservationInfoDetailsResponse(
-    String courtName,
-    String matchTeamName,
-    LocalDateTime matchDate,
-    List<ParticipantInfoResponse> participants,
-    ParticipantGender gender,
-    ReservationStatus status
+@JvmRecord
+data class ReservationInfoDetailsResponse(
+    val courtName: String?,
+    val matchTeamName: String?,
+    val matchDate: LocalDateTime?,
+    val participants: List<ParticipantInfoResponse>,
+    val gender: ParticipantGender?,
+    val status: ReservationStatus?
 ) {
-    public static ReservationInfoDetailsResponse of(Reservation reservation, List<Participant> participants, String matchTeamName) {
 
-        List<ParticipantInfoResponse> participantResponses = participants.stream()
-            .map(ParticipantInfoResponse::from)
-            .collect(Collectors.toList());
+    companion object {
+        fun of(
+            reservation: Reservation,
+            participants: List<Participant?>?,
+            matchTeamName: String?
+        ): ReservationInfoDetailsResponse {
+            val participantResponses = participants!!.stream()
+                .map<ParticipantInfoResponse>(Function<Participant?, ParticipantInfoResponse> { participant: Participant? ->
+                    ParticipantInfoResponse.Companion.from(
+                        participant
+                    )
+                })
+                .collect(Collectors.toList<ParticipantInfoResponse>())
 
-        return new ReservationInfoDetailsResponse(
-            reservation.getCourt().getName(),
-            matchTeamName,
-            reservation.getMatchDate(),
-            participantResponses,
-            reservation.getGender(),
-            reservation.getReservationStatus()
-        );
+            return ReservationInfoDetailsResponse(
+                reservation.court!!.name,
+                matchTeamName,
+                reservation.matchDate,
+                participantResponses,
+                reservation.gender,
+                reservation.reservationStatus
+            )
+        }
     }
 }

@@ -1,5 +1,5 @@
-package team4.footwithme.global.domain;
+package team4.footwithme.global.domain
 
-public enum IsDeleted {
+enum class IsDeleted {
     TRUE, FALSE
 }

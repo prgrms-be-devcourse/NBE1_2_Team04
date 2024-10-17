@@ -1,68 +1,65 @@
-package team4.footwithme.config.redis;
+package team4.footwithme.config.redis
 
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.listener.ChannelTopic;
-import org.springframework.data.redis.listener.RedisMessageListenerContainer;
-import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
-import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
-import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
-import org.springframework.orm.jpa.JpaTransactionManager;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
-import team4.footwithme.chat.service.RedisSubscriber;
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Primary
+import org.springframework.data.redis.connection.RedisConnectionFactory
+import org.springframework.data.redis.core.RedisTemplate
+import org.springframework.data.redis.listener.ChannelTopic
+import org.springframework.data.redis.listener.RedisMessageListenerContainer
+import org.springframework.data.redis.listener.adapter.MessageListenerAdapter
+import org.springframework.data.redis.repository.configuration.EnableRedisRepositories
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer
+import org.springframework.data.redis.serializer.StringRedisSerializer
+import org.springframework.orm.jpa.JpaTransactionManager
+import org.springframework.transaction.PlatformTransactionManager
+import org.springframework.transaction.annotation.EnableTransactionManagement
+import team4.footwithme.chat.service.RedisSubscriber
 
 @Configuration
 @EnableRedisRepositories
 @EnableTransactionManagement
-public class RedisConfig {
-
-    private static final String CHAT_ROOMS = "CHAT_ROOM";
-
-    public RedisConfig() {
-    }
-
+class RedisConfig {
     //redis pub/sub 사용할 때의 chatting Topic
     @Bean
-    public ChannelTopic channelTopic() {
-        return new ChannelTopic(CHAT_ROOMS);
+    fun channelTopic(): ChannelTopic {
+        return ChannelTopic(CHAT_ROOMS)
     }
 
     @Bean
-    public RedisMessageListenerContainer redisMessageListenerContainer(
-        RedisConnectionFactory connectionFactory,
-        MessageListenerAdapter listenerAdapter,
-        ChannelTopic channelTopic
-    ) {
-        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-        container.setConnectionFactory(connectionFactory);
-        container.addMessageListener(listenerAdapter, channelTopic);
-        return container;
+    fun redisMessageListenerContainer(
+        connectionFactory: RedisConnectionFactory?,
+        listenerAdapter: MessageListenerAdapter?,
+        channelTopic: ChannelTopic?
+    ): RedisMessageListenerContainer {
+        val container = RedisMessageListenerContainer()
+        container.connectionFactory = connectionFactory
+        container.addMessageListener(listenerAdapter, channelTopic)
+        return container
     }
 
     @Bean
-    public MessageListenerAdapter listenerAdapter(RedisSubscriber subscriber) {
-        return new MessageListenerAdapter(subscriber, "sendMessage");
+    fun listenerAdapter(subscriber: RedisSubscriber?): MessageListenerAdapter {
+        return MessageListenerAdapter(subscriber, "sendMessage")
     }
 
     @Primary
     @Bean
-    public RedisTemplate<String, Object> redisTemplate
-        (RedisConnectionFactory connectionFactory) {
-        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(connectionFactory);
-        redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(String.class));
-        redisTemplate.setEnableTransactionSupport(true);
-        return redisTemplate;
+    fun redisTemplate(connectionFactory: RedisConnectionFactory?): RedisTemplate<String, Any> {
+        val redisTemplate = RedisTemplate<String, Any>()
+        redisTemplate.connectionFactory = connectionFactory
+        redisTemplate.keySerializer = StringRedisSerializer()
+        redisTemplate.valueSerializer = Jackson2JsonRedisSerializer(String::class.java)
+        redisTemplate.setEnableTransactionSupport(true)
+        return redisTemplate
     }
 
     @Bean
-    public PlatformTransactionManager transactionManager() {
-        return new JpaTransactionManager();
+    fun transactionManager(): PlatformTransactionManager {
+        return JpaTransactionManager()
+    }
+
+    companion object {
+        private const val CHAT_ROOMS = "CHAT_ROOM"
     }
 }

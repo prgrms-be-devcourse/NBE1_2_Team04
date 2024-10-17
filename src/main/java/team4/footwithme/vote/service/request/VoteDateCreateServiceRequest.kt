@@ -1,12 +1,11 @@
-package team4.footwithme.vote.service.request;
+package team4.footwithme.vote.service.request
 
-import java.time.LocalDateTime;
-import java.util.List;
+import java.time.LocalDateTime
 
-public record VoteDateCreateServiceRequest(
-
-    String title,
-    LocalDateTime endAt,
-    List<LocalDateTime> choices
+@JvmRecord
+data class VoteDateCreateServiceRequest(
+    val title: String?,
+    val endAt: LocalDateTime?,
+    val choices: List<LocalDateTime>
 ) {
 }

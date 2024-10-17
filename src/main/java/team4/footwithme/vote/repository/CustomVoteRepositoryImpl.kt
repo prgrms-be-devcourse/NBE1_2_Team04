@@ -1,70 +1,62 @@
-package team4.footwithme.vote.repository;
+package team4.footwithme.vote.repository
 
-import com.querydsl.jpa.impl.JPAQueryFactory;
-import team4.footwithme.vote.domain.Vote;
+import com.querydsl.jpa.impl.JPAQueryFactory
+import team4.footwithme.global.domain.IsDeleted
+import team4.footwithme.vote.domain.*
+import java.util.*
 
-import java.util.List;
-import java.util.Optional;
-
-import static team4.footwithme.global.domain.IsDeleted.FALSE;
-import static team4.footwithme.vote.domain.QChoice.choice;
-import static team4.footwithme.vote.domain.QVote.vote;
-import static team4.footwithme.vote.domain.QVoteItem.voteItem;
-import static team4.footwithme.vote.domain.VoteStatus.CLOSED;
-import static team4.footwithme.vote.domain.VoteStatus.OPENED;
-
-public class CustomVoteRepositoryImpl implements CustomVoteRepository {
-
-    private final JPAQueryFactory queryFactory;
-
-    public CustomVoteRepositoryImpl(JPAQueryFactory queryFactory) {
-        this.queryFactory = queryFactory;
+class CustomVoteRepositoryImpl(private val queryFactory: JPAQueryFactory) : CustomVoteRepository {
+    override fun findNotDeletedVoteById(id: Long?): Optional<Vote> {
+        return Optional.ofNullable(
+            queryFactory.select(QVote.vote)
+                .from(QVote.vote)
+                .where(
+                    QVote.vote.voteId.eq(id)
+                        .and(QVote.vote.isDeleted.eq(IsDeleted.FALSE))
+                )
+                .fetchOne()
+        )
     }
 
-    @Override
-    public Optional<Vote> findNotDeletedVoteById(Long id) {
-        return Optional.ofNullable(queryFactory.select(vote)
-            .from(vote)
-            .where(vote.voteId.eq(id)
-                .and(vote.isDeleted.eq(FALSE)))
-            .fetchOne());
+    override fun findOpenedVotes(): List<Vote>? {
+        return queryFactory.select(QVote.vote)
+            .from(QVote.vote)
+            .where(
+                QVote.vote.isDeleted.eq(IsDeleted.FALSE)
+                    .and(QVote.vote.voteStatus.eq(VoteStatus.OPENED))
+            )
+            .fetch()
     }
 
-    @Override
-    public List<Vote> findOpenedVotes() {
-        return queryFactory.select(vote)
-            .from(vote)
-            .where(vote.isDeleted.eq(FALSE)
-                .and(vote.voteStatus.eq(OPENED)))
-            .fetch();
+    override fun choiceMemberCountByVoteId(voteId: Long?): Long? {
+        return queryFactory.select(QChoice.choice.memberId.countDistinct())
+            .from(QVote.vote).join(QVoteItem.voteItem).on(QVoteItem.voteItem.vote.eq(QVote.vote))
+            .leftJoin(QChoice.choice).on(QChoice.choice.voteItemId.eq(QVoteItem.voteItem.voteItemId))
+            .where(
+                QVote.vote.voteId.eq(voteId)
+                    .and(QVote.vote.isDeleted.eq(IsDeleted.FALSE))
+            )
+            .fetchOne()
     }
 
-    @Override
-    public Long choiceMemberCountByVoteId(Long voteId) {
-        return queryFactory.select(choice.memberId.countDistinct())
-            .from(vote).join(voteItem).on(voteItem.vote.eq(vote))
-            .leftJoin(choice).on(choice.voteItemId.eq(voteItem.voteItemId))
-            .where(vote.voteId.eq(voteId)
-                .and(vote.isDeleted.eq(FALSE)))
-            .fetchOne();
+    override fun findRecentlyVoteByTeamId(teamId: Long?): Vote {
+        return queryFactory.select(QVote.vote)
+            .where(
+                QVote.vote.isDeleted.eq(IsDeleted.FALSE)
+                    .and(QVote.vote.voteStatus.eq(VoteStatus.CLOSED))
+            )
+            .from(QVote.vote)
+            .orderBy(QVote.vote.updatedAt.desc())
+            .fetchFirst()!!
     }
 
-    @Override
-    public Vote findRecentlyVoteByTeamId(Long teamId) {
-        return queryFactory.select(vote)
-            .where(vote.isDeleted.eq(FALSE)
-                .and(vote.voteStatus.eq(CLOSED)))
-            .from(vote)
-            .orderBy(vote.updatedAt.desc())
-            .fetchFirst();
-    }
-
-    @Override
-    public List<Vote> findAllByTeamId(Long teamId) {
-        return queryFactory.select(vote)
-            .from(vote)
-            .where(vote.teamId.eq(teamId)
-                .and(vote.isDeleted.eq(FALSE)))
-            .fetch();
+    override fun findAllByTeamId(teamId: Long?): List<Vote>? {
+        return queryFactory.select(QVote.vote)
+            .from(QVote.vote)
+            .where(
+                QVote.vote.teamId.eq(teamId)
+                    .and(QVote.vote.isDeleted.eq(IsDeleted.FALSE))
+            )
+            .fetch()
     }
 }

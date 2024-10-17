@@ -1,21 +1,23 @@
-package team4.footwithme.vote.service.response;
+package team4.footwithme.vote.service.response
 
-import team4.footwithme.vote.domain.Vote;
+import team4.footwithme.vote.domain.Vote
+import java.time.LocalDateTime
 
-import java.time.LocalDateTime;
-
-public record AllVoteResponse(
-    Long voteId,
-    String title,
-    LocalDateTime endAt,
-    String status
+@JvmRecord
+data class AllVoteResponse(
+    val voteId: Long?,
+    val title: String?,
+    val endAt: LocalDateTime?,
+    val status: String?
 ) {
-    public static AllVoteResponse from(Vote vote) {
-        return new AllVoteResponse(
-            vote.getVoteId(),
-            vote.getTitle(),
-            vote.getEndAt(),
-            vote.getVoteStatus().getText()
-        );
+    companion object {
+        fun from(vote: Vote?): AllVoteResponse {
+            return AllVoteResponse(
+                vote!!.voteId,
+                vote.title,
+                vote.endAt,
+                vote.voteStatus!!.text
+            )
+        }
     }
 }

@@ -1,174 +1,169 @@
-package team4.footwithme.member.jwt;
+package team4.footwithme.member.jwt
 
-import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.Keys;
-import jakarta.annotation.PostConstruct;
-import jakarta.servlet.http.HttpServletRequest;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.http.HttpHeaders;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
-import team4.footwithme.member.domain.Member;
-import team4.footwithme.member.domain.MemberRole;
-import team4.footwithme.member.jwt.response.TokenResponse;
-import team4.footwithme.member.repository.MemberRepository;
-
-import java.security.Key;
-import java.time.Duration;
-import java.util.Base64;
-import java.util.Date;
+import io.jsonwebtoken.*
+import io.jsonwebtoken.security.Keys
+import jakarta.annotation.PostConstruct
+import jakarta.servlet.http.HttpServletRequest
+import lombok.RequiredArgsConstructor
+import lombok.extern.slf4j.Slf4j
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.data.redis.core.RedisTemplate
+import org.springframework.http.HttpHeaders
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.Authentication
+import org.springframework.stereotype.Component
+import org.springframework.util.StringUtils
+import team4.footwithme.member.domain.MemberRole
+import team4.footwithme.member.jwt.response.TokenResponse
+import team4.footwithme.member.repository.MemberRepository
+import java.security.Key
+import java.time.Duration
+import java.util.*
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class JwtTokenUtil {
+class JwtTokenUtil {
+    private val userDetailService: PrincipalDetailsService? = null
+    private val memberRepository: MemberRepository? = null
+    private val redisTemplate: RedisTemplate<*, *>? = null
 
-    public static final String ACCESS_TOKEN = "Authorization";
-    public static final String REFRESH_TOKEN = "refresh_token";
-    public static final String BEARER_PREFIX = "Bearer ";
-    public static final long ACCESS_TIME = Duration.ofMinutes(30).toMillis(); // 만료시간 30분
-    public static final long REFRESH_TIME = Duration.ofDays(14).toMillis(); // 만료시간 2주
-    private final PrincipalDetailsService userDetailService;
-    private final MemberRepository memberRepository;
-    private final RedisTemplate redisTemplate;
-    @Value("${jwt.secret}")
-    private String secretKey;
-    private Key key;
+    @Value("\${jwt.secret}")
+    private val secretKey: String? = null
+    private var key: Key? = null
 
     @PostConstruct
-    public void init() {
-        byte[] bytes = Base64.getDecoder().decode(secretKey);
-        key = Keys.hmacShaKeyFor(bytes);
+    fun init() {
+        val bytes = Base64.getDecoder().decode(secretKey)
+        key = Keys.hmacShaKeyFor(bytes)
     }
 
-    public String getHeaderToken(HttpServletRequest request, String type) {
-        if (type.equals(ACCESS_TOKEN))
-            return resolveToken(request);
+    fun getHeaderToken(request: HttpServletRequest, type: String): String? {
+        if (type == ACCESS_TOKEN) return resolveToken(request)
 
-        return request.getHeader(REFRESH_TOKEN);
+        return request.getHeader(REFRESH_TOKEN)
     }
 
-    public TokenResponse createToken(String email) {
-        MemberRole role = getRoleFromEmail(email);
+    fun createToken(email: String?): TokenResponse {
+        val role = getRoleFromEmail(email)
 
-        String accessToken = createAccessToken(email, role);
-        String refreshToken = createRefreshToken(email, role);
+        val accessToken = createAccessToken(email, role)
+        val refreshToken = createRefreshToken(email, role)
 
-        return TokenResponse.of(accessToken, refreshToken, REFRESH_TIME);
+        return TokenResponse.Companion.of(accessToken, refreshToken, REFRESH_TIME)
     }
 
-    public String createAccessToken(String email, MemberRole role) {
-        Date date = new Date();
+    fun createAccessToken(email: String?, role: MemberRole?): String {
+        val date = Date()
 
 
         return Jwts.builder()
             .setSubject(email)
-            .claim("role", role.name())
-            .setExpiration(new Date(date.getTime() + ACCESS_TIME))
+            .claim("role", role!!.name)
+            .setExpiration(Date(date.time + ACCESS_TIME))
             .setIssuedAt(date)
             .signWith(SignatureAlgorithm.HS256, key)
-            .compact();
+            .compact()
     }
 
-    public String reCreateAccessToken(String refreshToken) {
-        Date date = new Date();
-        String email = getEmailFromToken(refreshToken);
-        MemberRole role = getRoleFromEmail(email);
+    fun reCreateAccessToken(refreshToken: String?): String {
+        val date = Date()
+        val email = getEmailFromToken(refreshToken)
+        val role = getRoleFromEmail(email)
 
         return Jwts.builder()
             .setSubject(email)
-            .claim("role", role.name())
-            .setExpiration(new Date(date.getTime() + ACCESS_TIME))
+            .claim("role", role!!.name)
+            .setExpiration(Date(date.time + ACCESS_TIME))
             .setIssuedAt(date)
             .signWith(key, SignatureAlgorithm.HS256)
-            .compact();
+            .compact()
     }
 
-    public String createRefreshToken(String email, MemberRole role) {
-        Date date = new Date();
+    fun createRefreshToken(email: String?, role: MemberRole?): String {
+        val date = Date()
 
-        String refreshToken = Jwts.builder()
+        val refreshToken = Jwts.builder()
             .setSubject(email)
-            .setExpiration(new Date(date.getTime() + REFRESH_TIME))
+            .setExpiration(Date(date.time + REFRESH_TIME))
             .setIssuedAt(date)
             .signWith(key, SignatureAlgorithm.HS256)
-            .compact();
+            .compact()
 
-        return refreshToken;
+        return refreshToken
     }
 
-    public Authentication createAuthentication(String email) {
-        UserDetails userDetails = userDetailService.loadUserByUsername(email);
-        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+    fun createAuthentication(email: String): Authentication {
+        val userDetails = userDetailService!!.loadUserByUsername(email)
+        return UsernamePasswordAuthenticationToken(userDetails, "", userDetails!!.authorities)
     }
 
-    public Long getExpiration(String accessToken) {
-        Date expiration = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody().getExpiration();
+    fun getExpiration(accessToken: String?): Long {
+        val expiration = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).body.expiration
 
-        Long now = new Date().getTime();
-        return (expiration.getTime() - now);
+        val now = Date().time
+        return (expiration.time - now)
     }
 
-    private MemberRole getRoleFromEmail(String email) {
-        Member member = memberRepository.findByEmail(email)
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자 입니다."));
+    private fun getRoleFromEmail(email: String?): MemberRole? {
+        val member = memberRepository!!.findByEmail(email)
+            .orElseThrow { IllegalArgumentException("존재하지 않는 사용자 입니다.") }
 
-        return member.getMemberRole();
+        return member!!.memberRole
     }
 
-    public String getEmailFromToken(String token) {
-        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody().getSubject();
+    fun getEmailFromToken(token: String?): String {
+        return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).body.subject
     }
 
-    public String resolveToken(HttpServletRequest request) {
-        String token = request.getHeader(HttpHeaders.AUTHORIZATION);
+    fun resolveToken(request: HttpServletRequest): String? {
+        val token = request.getHeader(HttpHeaders.AUTHORIZATION)
 
         if (StringUtils.hasText(token)) {
             if (token.startsWith(BEARER_PREFIX)) {
-                return token.substring(7).trim();
+                return token.substring(7).trim { it <= ' ' }
             }
-            return token;
+            return token
         }
 
-        return null;
+        return null
     }
 
-    public void tokenValidation(String token) {
+    fun tokenValidation(token: String?) {
         try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-
-        } catch (SecurityException | MalformedJwtException e) {
-            throw new JwtException("유효하지 않은 JWT 토큰입니다.");
-        } catch (ExpiredJwtException e) {
-            throw new JwtException("만료된 JWT 입니다.");
-        } catch (UnsupportedJwtException e) {
-            throw new JwtException("지원하지 않은 JWT 입니다.");
-        } catch (IllegalArgumentException e) {
-            throw new JwtException("JWT 값이 비어있습니다.");
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token)
+        } catch (e: SecurityException) {
+            throw JwtException("유효하지 않은 JWT 토큰입니다.")
+        } catch (e: MalformedJwtException) {
+            throw JwtException("유효하지 않은 JWT 토큰입니다.")
+        } catch (e: ExpiredJwtException) {
+            throw JwtException("만료된 JWT 입니다.")
+        } catch (e: UnsupportedJwtException) {
+            throw JwtException("지원하지 않은 JWT 입니다.")
+        } catch (e: IllegalArgumentException) {
+            throw JwtException("JWT 값이 비어있습니다.")
+        } catch (e: Exception) {
+            throw RuntimeException(e.message)
         }
     }
 
-    public void refreshTokenValidation(String refreshToken) {
-        tokenValidation(refreshToken);
-        String email = getEmailFromToken(refreshToken);
-        String redisRefreshToken = null;
+    fun refreshTokenValidation(refreshToken: String?) {
+        tokenValidation(refreshToken)
+        val email = getEmailFromToken(refreshToken)
+        var redisRefreshToken: String? = null
 
-        Object redisRefresh = redisTemplate.opsForValue().get(email);
+        val redisRefresh = redisTemplate!!.opsForValue()[email]
 
-        if (redisRefresh != null)
-            redisRefreshToken = redisRefresh.toString();
+        if (redisRefresh != null) redisRefreshToken = redisRefresh.toString()
 
-        if (redisRefreshToken == null)
-            throw new JwtException("유효하지 않은 JWT 토큰입니다.");
-
+        if (redisRefreshToken == null) throw JwtException("유효하지 않은 JWT 토큰입니다.")
     }
 
+    companion object {
+        const val ACCESS_TOKEN: String = "Authorization"
+        const val REFRESH_TOKEN: String = "refresh_token"
+        const val BEARER_PREFIX: String = "Bearer "
+        val ACCESS_TIME: Long = Duration.ofMinutes(30).toMillis() // 만료시간 30분
+        val REFRESH_TIME: Long = Duration.ofDays(14).toMillis() // 만료시간 2주
+    }
 }

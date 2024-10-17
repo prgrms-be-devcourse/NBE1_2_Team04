@@ -1,6 +1,6 @@
-package team4.footwithme.team.domain;
+package team4.footwithme.team.domain
 
-public enum TeamMemberRole {
+enum class TeamMemberRole {
     CREATOR,
     MEMBER
 }

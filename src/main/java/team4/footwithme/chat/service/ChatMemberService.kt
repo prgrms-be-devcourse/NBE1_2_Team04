@@ -1,37 +1,34 @@
-package team4.footwithme.chat.service;
+package team4.footwithme.chat.service
 
-import team4.footwithme.chat.domain.Chatroom;
-import team4.footwithme.chat.service.request.ChatMemberServiceRequest;
-import team4.footwithme.chat.service.response.ChatMemberResponse;
-import team4.footwithme.member.domain.Member;
-import team4.footwithme.resevation.domain.Participant;
-import team4.footwithme.team.domain.TeamMember;
+import team4.footwithme.chat.domain.Chatroom
+import team4.footwithme.chat.service.request.ChatMemberServiceRequest
+import team4.footwithme.chat.service.response.ChatMemberResponse
+import team4.footwithme.member.domain.Member
+import team4.footwithme.resevation.domain.Participant
+import team4.footwithme.team.domain.TeamMember
 
-import java.util.List;
+interface ChatMemberService {
+    fun joinChatMember(request: ChatMemberServiceRequest?): ChatMemberResponse
 
-public interface ChatMemberService {
+    fun joinChatTeam(teamMembers: List<TeamMember>, teamId: Long?)
 
-    ChatMemberResponse joinChatMember(ChatMemberServiceRequest request);
+    fun joinChatGame(gameMembers: List<Participant>, reservationId: Long?)
 
-    void joinChatTeam(List<TeamMember> teamMembers, Long teamId);
+    fun joinChatMembers(members: List<Member?>, chatroom: Chatroom?)
 
-    void joinChatGame(List<Participant> gameMembers, Long reservationId);
+    fun leaveChatMember(request: ChatMemberServiceRequest?): ChatMemberResponse
 
-    void joinChatMembers(List<Member> members, Chatroom chatroom);
+    fun leaveChatRoom(chatroomId: Long?)
 
-    ChatMemberResponse leaveChatMember(ChatMemberServiceRequest request);
+    fun joinTeamChatMember(member: Member?, teamId: Long?)
 
-    void leaveChatRoom(Long chatroomId);
+    fun joinReservationChatMember(member: Member?, reservationId: Long?)
 
-    void joinTeamChatMember(Member member, Long teamId);
+    fun leaveTeamChatRoom(teamId: Long?)
 
-    void joinReservationChatMember(Member member, Long reservationId);
+    fun leaveReservationChatRoom(reservationId: Long?)
 
-    void leaveTeamChatRoom(Long teamId);
+    fun leaveTeamChatMember(member: Member?, teamId: Long?)
 
-    void leaveReservationChatRoom(Long reservationId);
-
-    void leaveTeamChatMember(Member member, Long teamId);
-
-    void leaveReservationChatMember(Member member, Long reservationId);
+    fun leaveReservationChatMember(member: Member?, reservationId: Long?)
 }

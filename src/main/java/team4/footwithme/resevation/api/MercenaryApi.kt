@@ -1,43 +1,48 @@
-package team4.footwithme.resevation.api;
+package team4.footwithme.resevation.api
 
-import jakarta.validation.Valid;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
-import team4.footwithme.global.api.ApiResponse;
-import team4.footwithme.member.jwt.PrincipalDetails;
-import team4.footwithme.resevation.api.request.MercenaryRequest;
-import team4.footwithme.resevation.service.MercenaryService;
-import team4.footwithme.resevation.service.response.MercenaryResponse;
+import jakarta.validation.Valid
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.web.bind.annotation.*
+import team4.footwithme.global.api.ApiResponse
+import team4.footwithme.member.jwt.PrincipalDetails
+import team4.footwithme.resevation.api.request.MercenaryRequest
+import team4.footwithme.resevation.service.MercenaryService
+import team4.footwithme.resevation.service.response.MercenaryResponse
 
 @RestController
 @RequestMapping("/api/v1/mercenary")
-public class MercenaryApi {
-    private final MercenaryService mercenaryService;
-
-    public MercenaryApi(MercenaryService mercenaryService) {
-        this.mercenaryService = mercenaryService;
-    }
-
+class MercenaryApi(private val mercenaryService: MercenaryService) {
     @PostMapping
-    public ApiResponse<MercenaryResponse> createMercenary(@RequestBody @Valid MercenaryRequest request, @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        return ApiResponse.created(mercenaryService.createMercenary(request.toServiceRequest(), principalDetails.getMember()));
+    fun createMercenary(
+        @RequestBody request: @Valid MercenaryRequest?,
+        @AuthenticationPrincipal principalDetails: PrincipalDetails
+    ): ApiResponse<MercenaryResponse?> {
+        return ApiResponse.Companion.created<MercenaryResponse?>(
+            mercenaryService.createMercenary(
+                request!!.toServiceRequest(),
+                principalDetails.member
+            )
+        )
     }
 
     @GetMapping("/{mercenaryId}")
-    public ApiResponse<MercenaryResponse> getMercenary(@PathVariable Long mercenaryId) {
-        return ApiResponse.ok(mercenaryService.getMercenary(mercenaryId));
+    fun getMercenary(@PathVariable mercenaryId: Long?): ApiResponse<MercenaryResponse?> {
+        return ApiResponse.Companion.ok<MercenaryResponse?>(mercenaryService.getMercenary(mercenaryId))
     }
 
     @GetMapping
-    public ApiResponse<Page<MercenaryResponse>> getMercenaries(@RequestParam int page, @RequestParam int size) {
-        PageRequest pageRequest = PageRequest.of(page - 1, size);
-        return ApiResponse.ok(mercenaryService.getMercenaries(pageRequest));
+    fun getMercenaries(@RequestParam page: Int, @RequestParam size: Int): ApiResponse<Page<MercenaryResponse>?> {
+        val pageRequest = PageRequest.of(page - 1, size)
+        return ApiResponse.Companion.ok<Page<MercenaryResponse>?>(mercenaryService.getMercenaries(pageRequest))
     }
 
     @DeleteMapping("/{mercenaryId}")
-    public ApiResponse<Long> deleteMercenary(@PathVariable Long mercenaryId, @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        return ApiResponse.ok(mercenaryService.deleteMercenary(mercenaryId, principalDetails.getMember()));
+    fun deleteMercenary(
+        @PathVariable mercenaryId: Long?,
+        @AuthenticationPrincipal principalDetails: PrincipalDetails
+    ): ApiResponse<Long?> {
+        return ApiResponse.Companion.ok<Long?>(mercenaryService.deleteMercenary(mercenaryId, principalDetails.member))
     }
 }

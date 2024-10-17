@@ -1,13 +1,13 @@
-package team4.footwithme.vote.service;
+package team4.footwithme.vote.service
 
-import java.time.LocalDateTime;
-import java.util.List;
+import java.time.LocalDateTime
 
-public record EndVoteEvent(
-    Long courtId,
-    Long memberId,
-    Long teamId,
-    LocalDateTime matchDate,
-    List<Long> memberIds
+@JvmRecord
+data class EndVoteEvent(
+    val courtId: Long?,
+    val memberId: Long?,
+    val teamId: Long?,
+    val matchDate: LocalDateTime?,
+    val memberIds: List<Long?>?
 ) {
 }

@@ -1,7 +1,7 @@
-package team4.footwithme.member.service.request;
+package team4.footwithme.member.service.request
 
-public record LoginServiceRequest(
-    String email,
-    String password
-) {
-}
+@JvmRecord
+data class LoginServiceRequest(
+    val email: String?,
+    val password: String?
+)

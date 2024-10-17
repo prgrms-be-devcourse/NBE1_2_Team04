@@ -1,25 +1,26 @@
-package team4.footwithme.vote.service.response;
+package team4.footwithme.vote.service.response
 
-import team4.footwithme.vote.domain.Vote;
+import team4.footwithme.vote.domain.Vote
+import java.time.LocalDateTime
 
-import java.time.LocalDateTime;
-import java.util.List;
-
-public record VoteResponse(
-    Long voteId,
-    String title,
-    LocalDateTime endAt,
-    String voteStatus,
-    List<VoteItemResponse> choices
+@JvmRecord
+data class VoteResponse(
+    val voteId: Long?,
+    val title: String?,
+    val endAt: LocalDateTime?,
+    val voteStatus: String?,
+    val choices: List<VoteItemResponse>
 ) {
 
-    public static VoteResponse of(Vote vote, List<VoteItemResponse> choices) {
-        return new VoteResponse(
-            vote.getVoteId(),
-            vote.getTitle(),
-            vote.getEndAt(),
-            vote.getVoteStatus().getText(),
-            choices
-        );
+    companion object {
+        fun of(vote: Vote, choices: List<VoteItemResponse>): VoteResponse {
+            return VoteResponse(
+                vote.voteId,
+                vote.title,
+                vote.endAt,
+                vote.voteStatus!!.text,
+                choices
+            )
+        }
     }
 }

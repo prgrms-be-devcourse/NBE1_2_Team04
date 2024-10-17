@@ -147,7 +147,7 @@ class GameServiceImplTest extends IntegrationTestSupport {
     @Test
     @DisplayName("성공적으로 게임을 등록해야 한다")
     void registerGame_success() {
-        GameRegisterServiceRequest request = new GameRegisterServiceRequest(reservation1.getReservationId(), reservation2.getReservationId());
+        GameRegisterServiceRequest request = new GameRegisterServiceRequest(reservation1.reservationId, reservation2.reservationId);
 
         GameDetailResponse response = gameService.registerGame(testMember1, request);
 
@@ -157,8 +157,8 @@ class GameServiceImplTest extends IntegrationTestSupport {
         Optional<Game> savedGame = gameRepository.findById(response.gameId());
         assertThat(savedGame).isPresent();
         savedGame.ifPresent(game -> {
-            assertThat(game.getFirstTeamReservation().getReservationId()).isEqualTo(reservation1.getReservationId());
-            assertThat(game.getSecondTeamReservation().getReservationId()).isEqualTo(reservation2.getReservationId());
+            assertThat(game.getFirstTeamReservation().reservationId).isEqualTo(reservation1.reservationId);
+            assertThat(game.getSecondTeamReservation().reservationId).isEqualTo(reservation2.reservationId);
             assertThat(game.getGameStatus()).isEqualTo(GameStatus.PENDING);
         });
     }
@@ -181,11 +181,11 @@ class GameServiceImplTest extends IntegrationTestSupport {
             .build();
         memberRepository.save(anotherMember);
 
-        GameRegisterServiceRequest request = new GameRegisterServiceRequest(reservation1.getReservationId(), reservation2.getReservationId());
+        GameRegisterServiceRequest request = new GameRegisterServiceRequest(reservation1.reservationId, reservation2.reservationId);
 
         assertThatThrownBy(() -> gameService.registerGame(anotherMember, request))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage(ExceptionMessage.RESERVATION_MEMBER_NOT_MATCH.getText());
+            .hasMessage(ExceptionMessage.RESERVATION_MEMBER_NOT_MATCH.text);
     }
 
     @Test
@@ -199,13 +199,13 @@ class GameServiceImplTest extends IntegrationTestSupport {
 
         gameRepository.save(testGame);
 
-        GameStatusUpdateServiceRequest request = new GameStatusUpdateServiceRequest(testGame.getGameId(), GameStatus.READY);
+        GameStatusUpdateServiceRequest request = new GameStatusUpdateServiceRequest(testGame.gameId, GameStatus.READY);
 
         String result = gameService.updateGameStatus(testMember2, request);
 
-        assertThat(result).isEqualTo(ExceptionMessage.RESERVATION_SUCCESS.getText());
+        assertThat(result).isEqualTo(ExceptionMessage.RESERVATION_SUCCESS.text);
 
-        Optional<Game> updatedGame = gameRepository.findById(testGame.getGameId());
+        Optional<Game> updatedGame = gameRepository.findById(testGame.gameId);
         assertThat(updatedGame).isPresent();
         updatedGame.ifPresent(game -> {
             assertThat(game.getGameStatus()).isEqualTo(GameStatus.READY);
@@ -223,13 +223,13 @@ class GameServiceImplTest extends IntegrationTestSupport {
 
         gameRepository.save(testGame);
 
-        GameStatusUpdateServiceRequest request = new GameStatusUpdateServiceRequest(testGame.getGameId(), GameStatus.IGNORE);
+        GameStatusUpdateServiceRequest request = new GameStatusUpdateServiceRequest(testGame.gameId, GameStatus.IGNORE);
 
         String result = gameService.updateGameStatus(testMember2, request);
 
         assertThat(result).isEqualTo("해당 매칭을 거절하였습니다.");
 
-        Optional<Game> updatedGame = gameRepository.findById(testGame.getGameId());
+        Optional<Game> updatedGame = gameRepository.findById(testGame.gameId);
         assertThat(updatedGame).isEmpty();
     }
 
@@ -255,19 +255,19 @@ class GameServiceImplTest extends IntegrationTestSupport {
 
         reservationRepository.save(reservationOther);
 
-        GameStatusUpdateServiceRequest request = new GameStatusUpdateServiceRequest(testGame.getGameId(), GameStatus.READY);
+        GameStatusUpdateServiceRequest request = new GameStatusUpdateServiceRequest(testGame.gameId, GameStatus.READY);
 
         String result = gameService.updateGameStatus(testMember2, request);
 
-        assertThat(result).isEqualTo(ExceptionMessage.RESERVATION_CONFLICT.getText());
+        assertThat(result).isEqualTo(ExceptionMessage.RESERVATION_CONFLICT.text);
 
-        Optional<Game> updatedGame = gameRepository.findById(testGame.getGameId());
+        Optional<Game> updatedGame = gameRepository.findById(testGame.gameId);
         assertThat(updatedGame).isPresent();
         updatedGame.ifPresent(game -> {
             assertThat(game.getGameStatus()).isEqualTo(GameStatus.IGNORE);
         });
 
-        Optional<Reservation> updatedReservation = reservationRepository.findById(reservation1.getReservationId());
+        Optional<Reservation> updatedReservation = reservationRepository.findById(reservation1.reservationId);
         assertThat(updatedReservation).isPresent();
         assertThat(updatedReservation.get().getReservationStatus()).isEqualTo(ReservationStatus.CANCELLED);
     }
@@ -283,7 +283,7 @@ class GameServiceImplTest extends IntegrationTestSupport {
             .build();
         gameRepository.save(testGame);
 
-        Slice<GameDetailResponse> result = gameService.findPendingGames(testMember2, reservation2.getReservationId(), 0);
+        Slice<GameDetailResponse> result = gameService.findPendingGames(testMember2, reservation2.reservationId, 0);
 
         assertThat(result).isNotEmpty();
         assertThat(result.getContent()).hasSize(1);

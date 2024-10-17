@@ -1,173 +1,138 @@
-package team4.footwithme.vote.domain;
+package team4.footwithme.vote.domain
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import org.hibernate.annotations.SQLDelete;
-import team4.footwithme.global.domain.BaseEntity;
+import jakarta.persistence.*
+import jakarta.validation.constraints.NotNull
+import org.hibernate.annotations.SQLDelete
+import team4.footwithme.global.domain.BaseEntity
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.List;
-
-import static team4.footwithme.vote.domain.VoteStatus.CLOSED;
-import static team4.footwithme.vote.domain.VoteStatus.OPENED;
-
-@Table(indexes = {
-    @Index(name = "idx_vote_team_id", columnList = "teamId"),
-    @Index(name = "idx_vote_member_id", columnList = "memberId")
-})
+@Table(
+    indexes = [Index(name = "idx_vote_team_id", columnList = "teamId"), Index(
+        name = "idx_vote_member_id",
+        columnList = "memberId"
+    )]
+)
 @SQLDelete(sql = "UPDATE vote SET is_deleted = 'TRUE' WHERE vote_id = ?")
 @Entity
-public class Vote extends BaseEntity {
-
+class Vote : BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long voteId;
+    val voteId: Long? = null
 
-    @NotNull
-    private Long memberId;
+    var memberId: @NotNull Long? = null
+        
 
-    @NotNull
-    private Long teamId;
+    var teamId: @NotNull Long? = null
+        
 
-    @NotNull
     @Column(length = 50)
-    private String title;
+    var title: @NotNull String? = null
+        
 
-    @NotNull
-    private LocalDateTime endAt;
+    var endAt: @NotNull LocalDateTime? = null
+        
 
-    @NotNull
     @Enumerated(EnumType.STRING)
-    private VoteStatus voteStatus;
+    var voteStatus: @NotNull VoteStatus? = null
+        
 
     @OneToMany(mappedBy = "vote")
-    private List<VoteItem> voteItems = new ArrayList<>();
+    private val voteItems: MutableList<VoteItem?> = ArrayList()
 
-    private Vote(Long memberId, Long teamId, String title, LocalDateTime endAt) {
-        this.memberId = memberId;
-        this.teamId = teamId;
-        this.title = title;
-        this.endAt = endAt;
-        this.voteStatus = OPENED;
+    private constructor(memberId: Long?, teamId: Long?, title: String?, endAt: LocalDateTime?) {
+        this.memberId = memberId
+        this.teamId = teamId
+        this.title = title
+        this.endAt = endAt
+        this.voteStatus = VoteStatus.OPENED
     }
 
-    protected Vote() {
+    protected constructor()
+
+    fun addChoice(voteItem: VoteItem?) {
+        voteItems.add(voteItem)
     }
 
-    public static Vote create(Long memberId, Long teamId, String title, LocalDateTime endAt) {
-        validateEndAt(endAt);
-        return Vote.builder()
-            .memberId(memberId)
-            .teamId(teamId)
-            .title(title)
-            .endAt(endAt)
-            .build();
+    fun updateVoteStatusToClose() {
+        this.voteStatus = VoteStatus.CLOSED
     }
 
-    private static void validateEndAt(LocalDateTime endAt) {
-        if (endAt.isBefore(LocalDateTime.now())) {
-            throw new IllegalArgumentException("투표 종료일은 현재 시간 이후여야 합니다.");
+    fun update(updateTitle: String?, updateEndAt: LocalDateTime?, memberId: Long?) {
+        checkWriterFromMemberId(memberId)
+        this.title = updateTitle
+        this.endAt = updateEndAt
+    }
+
+    fun checkWriterFromMemberId(memberId: Long?) {
+        require(!isNotWriter(memberId)) { "투표 작성자가 아닙니다." }
+    }
+
+    private fun isNotWriter(memberId: Long?): Boolean {
+        return this.memberId != memberId
+    }
+
+    val instantEndAt: Instant
+        get() = endAt!!.atZone(ZoneId.systemDefault()).toInstant()
+
+    fun getVoteItems(): List<VoteItem?> {
+        return this.voteItems
+    }
+
+    class VoteBuilder internal constructor() {
+        private var memberId: Long? = null
+        private var teamId: Long? = null
+        private var title: String? = null
+        private var endAt: LocalDateTime? = null
+        fun memberId(memberId: Long?): VoteBuilder {
+            this.memberId = memberId
+            return this
+        }
+
+        fun teamId(teamId: Long?): VoteBuilder {
+            this.teamId = teamId
+            return this
+        }
+
+        fun title(title: String?): VoteBuilder {
+            this.title = title
+            return this
+        }
+
+        fun endAt(endAt: LocalDateTime?): VoteBuilder {
+            this.endAt = endAt
+            return this
+        }
+
+        fun build(): Vote {
+            return Vote(this.memberId, this.teamId, this.title, this.endAt)
+        }
+
+        override fun toString(): String {
+            return "Vote.VoteBuilder(memberId=" + this.memberId + ", teamId=" + this.teamId + ", title=" + this.title + ", endAt=" + this.endAt + ")"
         }
     }
 
-    public static VoteBuilder builder() {
-        return new VoteBuilder();
-    }
-
-    public void addChoice(VoteItem voteItem) {
-        this.voteItems.add(voteItem);
-    }
-
-    public void updateVoteStatusToClose() {
-        this.voteStatus = CLOSED;
-    }
-
-    public void update(String updateTitle, LocalDateTime updateEndAt, Long memberId) {
-        checkWriterFromMemberId(memberId);
-        this.title = updateTitle;
-        this.endAt = updateEndAt;
-    }
-
-    public void checkWriterFromMemberId(Long memberId) {
-        if (isNotWriter(memberId)) {
-            throw new IllegalArgumentException("투표 작성자가 아닙니다.");
-        }
-    }
-
-    private boolean isNotWriter(Long memberId) {
-        return !this.memberId.equals(memberId);
-    }
-
-    public Instant getInstantEndAt() {
-        return endAt.atZone(ZoneId.systemDefault()).toInstant();
-    }
-
-    public Long getVoteId() {
-        return this.voteId;
-    }
-
-    public @NotNull Long getMemberId() {
-        return this.memberId;
-    }
-
-    public @NotNull Long getTeamId() {
-        return this.teamId;
-    }
-
-    public @NotNull String getTitle() {
-        return this.title;
-    }
-
-    public @NotNull LocalDateTime getEndAt() {
-        return this.endAt;
-    }
-
-    public @NotNull VoteStatus getVoteStatus() {
-        return this.voteStatus;
-    }
-
-    public List<VoteItem> getVoteItems() {
-        return this.voteItems;
-    }
-
-    public static class VoteBuilder {
-        private Long memberId;
-        private Long teamId;
-        private String title;
-        private LocalDateTime endAt;
-
-        VoteBuilder() {
+    companion object {
+        @JvmStatic
+        fun create(memberId: Long?, teamId: Long?, title: String?, endAt: LocalDateTime?): Vote {
+            validateEndAt(endAt)
+            return builder()
+                .memberId(memberId)
+                .teamId(teamId)
+                .title(title)
+                .endAt(endAt)
+                .build()
         }
 
-        public VoteBuilder memberId(Long memberId) {
-            this.memberId = memberId;
-            return this;
+        private fun validateEndAt(endAt: LocalDateTime?) {
+            require(!endAt!!.isBefore(LocalDateTime.now())) { "투표 종료일은 현재 시간 이후여야 합니다." }
         }
 
-        public VoteBuilder teamId(Long teamId) {
-            this.teamId = teamId;
-            return this;
-        }
-
-        public VoteBuilder title(String title) {
-            this.title = title;
-            return this;
-        }
-
-        public VoteBuilder endAt(LocalDateTime endAt) {
-            this.endAt = endAt;
-            return this;
-        }
-
-        public Vote build() {
-            return new Vote(this.memberId, this.teamId, this.title, this.endAt);
-        }
-
-        public String toString() {
-            return "Vote.VoteBuilder(memberId=" + this.memberId + ", teamId=" + this.teamId + ", title=" + this.title + ", endAt=" + this.endAt + ")";
+        @JvmStatic
+        fun builder(): VoteBuilder {
+            return VoteBuilder()
         }
     }
 }

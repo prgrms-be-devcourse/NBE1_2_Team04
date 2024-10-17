@@ -1,17 +1,17 @@
-package team4.footwithme.resevation.service;
+package team4.footwithme.resevation.service
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import team4.footwithme.member.domain.Member;
-import team4.footwithme.resevation.service.request.MercenaryServiceRequest;
-import team4.footwithme.resevation.service.response.MercenaryResponse;
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
+import team4.footwithme.member.domain.Member
+import team4.footwithme.resevation.service.request.MercenaryServiceRequest
+import team4.footwithme.resevation.service.response.MercenaryResponse
 
-public interface MercenaryService {
-    MercenaryResponse createMercenary(MercenaryServiceRequest request, Member member);
+interface MercenaryService {
+    fun createMercenary(request: MercenaryServiceRequest?, member: Member?): MercenaryResponse
 
-    MercenaryResponse getMercenary(Long mercenaryId);
+    fun getMercenary(mercenaryId: Long?): MercenaryResponse
 
-    Page<MercenaryResponse> getMercenaries(Pageable pageable);
+    fun getMercenaries(pageable: Pageable?): Page<MercenaryResponse>
 
-    Long deleteMercenary(Long mercenaryId, Member member);
+    fun deleteMercenary(mercenaryId: Long?, member: Member?): Long?
 }

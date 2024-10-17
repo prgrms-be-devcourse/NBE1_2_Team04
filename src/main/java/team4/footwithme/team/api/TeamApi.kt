@@ -1,58 +1,66 @@
-package team4.footwithme.team.api;
+package team4.footwithme.team.api
 
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
-import team4.footwithme.global.api.ApiResponse;
-import team4.footwithme.member.jwt.PrincipalDetails;
-import team4.footwithme.team.api.request.TeamCreateRequest;
-import team4.footwithme.team.api.request.TeamUpdateRequest;
-import team4.footwithme.team.service.TeamService;
-import team4.footwithme.team.service.response.TeamDefaultResponse;
-import team4.footwithme.team.service.response.TeamInfoResponse;
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.web.bind.annotation.*
+import team4.footwithme.global.api.ApiResponse
+import team4.footwithme.member.jwt.PrincipalDetails
+import team4.footwithme.team.api.request.TeamCreateRequest
+import team4.footwithme.team.api.request.TeamUpdateRequest
+import team4.footwithme.team.service.TeamService
+import team4.footwithme.team.service.response.TeamDefaultResponse
+import team4.footwithme.team.service.response.TeamInfoResponse
 
 @RestController
 @RequestMapping("/api/v1/team")
-public class TeamApi {
-
-    private final TeamService teamService;
-
-    public TeamApi(TeamService teamService) {
-        this.teamService = teamService;
-    }
-
+class TeamApi(private val teamService: TeamService) {
     /**
      * 팀 생성
      */
     @PostMapping("/create")
-    public ApiResponse<TeamDefaultResponse> createTeam(@RequestBody TeamCreateRequest request, @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        return ApiResponse.created(teamService.createTeam(request.toServiceRequest(), principalDetails.getMember()));
+    fun createTeam(
+        @RequestBody request: TeamCreateRequest,
+        @AuthenticationPrincipal principalDetails: PrincipalDetails
+    ): ApiResponse<TeamDefaultResponse?> {
+        return ApiResponse.Companion.created<TeamDefaultResponse?>(
+            teamService.createTeam(
+                request.toServiceRequest(),
+                principalDetails.member
+            )
+        )
     }
 
     /**
      * 팀 정보 조회
      */
     @GetMapping("/{teamId}/info")
-    public ApiResponse<TeamInfoResponse> getTeamInfo(@PathVariable Long teamId) {
-        TeamInfoResponse teamInfoResponse = teamService.getTeamInfo(teamId);
-        return ApiResponse.ok(teamInfoResponse);
+    fun getTeamInfo(@PathVariable teamId: Long): ApiResponse<TeamInfoResponse?> {
+        val teamInfoResponse = teamService.getTeamInfo(teamId)
+        return ApiResponse.Companion.ok<TeamInfoResponse?>(teamInfoResponse)
     }
 
     /**
      * 팀 정보 수정
      */
     @PutMapping("/{teamId}/info")
-    public ApiResponse<TeamDefaultResponse> updateTeamInfo(@PathVariable Long teamId, @RequestBody TeamUpdateRequest request, @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        TeamDefaultResponse teamUpdateResponse = teamService.updateTeamInfo(teamId, request.toServiceRequest(), principalDetails.getMember());
-        return ApiResponse.ok(teamUpdateResponse);
+    fun updateTeamInfo(
+        @PathVariable teamId: Long,
+        @RequestBody request: TeamUpdateRequest,
+        @AuthenticationPrincipal principalDetails: PrincipalDetails
+    ): ApiResponse<TeamDefaultResponse?> {
+        val teamUpdateResponse = teamService.updateTeamInfo(teamId, request.toServiceRequest(), principalDetails.member)
+        return ApiResponse.Companion.ok<TeamDefaultResponse?>(teamUpdateResponse)
     }
 
     /**
      * 팀 삭제
      */
     @DeleteMapping("/{teamId}")
-    public ApiResponse<Long> deleteTeam(@PathVariable Long teamId, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+    fun deleteTeam(
+        @PathVariable teamId: Long,
+        @AuthenticationPrincipal principalDetails: PrincipalDetails
+    ): ApiResponse<Long?> {
         //요청받은 id리턴
-        Long deletedId = teamService.deleteTeam(teamId, principalDetails.getMember());
-        return ApiResponse.ok(deletedId);
+        val deletedId = teamService.deleteTeam(teamId, principalDetails.member)
+        return ApiResponse.Companion.ok<Long?>(deletedId)
     }
 }

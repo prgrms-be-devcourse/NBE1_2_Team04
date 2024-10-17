@@ -1,6 +1,6 @@
-package team4.footwithme.chat.domain;
+package team4.footwithme.chat.domain
 
-public enum ChatType {
+enum class ChatType {
     TALK,
     ENTER,
     QUIT

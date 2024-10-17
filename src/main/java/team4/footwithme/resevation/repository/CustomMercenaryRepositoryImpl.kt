@@ -1,54 +1,43 @@
-package team4.footwithme.resevation.repository;
+package team4.footwithme.resevation.repository
 
-import com.querydsl.jpa.impl.JPAQueryFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import team4.footwithme.global.domain.IsDeleted;
-import team4.footwithme.resevation.domain.Mercenary;
-import team4.footwithme.resevation.domain.ReservationStatus;
+import com.querydsl.jpa.impl.JPAQueryFactory
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.Pageable
+import team4.footwithme.global.domain.IsDeleted
+import team4.footwithme.resevation.domain.Mercenary
+import team4.footwithme.resevation.domain.QMercenary
+import team4.footwithme.resevation.domain.ReservationStatus
 
-import java.util.List;
+class CustomMercenaryRepositoryImpl(private val queryFactory: JPAQueryFactory) : CustomMercenaryRepository {
+    override fun findAllToPage(pageable: Pageable): Page<Mercenary> {
+        val mercenaries = getMercenaryList(pageable)
+        val count = count
 
-import static team4.footwithme.resevation.domain.QMercenary.mercenary;
-
-public class CustomMercenaryRepositoryImpl implements CustomMercenaryRepository {
-    private final JPAQueryFactory queryFactory;
-
-    public CustomMercenaryRepositoryImpl(JPAQueryFactory queryFactory) {
-        this.queryFactory = queryFactory;
+        return PageImpl(mercenaries, pageable, count!!)
     }
 
-
-    @Override
-    public Page<Mercenary> findAllToPage(Pageable pageable) {
-
-        List<Mercenary> mercenaries = getMercenaryList(pageable);
-        Long count = getCount();
-
-        return new PageImpl<>(mercenaries, pageable, count);
-    }
-
-    private Long getCount() {
-        return queryFactory
-            .select(mercenary.count())
-            .from(mercenary)
-            .where(mercenary.isDeleted.eq(IsDeleted.FALSE)
-                .and(mercenary.reservation.reservationStatus.eq(ReservationStatus.RECRUITING))
+    private val count: Long?
+        get() = queryFactory
+            .select(QMercenary.mercenary.count())
+            .from(QMercenary.mercenary)
+            .where(
+                QMercenary.mercenary.isDeleted.eq(IsDeleted.FALSE)
+                    .and(QMercenary.mercenary.reservation.reservationStatus.eq(ReservationStatus.RECRUITING))
             )
-            .fetchOne();
-    }
+            .fetchOne()
 
-    private List<Mercenary> getMercenaryList(Pageable pageable) {
+    private fun getMercenaryList(pageable: Pageable): List<Mercenary> {
         return queryFactory
-            .select(mercenary)
-            .from(mercenary)
-            .where(mercenary.isDeleted.eq(IsDeleted.FALSE)
-                .and(mercenary.reservation.reservationStatus.eq(ReservationStatus.RECRUITING))
+            .select(QMercenary.mercenary)
+            .from(QMercenary.mercenary)
+            .where(
+                QMercenary.mercenary.isDeleted.eq(IsDeleted.FALSE)
+                    .and(QMercenary.mercenary.reservation.reservationStatus.eq(ReservationStatus.RECRUITING))
             )
-            .orderBy(mercenary.createdAt.desc())
-            .offset(pageable.getOffset())   // 페이지 번호
-            .limit(pageable.getPageSize() + 1)  // 페이지 사이즈
-            .fetch();
+            .orderBy(QMercenary.mercenary.createdAt.desc())
+            .offset(pageable.offset) // 페이지 번호
+            .limit((pageable.pageSize + 1).toLong()) // 페이지 사이즈
+            .fetch()
     }
 }

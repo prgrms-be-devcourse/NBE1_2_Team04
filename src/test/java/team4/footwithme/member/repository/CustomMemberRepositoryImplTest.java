@@ -27,7 +27,7 @@ class CustomMemberRepositoryImplTest extends IntegrationTestSupport {
         Long findId = memberRepository.findMemberIdByMemberEmail(target);
 
         //then
-        assertThat(findId).isEqualTo(savedMember.getMemberId());
+        assertThat(findId).isEqualTo(savedMember.memberId);
 
     }
 

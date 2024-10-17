@@ -1,15 +1,14 @@
-package team4.footwithme.chat.service.response;
+package team4.footwithme.chat.service.response
 
-import team4.footwithme.chat.domain.Chatroom;
+import team4.footwithme.chat.domain.Chatroom
 
-public record ChatroomResponse(
-    Long chatroomId,
-    String name) {
-
-    public ChatroomResponse(Chatroom chatroom) {
-        this(
-            chatroom.getChatroomId(),
-            chatroom.getName()
-        );
-    }
+@JvmRecord
+data class ChatroomResponse(
+    val chatroomId: Long?,
+    val name: String?
+) {
+    constructor(chatroom: Chatroom?) : this(
+        chatroom!!.chatroomId,
+        chatroom.name
+    )
 }

@@ -1,6 +1,6 @@
-package team4.footwithme.chat.service.event;
+package team4.footwithme.chat.service.event
 
-public record TeamDeletedEvent(
-    Long teamId
-) {
-}
+@JvmRecord
+data class TeamDeletedEvent(
+    val teamId: Long
+)

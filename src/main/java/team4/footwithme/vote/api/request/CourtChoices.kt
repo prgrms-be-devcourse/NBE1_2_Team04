@@ -1,6 +1,6 @@
-package team4.footwithme.vote.api.request;
+package team4.footwithme.vote.api.request
 
-public record CourtChoices(
-    Long courtId
-) {
-}
+@JvmRecord
+data class CourtChoices(
+    val courtId: Long
+)

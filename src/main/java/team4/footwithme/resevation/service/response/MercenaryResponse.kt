@@ -1,16 +1,17 @@
-package team4.footwithme.resevation.service.response;
+package team4.footwithme.resevation.service.response
 
-import team4.footwithme.resevation.domain.Mercenary;
+import team4.footwithme.resevation.domain.Mercenary
 
-public record MercenaryResponse(
-    Long mercenaryId,
-    Long reservationId,
-    String description) {
-    public MercenaryResponse(Mercenary mercenary) {
-        this(
-            mercenary.getMercenaryId(),
-            mercenary.getReservation().getReservationId(),
-            mercenary.getDescription()
-        );
-    }
+@JvmRecord
+data class MercenaryResponse(
+    val mercenaryId: Long?,
+    val reservationId: Long?,
+    val description: String?
+) {
+    constructor(mercenary: Mercenary?) : this(
+        mercenary!!.mercenaryId,
+        mercenary.reservation!!.reservationId,
+        mercenary.description
+    )
+
 }

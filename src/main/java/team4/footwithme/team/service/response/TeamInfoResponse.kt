@@ -1,34 +1,33 @@
-package team4.footwithme.team.service.response;
+package team4.footwithme.team.service.response
 
-import team4.footwithme.team.domain.Team;
-
-import java.util.List;
+import team4.footwithme.team.domain.Team
 
 //팀 정보
-public record TeamInfoResponse(
-    String name,
-    String description,
-    String location,
-    int winCount,
-    int loseCount,
-    int drawCount,
-    List<String> evaluation,
-    Long maleCount,
-    Long femaleCount
+@JvmRecord
+data class TeamInfoResponse(
+    @JvmField val name: String?,
+    val description: String?,
+    val location: String?,
+    @JvmField val winCount: Int,
+    val loseCount: Int,
+    val drawCount: Int,
+    @JvmField val evaluation: List<String?>,
+    @JvmField val maleCount: Long?,
+    @JvmField val femaleCount: Long?
 ) {
-
-    public static TeamInfoResponse of(Team team, List<String> evaluation, Long maleCount, Long femaleCount) {
-        return new TeamInfoResponse(
-            team.getName(),
-            team.getDescription(),
-            team.getLocation(),
-            team.getTotalRecord().getWinCount(),
-            team.getTotalRecord().getLoseCount(),
-            team.getTotalRecord().getDrawCount(),
-            evaluation,
-            maleCount,
-            femaleCount
-        );
+    companion object {
+        fun of(team: Team, evaluation: List<String?>, maleCount: Long?, femaleCount: Long?): TeamInfoResponse {
+            return TeamInfoResponse(
+                team.name,
+                team.description,
+                team.location,
+                team.totalRecord!!.winCount,
+                team.totalRecord!!.loseCount,
+                team.totalRecord!!.drawCount,
+                evaluation,
+                maleCount,
+                femaleCount
+            )
+        }
     }
-
 }

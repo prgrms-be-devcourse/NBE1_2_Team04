@@ -87,13 +87,13 @@ class ReservationServiceImplTest extends IntegrationTestSupport {
 
         List<Court> savedCourts = courtRepository.saveAll(List.of(court1, court2, court3));
 
-        List<Long> courtIds = List.of(savedCourts.get(0).getCourtId(), savedCourts.get(1).getCourtId(), savedCourts.get(2).getCourtId());
+        List<Long> courtIds = List.of(savedCourts.get(0).courtId, savedCourts.get(1).courtId, savedCourts.get(2).courtId);
 
-        Team team = Team.create(stadium.getStadiumId(), "팀이름", "팀 설명", 1, 1, 1, "서울");
+        Team team = Team.create(stadium.stadiumId, "팀이름", "팀 설명", 1, 1, 1, "서울");
         Team savedTeam = teamRepository.save(team);
 
         //when
-        reservationService.createReservation(member1.getMemberId(), court1.getCourtId(), savedTeam.getTeamId(), LocalDateTime.now().plusDays(1), List.of(member2.getMemberId(), member3.getMemberId(), member4.getMemberId(), member5.getMemberId(), member6.getMemberId(), member7.getMemberId()));
+        reservationService.createReservation(member1.memberId, court1.courtId, savedTeam.getTeamId(), LocalDateTime.now().plusDays(1), List.of(member2.memberId, member3.memberId, member4.memberId, member5.memberId, member6.memberId, member7.memberId));
         //then
         List<Reservation> reservations = reservationRepository.findAll();
         List<Participant> participants = participantRepository.findAll();
@@ -120,13 +120,13 @@ class ReservationServiceImplTest extends IntegrationTestSupport {
 
         List<Court> savedCourts = courtRepository.saveAll(List.of(court1, court2, court3));
 
-        List<Long> courtIds = List.of(savedCourts.get(0).getCourtId(), savedCourts.get(1).getCourtId(), savedCourts.get(2).getCourtId());
+        List<Long> courtIds = List.of(savedCourts.get(0).courtId, savedCourts.get(1).courtId, savedCourts.get(2).courtId);
 
-        Team team = Team.create(stadium.getStadiumId(), "팀이름", "팀 설명", 1, 1, 1, "서울");
+        Team team = Team.create(stadium.stadiumId, "팀이름", "팀 설명", 1, 1, 1, "서울");
         Team savedTeam = teamRepository.save(team);
 
         //when
-        reservationService.createReservation(member1.getMemberId(), court1.getCourtId(), savedTeam.getTeamId(), LocalDateTime.now().plusDays(1), List.of(member1.getMemberId(), member2.getMemberId(), member3.getMemberId(), member4.getMemberId()));
+        reservationService.createReservation(member1.memberId, court1.courtId, savedTeam.getTeamId(), LocalDateTime.now().plusDays(1), List.of(member1.memberId, member2.memberId, member3.memberId, member4.memberId));
         //then
         List<Reservation> reservations = reservationRepository.findAll();
         List<Participant> participants = participantRepository.findAll();
@@ -160,13 +160,13 @@ class ReservationServiceImplTest extends IntegrationTestSupport {
 
         List<Court> savedCourts = courtRepository.saveAll(List.of(court1, court2, court3));
 
-        List<Long> courtIds = List.of(savedCourts.get(0).getCourtId(), savedCourts.get(1).getCourtId(), savedCourts.get(2).getCourtId());
+        List<Long> courtIds = List.of(savedCourts.get(0).courtId, savedCourts.get(1).courtId, savedCourts.get(2).courtId);
 
-        Team team = Team.create(stadium.getStadiumId(), "팀이름", "팀 설명", 1, 1, 1, "서울");
+        Team team = Team.create(stadium.stadiumId, "팀이름", "팀 설명", 1, 1, 1, "서울");
         Team savedTeam = teamRepository.save(team);
 
         //when
-        reservationService.createReservation(member1.getMemberId(), court1.getCourtId(), savedTeam.getTeamId(), LocalDateTime.now().plusDays(1), List.of(member2.getMemberId(), member3.getMemberId(), member4.getMemberId(), member5.getMemberId(), member6.getMemberId(), member7.getMemberId()));
+        reservationService.createReservation(member1.memberId, court1.courtId, savedTeam.getTeamId(), LocalDateTime.now().plusDays(1), List.of(member2.memberId, member3.memberId, member4.memberId, member5.memberId, member6.memberId, member7.memberId));
         //then
         List<Reservation> reservations = reservationRepository.findAll();
         List<Participant> participants = participantRepository.findAll();
@@ -195,13 +195,13 @@ class ReservationServiceImplTest extends IntegrationTestSupport {
 
         List<Court> savedCourts = courtRepository.saveAll(List.of(court1, court2, court3));
 
-        List<Long> courtIds = List.of(savedCourts.get(0).getCourtId(), savedCourts.get(1).getCourtId(), savedCourts.get(2).getCourtId());
+        List<Long> courtIds = List.of(savedCourts.get(0).courtId, savedCourts.get(1).courtId, savedCourts.get(2).courtId);
 
-        Team team = Team.create(stadium.getStadiumId(), "팀이름", "팀 설명", 1, 1, 1, "서울");
+        Team team = Team.create(stadium.stadiumId, "팀이름", "팀 설명", 1, 1, 1, "서울");
         Team savedTeam = teamRepository.save(team);
 
         //when
-        reservationService.createReservation(member1.getMemberId(), court1.getCourtId(), savedTeam.getTeamId(), LocalDateTime.now().plusDays(1), List.of(member1.getMemberId(), member2.getMemberId(), member3.getMemberId(), member4.getMemberId()));
+        reservationService.createReservation(member1.memberId, court1.courtId, savedTeam.getTeamId(), LocalDateTime.now().plusDays(1), List.of(member1.memberId, member2.memberId, member3.memberId, member4.memberId));
         //then
         List<Reservation> reservations = reservationRepository.findAll();
         List<Participant> participants = participantRepository.findAll();
@@ -223,7 +223,7 @@ class ReservationServiceImplTest extends IntegrationTestSupport {
         stadiumRepository.save(stadium);
         Court court = Court.create(stadium, "야외 구장 A", "다양한 물품 제공", BigDecimal.TEN);
         courtRepository.save(court);
-        Team team = Team.create(stadium.getStadiumId(), "팀이름", "팀 설명", 1, 1, 1, "서울");
+        Team team = Team.create(stadium.stadiumId, "팀이름", "팀 설명", 1, 1, 1, "서울");
         Team savedTeam = teamRepository.save(team);
 
         Reservation reservation1 = Reservation.builder()
@@ -246,7 +246,7 @@ class ReservationServiceImplTest extends IntegrationTestSupport {
             .build();
         reservationRepository.save(reservation2);
 
-        Slice<ReservationsResponse> readyReservations = reservationService.findReadyReservations(reservation1.getReservationId(), 0);
+        Slice<ReservationsResponse> readyReservations = reservationService.findReadyReservations(reservation1.reservationId, 0);
 
         assertThat(readyReservations).isNotEmpty();
         assertThat(readyReservations.getNumberOfElements()).isEqualTo(1);
@@ -262,7 +262,7 @@ class ReservationServiceImplTest extends IntegrationTestSupport {
         stadiumRepository.save(stadium);
         Court court = Court.create(stadium, "야외 구장 A", "다양한 물품 제공", BigDecimal.TEN);
         courtRepository.save(court);
-        Team team = Team.create(stadium.getStadiumId(), "팀이름", "팀 설명", 1, 1, 1, "서울");
+        Team team = Team.create(stadium.stadiumId, "팀이름", "팀 설명", 1, 1, 1, "서울");
         Team savedTeam = teamRepository.save(team);
 
         Reservation reservation = Reservation.builder()
@@ -275,9 +275,9 @@ class ReservationServiceImplTest extends IntegrationTestSupport {
             .build();
         reservationRepository.save(reservation);
 
-        assertThatThrownBy(() -> reservationService.findReadyReservations(reservation.getReservationId(), 0))
+        assertThatThrownBy(() -> reservationService.findReadyReservations(reservation.reservationId, 0))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage(ExceptionMessage.RESERVATION_STATUS_NOT_READY.getText());
+            .hasMessage(ExceptionMessage.RESERVATION_STATUS_NOT_READY.text);
     }
 
     @DisplayName("예약을 취소한다.")
@@ -294,8 +294,8 @@ class ReservationServiceImplTest extends IntegrationTestSupport {
         Member member8 = Member.create("test8@naver.com", "!test1234", "test8", "010-1234-1234", LoginProvider.ORIGINAL, "", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE);
         Member merchant = Member.create("test2@naver.com", "!test1234", "test2", "010-2234-1234", LoginProvider.ORIGINAL, "", Gender.MALE, MemberRole.MERCHANT, TermsAgreed.AGREE);
         Stadium stadium = Stadium.create(merchant, "스타 구장", "인천 송도", "010-2234-1234", "깔끔 쾌적", 36, 36);
-        Team team = Team.create(stadium.getStadiumId(), "한화", "이길 수 있을까", 5, 10, 10, "인천");
-        Team team2 = Team.create(stadium.getStadiumId(), "삼성", "이길 수 있을까", 10, 10, 5, "인천");
+        Team team = Team.create(stadium.stadiumId, "한화", "이길 수 있을까", 5, 10, 10, "인천");
+        Team team2 = Team.create(stadium.stadiumId, "삼성", "이길 수 있을까", 10, 10, 5, "인천");
 
         Court court = Court.create(stadium, "A번 구장", "잔디 구장", BigDecimal.valueOf(5000));
 
@@ -323,17 +323,17 @@ class ReservationServiceImplTest extends IntegrationTestSupport {
         mercenaryRepository.save(mercenary);
         gameRepository.save(game);
 
-        eventPublisher.publishEvent(new ReservationPublishedEvent("Test", reservation.getReservationId()));
+        eventPublisher.publishEvent(new ReservationPublishedEvent("Test", reservation.reservationId));
 
         //when
-        Long response = reservationService.deleteReservation(reservation.getReservationId(), manager);
+        Long response = reservationService.deleteReservation(reservation.reservationId, manager);
 
         //then
-        assertThat(response).isEqualTo(reservation.getReservationId());
+        assertThat(response).isEqualTo(reservation.reservationId);
 
-        List<Participant> participants = participantRepository.findAllByReservationId(reservation.getReservationId());
-        List<Game> games = gameRepository.findAllByReservationId(reservation.getReservationId());
-        List<Mercenary> mercenaries = mercenaryRepository.findAllMercenaryByReservationId(reservation.getReservationId());
+        List<Participant> participants = participantRepository.findAllByReservationId(reservation.reservationId);
+        List<Game> games = gameRepository.findAllByReservationId(reservation.reservationId);
+        List<Mercenary> mercenaries = mercenaryRepository.findAllMercenaryByReservationId(reservation.reservationId);
 
         assertThat(participants).isEmpty();
         assertThat(games).isEmpty();
@@ -354,8 +354,8 @@ class ReservationServiceImplTest extends IntegrationTestSupport {
         Member member8 = Member.create("test8@naver.com", "!test1234", "test8", "010-1234-1234", LoginProvider.ORIGINAL, "", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE);
         Member merchant = Member.create("test2@naver.com", "!test1234", "test2", "010-2234-1234", LoginProvider.ORIGINAL, "", Gender.MALE, MemberRole.MERCHANT, TermsAgreed.AGREE);
         Stadium stadium = Stadium.create(merchant, "스타 구장", "인천 송도", "010-2234-1234", "깔끔 쾌적", 36, 36);
-        Team team = Team.create(stadium.getStadiumId(), "한화", "이길 수 있을까", 5, 10, 10, "인천");
-        Team team2 = Team.create(stadium.getStadiumId(), "삼성", "이길 수 있을까", 10, 10, 5, "인천");
+        Team team = Team.create(stadium.stadiumId, "한화", "이길 수 있을까", 5, 10, 10, "인천");
+        Team team2 = Team.create(stadium.stadiumId, "삼성", "이길 수 있을까", 10, 10, 5, "인천");
 
         Court court = Court.create(stadium, "A번 구장", "잔디 구장", BigDecimal.valueOf(5000));
 
@@ -382,12 +382,12 @@ class ReservationServiceImplTest extends IntegrationTestSupport {
         participantRepository.saveAll(List.of(participant1, participant2, participant3, participant4, participant5, participant6));
         mercenaryRepository.save(mercenary);
         gameRepository.save(game);
-        eventPublisher.publishEvent(new ReservationPublishedEvent("Test", reservation.getReservationId()));
+        eventPublisher.publishEvent(new ReservationPublishedEvent("Test", reservation.reservationId));
 
 
         //when & then
         assertThrows(IllegalArgumentException.class,
-            () -> reservationService.deleteReservation(reservation.getReservationId(), member7),
+            () -> reservationService.deleteReservation(reservation.reservationId, member7),
             "일치하지 않는 사용자가 요청할 경우 IllegalArgumentException이 발생해야 합니다.");
     }
 
@@ -405,8 +405,8 @@ class ReservationServiceImplTest extends IntegrationTestSupport {
         Member member8 = Member.create("test8@naver.com", "!test1234", "test8", "010-1234-1234", LoginProvider.ORIGINAL, "", Gender.MALE, MemberRole.USER, TermsAgreed.AGREE);
         Member merchant = Member.create("test2@naver.com", "!test1234", "test2", "010-2234-1234", LoginProvider.ORIGINAL, "", Gender.MALE, MemberRole.MERCHANT, TermsAgreed.AGREE);
         Stadium stadium = Stadium.create(merchant, "스타 구장", "인천 송도", "010-2234-1234", "깔끔 쾌적", 36, 36);
-        Team team = Team.create(stadium.getStadiumId(), "한화", "이길 수 있을까", 5, 10, 10, "인천");
-        Team team2 = Team.create(stadium.getStadiumId(), "삼성", "이길 수 있을까", 10, 10, 5, "인천");
+        Team team = Team.create(stadium.stadiumId, "한화", "이길 수 있을까", 5, 10, 10, "인천");
+        Team team2 = Team.create(stadium.stadiumId, "삼성", "이길 수 있을까", 10, 10, 5, "인천");
 
         Court court = Court.create(stadium, "A번 구장", "잔디 구장", BigDecimal.valueOf(5000));
 
@@ -434,12 +434,12 @@ class ReservationServiceImplTest extends IntegrationTestSupport {
         participantRepository.saveAll(List.of(participant1, participant2, participant3, participant4, participant5, participant6));
         mercenaryRepository.save(mercenary);
         gameRepository.save(game);
-        eventPublisher.publishEvent(new ReservationPublishedEvent("Test", reservation.getReservationId()));
+        eventPublisher.publishEvent(new ReservationPublishedEvent("Test", reservation.reservationId));
 
 
         //when & then
         assertThrows(IllegalArgumentException.class,
-            () -> reservationService.deleteReservation(reservation.getReservationId(), manager),
+            () -> reservationService.deleteReservation(reservation.reservationId, manager),
             "일치하지 않는 사용자가 요청할 경우 IllegalArgumentException이 발생해야 합니다.");
     }
 

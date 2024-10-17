@@ -1,211 +1,204 @@
-package team4.footwithme.member.domain;
+package team4.footwithme.member.domain
 
-import jakarta.persistence.*;
-import org.hibernate.annotations.SQLDelete;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import team4.footwithme.global.domain.BaseEntity;
-
+import jakarta.persistence.*
+import org.hibernate.annotations.SQLDelete
+import org.springframework.security.crypto.password.PasswordEncoder
+import team4.footwithme.global.domain.BaseEntity
 
 @SQLDelete(sql = "UPDATE member SET is_deleted = 'TRUE' WHERE member_id = ?")
 @Entity
-public class Member extends BaseEntity {
-
+class Member : BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long memberId;
+    val memberId: Long? = null
 
     @Column(nullable = false, unique = true)
-    private String email;
+    var email: String? = null
 
-    private String password;
-
-    @Column(nullable = false)
-    private String name;
+    var password: String? = null
 
     @Column(nullable = false)
-    private String phoneNumber;
+    var name: String? = null
+
+    @Column(nullable = false)
+    var phoneNumber: String? = null
 
     @Embedded
-    private LoginType loginType;
+    var loginType: LoginType? = null
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Gender gender;
+    var gender: Gender? = null
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private MemberRole memberRole;
+    var memberRole: MemberRole? = null
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private TermsAgreed termsAgreed;
+    var termsAgreed: TermsAgreed? = null
 
-    private Member(String email, String password, String name, String phoneNumber, LoginType loginType, Gender gender, MemberRole memberRole, TermsAgreed termsAgreed) {
-        this.email = email;
-        this.password = password;
-        this.name = name;
-        this.phoneNumber = phoneNumber;
-        this.loginType = loginType;
-        this.gender = gender;
-        this.memberRole = memberRole;
-        this.termsAgreed = termsAgreed;
+    private constructor(
+        email: String?,
+        password: String?,
+        name: String?,
+        phoneNumber: String?,
+        loginType: LoginType?,
+        gender: Gender?,
+        memberRole: MemberRole?,
+        termsAgreed: TermsAgreed?
+    ) {
+        this.email = email
+        this.password = password
+        this.name = name
+        this.phoneNumber = phoneNumber
+        this.loginType = loginType
+        this.gender = gender
+        this.memberRole = memberRole
+        this.termsAgreed = termsAgreed
     }
 
-    protected Member() {
-    }
+    protected constructor()
 
-    public static Member create(String email, String password, String name, String phoneNumber, LoginProvider loginProvider, String snsId, Gender gender, MemberRole memberRole, TermsAgreed termsAgreed) {
-        return Member.builder()
-            .email(email)
-            .password(password)
-            .name(name)
-            .phoneNumber(phoneNumber)
-            .loginType(LoginType.builder()
-                .loginProvider(loginProvider)
-                .snsId(snsId)
-                .build())
-            .gender(gender)
-            .memberRole(memberRole)
-            .termsAgreed(termsAgreed)
-            .build();
-    }
-
-    public static Member createTemporary(String email, String name, LoginProvider loginProvider, String snsId) {
-        return Member.builder()
-            .email(email)
-            .loginType(LoginType.builder()
-                .loginProvider(loginProvider)
-                .snsId(snsId)
-                .build())
-            .name(name)
-            .memberRole(MemberRole.GUEST)
-            .termsAgreed(TermsAgreed.DISAGREE)
-            .build();
-    }
-
-    public static MemberBuilder builder() {
-        return new MemberBuilder();
-    }
-
-
-    public void update(String name, String phoneNumber, Gender gender) {
+    fun update(name: String?, phoneNumber: String?, gender: Gender?) {
         if (name != null) {
-            this.name = name;
+            this.name = name
         }
 
         if (gender != null) {
-            this.gender = gender;
+            this.gender = gender
         }
 
         if (phoneNumber != null) {
-            this.phoneNumber = phoneNumber;
+            this.phoneNumber = phoneNumber
         }
     }
 
-    public void encodePassword(PasswordEncoder passwordEncoder) {
-        this.password = passwordEncoder.encode(password);
+    fun encodePassword(passwordEncoder: PasswordEncoder) {
+        this.password = passwordEncoder.encode(password)
     }
 
-    public void changePassword(String password) {
-        this.password = password;
-
+    fun changePassword(password: String?) {
+        this.password = password
     }
 
-    public Long getMemberId() {
-        return this.memberId;
-    }
+    class MemberBuilder internal constructor() {
+        private var email: String? = null
+        private var password: String? = null
+        private var name: String? = null
+        private var phoneNumber: String? = null
+        private var loginType: LoginType? = null
+        private var gender: Gender? = null
+        private var memberRole: MemberRole? = null
+        private var termsAgreed: TermsAgreed? = null
 
-    public String getEmail() {
-        return this.email;
-    }
-
-    public String getPassword() {
-        return this.password;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public String getPhoneNumber() {
-        return this.phoneNumber;
-    }
-
-    public LoginType getLoginType() {
-        return this.loginType;
-    }
-
-    public Gender getGender() {
-        return this.gender;
-    }
-
-    public MemberRole getMemberRole() {
-        return this.memberRole;
-    }
-
-    public TermsAgreed getTermsAgreed() {
-        return this.termsAgreed;
-    }
-
-    public static class MemberBuilder {
-        private String email;
-        private String password;
-        private String name;
-        private String phoneNumber;
-        private LoginType loginType;
-        private Gender gender;
-        private MemberRole memberRole;
-        private TermsAgreed termsAgreed;
-
-        MemberBuilder() {
+        fun email(email: String?): MemberBuilder {
+            this.email = email
+            return this
         }
 
-        public MemberBuilder email(String email) {
-            this.email = email;
-            return this;
+        fun password(password: String?): MemberBuilder {
+            this.password = password
+            return this
         }
 
-        public MemberBuilder password(String password) {
-            this.password = password;
-            return this;
+        fun name(name: String?): MemberBuilder {
+            this.name = name
+            return this
         }
 
-        public MemberBuilder name(String name) {
-            this.name = name;
-            return this;
+        fun phoneNumber(phoneNumber: String?): MemberBuilder {
+            this.phoneNumber = phoneNumber
+            return this
         }
 
-        public MemberBuilder phoneNumber(String phoneNumber) {
-            this.phoneNumber = phoneNumber;
-            return this;
+        fun loginType(loginType: LoginType?): MemberBuilder {
+            this.loginType = loginType
+            return this
         }
 
-        public MemberBuilder loginType(LoginType loginType) {
-            this.loginType = loginType;
-            return this;
+        fun gender(gender: Gender?): MemberBuilder {
+            this.gender = gender
+            return this
         }
 
-        public MemberBuilder gender(Gender gender) {
-            this.gender = gender;
-            return this;
+        fun memberRole(memberRole: MemberRole?): MemberBuilder {
+            this.memberRole = memberRole
+            return this
         }
 
-        public MemberBuilder memberRole(MemberRole memberRole) {
-            this.memberRole = memberRole;
-            return this;
+        fun termsAgreed(termsAgreed: TermsAgreed?): MemberBuilder {
+            this.termsAgreed = termsAgreed
+            return this
         }
 
-        public MemberBuilder termsAgreed(TermsAgreed termsAgreed) {
-            this.termsAgreed = termsAgreed;
-            return this;
+        fun build(): Member {
+            return Member(
+                this.email,
+                this.password,
+                this.name,
+                this.phoneNumber,
+                this.loginType,
+                this.gender,
+                this.memberRole,
+                this.termsAgreed
+            )
         }
 
-        public Member build() {
-            return new Member(this.email, this.password, this.name, this.phoneNumber, this.loginType, this.gender, this.memberRole, this.termsAgreed);
+        override fun toString(): String {
+            return "Member.MemberBuilder(email=" + this.email + ", password=" + this.password + ", name=" + this.name + ", phoneNumber=" + this.phoneNumber + ", loginType=" + this.loginType + ", gender=" + this.gender + ", memberRole=" + this.memberRole + ", termsAgreed=" + this.termsAgreed + ")"
+        }
+    }
+
+    companion object {
+        @JvmStatic
+        fun create(
+            email: String?,
+            password: String?,
+            name: String?,
+            phoneNumber: String?,
+            loginProvider: LoginProvider?,
+            snsId: String?,
+            gender: Gender?,
+            memberRole: MemberRole?,
+            termsAgreed: TermsAgreed?
+        ): Member {
+            return builder()
+                .email(email)
+                .password(password)
+                .name(name)
+                .phoneNumber(phoneNumber)
+                .loginType(
+                    LoginType.Companion.builder()
+                        .loginProvider(loginProvider)
+                        .snsId(snsId)
+                        .build()
+                )
+                .gender(gender)
+                .memberRole(memberRole)
+                .termsAgreed(termsAgreed)
+                .build()
         }
 
-        public String toString() {
-            return "Member.MemberBuilder(email=" + this.email + ", password=" + this.password + ", name=" + this.name + ", phoneNumber=" + this.phoneNumber + ", loginType=" + this.loginType + ", gender=" + this.gender + ", memberRole=" + this.memberRole + ", termsAgreed=" + this.termsAgreed + ")";
+        @JvmStatic
+        fun createTemporary(email: String?, name: String?, loginProvider: LoginProvider?, snsId: String?): Member {
+            return builder()
+                .email(email)
+                .loginType(
+                    LoginType.Companion.builder()
+                        .loginProvider(loginProvider)
+                        .snsId(snsId)
+                        .build()
+                )
+                .name(name)
+                .memberRole(MemberRole.GUEST)
+                .termsAgreed(TermsAgreed.DISAGREE)
+                .build()
+        }
+
+        @JvmStatic
+        fun builder(): MemberBuilder {
+            return MemberBuilder()
         }
     }
 }

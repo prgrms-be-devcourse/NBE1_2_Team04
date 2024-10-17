@@ -1,23 +1,21 @@
-package team4.footwithme.resevation.service;
+package team4.footwithme.resevation.service
 
-import team4.footwithme.member.domain.Member;
-import team4.footwithme.resevation.service.request.ParticipantUpdateServiceRequest;
-import team4.footwithme.resevation.service.response.ParticipantResponse;
+import team4.footwithme.member.domain.Member
+import team4.footwithme.resevation.service.request.ParticipantUpdateServiceRequest
+import team4.footwithme.resevation.service.response.ParticipantResponse
 
-import java.util.List;
+interface ParticipantService {
+    fun createMercenaryParticipant(mercenaryId: Long?, member: Member?): ParticipantResponse
 
-public interface ParticipantService {
-    ParticipantResponse createMercenaryParticipant(Long mercenaryId, Member member);
+    fun createParticipant(reservationId: Long?, member: Member?): ParticipantResponse
 
-    ParticipantResponse createParticipant(Long reservationId, Member member);
+    fun deleteParticipant(reservationId: Long, member: Member?): Long?
 
-    Long deleteParticipant(Long reservationId, Member member);
+    fun updateMercenaryParticipant(request: ParticipantUpdateServiceRequest?, member: Member?): ParticipantResponse
 
-    ParticipantResponse updateMercenaryParticipant(ParticipantUpdateServiceRequest request, Member member);
+    fun getAcceptParticipants(reservationId: Long?): List<ParticipantResponse>?
 
-    List<ParticipantResponse> getAcceptParticipants(Long reservationId);
+    fun getParticipants(reservationId: Long?): List<ParticipantResponse>?
 
-    List<ParticipantResponse> getParticipants(Long reservationId);
-
-    List<ParticipantResponse> getParticipantsMercenary(Long reservationId);
+    fun getParticipantsMercenary(reservationId: Long?): List<ParticipantResponse>?
 }

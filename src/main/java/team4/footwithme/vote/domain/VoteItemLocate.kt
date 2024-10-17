@@ -1,58 +1,51 @@
-package team4.footwithme.vote.domain;
+package team4.footwithme.vote.domain
 
-import jakarta.persistence.Entity;
+import jakarta.persistence.Entity
 
 @Entity
-public class VoteItemLocate extends VoteItem {
+class VoteItemLocate : VoteItem {
+    var courtId: Long? = null
+        
 
-    private Long courtId;
-
-    private VoteItemLocate(Vote vote, Long courtId) {
-        super(vote);
-        this.courtId = courtId;
+    private constructor(vote: Vote?, courtId: Long?) : super(vote) {
+        this.courtId = courtId
     }
 
-    protected VoteItemLocate() {
-    }
+    protected constructor()
 
-    public static VoteItemLocate create(Vote vote, Long courtId) {
-        return VoteItemLocate.builder()
-            .vote(vote)
-            .courtId(courtId)
-            .build();
-    }
-
-    public static VoteItemLocateBuilder builder() {
-        return new VoteItemLocateBuilder();
-    }
-
-    public Long getCourtId() {
-        return this.courtId;
-    }
-
-    public static class VoteItemLocateBuilder {
-        private Vote vote;
-        private Long courtId;
-
-        VoteItemLocateBuilder() {
+    class VoteItemLocateBuilder internal constructor() {
+        private var vote: Vote? = null
+        private var courtId: Long? = null
+        fun vote(vote: Vote?): VoteItemLocateBuilder {
+            this.vote = vote
+            return this
         }
 
-        public VoteItemLocateBuilder vote(Vote vote) {
-            this.vote = vote;
-            return this;
+        fun courtId(courtId: Long?): VoteItemLocateBuilder {
+            this.courtId = courtId
+            return this
         }
 
-        public VoteItemLocateBuilder courtId(Long courtId) {
-            this.courtId = courtId;
-            return this;
+        fun build(): VoteItemLocate {
+            return VoteItemLocate(this.vote, this.courtId)
         }
 
-        public VoteItemLocate build() {
-            return new VoteItemLocate(this.vote, this.courtId);
+        override fun toString(): String {
+            return "VoteItemLocate.VoteItemLocateBuilder(vote=" + this.vote + ", courtId=" + this.courtId + ")"
+        }
+    }
+
+    companion object {
+        @JvmStatic
+        fun create(vote: Vote?, courtId: Long?): VoteItemLocate {
+            return builder()
+                .vote(vote)
+                .courtId(courtId)
+                .build()
         }
 
-        public String toString() {
-            return "VoteItemLocate.VoteItemLocateBuilder(vote=" + this.vote + ", courtId=" + this.courtId + ")";
+        fun builder(): VoteItemLocateBuilder {
+            return VoteItemLocateBuilder()
         }
     }
 }

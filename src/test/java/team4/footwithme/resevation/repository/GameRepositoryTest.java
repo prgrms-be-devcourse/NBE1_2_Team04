@@ -137,7 +137,7 @@ class GameRepositoryTest extends IntegrationTestSupport {
     @Test
     @DisplayName("findActiveById는 삭제되지 않은 게임을 조회한다")
     void findActiveById_returnsActiveGame() {
-        Optional<Game> foundGame = gameRepository.findActiveById(game1.getGameId());
+        Optional<Game> foundGame = gameRepository.findActiveById(game1.gameId);
 
         assertThat(foundGame).isPresent();
         assertThat(foundGame.get()).isEqualTo(game1);
@@ -148,7 +148,7 @@ class GameRepositoryTest extends IntegrationTestSupport {
     void findActiveById_doesNotReturnDeletedGame() {
         gameRepository.delete(game1);
 
-        Optional<Game> foundGame = gameRepository.findActiveById(game1.getGameId());
+        Optional<Game> foundGame = gameRepository.findActiveById(game1.gameId);
 
         assertThat(foundGame).isNotPresent();
     }

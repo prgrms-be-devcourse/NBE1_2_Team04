@@ -1,7 +1,7 @@
-package team4.footwithme.team.repository;
+package team4.footwithme.team.repository
 
-public interface CustomTeamRepository {
-    Long countMaleByMemberId(Long teamId);
+interface CustomTeamRepository {
+    fun countMaleByMemberId(teamId: Long?): Long?
 
-    Long countFemaleByMemberId(Long teamId);
+    fun countFemaleByMemberId(teamId: Long?): Long?
 }

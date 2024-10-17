@@ -1,55 +1,33 @@
-package team4.footwithme.team.domain;
+package team4.footwithme.team.domain
 
-import jakarta.persistence.Embeddable;
-import jakarta.validation.constraints.NotNull;
+import jakarta.persistence.Embeddable
+import jakarta.validation.constraints.NotNull
 
 @Embeddable
-public class TotalRecord {
+class TotalRecord
+/**
+ * 이 부분 질문
+ */
+{
+    val winCount: @NotNull Int = 0
 
-    @NotNull
-    private int winCount;
+    val drawCount: @NotNull Int = 0
 
-    @NotNull
-    private int drawCount;
+    val loseCount: @NotNull Int = 0
 
-    @NotNull
-    private int loseCount;
-
-    /**
-     * 이 부분 질문
-     */
-    public TotalRecord() {
-        this.winCount = 0;
-        this.drawCount = 0;
-        this.loseCount = 0;
-    }
-
-    public static TotalRecordBuilder builder() {
-        return new TotalRecordBuilder();
-    }
-
-    public @NotNull int getWinCount() {
-        return this.winCount;
-    }
-
-    public @NotNull int getDrawCount() {
-        return this.drawCount;
-    }
-
-    public @NotNull int getLoseCount() {
-        return this.loseCount;
-    }
-
-    public static class TotalRecordBuilder {
-        TotalRecordBuilder() {
+    class TotalRecordBuilder internal constructor() {
+        fun build(): TotalRecord {
+            return TotalRecord()
         }
 
-        public TotalRecord build() {
-            return new TotalRecord();
+        override fun toString(): String {
+            return "TotalRecord.TotalRecordBuilder()"
         }
+    }
 
-        public String toString() {
-            return "TotalRecord.TotalRecordBuilder()";
+    companion object {
+        fun builder(): TotalRecordBuilder {
+            return TotalRecordBuilder()
         }
     }
 }

@@ -1,43 +1,36 @@
-package team4.footwithme.member.api.request.validation;
+package team4.footwithme.member.api.request.validation
 
-import jakarta.validation.ConstraintValidator;
-import jakarta.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintValidator
+import jakarta.validation.ConstraintValidatorContext
 
-import java.lang.reflect.Field;
+class PasswordMatchesValidator : ConstraintValidator<PasswordMatches, Any> {
+    private var passwordField: String? = null
+    private var passwordConfirmField: String? = null
 
-public class PasswordMatchesValidator implements ConstraintValidator<PasswordMatches, Object> {
-
-    private String passwordField;
-    private String passwordConfirmField;
-
-    @Override
-    public void initialize(PasswordMatches constraintAnnotation) {
-        this.passwordField = constraintAnnotation.passwordField();
-        this.passwordConfirmField = constraintAnnotation.passwordConfirmField();
+    override fun initialize(constraintAnnotation: PasswordMatches) {
+        this.passwordField = constraintAnnotation.passwordField
+        this.passwordConfirmField = constraintAnnotation.passwordConfirmField
     }
 
-    @Override
-    public boolean isValid(Object value, ConstraintValidatorContext constraintValidatorContext) {
-
+    override fun isValid(value: Any, constraintValidatorContext: ConstraintValidatorContext): Boolean {
         try {
-            Field password = value.getClass().getDeclaredField(passwordField);
-            Field passwordConfirm = value.getClass().getDeclaredField(passwordConfirmField);
+            val password = value.javaClass.getDeclaredField(passwordField)
+            val passwordConfirm = value.javaClass.getDeclaredField(passwordConfirmField)
 
-            password.setAccessible(true);
-            passwordConfirm.setAccessible(true);
+            password.isAccessible = true
+            passwordConfirm.isAccessible = true
 
-            String passwordValue = (String) password.get(value);
-            String passwordConfirmValue = (String) passwordConfirm.get(value);
+            val passwordValue = password[value] as String
+            val passwordConfirmValue = passwordConfirm[value] as String
 
             if (passwordValue == null && passwordConfirmValue == null) { // OAuth 2.0 로그인 일 시
-                return true;
+                return true
             }
 
-            return passwordValue.equals(passwordConfirmValue);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
+            return passwordValue == passwordConfirmValue
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return false
         }
     }
-
 }

@@ -1,29 +1,26 @@
-package team4.footwithme.chat.service.response;
+package team4.footwithme.chat.service.response
 
-import team4.footwithme.chat.domain.Chat;
-import team4.footwithme.chat.domain.ChatType;
+import team4.footwithme.chat.domain.Chat
+import team4.footwithme.chat.domain.ChatType
+import java.time.LocalDateTime
 
-import java.time.LocalDateTime;
-
-public record ChatResponse(
-    Long chatId,
-    LocalDateTime createdAt,
-    LocalDateTime updatedAt,
-    ChatroomResponse chatroomResponse,
-    ChatMemberInfo memberInfo,
-    ChatType chatType,
-    String text) {
-
-    public ChatResponse(Chat chat) {
-        this(
-            chat.getChatId(),
-            chat.getCreatedAt(),
-            chat.getUpdatedAt(),
-            new ChatroomResponse(chat.getChatRoom()),
-            new ChatMemberInfo(chat.getMember()),
-            chat.getChatType(),
-            chat.getText()
-        );
-    }
-
+@JvmRecord
+data class ChatResponse(
+    val chatId: Long?,
+    val createdAt: LocalDateTime?,
+    val updatedAt: LocalDateTime?,
+    val chatroomResponse: ChatroomResponse,
+    val memberInfo: ChatMemberInfo,
+    val chatType: ChatType?,
+    val text: String?
+) {
+    constructor(chat: Chat) : this(
+        chat.chatId,
+        chat.createdAt,
+        chat.updatedAt,
+        ChatroomResponse(chat.chatRoom),
+        ChatMemberInfo(chat.member),
+        chat.chatType,
+        chat.text
+    )
 }

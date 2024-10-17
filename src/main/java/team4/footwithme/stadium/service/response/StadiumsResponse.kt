@@ -1,13 +1,20 @@
-package team4.footwithme.stadium.service.response;
+package team4.footwithme.stadium.service.response
 
-import team4.footwithme.stadium.domain.Stadium;
+import team4.footwithme.stadium.domain.Stadium
 
-public record StadiumsResponse(Long stadiumId, String name, String address) {
-    public static StadiumsResponse from(Stadium stadium) {
-        return new StadiumsResponse(
-            stadium.getStadiumId(),
-            stadium.getName(),
-            stadium.getAddress()
-        );
+@JvmRecord
+data class StadiumsResponse(
+    val stadiumId: Long?,
+    val name: String?,
+    val address: String?) {
+
+    companion object {
+        fun from(stadium: Stadium?): StadiumsResponse {
+            return StadiumsResponse(
+                stadium!!.stadiumId,
+                stadium.name,
+                stadium.address
+            )
+        }
     }
 }

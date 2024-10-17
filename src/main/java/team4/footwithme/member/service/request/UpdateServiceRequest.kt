@@ -1,10 +1,10 @@
-package team4.footwithme.member.service.request;
+package team4.footwithme.member.service.request
 
-import team4.footwithme.member.domain.Gender;
+import team4.footwithme.member.domain.Gender
 
-public record UpdateServiceRequest(
-    String name,
-    String phoneNumber,
-    Gender gender
-) {
-}
+@JvmRecord
+data class UpdateServiceRequest(
+    val name: String,
+    val phoneNumber: String?,
+    val gender: Gender
+)

@@ -1,100 +1,92 @@
-package team4.footwithme.resevation.domain;
+package team4.footwithme.resevation.domain
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import org.hibernate.annotations.SQLDelete;
-import team4.footwithme.global.domain.BaseEntity;
+import jakarta.persistence.*
+import jakarta.validation.constraints.NotNull
+import org.hibernate.annotations.SQLDelete
+import team4.footwithme.global.domain.BaseEntity
 
 @SQLDelete(sql = "UPDATE game SET is_deleted = 'TRUE' WHERE game_id = ?")
 @Entity
-public class Game extends BaseEntity {
-
+class Game : BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long gameId;
+    val gameId: Long? = null
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "first_team_reservation_id", nullable = false)
-    private Reservation firstTeamReservation;
+    var firstTeamReservation: Reservation? = null
+        
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "second_team_reservation_id", nullable = false)
-    private Reservation secondTeamReservation;
+    var secondTeamReservation: Reservation? = null
+        
 
-    @NotNull
     @Enumerated(EnumType.STRING)
-    private GameStatus gameStatus;
+    var gameStatus: @NotNull GameStatus? = null
+        
 
-    private Game(Reservation firstTeamReservation, Reservation secondTeamReservation, GameStatus gameStatus) {
-        this.firstTeamReservation = firstTeamReservation;
-        this.secondTeamReservation = secondTeamReservation;
-        this.gameStatus = gameStatus;
+    private constructor(
+        firstTeamReservation: Reservation?,
+        secondTeamReservation: Reservation?,
+        gameStatus: GameStatus?
+    ) {
+        this.firstTeamReservation = firstTeamReservation
+        this.secondTeamReservation = secondTeamReservation
+        this.gameStatus = gameStatus
     }
 
-    protected Game() {
+    protected constructor()
+
+    fun update(gameStatus: GameStatus?) {
+        this.gameStatus = gameStatus
     }
 
-    public static Game create(Reservation firstTeamReservation, Reservation secondTeamReservation, GameStatus gameStatus) {
-        return Game.builder()
-            .firstTeamReservation(firstTeamReservation)
-            .secondTeamReservation(secondTeamReservation)
-            .gameStatus(gameStatus)
-            .build();
-    }
-
-    public static GameBuilder builder() {
-        return new GameBuilder();
-    }
-
-    public void update(GameStatus gameStatus) {
-        this.gameStatus = gameStatus;
-    }
-
-    public Long getGameId() {
-        return this.gameId;
-    }
-
-    public Reservation getFirstTeamReservation() {
-        return this.firstTeamReservation;
-    }
-
-    public Reservation getSecondTeamReservation() {
-        return this.secondTeamReservation;
-    }
-
-    public @NotNull GameStatus getGameStatus() {
-        return this.gameStatus;
-    }
-
-    public static class GameBuilder {
-        private Reservation firstTeamReservation;
-        private Reservation secondTeamReservation;
-        private GameStatus gameStatus;
-
-        GameBuilder() {
+    class GameBuilder internal constructor() {
+        private var firstTeamReservation: Reservation? = null
+        private var secondTeamReservation: Reservation? = null
+        private var gameStatus: GameStatus? = null
+        fun firstTeamReservation(firstTeamReservation: Reservation?): GameBuilder {
+            this.firstTeamReservation = firstTeamReservation
+            return this
         }
 
-        public GameBuilder firstTeamReservation(Reservation firstTeamReservation) {
-            this.firstTeamReservation = firstTeamReservation;
-            return this;
+        fun secondTeamReservation(secondTeamReservation: Reservation?): GameBuilder {
+            this.secondTeamReservation = secondTeamReservation
+            return this
         }
 
-        public GameBuilder secondTeamReservation(Reservation secondTeamReservation) {
-            this.secondTeamReservation = secondTeamReservation;
-            return this;
+        fun gameStatus(gameStatus: GameStatus?): GameBuilder {
+            this.gameStatus = gameStatus
+            return this
         }
 
-        public GameBuilder gameStatus(GameStatus gameStatus) {
-            this.gameStatus = gameStatus;
-            return this;
+        fun build(): Game {
+            return Game(this.firstTeamReservation, this.secondTeamReservation, this.gameStatus)
         }
 
-        public Game build() {
-            return new Game(this.firstTeamReservation, this.secondTeamReservation, this.gameStatus);
+        override fun toString(): String {
+            return "Game.GameBuilder(firstTeamReservation=" + this.firstTeamReservation + ", secondTeamReservation=" + this.secondTeamReservation + ", gameStatus=" + this.gameStatus + ")"
+        }
+    }
+
+    companion object {
+        @JvmStatic
+        fun create(
+            firstTeamReservation: Reservation?,
+            secondTeamReservation: Reservation?,
+            gameStatus: GameStatus?
+        ): Game {
+            return builder()
+                .firstTeamReservation(firstTeamReservation)
+                .secondTeamReservation(secondTeamReservation)
+                .gameStatus(gameStatus)
+                .build()
         }
 
-        public String toString() {
-            return "Game.GameBuilder(firstTeamReservation=" + this.firstTeamReservation + ", secondTeamReservation=" + this.secondTeamReservation + ", gameStatus=" + this.gameStatus + ")";
+        @JvmStatic
+        fun builder(): GameBuilder {
+            return GameBuilder()
         }
     }
 }

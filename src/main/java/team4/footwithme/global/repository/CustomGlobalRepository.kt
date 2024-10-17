@@ -1,7 +1,7 @@
-package team4.footwithme.global.repository;
+package team4.footwithme.global.repository
 
-import java.util.Optional;
+import java.util.*
 
-public interface CustomGlobalRepository<T> {
-    Optional<T> findActiveById(Long id);
+interface CustomGlobalRepository<T> {
+    fun findActiveById(id: Long?): Optional<T>
 }

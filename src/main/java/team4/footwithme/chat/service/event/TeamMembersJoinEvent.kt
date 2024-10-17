@@ -1,11 +1,9 @@
-package team4.footwithme.chat.service.event;
+package team4.footwithme.chat.service.event
 
-import team4.footwithme.team.domain.TeamMember;
+import team4.footwithme.team.domain.TeamMember
 
-import java.util.List;
-
-public record TeamMembersJoinEvent(
-    List<TeamMember> members,
-    Long teamId
-) {
-}
+@JvmRecord
+data class TeamMembersJoinEvent(
+    val members: List<TeamMember>,
+    val teamId: Long?
+)

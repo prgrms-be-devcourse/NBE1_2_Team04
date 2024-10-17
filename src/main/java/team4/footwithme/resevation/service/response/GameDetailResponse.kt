@@ -1,20 +1,24 @@
-package team4.footwithme.resevation.service.response;
+package team4.footwithme.resevation.service.response
 
-import team4.footwithme.resevation.domain.Game;
-import team4.footwithme.resevation.domain.GameStatus;
+import team4.footwithme.resevation.domain.Game
+import team4.footwithme.resevation.domain.GameStatus
 
-public record GameDetailResponse(
-    Long gameId,
-    Long firstReservationId,
-    Long secondReservationId,
-    GameStatus gameStatus
+@JvmRecord
+data class GameDetailResponse(
+    val gameId: Long?,
+    val firstReservationId: Long?,
+    val secondReservationId: Long?,
+    val gameStatus: GameStatus?
 ) {
-    public static GameDetailResponse from(Game game) {
-        return new GameDetailResponse(
-            game.getGameId(),
-            game.getFirstTeamReservation().getReservationId(),
-            game.getSecondTeamReservation().getReservationId(),
-            game.getGameStatus()
-        );
+
+    companion object {
+        fun from(game: Game?): GameDetailResponse {
+            return GameDetailResponse(
+                game?.gameId,
+                game?.firstTeamReservation?.reservationId,
+                game?.secondTeamReservation?.reservationId,
+                game?.gameStatus
+            )
+        }
     }
 }

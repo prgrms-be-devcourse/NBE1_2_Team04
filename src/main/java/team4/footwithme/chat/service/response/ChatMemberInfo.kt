@@ -1,20 +1,19 @@
-package team4.footwithme.chat.service.response;
+package team4.footwithme.chat.service.response
 
-import team4.footwithme.member.domain.Member;
-import team4.footwithme.member.domain.MemberRole;
+import team4.footwithme.member.domain.Member
+import team4.footwithme.member.domain.MemberRole
 
-public record ChatMemberInfo(
-    Long memberId,
-    String email,
-    String name,
-    MemberRole memberRole) {
-
-    public ChatMemberInfo(Member member) {
-        this(
-            member.getMemberId(),
-            member.getEmail(),
-            member.getName(),
-            member.getMemberRole()
-        );
-    }
+@JvmRecord
+data class ChatMemberInfo(
+    val memberId: Long?,
+    val email: String?,
+    val name: String?,
+    val memberRole: MemberRole?
+) {
+    constructor(member: Member?) : this(
+        member!!.memberId,
+        member.email,
+        member.name,
+        member.memberRole
+    )
 }

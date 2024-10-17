@@ -1,11 +1,9 @@
-package team4.footwithme.global.exception;
+package team4.footwithme.global.exception
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.Getter
 
 @Getter
-public enum ExceptionMessage {
-
+enum class ExceptionMessage(@JvmField val text: String) {
     // Stadium
     STADIUM_NOT_FOUND("해당 풋살장을 찾을 수 없습니다."),
     STADIUM_NOT_OWNED_BY_MEMBER("본인이 소유한 풋살장이 아닙니다."),
@@ -48,13 +46,4 @@ public enum ExceptionMessage {
     //Game
     GAME_NOT_FOUND("해당 게임을 찾을 수 없습니다."),
     GAME_STATUS_NOT_VALID("게임 상태는 READY 또는 IGNORE만 가능합니다.");
-    private final String text;
-
-    private ExceptionMessage(String text) {
-        this.text = text;
-    }
-
-    public String getText() {
-        return this.text;
-    }
 }

@@ -1,25 +1,25 @@
-package team4.footwithme.member.service;
+package team4.footwithme.member.service
 
-import jakarta.servlet.http.HttpServletRequest;
-import team4.footwithme.member.domain.Member;
-import team4.footwithme.member.jwt.response.TokenResponse;
-import team4.footwithme.member.service.request.JoinServiceRequest;
-import team4.footwithme.member.service.request.LoginServiceRequest;
-import team4.footwithme.member.service.request.UpdatePasswordServiceRequest;
-import team4.footwithme.member.service.request.UpdateServiceRequest;
-import team4.footwithme.member.service.response.LoginResponse;
-import team4.footwithme.member.service.response.MemberResponse;
+import jakarta.servlet.http.HttpServletRequest
+import team4.footwithme.member.domain.Member
+import team4.footwithme.member.jwt.response.TokenResponse
+import team4.footwithme.member.service.request.JoinServiceRequest
+import team4.footwithme.member.service.request.LoginServiceRequest
+import team4.footwithme.member.service.request.UpdatePasswordServiceRequest
+import team4.footwithme.member.service.request.UpdateServiceRequest
+import team4.footwithme.member.service.response.LoginResponse
+import team4.footwithme.member.service.response.MemberResponse
 
-public interface MemberService {
-    MemberResponse join(JoinServiceRequest serviceRequest);
+interface MemberService {
+    fun join(serviceRequest: JoinServiceRequest?): MemberResponse
 
-    LoginResponse login(LoginServiceRequest serviceRequest);
+    fun login(serviceRequest: LoginServiceRequest?): LoginResponse
 
-    String logout(HttpServletRequest request);
+    fun logout(request: HttpServletRequest): String
 
-    TokenResponse reissue(HttpServletRequest request, String refreshToken);
+    fun reissue(request: HttpServletRequest, refreshToken: String?): TokenResponse
 
-    MemberResponse update(Member member, UpdateServiceRequest request);
+    fun update(member: Member?, request: UpdateServiceRequest?): MemberResponse
 
-    String updatePassword(Member member, UpdatePasswordServiceRequest serviceRequest);
+    fun updatePassword(member: Member?, serviceRequest: UpdatePasswordServiceRequest?): String
 }

@@ -1,44 +1,23 @@
-package team4.footwithme.member.jwt;
+package team4.footwithme.member.jwt
 
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import team4.footwithme.member.domain.Member;
-import team4.footwithme.member.domain.MemberRole;
+import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.userdetails.UserDetails
+import team4.footwithme.member.domain.Member
+import team4.footwithme.member.domain.MemberRole
 
-import java.util.Collection;
+class PrincipalDetails(@JvmField val member: Member?, private val authorities: Collection<GrantedAuthority>) : UserDetails {
+    val memberRole: MemberRole?
+        get() = member!!.memberRole
 
-public class PrincipalDetails implements UserDetails {
-
-    private Member member;
-    private Collection<? extends GrantedAuthority> authorities;
-
-    public PrincipalDetails(Member member, Collection<? extends GrantedAuthority> authorities) {
-        this.member = member;
-        this.authorities = authorities;
+    override fun getAuthorities(): Collection<GrantedAuthority> {
+        return authorities
     }
 
-    public Member getMember() {
-        return this.member;
+    override fun getPassword(): String {
+        return member!!.password!!
     }
 
-    public MemberRole getMemberRole() {
-        return member.getMemberRole();
+    override fun getUsername(): String {
+        return member!!.email!!
     }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
-    }
-
-    @Override
-    public String getPassword() {
-        return member.getPassword();
-    }
-
-    @Override
-    public String getUsername() {
-        return member.getEmail();
-    }
-
-
 }

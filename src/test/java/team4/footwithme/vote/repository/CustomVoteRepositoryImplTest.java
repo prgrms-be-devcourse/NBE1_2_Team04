@@ -37,11 +37,11 @@ class CustomVoteRepositoryImplTest extends IntegrationTestSupport {
 
         Vote savedVote = voteRepository.save(vote);
         //when
-        Optional<Vote> foundVote = voteRepository.findNotDeletedVoteById(savedVote.getVoteId());
+        Optional<Vote> foundVote = voteRepository.findNotDeletedVoteById(savedVote.voteId);
         //then
         assertThat(foundVote.get())
             .extracting("voteId", "title", "endAt", "isDeleted")
-            .contains(savedVote.getVoteId(), "title", endAt, IsDeleted.FALSE);
+            .contains(savedVote.voteId, "title", endAt, IsDeleted.FALSE);
     }
 
     @DisplayName("삭제되지 않은 투표를 id로 조회할 때 투표가 없으면 null을 반환한다.")
@@ -54,7 +54,7 @@ class CustomVoteRepositoryImplTest extends IntegrationTestSupport {
         Vote savedVote = voteRepository.save(vote);
         voteRepository.delete(savedVote);
         //when
-        Optional<Vote> foundVote = voteRepository.findNotDeletedVoteById(savedVote.getVoteId());
+        Optional<Vote> foundVote = voteRepository.findNotDeletedVoteById(savedVote.voteId);
         //then
         assertThat(foundVote).isEmpty();
     }
@@ -74,8 +74,8 @@ class CustomVoteRepositoryImplTest extends IntegrationTestSupport {
         assertThat(savedVotes)
             .extracting("voteId", "title", "endAt", "isDeleted", "voteStatus")
             .containsExactlyInAnyOrder(
-                tuple(vote1.getVoteId(), "title", endAt, IsDeleted.FALSE, VoteStatus.OPENED),
-                tuple(vote2.getVoteId(), "title", endAt, IsDeleted.FALSE, VoteStatus.OPENED)
+                tuple(vote1.voteId, "title", endAt, IsDeleted.FALSE, VoteStatus.OPENED),
+                tuple(vote2.voteId, "title", endAt, IsDeleted.FALSE, VoteStatus.OPENED)
             );
     }
 
@@ -100,16 +100,16 @@ class CustomVoteRepositoryImplTest extends IntegrationTestSupport {
 
         List<VoteItem> savedVoteItems = voteItemRepository.saveAll(List.of(voteItem1, voteItem2, voteItem3));
 
-        Choice choice1 = Choice.create(1L, savedVoteItems.get(0).getVoteItemId());
-        Choice choice2 = Choice.create(1L, savedVoteItems.get(1).getVoteItemId());
-        Choice choice3 = Choice.create(2L, savedVoteItems.get(2).getVoteItemId());
-        Choice choice4 = Choice.create(3L, savedVoteItems.get(0).getVoteItemId());
-        Choice choice5 = Choice.create(3L, savedVoteItems.get(1).getVoteItemId());
-        Choice choice6 = Choice.create(3L, savedVoteItems.get(2).getVoteItemId());
+        Choice choice1 = Choice.create(1L, savedVoteItems.get(0).voteItemId);
+        Choice choice2 = Choice.create(1L, savedVoteItems.get(1).voteItemId);
+        Choice choice3 = Choice.create(2L, savedVoteItems.get(2).voteItemId);
+        Choice choice4 = Choice.create(3L, savedVoteItems.get(0).voteItemId);
+        Choice choice5 = Choice.create(3L, savedVoteItems.get(1).voteItemId);
+        Choice choice6 = Choice.create(3L, savedVoteItems.get(2).voteItemId);
 
         choiceRepository.saveAll(List.of(choice1, choice2, choice3, choice4, choice5, choice6));
         //when
-        Long count = voteRepository.choiceMemberCountByVoteId(savedVote.getVoteId());
+        Long count = voteRepository.choiceMemberCountByVoteId(savedVote.voteId);
         //then
         assertThat(count).isEqualTo(3);
     }
@@ -129,8 +129,8 @@ class CustomVoteRepositoryImplTest extends IntegrationTestSupport {
         assertThat(findVotes).hasSize(2)
             .extracting("voteId", "title", "endAt", "isDeleted")
             .containsExactlyInAnyOrder(
-                tuple(vote1.getVoteId(), "title", endAt, IsDeleted.FALSE),
-                tuple(vote2.getVoteId(), "제목", endAt, IsDeleted.FALSE)
+                tuple(vote1.voteId, "title", endAt, IsDeleted.FALSE),
+                tuple(vote2.voteId, "제목", endAt, IsDeleted.FALSE)
             );
     }
 

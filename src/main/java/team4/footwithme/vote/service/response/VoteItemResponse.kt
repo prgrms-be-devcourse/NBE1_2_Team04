@@ -1,17 +1,18 @@
-package team4.footwithme.vote.service.response;
+package team4.footwithme.vote.service.response
 
-import java.util.List;
-
-public record VoteItemResponse(
-    Long voteItemId,
-    String content,
-    List<Long> memberIds
+@JvmRecord
+data class VoteItemResponse(
+    val voteItemId: Long?,
+    val content: String?,
+    val memberIds: List<Long?>?
 ) {
-    public static VoteItemResponse of(Long voteItemId, String contents, List<Long> memberIds) {
-        return new VoteItemResponse(
-            voteItemId,
-            contents,
-            memberIds
-        );
+    companion object {
+        fun of(voteItemId: Long?, contents: String?, memberIds: List<Long?>?): VoteItemResponse {
+            return VoteItemResponse(
+                voteItemId,
+                contents,
+                memberIds
+            )
+        }
     }
 }

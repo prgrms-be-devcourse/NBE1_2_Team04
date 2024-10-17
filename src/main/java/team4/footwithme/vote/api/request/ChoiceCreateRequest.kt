@@ -1,16 +1,14 @@
-package team4.footwithme.vote.api.request;
+package team4.footwithme.vote.api.request
 
-import team4.footwithme.vote.service.request.ChoiceCreateServiceRequest;
+import team4.footwithme.vote.service.request.ChoiceCreateServiceRequest
 
-import java.util.List;
-
-public record ChoiceCreateRequest(
-    List<Long> voteItemIds
+@JvmRecord
+data class ChoiceCreateRequest(
+    val voteItemIds: List<Long?>
 ) {
-
-    public ChoiceCreateServiceRequest toServiceRequest() {
-        return new ChoiceCreateServiceRequest(
+    fun toServiceRequest(): ChoiceCreateServiceRequest {
+        return ChoiceCreateServiceRequest(
             voteItemIds
-        );
+        )
     }
 }

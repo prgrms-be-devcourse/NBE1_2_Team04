@@ -1,53 +1,52 @@
-package team4.footwithme.resevation.service;
+package team4.footwithme.resevation.service
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import team4.footwithme.global.exception.ExceptionMessage;
-import team4.footwithme.member.domain.Member;
-import team4.footwithme.resevation.domain.Mercenary;
-import team4.footwithme.resevation.domain.Reservation;
-import team4.footwithme.resevation.repository.MercenaryRepository;
-import team4.footwithme.resevation.repository.ReservationRepository;
-import team4.footwithme.resevation.service.request.MercenaryServiceRequest;
-import team4.footwithme.resevation.service.response.MercenaryResponse;
-
-import java.time.format.DateTimeFormatter;
+import org.springframework.data.domain.*
+import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
+import team4.footwithme.global.exception.ExceptionMessage
+import team4.footwithme.member.domain.Member
+import team4.footwithme.resevation.domain.Mercenary
+import team4.footwithme.resevation.domain.Reservation
+import team4.footwithme.resevation.repository.MercenaryRepository
+import team4.footwithme.resevation.repository.ReservationRepository
+import team4.footwithme.resevation.service.request.MercenaryServiceRequest
+import team4.footwithme.resevation.service.response.MercenaryResponse
+import java.time.format.DateTimeFormatter
 
 @Service
-public class MercenaryServiceImpl implements MercenaryService {
-    private final MercenaryRepository mercenaryRepository;
-    private final ReservationRepository reservationRepository;
-
-    public MercenaryServiceImpl(MercenaryRepository mercenaryRepository, ReservationRepository reservationRepository) {
-        this.mercenaryRepository = mercenaryRepository;
-        this.reservationRepository = reservationRepository;
-    }
-
+class MercenaryServiceImpl(
+    private val mercenaryRepository: MercenaryRepository,
+    private val reservationRepository: ReservationRepository
+) : MercenaryService {
     /**
      * 용병 게시판 생성
      * 예약자만 생성 가능
      */
     @Transactional
-    @Override
-    public MercenaryResponse createMercenary(MercenaryServiceRequest request, Member member) {
-        Reservation reservation = getReservationByReservationId(request.reservationId());
+    override fun createMercenary(request: MercenaryServiceRequest?, member: Member?): MercenaryResponse {
+        val reservation = getReservationByReservationId(request!!.reservationId)
 
-        checkReservationCreatedBy(reservation, member);
+        checkReservationCreatedBy(reservation, member)
 
-        return new MercenaryResponse(mercenaryRepository.save(Mercenary.create(reservation, makeDescription(request.description(), reservation))));
+        return MercenaryResponse(
+            mercenaryRepository.save<Mercenary>(
+                Mercenary.Companion.create(
+                    reservation, makeDescription(
+                        request.description, reservation
+                    )
+                )
+            )
+        )
     }
 
     /**
      * 단일 용병 게시판 조회
      */
     @Transactional(readOnly = true)
-    @Override
-    public MercenaryResponse getMercenary(Long mercenaryId) {
-        Mercenary mercenary = getMercenaryByMercenaryId(mercenaryId);
+    override fun getMercenary(mercenaryId: Long?): MercenaryResponse {
+        val mercenary = getMercenaryByMercenaryId(mercenaryId)
 
-        return new MercenaryResponse(mercenary);
+        return MercenaryResponse(mercenary)
     }
 
     /**
@@ -56,10 +55,9 @@ public class MercenaryServiceImpl implements MercenaryService {
      * 리스트 및 페이징
      */
     @Transactional(readOnly = true)
-    @Override
-    public Page<MercenaryResponse> getMercenaries(Pageable pageable) {
-        Page<Mercenary> mercenaries = mercenaryRepository.findAllToPage(pageable);
-        return mercenaries.map(MercenaryResponse::new);
+    override fun getMercenaries(pageable: Pageable?): Page<MercenaryResponse> {
+        val mercenaries = mercenaryRepository.findAllToPage(pageable!!)
+        return mercenaries!!.map { mercenary: Mercenary? -> MercenaryResponse(mercenary) }
     }
 
     /**
@@ -67,38 +65,35 @@ public class MercenaryServiceImpl implements MercenaryService {
      * 팀장만 삭제 가능
      */
     @Transactional
-    @Override
-    public Long deleteMercenary(Long mercenaryId, Member member) {
-        Mercenary mercenary = getMercenaryByMercenaryId(mercenaryId);
+    override fun deleteMercenary(mercenaryId: Long?, member: Member?): Long? {
+        val mercenary = getMercenaryByMercenaryId(mercenaryId)
 
-        checkReservationCreatedBy(mercenary.getReservation(), member);
+        checkReservationCreatedBy(mercenary.reservation, member)
 
-        mercenaryRepository.delete(mercenary);
-        return mercenary.getMercenaryId();
+        mercenaryRepository.delete(mercenary)
+        return mercenary.mercenaryId
     }
 
 
-    private String makeDescription(String description, Reservation reservation) {
-        return reservation.getMatchDate().format(DateTimeFormatter.ofPattern("'('MM'/'dd HH':'mm')'")) +
-            "(" +
-            reservation.getCourt().getStadium().getName() +
-            ") " +
-            description;
+    private fun makeDescription(description: String, reservation: Reservation?): String {
+        return reservation!!.matchDate!!.format(DateTimeFormatter.ofPattern("'('MM'/'dd HH':'mm')'")) +
+                "(" +
+                reservation.court!!.stadium!!.name +
+                ") " +
+                description
     }
 
-    private Reservation getReservationByReservationId(Long reservationId) {
+    private fun getReservationByReservationId(reservationId: Long?): Reservation? {
         return reservationRepository.findByReservationId(reservationId)
-            .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.RESERVATION_NOT_FOUND.getText()));
+            .orElseThrow { IllegalArgumentException(ExceptionMessage.RESERVATION_NOT_FOUND.text) }
     }
 
-    private Mercenary getMercenaryByMercenaryId(Long mercenaryId) {
+    private fun getMercenaryByMercenaryId(mercenaryId: Long?): Mercenary {
         return mercenaryRepository.findByMercenaryId(mercenaryId)
-            .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.MERCENARY_NOT_FOUND.getText()));
+            .orElseThrow { IllegalArgumentException(ExceptionMessage.MERCENARY_NOT_FOUND.text) }
     }
 
-    private void checkReservationCreatedBy(Reservation reservation, Member member) {
-        if (!reservation.getMember().getMemberId().equals(member.getMemberId())) {
-            throw new IllegalArgumentException(ExceptionMessage.RESERVATION_NOT_MEMBER.getText());
-        }
+    private fun checkReservationCreatedBy(reservation: Reservation?, member: Member?) {
+        require(reservation!!.member!!.memberId == member!!.memberId) { ExceptionMessage.RESERVATION_NOT_MEMBER.text }
     }
 }

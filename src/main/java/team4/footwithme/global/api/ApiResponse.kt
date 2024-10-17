@@ -1,50 +1,25 @@
-package team4.footwithme.global.api;
+package team4.footwithme.global.api
 
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatus
 
-public class ApiResponse<T> {
+class ApiResponse<T>(val status: HttpStatus, val message: String?, val data: T) {
+    val code: Int = status.value()
 
-    private int code;
-    private HttpStatus status;
-    private String message;
-    private T data;
+    companion object {
+        fun <T> of(httpStatus: HttpStatus, message: String?, data: T): ApiResponse<T> {
+            return ApiResponse(httpStatus, message, data)
+        }
 
-    public ApiResponse(HttpStatus status, String message, T data) {
-        this.code = status.value();
-        this.status = status;
-        this.message = message;
-        this.data = data;
-    }
+        fun <T> of(httpStatus: HttpStatus, data: T): ApiResponse<T> {
+            return of(httpStatus, httpStatus.name, data)
+        }
 
-    public static <T> ApiResponse<T> of(HttpStatus httpStatus, String message, T data) {
-        return new ApiResponse<>(httpStatus, message, data);
-    }
+        fun <T> ok(data: T): ApiResponse<T> {
+            return of(HttpStatus.OK, data)
+        }
 
-    public static <T> ApiResponse<T> of(HttpStatus httpStatus, T data) {
-        return of(httpStatus, httpStatus.name(), data);
-    }
-
-    public static <T> ApiResponse<T> ok(T data) {
-        return of(HttpStatus.OK, data);
-    }
-
-    public static <T> ApiResponse<T> created(T data) {
-        return of(HttpStatus.CREATED, data);
-    }
-
-    public int getCode() {
-        return this.code;
-    }
-
-    public HttpStatus getStatus() {
-        return this.status;
-    }
-
-    public String getMessage() {
-        return this.message;
-    }
-
-    public T getData() {
-        return this.data;
+        fun <T> created(data: T): ApiResponse<T> {
+            return of(HttpStatus.CREATED, data)
+        }
     }
 }

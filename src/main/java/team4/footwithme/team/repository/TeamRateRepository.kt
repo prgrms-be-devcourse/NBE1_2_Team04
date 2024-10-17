@@ -1,13 +1,11 @@
-package team4.footwithme.team.repository;
+package team4.footwithme.team.repository
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-import team4.footwithme.team.domain.Team;
-import team4.footwithme.team.domain.TeamRate;
-
-import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.stereotype.Repository
+import team4.footwithme.team.domain.Team
+import team4.footwithme.team.domain.TeamRate
 
 @Repository
-public interface TeamRateRepository extends JpaRepository<TeamRate, Long> {
-    List<TeamRate> findEvaluationsByTeam(Team team);
+interface TeamRateRepository : JpaRepository<TeamRate?, Long?> {
+    fun findEvaluationsByTeam(team: Team?): List<TeamRate?>?
 }

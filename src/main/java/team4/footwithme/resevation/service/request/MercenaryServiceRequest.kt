@@ -1,7 +1,8 @@
-package team4.footwithme.resevation.service.request;
+package team4.footwithme.resevation.service.request
 
-public record MercenaryServiceRequest(
-    Long reservationId,
-    String description
+@JvmRecord
+data class MercenaryServiceRequest(
+    val reservationId: Long?,
+    val description: String
 ) {
 }

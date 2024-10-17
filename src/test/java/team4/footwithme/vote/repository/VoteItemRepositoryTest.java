@@ -55,7 +55,7 @@ class VoteItemRepositoryTest extends IntegrationTestSupport {
 
         List<Court> savedCourts = courtRepository.saveAll(List.of(court1, court2, court3));
 
-        List<Long> courtIds = List.of(savedCourts.get(0).getCourtId(), savedCourts.get(1).getCourtId(), savedCourts.get(2).getCourtId());
+        List<Long> courtIds = List.of(savedCourts.get(0).courtId, savedCourts.get(1).courtId, savedCourts.get(2).courtId);
 
         Vote vote = Vote.create(1L, 1L, "연말 행사 장소 투표", endAt);
 
@@ -68,15 +68,15 @@ class VoteItemRepositoryTest extends IntegrationTestSupport {
         List<VoteItemLocate> savedVoteItems = voteItemRepository.saveAll(voteItemLocates);
 
         //when
-        List<VoteItem> findVoteItems = voteItemRepository.findByVoteVoteId(savedVote.getVoteId());
+        List<VoteItem> findVoteItems = voteItemRepository.findByVoteVoteId(savedVote.voteId);
 
         //then
         Assertions.assertThat(findVoteItems).hasSize(3)
             .extracting("voteItemId", "courtId", "vote.voteId")
             .containsExactlyInAnyOrder(
-                Assertions.tuple(savedVoteItems.get(0).getVoteItemId(), savedVoteItems.get(0).getCourtId(), savedVote.getVoteId()),
-                Assertions.tuple(savedVoteItems.get(1).getVoteItemId(), savedVoteItems.get(1).getCourtId(), savedVote.getVoteId()),
-                Assertions.tuple(savedVoteItems.get(2).getVoteItemId(), savedVoteItems.get(2).getCourtId(), savedVote.getVoteId())
+                Assertions.tuple(savedVoteItems.get(0).voteItemId, savedVoteItems.get(0).getCourtId(), savedVote.voteId),
+                Assertions.tuple(savedVoteItems.get(1).voteItemId, savedVoteItems.get(1).getCourtId(), savedVote.voteId),
+                Assertions.tuple(savedVoteItems.get(2).voteItemId, savedVoteItems.get(2).getCourtId(), savedVote.voteId)
             );
 
     }

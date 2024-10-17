@@ -1,14 +1,13 @@
-package team4.footwithme.global.util;
+package team4.footwithme.global.util
 
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.Coordinate
+import org.locationtech.jts.geom.GeometryFactory
+import org.locationtech.jts.geom.Point
 
-public class PositionUtil {
+object PositionUtil {
+    private val geometryFactory = GeometryFactory()
 
-    private static final GeometryFactory geometryFactory = new GeometryFactory();
-
-    public static Point createPoint(double latitude, double longitude) {
-        return geometryFactory.createPoint(new Coordinate(longitude, latitude));
+    fun createPoint(latitude: Double, longitude: Double): Point {
+        return geometryFactory.createPoint(Coordinate(longitude, latitude))
     }
 }

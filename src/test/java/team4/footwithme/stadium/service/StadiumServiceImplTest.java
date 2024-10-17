@@ -84,7 +84,7 @@ class StadiumServiceImplTest extends IntegrationTestSupport {
     void getStadiumDetail() {
         Stadium stadium = stadiumRepository.findAll().get(0);
 
-        StadiumDetailResponse response = stadiumService.getStadiumDetail(stadium.getStadiumId());
+        StadiumDetailResponse response = stadiumService.getStadiumDetail(stadium.stadiumId);
 
         assertThat(response).isNotNull();
         assertThat(response)
@@ -189,7 +189,7 @@ class StadiumServiceImplTest extends IntegrationTestSupport {
             38.0, 128.0
         );
 
-        StadiumDetailResponse response = stadiumService.updateStadium(request, testMember, stadium.getStadiumId());
+        StadiumDetailResponse response = stadiumService.updateStadium(request, testMember, stadium.stadiumId);
 
         assertThat(response).isNotNull();
         assertThat(response)
@@ -199,7 +199,7 @@ class StadiumServiceImplTest extends IntegrationTestSupport {
             )
             .containsExactly("Updated Stadium", "Updated Address");
 
-        Stadium updatedStadium = stadiumRepository.findById(stadium.getStadiumId()).orElseThrow();
+        Stadium updatedStadium = stadiumRepository.findById(stadium.stadiumId).orElseThrow();
         assertThat(updatedStadium)
             .extracting(
                 Stadium::getName,
@@ -213,9 +213,9 @@ class StadiumServiceImplTest extends IntegrationTestSupport {
     void deleteStadium() {
         Stadium stadium = stadiumRepository.findAll().get(0);
 
-        stadiumService.deleteStadium(testMember, stadium.getStadiumId());
+        stadiumService.deleteStadium(testMember, stadium.stadiumId);
 
-        Optional<Stadium> deletedStadium = stadiumRepository.findById(stadium.getStadiumId());
+        Optional<Stadium> deletedStadium = stadiumRepository.findById(stadium.stadiumId);
         assertThat(deletedStadium).isEmpty();
     }
 
@@ -226,7 +226,7 @@ class StadiumServiceImplTest extends IntegrationTestSupport {
 
         assertThatThrownBy(() -> stadiumService.getStadiumDetail(invalidId))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage(ExceptionMessage.STADIUM_NOT_FOUND.getText());
+            .hasMessage(ExceptionMessage.STADIUM_NOT_FOUND.text);
     }
 
     @Test
@@ -241,7 +241,7 @@ class StadiumServiceImplTest extends IntegrationTestSupport {
 
         assertThatThrownBy(() -> stadiumService.updateStadium(request, testMember, invalidStadiumId))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage(ExceptionMessage.STADIUM_NOT_FOUND.getText());
+            .hasMessage(ExceptionMessage.STADIUM_NOT_FOUND.text);
     }
 
     @Test
@@ -269,9 +269,9 @@ class StadiumServiceImplTest extends IntegrationTestSupport {
             0.0, 0.0
         );
 
-        assertThatThrownBy(() -> stadiumService.updateStadium(request, anotherMember, stadium.getStadiumId()))
+        assertThatThrownBy(() -> stadiumService.updateStadium(request, anotherMember, stadium.stadiumId))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage(ExceptionMessage.STADIUM_NOT_OWNED_BY_MEMBER.getText());
+            .hasMessage(ExceptionMessage.STADIUM_NOT_OWNED_BY_MEMBER.text);
     }
 
     @Test
@@ -281,7 +281,7 @@ class StadiumServiceImplTest extends IntegrationTestSupport {
 
         assertThatThrownBy(() -> stadiumService.deleteStadium(testMember, invalidStadiumId))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage(ExceptionMessage.STADIUM_NOT_FOUND.getText());
+            .hasMessage(ExceptionMessage.STADIUM_NOT_FOUND.text);
     }
 
     @Test
@@ -304,8 +304,8 @@ class StadiumServiceImplTest extends IntegrationTestSupport {
 
         Stadium stadium = stadiumRepository.findAll().get(0);
 
-        assertThatThrownBy(() -> stadiumService.deleteStadium(anotherMember, stadium.getStadiumId()))
+        assertThatThrownBy(() -> stadiumService.deleteStadium(anotherMember, stadium.stadiumId))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage(ExceptionMessage.STADIUM_NOT_OWNED_BY_MEMBER.getText());
+            .hasMessage(ExceptionMessage.STADIUM_NOT_OWNED_BY_MEMBER.text);
     }
 }

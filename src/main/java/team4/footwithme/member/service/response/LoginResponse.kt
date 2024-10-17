@@ -1,12 +1,15 @@
-package team4.footwithme.member.service.response;
+package team4.footwithme.member.service.response
 
-import team4.footwithme.member.jwt.response.TokenResponse;
+import team4.footwithme.member.jwt.response.TokenResponse
 
-public record LoginResponse(
-    String accessToken,
-    String refreshToken
+@JvmRecord
+data class LoginResponse(
+    @JvmField val accessToken: String?,
+    @JvmField val refreshToken: String?
 ) {
-    public static LoginResponse from(TokenResponse tokenResponse) {
-        return new LoginResponse(tokenResponse.accessToken(), tokenResponse.refreshToken());
+    companion object {
+        fun from(tokenResponse: TokenResponse?): LoginResponse {
+            return LoginResponse(tokenResponse!!.accessToken, tokenResponse.refreshToken)
+        }
     }
 }

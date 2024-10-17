@@ -1,62 +1,52 @@
-package team4.footwithme.member.domain;
+package team4.footwithme.member.domain
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import jakarta.persistence.Column
+import jakarta.persistence.Embeddable
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
 
 @Embeddable
-public class LoginType {
-
+class LoginType {
     @Enumerated(EnumType.STRING)
-    private LoginProvider loginProvider;
+    var loginProvider: LoginProvider? = null
 
     @Column(nullable = true)
-    private String snsId;
+    var snsId: String? = null
 
-    private LoginType(LoginProvider loginProvider, String snsId) {
-        this.loginProvider = loginProvider;
-        this.snsId = snsId;
+    private constructor(loginProvider: LoginProvider?, snsId: String?) {
+        this.loginProvider = loginProvider
+        this.snsId = snsId
     }
 
-    protected LoginType() {
-    }
+    protected constructor()
 
-    public static LoginTypeBuilder builder() {
-        return new LoginTypeBuilder();
-    }
+    class LoginTypeBuilder internal constructor() {
+        private var loginProvider: LoginProvider? = null
+        private var snsId: String? = null
 
-    public LoginProvider getLoginProvider() {
-        return this.loginProvider;
-    }
-
-    public String getSnsId() {
-        return this.snsId;
-    }
-
-    public static class LoginTypeBuilder {
-        private LoginProvider loginProvider;
-        private String snsId;
-
-        LoginTypeBuilder() {
+        fun loginProvider(loginProvider: LoginProvider?): LoginTypeBuilder {
+            this.loginProvider = loginProvider
+            return this
         }
 
-        public LoginTypeBuilder loginProvider(LoginProvider loginProvider) {
-            this.loginProvider = loginProvider;
-            return this;
+        fun snsId(snsId: String?): LoginTypeBuilder {
+            this.snsId = snsId
+            return this
         }
 
-        public LoginTypeBuilder snsId(String snsId) {
-            this.snsId = snsId;
-            return this;
+        fun build(): LoginType {
+            return LoginType(this.loginProvider, this.snsId)
         }
 
-        public LoginType build() {
-            return new LoginType(this.loginProvider, this.snsId);
+        override fun toString(): String {
+            return "LoginType.LoginTypeBuilder(loginProvider=" + this.loginProvider + ", snsId=" + this.snsId + ")"
         }
+    }
 
-        public String toString() {
-            return "LoginType.LoginTypeBuilder(loginProvider=" + this.loginProvider + ", snsId=" + this.snsId + ")";
+    companion object {
+        @JvmStatic
+        fun builder(): LoginTypeBuilder {
+            return LoginTypeBuilder()
         }
     }
 }

@@ -1,13 +1,13 @@
-package team4.footwithme.chat.api.request;
+package team4.footwithme.chat.api.request
 
-import jakarta.validation.constraints.NotBlank;
-import team4.footwithme.chat.service.request.ChatroomServiceRequest;
+import jakarta.validation.constraints.NotBlank
+import team4.footwithme.chat.service.request.ChatroomServiceRequest
 
-public record ChatroomRequest(
-    @NotBlank(message = "채팅방 이름은 필수입니다.")
-    String name
+@JvmRecord
+data class ChatroomRequest(
+    val name: @NotBlank(message = "채팅방 이름은 필수입니다.") String?
 ) {
-    public ChatroomServiceRequest toServiceRequest() {
-        return new ChatroomServiceRequest(name);
+    fun toServiceRequest(): ChatroomServiceRequest {
+        return ChatroomServiceRequest(name)
     }
 }

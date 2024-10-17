@@ -1,7 +1,8 @@
-package team4.footwithme.chat.service.request;
+package team4.footwithme.chat.service.request
 
 // TODO Validation 구현하기
-public record ChatMemberServiceRequest(
-    Long chatroomId,
-    Long memberId) {
-}
+@JvmRecord
+data class ChatMemberServiceRequest(
+    val chatroomId: Long?,
+    val memberId: Long?
+)

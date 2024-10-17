@@ -45,7 +45,7 @@ class CustomChoiceRepositoryImplTest extends IntegrationTestSupport {
         Stadium givenStadium3 = Stadium.create(savedMember, "우주 풋살장", "서울시 동작구 어딘가", "01055555555", "우주에 있음", 65.4321, 12.345);
 
         List<Stadium> savedStadiums = stadiumRepository.saveAll(List.of(givenStadium1, givenStadium2, givenStadium3));
-        List<Long> stadiumIds = List.of(savedStadiums.get(0).getStadiumId(), savedStadiums.get(1).getStadiumId(), savedStadiums.get(2).getStadiumId());
+        List<Long> stadiumIds = List.of(savedStadiums.get(0).stadiumId, savedStadiums.get(1).stadiumId, savedStadiums.get(2).stadiumId);
 
         Vote vote = Vote.create(1L, 1L, "연말 행사 장소 투표", endAt);
 
@@ -57,12 +57,12 @@ class CustomChoiceRepositoryImplTest extends IntegrationTestSupport {
 
         List<VoteItemLocate> savedVoteItems = voteItemRepository.saveAll(voteItemLocates);
 
-        Choice choice1 = Choice.create(savedMember.getMemberId(), savedVoteItems.get(0).getVoteItemId());
-        Choice choice2 = Choice.create(savedMember.getMemberId(), savedVoteItems.get(1).getVoteItemId());
+        Choice choice1 = Choice.create(savedMember.memberId, savedVoteItems.get(0).voteItemId);
+        Choice choice2 = Choice.create(savedMember.memberId, savedVoteItems.get(1).voteItemId);
 
         List<Choice> choices = choiceRepository.saveAll(List.of(choice1, choice2));
         //when
-        Long count = choiceRepository.countByVoteItemId(savedVoteItems.get(0).getVoteItemId());
+        Long count = choiceRepository.countByVoteItemId(savedVoteItems.get(0).voteItemId);
 
         //then
         assertThat(count).isEqualTo(1L);
@@ -81,7 +81,7 @@ class CustomChoiceRepositoryImplTest extends IntegrationTestSupport {
         Stadium givenStadium3 = Stadium.create(savedMember, "우주 풋살장", "서울시 동작구 어딘가", "01055555555", "우주에 있음", 65.4321, 12.345);
 
         List<Stadium> savedStadiums = stadiumRepository.saveAll(List.of(givenStadium1, givenStadium2, givenStadium3));
-        List<Long> stadiumIds = List.of(savedStadiums.get(0).getStadiumId(), savedStadiums.get(1).getStadiumId(), savedStadiums.get(2).getStadiumId());
+        List<Long> stadiumIds = List.of(savedStadiums.get(0).stadiumId, savedStadiums.get(1).stadiumId, savedStadiums.get(2).stadiumId);
 
         Vote vote = Vote.create(1L, 1L, "연말 행사 장소 투표", endAt);
 
@@ -93,20 +93,20 @@ class CustomChoiceRepositoryImplTest extends IntegrationTestSupport {
 
         List<VoteItemLocate> savedVoteItems = voteItemRepository.saveAll(voteItemLocates);
 
-        Choice choice1 = Choice.create(savedMember.getMemberId(), savedVoteItems.get(0).getVoteItemId());
-        Choice choice2 = Choice.create(savedMember.getMemberId(), savedVoteItems.get(1).getVoteItemId());
+        Choice choice1 = Choice.create(savedMember.memberId, savedVoteItems.get(0).voteItemId);
+        Choice choice2 = Choice.create(savedMember.memberId, savedVoteItems.get(1).voteItemId);
 
         List<Choice> choices = choiceRepository.saveAll(List.of(choice1, choice2));
 
         //when
-        List<Choice> findChoices = choiceRepository.findByMemberIdAndVoteId(savedMember.getMemberId(), savedVote.getVoteId());
+        List<Choice> findChoices = choiceRepository.findByMemberIdAndVoteId(savedMember.memberId, savedVote.voteId);
 
         //then
         assertThat(findChoices).hasSize(2)
             .extracting("memberId", "voteItemId")
             .containsExactlyInAnyOrder(
-                tuple(savedMember.getMemberId(), savedVoteItems.get(0).getVoteItemId()),
-                tuple(savedMember.getMemberId(), savedVoteItems.get(1).getVoteItemId())
+                tuple(savedMember.memberId, savedVoteItems.get(0).voteItemId),
+                tuple(savedMember.memberId, savedVoteItems.get(1).voteItemId)
             );
     }
 
@@ -131,19 +131,19 @@ class CustomChoiceRepositoryImplTest extends IntegrationTestSupport {
 
         List<VoteItem> savedVoteItems = voteItemRepository.saveAll(List.of(voteItem1, voteItem2, voteItem3));
 
-        Choice choice1 = Choice.create(1L, savedVoteItems.get(0).getVoteItemId());
-        Choice choice2 = Choice.create(1L, savedVoteItems.get(1).getVoteItemId());
-        Choice choice3 = Choice.create(2L, savedVoteItems.get(1).getVoteItemId());
-        Choice choice4 = Choice.create(3L, savedVoteItems.get(0).getVoteItemId());
-        Choice choice5 = Choice.create(3L, savedVoteItems.get(1).getVoteItemId());
-        Choice choice6 = Choice.create(3L, savedVoteItems.get(2).getVoteItemId());
+        Choice choice1 = Choice.create(1L, savedVoteItems.get(0).voteItemId);
+        Choice choice2 = Choice.create(1L, savedVoteItems.get(1).voteItemId);
+        Choice choice3 = Choice.create(2L, savedVoteItems.get(1).voteItemId);
+        Choice choice4 = Choice.create(3L, savedVoteItems.get(0).voteItemId);
+        Choice choice5 = Choice.create(3L, savedVoteItems.get(1).voteItemId);
+        Choice choice6 = Choice.create(3L, savedVoteItems.get(2).voteItemId);
 
         choiceRepository.saveAll(List.of(choice1, choice2, choice3, choice4, choice5, choice6));
 
         //when
-        Long voteId = choiceRepository.maxChoiceCountByVoteId(savedVote.getVoteId());
+        Long voteId = choiceRepository.maxChoiceCountByVoteId(savedVote.voteId);
         //then
-        assertThat(voteId).isEqualTo(savedVoteItems.get(1).getVoteItemId());
+        assertThat(voteId).isEqualTo(savedVoteItems.get(1).voteItemId);
     }
 
 }

@@ -1,64 +1,52 @@
-package team4.footwithme.chat.repository;
+package team4.footwithme.chat.repository
 
-import com.querydsl.jpa.impl.JPAQueryFactory;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.SliceImpl;
-import team4.footwithme.chat.domain.Chat;
-import team4.footwithme.chat.domain.Chatroom;
-import team4.footwithme.chat.service.response.ChatResponse;
-import team4.footwithme.global.domain.IsDeleted;
+import com.querydsl.jpa.impl.JPAQueryFactory
+import org.springframework.data.domain.*
+import team4.footwithme.chat.domain.Chat
+import team4.footwithme.chat.domain.Chatroom
+import team4.footwithme.chat.domain.QChat
+import team4.footwithme.chat.service.response.ChatResponse
+import team4.footwithme.global.domain.IsDeleted
 
-import java.util.List;
-
-import static team4.footwithme.chat.domain.QChat.chat;
-
-public class CustomChatRepositoryImpl implements CustomChatRepository {
-    private final JPAQueryFactory queryFactory;
-
-    public CustomChatRepositoryImpl(JPAQueryFactory queryFactory) {
-        this.queryFactory = queryFactory;
-    }
-
-
-    @Override
-    public Slice<ChatResponse> findChatByChatroom(Chatroom chatroom, Pageable pageable) {
-        int pageSize = pageable.getPageSize();
-        List<Chat> chats = getChatList(chatroom, pageable);
-        boolean hasNext = false;
-        if (chats.size() > pageSize) {
-            chats.remove(pageSize);
-            hasNext = true;
+class CustomChatRepositoryImpl(private val queryFactory: JPAQueryFactory) : CustomChatRepository {
+    override fun findChatByChatroom(chatroom: Chatroom, pageable: Pageable): Slice<ChatResponse> {
+        val pageSize = pageable.pageSize
+        val chats = getChatList(chatroom, pageable).toMutableList()
+        var hasNext = false
+        if (chats.size > pageSize) {
+            chats.removeAt(pageSize)
+            hasNext = true
         }
 
-        List<ChatResponse> content = chats.stream().map(ChatResponse::new).toList();
-//        Long count = getCount(chatroom);
+        val content = chats.stream().map { chat: Chat -> ChatResponse(chat) }.toList()
 
-        return new SliceImpl<>(content, pageable, hasNext);
+        //        Long count = getCount(chatroom);
+        return SliceImpl(content, pageable, hasNext)
     }
 
     //Page<> 형태로 반환할 때 PageImpl에 사용
-    private Long getCount(Chatroom chatroom) {
+    private fun getCount(chatroom: Chatroom): Long? {
         return queryFactory
-            .select(chat.count())
-            .from(chat)
-            .where(chat.isDeleted.eq(IsDeleted.FALSE)
-                .and(chat.chatRoom.eq(chatroom))
+            .select(QChat.chat.count())
+            .from(QChat.chat)
+            .where(
+                QChat.chat.isDeleted.eq(IsDeleted.FALSE)
+                    .and(QChat.chat.chatRoom.eq(chatroom))
             )
-            .fetchOne();
+            .fetchOne()
     }
 
-    private List<Chat> getChatList(Chatroom chatroom, Pageable pageable) {
+    private fun getChatList(chatroom: Chatroom, pageable: Pageable): List<Chat> {
         return queryFactory
-            .select(chat)
-            .from(chat)
-            .where(chat.isDeleted.eq(IsDeleted.FALSE)
-                .and(chat.chatRoom.eq(chatroom))
+            .select(QChat.chat)
+            .from(QChat.chat)
+            .where(
+                QChat.chat.isDeleted.eq(IsDeleted.FALSE)
+                    .and(QChat.chat.chatRoom.eq(chatroom))
             )
-            .orderBy(chat.createdAt.desc())
-            .offset(pageable.getOffset())   // 페이지 번호
-            .limit(pageable.getPageSize() + 1)  // 페이지 사이즈
-            .fetch();
+            .orderBy(QChat.chat.createdAt.desc())
+            .offset(pageable.offset) // 페이지 번호
+            .limit((pageable.pageSize + 1).toLong()) // 페이지 사이즈
+            .fetch()
     }
-
 }

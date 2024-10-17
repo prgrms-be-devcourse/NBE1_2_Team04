@@ -1,36 +1,30 @@
-package team4.footwithme.member.repository;
+package team4.footwithme.member.repository
 
-import com.querydsl.jpa.impl.JPAQueryFactory;
-import team4.footwithme.global.domain.IsDeleted;
+import com.querydsl.jpa.impl.JPAQueryFactory
+import team4.footwithme.global.domain.IsDeleted
+import team4.footwithme.member.domain.QMember
 
-import static team4.footwithme.member.domain.QMember.member;
-
-public class CustomMemberRepositoryImpl implements CustomMemberRepository {
-
-    private final JPAQueryFactory queryFactory;
-
-    public CustomMemberRepositoryImpl(JPAQueryFactory queryFactory) {
-        this.queryFactory = queryFactory;
+class CustomMemberRepositoryImpl(private val queryFactory: JPAQueryFactory) : CustomMemberRepository {
+    override fun findMemberIdByMemberEmail(email: String): Long? {
+        return queryFactory.select(QMember.member.memberId)
+            .from(QMember.member)
+            .where(
+                QMember.member.email.eq(email)
+                    .and(QMember.member.isDeleted.eq(IsDeleted.FALSE))
+            )
+            .fetchOne()
     }
 
-    @Override
-    public Long findMemberIdByMemberEmail(String email) {
-        return queryFactory.select(member.memberId)
-            .from(member)
-            .where(member.email.eq(email)
-                .and(member.isDeleted.eq(IsDeleted.FALSE)))
-            .fetchOne();
-    }
-
-    @Override
-    public Boolean existByEmail(String email) {
-        Integer count = queryFactory
+    override fun existByEmail(email: String): Boolean {
+        val count = queryFactory
             .selectOne()
-            .from(member)
-            .where(member.email.eq(email)
-                .and(member.isDeleted.eq(IsDeleted.FALSE)))
-            .fetchFirst();
+            .from(QMember.member)
+            .where(
+                QMember.member.email.eq(email)
+                    .and(QMember.member.isDeleted.eq(IsDeleted.FALSE))
+            )
+            .fetchFirst()
 
-        return count != null;
+        return count != null
     }
 }

@@ -1,7 +1,8 @@
-package team4.footwithme.resevation.service.request;
+package team4.footwithme.resevation.service.request
 
-public record GameRegisterServiceRequest(
-    Long firstReservationId,
-    Long secondReservationId
+@JvmRecord
+data class GameRegisterServiceRequest(
+    val firstReservationId: Long?,
+    val secondReservationId: Long?
 ) {
 }

@@ -117,11 +117,11 @@ class TeamServiceImplTest extends IntegrationTestSupport {
 
         // Then
         assertThat(response).isNotNull();
-        assertThat(response.name()).isEqualTo("팀명");
-        assertThat(response.winCount()).isEqualTo(0);
-        assertThat(response.evaluation().size()).isEqualTo(2);
-        assertThat(response.maleCount()).isEqualTo(3);
-        assertThat(response.femaleCount()).isEqualTo(1);
+        assertThat(response.name).isEqualTo("팀명");
+        assertThat(response.winCount).isEqualTo(0);
+        assertThat(response.evaluation.size()).isEqualTo(2);
+        assertThat(response.maleCount).isEqualTo(3);
+        assertThat(response.femaleCount).isEqualTo(1);
 
     }
 
@@ -144,11 +144,11 @@ class TeamServiceImplTest extends IntegrationTestSupport {
         //then
         assertThat(result).isNotNull();
         //팀 이름 안바꿈
-        assertThat(result.name()).isEqualTo("팀명");
+        assertThat(result.name).isEqualTo("팀명");
         //팀 설명 바꿈
-        assertThat(result.description()).isEqualTo(updateDTO.description());
+        assertThat(result.description).isEqualTo(updateDTO.description);
         //선호 지역 바꿈
-        assertThat(result.location()).isEqualTo(updateDTO.location());
+        assertThat(result.location).isEqualTo(updateDTO.location);
     }
 
     @Test

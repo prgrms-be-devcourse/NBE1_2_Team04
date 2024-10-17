@@ -1,17 +1,15 @@
-package team4.footwithme.team.service;
+package team4.footwithme.team.service
 
-import team4.footwithme.member.domain.Member;
-import team4.footwithme.team.service.request.TeamMemberServiceRequest;
-import team4.footwithme.team.service.response.TeamResponse;
+import team4.footwithme.member.domain.Member
+import team4.footwithme.team.service.request.TeamMemberServiceRequest
+import team4.footwithme.team.service.response.TeamResponse
 
-import java.util.List;
+interface TeamMemberService {
+    fun addTeamMembers(teamId: Long, request: TeamMemberServiceRequest?): List<TeamResponse>
 
-public interface TeamMemberService {
-    List<TeamResponse> addTeamMembers(Long teamId, TeamMemberServiceRequest request);
+    fun getTeamMembers(teamId: Long): List<TeamResponse>
 
-    List<TeamResponse> getTeamMembers(Long teamId);
+    fun deleteTeamMemberByCreator(teamId: Long, teamMemberId: Long, member: Member?): Long
 
-    Long deleteTeamMemberByCreator(Long teamId, Long teamMemberId, Member member);
-
-    Long deleteTeamMember(Long teamId, Member member);
+    fun deleteTeamMember(teamId: Long, member: Member?): Long?
 }

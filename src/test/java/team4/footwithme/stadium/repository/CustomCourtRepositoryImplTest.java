@@ -41,7 +41,7 @@ class CustomCourtRepositoryImplTest extends IntegrationTestSupport {
 
         List<Court> savedCourts = courtRepository.saveAll(List.of(court1, court2, court3));
         //when
-        String courtName = courtRepository.findCourtNameByCourtId(savedCourts.get(0).getCourtId());
+        String courtName = courtRepository.findCourtNameByCourtId(savedCourts.get(0).courtId);
 
         //then
         assertThat(courtName).isEqualTo("야외 구장 A");
@@ -61,7 +61,7 @@ class CustomCourtRepositoryImplTest extends IntegrationTestSupport {
 
         List<Court> savedCourts = courtRepository.saveAll(List.of(court1, court2, court3));
         //when
-        Long count = courtRepository.countCourtByCourtIds(List.of(savedCourts.get(0).getCourtId(), savedCourts.get(1).getCourtId()));
+        Long count = courtRepository.countCourtByCourtIds(List.of(savedCourts.get(0).courtId, savedCourts.get(1).courtId));
         //then
         assertThat(count).isEqualTo(2);
     }

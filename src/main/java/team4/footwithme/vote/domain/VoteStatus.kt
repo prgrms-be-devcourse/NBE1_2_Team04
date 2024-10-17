@@ -1,18 +1,8 @@
-package team4.footwithme.vote.domain;
+package team4.footwithme.vote.domain
 
-import lombok.Getter;
+import lombok.Getter
 
 @Getter
-public enum VoteStatus {
+enum class VoteStatus(@JvmField val text: String) {
     OPENED("진행 중"), CLOSED("종료");
-
-    private final String text;
-
-    VoteStatus(String text) {
-        this.text = text;
-    }
-
-    public String getText() {
-        return this.text;
-    }
 }

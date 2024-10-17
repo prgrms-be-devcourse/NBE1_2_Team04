@@ -1,26 +1,31 @@
-package team4.footwithme.member.service.response;
+package team4.footwithme.member.service.response
 
-import team4.footwithme.member.domain.Gender;
-import team4.footwithme.member.domain.Member;
-import team4.footwithme.member.domain.MemberRole;
-import team4.footwithme.member.domain.TermsAgreed;
+import team4.footwithme.member.domain.Gender
+import team4.footwithme.member.domain.Member
+import team4.footwithme.member.domain.MemberRole
+import team4.footwithme.member.domain.TermsAgreed
 
-public record MemberResponse(
-    Long memberId,
-    String email,
-    String name,
-    String phoneNumber,
-    Gender gender,
-    MemberRole memberRole,
-    TermsAgreed termsAgreed
+@JvmRecord
+data class MemberResponse(
+    val memberId: Long?,
+    val email: String?,
+    val name: String?,
+    val phoneNumber: String?,
+    val gender: Gender?,
+    val memberRole: MemberRole?,
+    val termsAgreed: TermsAgreed?
 ) {
-    public static MemberResponse from(Member member) {
-        return new MemberResponse(member.getMemberId(),
-            member.getEmail(),
-            member.getName(),
-            member.getPhoneNumber(),
-            member.getGender(),
-            member.getMemberRole(),
-            member.getTermsAgreed());
+    companion object {
+        fun from(member: Member?): MemberResponse {
+            return MemberResponse(
+                member!!.memberId,
+                member.email,
+                member.name,
+                member.phoneNumber,
+                member.gender,
+                member.memberRole,
+                member.termsAgreed
+            )
+        }
     }
 }

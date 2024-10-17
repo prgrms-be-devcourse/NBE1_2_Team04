@@ -1,7 +1,7 @@
-package team4.footwithme.chat.service.event;
+package team4.footwithme.chat.service.event
 
-public record TeamPublishedEvent(
-    String name,
-    Long teamId) {
-
-}
+@JvmRecord
+data class TeamPublishedEvent(
+    val name: String?,
+    val teamId: Long?
+)

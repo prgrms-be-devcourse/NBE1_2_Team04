@@ -1,65 +1,55 @@
-package team4.footwithme.stadium.domain;
+package team4.footwithme.stadium.domain
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
+import jakarta.persistence.Column
+import jakarta.persistence.Embeddable
 
 @Embeddable
-public class Position {
+class Position {
+    @Column(nullable = false)
+    var latitude: Double = 0.0
+        
 
     @Column(nullable = false)
-    private double latitude;
+    var longitude: Double = 0.0
+        
 
-    @Column(nullable = false)
-    private double longitude;
-
-    private Position(double latitude, double longitude) {
-        this.latitude = latitude;
-        this.longitude = longitude;
+    private constructor(latitude: Double, longitude: Double) {
+        this.latitude = latitude
+        this.longitude = longitude
     }
 
-    protected Position() {
+    protected constructor()
+
+    fun updatePosition(latitude: Double, longitude: Double) {
+        this.latitude = latitude
+        this.longitude = longitude
     }
 
-    public static PositionBuilder builder() {
-        return new PositionBuilder();
-    }
-
-    public void updatePosition(Double latitude, Double longitude) {
-        this.latitude = latitude;
-        this.longitude = longitude;
-    }
-
-    public double getLatitude() {
-        return this.latitude;
-    }
-
-    public double getLongitude() {
-        return this.longitude;
-    }
-
-    public static class PositionBuilder {
-        private double latitude;
-        private double longitude;
-
-        PositionBuilder() {
+    class PositionBuilder internal constructor() {
+        private var latitude = 0.0
+        private var longitude = 0.0
+        fun latitude(latitude: Double): PositionBuilder {
+            this.latitude = latitude
+            return this
         }
 
-        public PositionBuilder latitude(double latitude) {
-            this.latitude = latitude;
-            return this;
+        fun longitude(longitude: Double): PositionBuilder {
+            this.longitude = longitude
+            return this
         }
 
-        public PositionBuilder longitude(double longitude) {
-            this.longitude = longitude;
-            return this;
+        fun build(): Position {
+            return Position(this.latitude, this.longitude)
         }
 
-        public Position build() {
-            return new Position(this.latitude, this.longitude);
+        override fun toString(): String {
+            return "Position.PositionBuilder(latitude=" + this.latitude + ", longitude=" + this.longitude + ")"
         }
+    }
 
-        public String toString() {
-            return "Position.PositionBuilder(latitude=" + this.latitude + ", longitude=" + this.longitude + ")";
+    companion object {
+        fun builder(): PositionBuilder {
+            return PositionBuilder()
         }
     }
 }

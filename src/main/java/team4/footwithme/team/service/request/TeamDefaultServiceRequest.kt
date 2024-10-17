@@ -1,4 +1,4 @@
-package team4.footwithme.team.service.request;
+package team4.footwithme.team.service.request
 
-public record TeamDefaultServiceRequest(String name, String description, String location) {
-}
+@JvmRecord
+data class TeamDefaultServiceRequest(val name: String?, @JvmField val description: String?, @JvmField val location: String?)

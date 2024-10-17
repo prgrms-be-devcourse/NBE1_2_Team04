@@ -1,84 +1,70 @@
-package team4.footwithme.chat.service;
+package team4.footwithme.chat.service
 
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import team4.footwithme.chat.domain.Chat;
-import team4.footwithme.chat.domain.ChatMember;
-import team4.footwithme.chat.domain.Chatroom;
-import team4.footwithme.chat.repository.ChatMemberRepository;
-import team4.footwithme.chat.repository.ChatRepository;
-import team4.footwithme.chat.repository.ChatroomRepository;
-import team4.footwithme.chat.service.request.ChatMemberServiceRequest;
-import team4.footwithme.chat.service.response.ChatMemberResponse;
-import team4.footwithme.global.exception.ExceptionMessage;
-import team4.footwithme.member.domain.Member;
-import team4.footwithme.member.repository.MemberRepository;
-import team4.footwithme.resevation.domain.Participant;
-import team4.footwithme.team.domain.TeamMember;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
+import team4.footwithme.chat.domain.Chat
+import team4.footwithme.chat.domain.ChatMember
+import team4.footwithme.chat.domain.Chatroom
+import team4.footwithme.chat.repository.ChatMemberRepository
+import team4.footwithme.chat.repository.ChatRepository
+import team4.footwithme.chat.repository.ChatroomRepository
+import team4.footwithme.chat.service.request.ChatMemberServiceRequest
+import team4.footwithme.chat.service.response.ChatMemberResponse
+import team4.footwithme.global.exception.ExceptionMessage
+import team4.footwithme.member.domain.Member
+import team4.footwithme.member.repository.MemberRepository
+import team4.footwithme.resevation.domain.*
+import team4.footwithme.team.domain.TeamMember
+import java.util.function.Supplier
+import java.util.stream.Collectors
 
 @Service
-public class ChatMemberServiceImpl implements ChatMemberService {
-    private final ChatMemberRepository chatMemberRepository;
-    private final MemberRepository memberRepository;
-    private final ChatroomRepository chatroomRepository;
-    private final ChatRepository chatRepository;
-
-    private final RedisPublisher redisPublisher;
-
-    public ChatMemberServiceImpl(ChatMemberRepository chatMemberRepository, MemberRepository memberRepository, ChatroomRepository chatroomRepository, ChatRepository chatRepository, RedisPublisher redisPublisher) {
-        this.chatMemberRepository = chatMemberRepository;
-        this.memberRepository = memberRepository;
-        this.chatroomRepository = chatroomRepository;
-        this.chatRepository = chatRepository;
-        this.redisPublisher = redisPublisher;
-    }
-
+class ChatMemberServiceImpl(
+    private val chatMemberRepository: ChatMemberRepository,
+    private val memberRepository: MemberRepository,
+    private val chatroomRepository: ChatroomRepository,
+    private val chatRepository: ChatRepository,
+    private val redisPublisher: RedisPublisher
+) : ChatMemberService {
     /**
      * 개인 채팅방 초대
      *
      * @param request
      * @return
      */
-    @Override
     @Transactional
-    public ChatMemberResponse joinChatMember(ChatMemberServiceRequest request) {
-        Member member = getMember(request.memberId());
-        Chatroom chatroom = getChatroomByChatroomId(request.chatroomId());
+    override fun joinChatMember(request: ChatMemberServiceRequest?): ChatMemberResponse {
+        val member = getMember(request!!.memberId)
+        val chatroom = getChatroomByChatroomId(request.chatroomId)
 
-        return addChatMember(member, chatroom);
+        return addChatMember(member, chatroom)
     }
 
-    @Override
     @Transactional
-    public void joinTeamChatMember(Member member, Long teamId) {
-        Chatroom chatroom = getChatroomByTeamId(teamId);
+    override fun joinTeamChatMember(member: Member?, teamId: Long?) {
+        val chatroom = getChatroomByTeamId(teamId)
 
-        addChatMember(member, chatroom);
+        addChatMember(member, chatroom)
     }
 
-    @Override
     @Transactional
-    public void joinReservationChatMember(Member member, Long reservationId) {
-        Chatroom chatroom = getChatroomByReservationId(reservationId);
+    override fun joinReservationChatMember(member: Member?, reservationId: Long?) {
+        val chatroom = getChatroomByReservationId(reservationId)
 
-        addChatMember(member, chatroom);
+        addChatMember(member, chatroom)
     }
 
-    private ChatMemberResponse addChatMember(Member member, Chatroom chatroom) {
-        checkMemberNotInChatroom(member, chatroom);
+    private fun addChatMember(member: Member?, chatroom: Chatroom?): ChatMemberResponse {
+        checkMemberNotInChatroom(member, chatroom)
 
-        ChatMember chatMember = chatMemberRepository.save(ChatMember.create(member, chatroom));
+        val chatMember = chatMemberRepository.save<ChatMember>(ChatMember.Companion.create(member, chatroom))
 
-        Chat chat = Chat.createEnterChat(chatroom, member);
-        chatRepository.save(chat);
+        val chat: Chat = Chat.Companion.createEnterChat(chatroom, member)
+        chatRepository.save(chat)
 
-        redisPublisher.publish(chat);
+        redisPublisher.publish(chat)
 
-        return new ChatMemberResponse(chatMember);
+        return ChatMemberResponse(chatMember)
     }
 
     /**
@@ -86,13 +72,13 @@ public class ChatMemberServiceImpl implements ChatMemberService {
      *
      * @param teamMembers
      */
-    @Override
     @Transactional
-    public void joinChatTeam(List<TeamMember> teamMembers, Long teamId) {
-        Chatroom chatroom = getChatroomByTeamId(teamId);
-        List<Member> members = teamMembers.stream().map(TeamMember::getMember).collect(Collectors.toList());
+    override fun joinChatTeam(teamMembers: List<TeamMember>, teamId: Long?) {
+        val chatroom = getChatroomByTeamId(teamId)
+        val members = teamMembers.stream().map { obj: TeamMember -> obj.member }
+            .collect(Collectors.toList())
 
-        joinChatMembers(members, chatroom);
+        joinChatMembers(members, chatroom)
     }
 
     /**
@@ -100,14 +86,14 @@ public class ChatMemberServiceImpl implements ChatMemberService {
      *
      * @param gameMembers
      */
-    @Override
     @Transactional
-    public void joinChatGame(List<Participant> gameMembers, Long reservationId) {
-        Chatroom chatroom = getChatroomByReservationId(reservationId);
+    override fun joinChatGame(gameMembers: List<Participant>, reservationId: Long?) {
+        val chatroom = getChatroomByReservationId(reservationId)
 
-        List<Member> members = gameMembers.stream().map(Participant::getMember).collect(Collectors.toList());
+        val members = gameMembers.stream().map { obj: Participant -> obj.member }
+            .collect(Collectors.toList())
 
-        joinChatMembers(members, chatroom);
+        joinChatMembers(members, chatroom)
     }
 
     /**
@@ -115,29 +101,28 @@ public class ChatMemberServiceImpl implements ChatMemberService {
      *
      * @param members
      */
-    @Override
     @Transactional
-    public void joinChatMembers(List<Member> members, Chatroom chatroom) {
+    override fun joinChatMembers(members: List<Member?>, chatroom: Chatroom?) {
+        val oldMembersId = chatMemberRepository.findByChatroom(chatroom!!)
+            ?.stream()?.map { chatMember: ChatMember -> chatMember.member?.memberId }?.collect(Collectors.toList())
 
-        List<Long> oldMembersId = chatMemberRepository.findByChatroom(chatroom)
-            .stream().map(chatMember -> chatMember.getMember().getMemberId()).collect(Collectors.toList());
+        val chatMembers: MutableList<ChatMember> = ArrayList()
 
-        List<ChatMember> chatMembers = new ArrayList<>();
-
-        for (Member member : members) {
-            if (oldMembersId.contains(member.getMemberId())) {
-                continue;
+        for (member in members) {
+            if (oldMembersId != null) {
+                if (oldMembersId.contains(member!!.memberId)) {
+                    continue
+                }
             }
-            chatMembers.add(ChatMember.create(member, chatroom));
+            chatMembers.add(ChatMember.Companion.create(member, chatroom))
         }
 
-        chatMemberRepository.saveAll(chatMembers);
+        chatMemberRepository.saveAll(chatMembers)
 
-        Chat chat = Chat.createGroupEnterChat(chatroom, chatMembers);
-        chatRepository.save(chat);
+        val chat: Chat = Chat.Companion.createGroupEnterChat(chatroom, chatMembers)
+        chatRepository.save(chat)
 
-        redisPublisher.publish(chat);
-
+        redisPublisher.publish(chat)
     }
 
     /**
@@ -146,42 +131,39 @@ public class ChatMemberServiceImpl implements ChatMemberService {
      * @param request
      * @return
      */
-    @Override
     @Transactional
-    public ChatMemberResponse leaveChatMember(ChatMemberServiceRequest request) {
-        Member member = getMember(request.memberId());
-        Chatroom chatroom = getChatroomByChatroomId(request.chatroomId());
+    override fun leaveChatMember(request: ChatMemberServiceRequest?): ChatMemberResponse {
+        val member = getMember(request!!.memberId)
+        val chatroom = getChatroomByChatroomId(request.chatroomId)
 
-        return removeChatMember(member, chatroom);
+        return removeChatMember(member, chatroom)
     }
 
-    @Override
     @Transactional
-    public void leaveTeamChatMember(Member member, Long teamId) {
-        Chatroom chatroom = getChatroomByTeamId(teamId);
+    override fun leaveTeamChatMember(member: Member?, teamId: Long?) {
+        val chatroom = getChatroomByTeamId(teamId)
 
-        removeChatMember(member, chatroom);
+        removeChatMember(member, chatroom)
     }
 
-    @Override
     @Transactional
-    public void leaveReservationChatMember(Member member, Long reservationId) {
-        Chatroom chatroom = getChatroomByReservationId(reservationId);
+    override fun leaveReservationChatMember(member: Member?, reservationId: Long?) {
+        val chatroom = getChatroomByReservationId(reservationId)
 
-        removeChatMember(member, chatroom);
+        removeChatMember(member, chatroom)
     }
 
-    private ChatMemberResponse removeChatMember(Member member, Chatroom chatroom) {
-        checkMemberInChatroom(member, chatroom);
+    private fun removeChatMember(member: Member?, chatroom: Chatroom?): ChatMemberResponse {
+        checkMemberInChatroom(member, chatroom)
 
-        chatMemberRepository.deleteByMemberAndChatRoom(member, chatroom);
+        chatMemberRepository.deleteByMemberAndChatRoom(member, chatroom)
 
-        Chat chat = Chat.createQuitChat(chatroom, member);
-        chatRepository.save(chat);
+        val chat: Chat = Chat.Companion.createQuitChat(chatroom, member)
+        chatRepository.save(chat)
 
-        redisPublisher.publish(chat);
+        redisPublisher.publish(chat)
 
-        return new ChatMemberResponse(chatroom.getChatroomId(), member.getMemberId());
+        return ChatMemberResponse(chatroom!!.chatroomId, member!!.memberId)
     }
 
     /**
@@ -190,59 +172,62 @@ public class ChatMemberServiceImpl implements ChatMemberService {
      * @param chatroomId 채팅방 ID
      * @return
      */
-    @Override
     @Transactional
-    public void leaveChatRoom(Long chatroomId) {
-        Chatroom chatroom = getChatroomByChatroomId(chatroomId);
+    override fun leaveChatRoom(chatroomId: Long?) {
+        val chatroom = getChatroomByChatroomId(chatroomId)
 
-        chatMemberRepository.updateIsDeletedForChatRoom(chatroom);
+        chatMemberRepository.updateIsDeletedForChatRoom(chatroom)
     }
 
-    @Override
     @Transactional
-    public void leaveTeamChatRoom(Long teamId) {
-        Chatroom chatroom = getChatroomByTeamId(teamId);
+    override fun leaveTeamChatRoom(teamId: Long?) {
+        val chatroom = getChatroomByTeamId(teamId)
 
-        chatMemberRepository.updateIsDeletedForChatRoom(chatroom);
+        chatMemberRepository.updateIsDeletedForChatRoom(chatroom)
     }
 
-    @Override
     @Transactional
-    public void leaveReservationChatRoom(Long reservationId) {
-        Chatroom chatroom = getChatroomByReservationId(reservationId);
+    override fun leaveReservationChatRoom(reservationId: Long?) {
+        val chatroom = getChatroomByReservationId(reservationId)
 
-        chatMemberRepository.updateIsDeletedForChatRoom(chatroom);
+        chatMemberRepository.updateIsDeletedForChatRoom(chatroom)
     }
 
-    private void checkMemberInChatroom(Member member, Chatroom chatroom) {
-        if (!chatMemberRepository.existByMemberAndChatroom(member, chatroom)) {
-            throw new IllegalArgumentException(ExceptionMessage.MEMBER_NOT_IN_CHATROOM.getText());
-        }
+    private fun checkMemberInChatroom(member: Member?, chatroom: Chatroom?) {
+        require(
+            chatMemberRepository.existByMemberAndChatroom(
+                member!!,
+                chatroom!!
+            )
+        ) { ExceptionMessage.MEMBER_NOT_IN_CHATROOM.text }
     }
 
-    private void checkMemberNotInChatroom(Member member, Chatroom chatroom) {
-        if (chatMemberRepository.existByMemberAndChatroom(member, chatroom)) {
-            throw new IllegalArgumentException(ExceptionMessage.MEMBER_IN_CHATROOM.getText());
-        }
+    private fun checkMemberNotInChatroom(member: Member?, chatroom: Chatroom?) {
+        require(
+            !chatMemberRepository.existByMemberAndChatroom(
+                member!!,
+                chatroom!!
+            )
+        ) { ExceptionMessage.MEMBER_IN_CHATROOM.text }
     }
 
-    private Member getMember(Long memberId) {
+    private fun getMember(memberId: Long?): Member {
         return memberRepository.findByMemberId(memberId)
-            .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.MEMBER_NOT_FOUND.getText()));
+            ?.orElseThrow(Supplier { IllegalArgumentException(ExceptionMessage.MEMBER_NOT_FOUND.text) })!!
     }
 
-    private Chatroom getChatroomByChatroomId(Long chatroomId) {
+    private fun getChatroomByChatroomId(chatroomId: Long?): Chatroom? {
         return chatroomRepository.findByChatroomId(chatroomId)
-            .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.CHATROOM_NOT_FOUND.getText()));
+            .orElseThrow { IllegalArgumentException(ExceptionMessage.CHATROOM_NOT_FOUND.text) }
     }
 
-    private Chatroom getChatroomByTeamId(Long teamId) {
+    private fun getChatroomByTeamId(teamId: Long?): Chatroom? {
         return chatroomRepository.findByTeamId(teamId)
-            .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.CHATROOM_NOT_FOUND.getText()));
+            .orElseThrow { IllegalArgumentException(ExceptionMessage.CHATROOM_NOT_FOUND.text) }
     }
 
-    private Chatroom getChatroomByReservationId(Long reservationId) {
+    private fun getChatroomByReservationId(reservationId: Long?): Chatroom? {
         return chatroomRepository.findByReservationId(reservationId)
-            .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.CHATROOM_NOT_FOUND.getText()));
+            .orElseThrow { IllegalArgumentException(ExceptionMessage.CHATROOM_NOT_FOUND.text) }
     }
 }

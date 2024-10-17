@@ -1,25 +1,26 @@
-package team4.footwithme.resevation.repository;
+package team4.footwithme.resevation.repository
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
-import team4.footwithme.resevation.domain.Participant;
-
-import java.util.List;
-import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
+import org.springframework.stereotype.Repository
+import team4.footwithme.resevation.domain.Participant
+import java.util.*
 
 @Repository
-public interface ParticipantRepository extends JpaRepository<Participant, Long>, CustomParticipantRepository {
+interface ParticipantRepository : JpaRepository<Participant?, Long?>, CustomParticipantRepository {
     @Query("select p from Participant p where p.isDeleted = 'false' and p.reservation.reservationId = :id")
-    List<Participant> findParticipantsByReservationId(@Param("id") Long reservationId);
+    fun findParticipantsByReservationId(@Param("id") reservationId: Long?): List<Participant?>?
 
     @Query("select p from Participant p where p.isDeleted = 'false' and p.reservation.reservationId = :rid and p.member.memberId = :mid")
-    Optional<Participant> findParticipantsByReservationIdAndMemberId(@Param("rid") Long reservationId, @Param("mid") Long memberId);
+    fun findParticipantsByReservationIdAndMemberId(
+        @Param("rid") reservationId: Long?,
+        @Param("mid") memberId: Long?
+    ): Optional<Participant?>
 
     @Query("select p from Participant p where p.isDeleted = 'false' and p.participantId = :id")
-    Optional<Participant> findParticipantsByParticipantId(@Param("id") Long participantId);
+    fun findParticipantsByParticipantId(@Param("id") participantId: Long?): Optional<Participant>
 
     @Query("select p from Participant p where p.isDeleted = 'false' and p.reservation.reservationId = :reservationId")
-    List<Participant> findAllByReservationId(Long reservationId);
+    fun findAllByReservationId(reservationId: Long?): List<Participant?>?
 }

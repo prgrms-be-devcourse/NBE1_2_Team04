@@ -55,13 +55,13 @@ class MemberServiceImplTest extends IntegrationTestSupport {
         assertThat(member).isNotNull()
             .extracting("email", "name", "phoneNumber", "gender", "memberRole", "termsAgreed")
             .containsExactlyInAnyOrder(
-                request.email(), request.name(), request.phoneNumber(), request.gender(), request.memberRole(), request.termsAgree()
+                request.email, request.name, request.phoneNumber, request.gender, request.memberRole, request.termsAgree
             );
 
         assertThat(memberResponse).isNotNull()
             .extracting("memberId", "email", "name", "phoneNumber", "gender", "memberRole", "termsAgreed")
             .containsExactlyInAnyOrder(
-                member.getMemberId(), member.getEmail(), member.getName(), member.getPhoneNumber(), member.getGender(), member.getMemberRole(), member.getTermsAgreed()
+                member.memberId, member.getEmail(), member.getName(), member.getPhoneNumber(), member.getGender(), member.getMemberRole(), member.getTermsAgreed()
             );
     }
 
@@ -93,7 +93,7 @@ class MemberServiceImplTest extends IntegrationTestSupport {
         LoginResponse loginResponse = memberService.login(loginServiceRequest);
 
         HttpServletRequest request = mock(HttpServletRequest.class);
-        when(request.getHeader("Authorization")).thenReturn(loginResponse.accessToken()); // 헤더 설정
+        when(request.getHeader("Authorization")).thenReturn(loginResponse.accessToken); // 헤더 설정
 
         //when
         String response = memberService.logout(request);
@@ -117,13 +117,13 @@ class MemberServiceImplTest extends IntegrationTestSupport {
         HttpServletRequest request = mock(HttpServletRequest.class);
 
         //when
-        TokenResponse tokenResponse = memberService.reissue(request, loginResponse.refreshToken());
+        TokenResponse tokenResponse = memberService.reissue(request, loginResponse.refreshToken);
 
         //then
         assertThat(tokenResponse).isNotNull()
             .extracting("accessToken", "refreshToken", "refreshTokenExpirationTime")
             .containsExactlyInAnyOrder(
-                tokenResponse.accessToken(), loginResponse.refreshToken(), tokenResponse.refreshTokenExpirationTime()
+                tokenResponse.accessToken, loginResponse.refreshToken, tokenResponse.refreshTokenExpirationTime
             );
 
 
@@ -141,7 +141,7 @@ class MemberServiceImplTest extends IntegrationTestSupport {
         LoginResponse loginResponse = memberService.login(loginServiceRequest);
 
         Cookie[] cookies = new Cookie[]{
-            new Cookie("refreshToken", loginResponse.refreshToken())
+            new Cookie("refreshToken", loginResponse.refreshToken)
         };
 
         HttpServletRequest request = mock(HttpServletRequest.class);
@@ -154,7 +154,7 @@ class MemberServiceImplTest extends IntegrationTestSupport {
         assertThat(tokenResponse).isNotNull()
             .extracting("accessToken", "refreshToken", "refreshTokenExpirationTime")
             .containsExactlyInAnyOrder(
-                tokenResponse.accessToken(), loginResponse.refreshToken(), tokenResponse.refreshTokenExpirationTime()
+                tokenResponse.accessToken, loginResponse.refreshToken, tokenResponse.refreshTokenExpirationTime
             );
 
 
@@ -198,7 +198,7 @@ class MemberServiceImplTest extends IntegrationTestSupport {
 
         //then
         assertThat(response).isEqualTo("Success Change Password");
-        assertThat(securityConfig.passwordEncoder().matches(updateRequest.newPassword(), member.getPassword())).isTrue();
+        assertThat(securityConfig.passwordEncoder().matches(updateRequest.newPassword, member.getPassword())).isTrue();
 
     }
 

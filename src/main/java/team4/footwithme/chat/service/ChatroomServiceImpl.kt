@@ -1,27 +1,21 @@
-package team4.footwithme.chat.service;
+package team4.footwithme.chat.service
 
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import team4.footwithme.chat.domain.Chatroom;
-import team4.footwithme.chat.domain.ReservationChatroom;
-import team4.footwithme.chat.domain.TeamChatroom;
-import team4.footwithme.chat.repository.ChatroomRepository;
-import team4.footwithme.chat.repository.RedisChatroomRepository;
-import team4.footwithme.chat.service.request.ChatroomServiceRequest;
-import team4.footwithme.chat.service.response.ChatroomResponse;
-import team4.footwithme.global.exception.ExceptionMessage;
+import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
+import team4.footwithme.chat.domain.Chatroom
+import team4.footwithme.chat.domain.ReservationChatroom
+import team4.footwithme.chat.domain.TeamChatroom
+import team4.footwithme.chat.repository.ChatroomRepository
+import team4.footwithme.chat.repository.RedisChatroomRepository
+import team4.footwithme.chat.service.request.ChatroomServiceRequest
+import team4.footwithme.chat.service.response.ChatroomResponse
+import team4.footwithme.global.exception.ExceptionMessage
 
 @Service
-public class ChatroomServiceImpl implements ChatroomService {
-    private final ChatroomRepository chatroomRepository;
-
-    private final RedisChatroomRepository redisChatroomRepository;
-
-    public ChatroomServiceImpl(ChatroomRepository chatroomRepository, RedisChatroomRepository redisChatroomRepository) {
-        this.chatroomRepository = chatroomRepository;
-        this.redisChatroomRepository = redisChatroomRepository;
-    }
-
+class ChatroomServiceImpl(
+    private val chatroomRepository: ChatroomRepository,
+    private val redisChatroomRepository: RedisChatroomRepository
+) : ChatroomService {
     /**
      * 채팅방 생성
      * 채팅방을 만든 사람은 자동으로 채팅방 초대
@@ -30,39 +24,39 @@ public class ChatroomServiceImpl implements ChatroomService {
      * @return
      */
     @Transactional
-    @Override
-    public ChatroomResponse createChatroom(ChatroomServiceRequest request) {
-
-        Chatroom chatroom = chatroomRepository.save(Chatroom.create(request.name()));
+    override fun createChatroom(request: ChatroomServiceRequest?): ChatroomResponse {
+        val chatroom = chatroomRepository.save<Chatroom>(Chatroom.Companion.create(request!!.name))
 
         // redis Hash에 저장
-        redisChatroomRepository.createChatRoom(chatroom);
+        redisChatroomRepository.createChatRoom(chatroom)
 
-        return new ChatroomResponse(chatroom);
+        return ChatroomResponse(chatroom)
     }
 
     @Transactional
-    @Override
-    public ChatroomResponse createTeamChatroom(ChatroomServiceRequest request, Long teamId) {
-
-        Chatroom chatroom = chatroomRepository.save(TeamChatroom.create(request.name(), teamId));
+    override fun createTeamChatroom(request: ChatroomServiceRequest, teamId: Long?): ChatroomResponse {
+        val chatroom: Chatroom =
+            chatroomRepository.save<TeamChatroom>(TeamChatroom.Companion.create(request.name, teamId))
 
         // redis Hash에 저장
-        redisChatroomRepository.createChatRoom(chatroom);
+        redisChatroomRepository.createChatRoom(chatroom)
 
-        return new ChatroomResponse(chatroom);
+        return ChatroomResponse(chatroom)
     }
 
     @Transactional
-    @Override
-    public ChatroomResponse createReservationChatroom(ChatroomServiceRequest request, Long reservationId) {
-
-        Chatroom chatroom = chatroomRepository.save(ReservationChatroom.create(request.name(), reservationId));
+    override fun createReservationChatroom(request: ChatroomServiceRequest, reservationId: Long?): ChatroomResponse {
+        val chatroom: Chatroom = chatroomRepository.save<ReservationChatroom>(
+            ReservationChatroom.Companion.create(
+                request.name,
+                reservationId
+            )
+        )
 
         // redis Hash에 저장
-        redisChatroomRepository.createChatRoom(chatroom);
+        redisChatroomRepository.createChatRoom(chatroom)
 
-        return new ChatroomResponse(chatroom);
+        return ChatroomResponse(chatroom)
     }
 
     /**
@@ -72,61 +66,57 @@ public class ChatroomServiceImpl implements ChatroomService {
      * @return
      */
     @Transactional
-    @Override
-    public Long deleteChatroomByChatroomId(Long chatroomId) {
-        Chatroom chatroom = getChatroomByChatroomId(chatroomId);
+    override fun deleteChatroomByChatroomId(chatroomId: Long?): Long? {
+        val chatroom = getChatroomByChatroomId(chatroomId)
 
-        return deleteChatroom(chatroom);
+        return deleteChatroom(chatroom)
     }
 
     @Transactional
-    @Override
-    public Long deleteTeamChatroom(Long teamId) {
-        Chatroom chatroom = getChatroomByTeamId(teamId);
+    override fun deleteTeamChatroom(teamId: Long): Long? {
+        val chatroom = getChatroomByTeamId(teamId)
 
-        return deleteChatroom(chatroom);
+        return deleteChatroom(chatroom)
     }
 
     @Transactional
-    @Override
-    public Long deleteReservationChatroom(Long reservationId) {
-        Chatroom chatroom = getChatroomByReservationId(reservationId);
+    override fun deleteReservationChatroom(reservationId: Long): Long? {
+        val chatroom = getChatroomByReservationId(reservationId)
 
-        return deleteChatroom(chatroom);
+        return deleteChatroom(chatroom)
     }
 
     /**
      * 채팅방 수정
      */
     @Transactional
-    @Override
-    public ChatroomResponse updateChatroom(Long chatroomId, ChatroomServiceRequest request) {
-        Chatroom chatroom = getChatroomByChatroomId(chatroomId);
+    override fun updateChatroom(chatroomId: Long?, request: ChatroomServiceRequest?): ChatroomResponse {
+        val chatroom = getChatroomByChatroomId(chatroomId)
 
-        chatroom.updateName(request.name());
+        chatroom!!.updateName(request!!.name)
 
-        return new ChatroomResponse(chatroom);
+        return ChatroomResponse(chatroom)
     }
 
-    private Long deleteChatroom(Chatroom chatroom) {
-        redisChatroomRepository.deleteChatroomFromRedis(chatroom.getChatroomId());
+    private fun deleteChatroom(chatroom: Chatroom?): Long? {
+        redisChatroomRepository.deleteChatroomFromRedis(chatroom!!.chatroomId)
 
-        chatroomRepository.deleteById(chatroom.getChatroomId());
-        return chatroom.getChatroomId();
+        chatroomRepository.deleteById(chatroom.chatroomId)
+        return chatroom.chatroomId
     }
 
-    private Chatroom getChatroomByChatroomId(Long chatroomId) {
+    private fun getChatroomByChatroomId(chatroomId: Long?): Chatroom? {
         return chatroomRepository.findByChatroomId(chatroomId)
-            .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.CHATROOM_NOT_FOUND.getText()));
+            .orElseThrow { IllegalArgumentException(ExceptionMessage.CHATROOM_NOT_FOUND.text) }
     }
 
-    private Chatroom getChatroomByTeamId(Long teamId) {
+    private fun getChatroomByTeamId(teamId: Long): Chatroom? {
         return chatroomRepository.findByTeamId(teamId)
-            .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.CHATROOM_NOT_FOUND.getText()));
+            .orElseThrow { IllegalArgumentException(ExceptionMessage.CHATROOM_NOT_FOUND.text) }
     }
 
-    private Chatroom getChatroomByReservationId(Long reservationId) {
+    private fun getChatroomByReservationId(reservationId: Long): Chatroom? {
         return chatroomRepository.findByReservationId(reservationId)
-            .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.CHATROOM_NOT_FOUND.getText()));
+            .orElseThrow { IllegalArgumentException(ExceptionMessage.CHATROOM_NOT_FOUND.text) }
     }
 }

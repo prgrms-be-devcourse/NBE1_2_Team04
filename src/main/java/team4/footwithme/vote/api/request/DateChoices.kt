@@ -1,8 +1,8 @@
-package team4.footwithme.vote.api.request;
+package team4.footwithme.vote.api.request
 
-import java.time.LocalDateTime;
+import java.time.LocalDateTime
 
-public record DateChoices(
-    LocalDateTime choice
-) {
-}
+@JvmRecord
+data class DateChoices(
+    val choice: LocalDateTime
+)

@@ -1,67 +1,57 @@
-package team4.footwithme.vote.domain;
+package team4.footwithme.vote.domain
 
-import jakarta.persistence.Entity;
-
-import java.time.LocalDateTime;
+import jakarta.persistence.Entity
+import java.time.LocalDateTime
 
 @Entity
-public class VoteItemDate extends VoteItem {
+class VoteItemDate : VoteItem {
+    var time: LocalDateTime? = null
+        
 
-    private LocalDateTime time;
-
-    private VoteItemDate(Vote vote, LocalDateTime time) {
-        super(vote);
-        validateTime(time, vote.getEndAt());
-        this.time = time;
+    private constructor(vote: Vote?, time: LocalDateTime?) : super(vote) {
+        validateTime(time, vote!!.endAt)
+        this.time = time
     }
 
-    protected VoteItemDate() {
+    protected constructor()
+
+    private fun validateTime(time: LocalDateTime?, endAt: LocalDateTime?) {
+        require(!time!!.isBefore(endAt)) { "투표 종료 시간보다 이른 시간을 선택할 수 없습니다." }
     }
 
-    public static VoteItemDate create(Vote vote, LocalDateTime time) {
-        return VoteItemDate.builder()
-            .vote(vote)
-            .time(time)
-            .build();
-    }
+    class VoteItemDateBuilder internal constructor() {
+        private var vote: Vote? = null
+        private var time: LocalDateTime? = null
+        fun vote(vote: Vote?): VoteItemDateBuilder {
+            this.vote = vote
+            return this
+        }
 
-    public static VoteItemDateBuilder builder() {
-        return new VoteItemDateBuilder();
-    }
+        fun time(time: LocalDateTime?): VoteItemDateBuilder {
+            this.time = time
+            return this
+        }
 
-    private void validateTime(LocalDateTime time, LocalDateTime endAt) {
-        if (time.isBefore(endAt)) {
-            throw new IllegalArgumentException("투표 종료 시간보다 이른 시간을 선택할 수 없습니다.");
+        fun build(): VoteItemDate {
+            return VoteItemDate(this.vote, this.time)
+        }
+
+        override fun toString(): String {
+            return "VoteItemDate.VoteItemDateBuilder(vote=" + this.vote + ", time=" + this.time + ")"
         }
     }
 
-    public LocalDateTime getTime() {
-        return this.time;
-    }
-
-    public static class VoteItemDateBuilder {
-        private Vote vote;
-        private LocalDateTime time;
-
-        VoteItemDateBuilder() {
+    companion object {
+        @JvmStatic
+        fun create(vote: Vote?, time: LocalDateTime?): VoteItemDate {
+            return builder()
+                .vote(vote)
+                .time(time)
+                .build()
         }
 
-        public VoteItemDateBuilder vote(Vote vote) {
-            this.vote = vote;
-            return this;
-        }
-
-        public VoteItemDateBuilder time(LocalDateTime time) {
-            this.time = time;
-            return this;
-        }
-
-        public VoteItemDate build() {
-            return new VoteItemDate(this.vote, this.time);
-        }
-
-        public String toString() {
-            return "VoteItemDate.VoteItemDateBuilder(vote=" + this.vote + ", time=" + this.time + ")";
+        fun builder(): VoteItemDateBuilder {
+            return VoteItemDateBuilder()
         }
     }
 }

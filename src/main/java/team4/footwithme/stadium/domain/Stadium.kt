@@ -1,178 +1,168 @@
-package team4.footwithme.stadium.domain;
+package team4.footwithme.stadium.domain
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import org.hibernate.annotations.SQLDelete;
-import team4.footwithme.global.domain.BaseEntity;
-import team4.footwithme.global.exception.ExceptionMessage;
-import team4.footwithme.member.domain.Member;
+import jakarta.persistence.*
+import jakarta.validation.constraints.NotNull
+import org.hibernate.annotations.SQLDelete
+import team4.footwithme.global.domain.BaseEntity
+import team4.footwithme.global.exception.ExceptionMessage
+import team4.footwithme.member.domain.Member
 
 @SQLDelete(sql = "UPDATE stadium SET is_deleted = 'TRUE' WHERE stadium_id = ?")
 @Entity
-public class Stadium extends BaseEntity {
-
+class Stadium : BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long stadiumId;
+    val stadiumId: Long? = null
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
-    private Member member;
+    var member: Member? = null
+        
 
-    @NotNull
     @Column(nullable = false)
-    private String name;
+    var name: @NotNull String? = null
+        
 
-    @NotNull
-    private String address;
+    var address: @NotNull String? = null
+        
 
-    @NotNull
-    private String phoneNumber;
+    var phoneNumber: @NotNull String? = null
+        
 
     @Column(length = 200, nullable = true)
-    private String description;
+    var description: String? = null
+        
 
     @Embedded
-    private Position position;
+    var position: Position? = null
+        
 
-    private Stadium(Member member, String name, String address, String phoneNumber, String description, Position position) {
-        this.member = member;
-        this.name = name;
-        this.address = address;
-        this.phoneNumber = phoneNumber;
-        this.description = description;
-        this.position = position;
+    private constructor(
+        member: Member?,
+        name: String?,
+        address: String?,
+        phoneNumber: String?,
+        description: String?,
+        position: Position?
+    ) {
+        this.member = member
+        this.name = name
+        this.address = address
+        this.phoneNumber = phoneNumber
+        this.description = description
+        this.position = position
     }
 
-    protected Stadium() {
+    protected constructor()
+
+    fun updateStadium(
+        memberId: Long?,
+        name: String?,
+        address: String?,
+        phoneNumber: String?,
+        description: String?,
+        latitude: Double,
+        longitude: Double
+    ) {
+        checkMember(memberId)
+        this.name = name
+        this.address = address
+        this.phoneNumber = phoneNumber
+        this.description = description
+        position!!.updatePosition(latitude, longitude)
     }
 
-    public static Stadium create(Member member, String name, String address, String phoneNumber, String description, double latitude, double longitude) {
-        return Stadium.builder()
-            .member(member)
-            .name(name)
-            .address(address)
-            .phoneNumber(phoneNumber)
-            .description(description)
-            .position(Position.builder()
-                .latitude(latitude)
-                .longitude(longitude)
-                .build())
-            .build();
+    fun deleteStadium(memberId: Long?) {
+        checkMember(memberId)
     }
 
-    public static StadiumBuilder builder() {
-        return new StadiumBuilder();
+    fun createCourt(memberId: Long?) {
+        checkMember(memberId)
     }
 
-    public void updateStadium(Long memberId, String name, String address, String phoneNumber, String description, Double latitude, Double longitude) {
-        checkMember(memberId);
-        this.name = name;
-        this.address = address;
-        this.phoneNumber = phoneNumber;
-        this.description = description;
-        this.position.updatePosition(latitude, longitude);
+    private fun checkMember(memberId: Long?) {
+        require(member!!.memberId == memberId) { ExceptionMessage.STADIUM_NOT_OWNED_BY_MEMBER.text }
     }
 
-    public void deleteStadium(Long memberId) {
-        checkMember(memberId);
-    }
+    class StadiumBuilder internal constructor() {
+        private var member: Member? = null
+        private var name: String? = null
+        private var address: String? = null
+        private var phoneNumber: String? = null
+        private var description: String? = null
+        private var position: Position? = null
+        fun member(member: Member?): StadiumBuilder {
+            this.member = member
+            return this
+        }
 
-    public void createCourt(Long memberId) {
-        checkMember(memberId);
-    }
+        fun name(name: String?): StadiumBuilder {
+            this.name = name
+            return this
+        }
 
-    private void checkMember(Long memberId) {
-        if (!this.member.getMemberId().equals(memberId)) {
-            throw new IllegalArgumentException(ExceptionMessage.STADIUM_NOT_OWNED_BY_MEMBER.getText());
+        fun address(address: String?): StadiumBuilder {
+            this.address = address
+            return this
+        }
+
+        fun phoneNumber(phoneNumber: String?): StadiumBuilder {
+            this.phoneNumber = phoneNumber
+            return this
+        }
+
+        fun description(description: String?): StadiumBuilder {
+            this.description = description
+            return this
+        }
+
+        fun position(position: Position?): StadiumBuilder {
+            this.position = position
+            return this
+        }
+
+        fun build(): Stadium {
+            return Stadium(this.member, this.name, this.address, this.phoneNumber, this.description, this.position)
+        }
+
+        override fun toString(): String {
+            return "Stadium.StadiumBuilder(member=" + this.member + ", name=" + this.name + ", address=" + this.address + ", phoneNumber=" + this.phoneNumber + ", description=" + this.description + ", position=" + this.position + ")"
         }
     }
 
-    public Long getStadiumId() {
-        return this.stadiumId;
-    }
-
-    public Member getMember() {
-        return this.member;
-    }
-
-    public @NotNull String getName() {
-        return this.name;
-    }
-
-    public @NotNull String getAddress() {
-        return this.address;
-    }
-
-    public @NotNull String getPhoneNumber() {
-        return this.phoneNumber;
-    }
-
-    public String getDescription() {
-        return this.description;
-    }
-
-    public Position getPosition() {
-        return this.position;
-    }
-
-    public static class StadiumBuilder {
-        private Member member;
-        private String name;
-        private String address;
-        private String phoneNumber;
-        private String description;
-        private Position position;
-
-        StadiumBuilder() {
+    companion object {
+        @JvmStatic
+        fun create(
+            member: Member?,
+            name: String?,
+            address: String?,
+            phoneNumber: String?,
+            description: String?,
+            latitude: Double,
+            longitude: Double
+        ): Stadium {
+            return builder()
+                .member(member)
+                .name(name)
+                .address(address)
+                .phoneNumber(phoneNumber)
+                .description(description)
+                .position(
+                    Position.Companion.builder()
+                        .latitude(latitude)
+                        .longitude(longitude)
+                        .build()
+                )
+                .build()
         }
 
-        public StadiumBuilder member(Member member) {
-            this.member = member;
-            return this;
-        }
-
-        public StadiumBuilder name(String name) {
-            this.name = name;
-            return this;
-        }
-
-        public StadiumBuilder address(String address) {
-            this.address = address;
-            return this;
-        }
-
-        public StadiumBuilder phoneNumber(String phoneNumber) {
-            this.phoneNumber = phoneNumber;
-            return this;
-        }
-
-        public StadiumBuilder description(String description) {
-            this.description = description;
-            return this;
-        }
-
-        public StadiumBuilder position(Position position) {
-            this.position = position;
-            return this;
-        }
-
-        public Stadium build() {
-            return new Stadium(this.member, this.name, this.address, this.phoneNumber, this.description, this.position);
-        }
-
-        public String toString() {
-            return "Stadium.StadiumBuilder(member=" + this.member + ", name=" + this.name + ", address=" + this.address + ", phoneNumber=" + this.phoneNumber + ", description=" + this.description + ", position=" + this.position + ")";
+        fun builder(): StadiumBuilder {
+            return StadiumBuilder()
         }
     }
-}
-
-
-//    @NotNull
+} //    @NotNull
 //    @Column(columnDefinition = "POINT")
 //    private Point position;
-
-
 //    @Builder
 //    public Stadium(Member member, String name, String address, String phoneNumber, String description, Point position) {
 //        this.member = member;
@@ -194,3 +184,5 @@ public class Stadium extends BaseEntity {
 //                .position(position)
 //                .build();
 //    }
+
+

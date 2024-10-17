@@ -1,15 +1,11 @@
-package team4.footwithme.resevation.domain;
+package team4.footwithme.resevation.domain
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.Getter
 
 @Getter
-public enum ParticipantRole {
+enum class ParticipantRole {
     MEMBER,
     PENDING,
     ACCEPT,
-    IGNORE;
-
-    private ParticipantRole() {
-    }
+    IGNORE
 }

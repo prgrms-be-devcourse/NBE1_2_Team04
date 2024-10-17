@@ -1,17 +1,13 @@
-package team4.footwithme.vote.repository;
+package team4.footwithme.vote.repository
 
-import team4.footwithme.vote.domain.Choice;
+import team4.footwithme.vote.domain.Choice
 
-import java.util.List;
+interface CustomChoiceRepository {
+    fun countByVoteItemId(voteItemId: Long?): Long?
 
-public interface CustomChoiceRepository {
+    fun findByMemberIdAndVoteId(memberId: Long?, voteId: Long?): List<Choice>?
 
-    Long countByVoteItemId(Long voteItemId);
+    fun findMemberIdsByVoteItemId(voteItemId: Long?): List<Long>?
 
-    List<Choice> findByMemberIdAndVoteId(Long memberId, Long voteId);
-
-    List<Long> findMemberIdsByVoteItemId(Long voteItemId);
-
-    Long maxChoiceCountByVoteId(Long voteId);
-
+    fun maxChoiceCountByVoteId(voteId: Long?): Long
 }

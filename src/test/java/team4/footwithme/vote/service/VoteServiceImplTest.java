@@ -80,9 +80,9 @@ class VoteServiceImplTest extends IntegrationTestSupport {
 
         List<Court> savedCourts = courtRepository.saveAll(List.of(court1, court2, court3));
 
-        List<Long> courtIds = List.of(savedCourts.get(0).getCourtId(), savedCourts.get(1).getCourtId(), savedCourts.get(2).getCourtId());
+        List<Long> courtIds = List.of(savedCourts.get(0).courtId, savedCourts.get(1).courtId, savedCourts.get(2).courtId);
 
-        Team team = Team.create(stadium.getStadiumId(), "팀이름", "팀 설명", 1, 1, 1, "서울");
+        Team team = Team.create(stadium.stadiumId, "팀이름", "팀 설명", 1, 1, 1, "서울");
         Team savedTeam = teamRepository.save(team);
 
         VoteCourtCreateServiceRequest request = new VoteCourtCreateServiceRequest("9월4주차 구장 투표", endAt, courtIds);
@@ -95,30 +95,30 @@ class VoteServiceImplTest extends IntegrationTestSupport {
         assertThat(votes).hasSize(1)
             .extracting("title", "endAt", "memberId", "teamId", "voteId")
             .containsExactlyInAnyOrder(
-                tuple("9월4주차 구장 투표", endAt, savedMember.getMemberId(), savedTeam.getTeamId(), votes.get(0).getVoteId())
+                tuple("9월4주차 구장 투표", endAt, savedMember.memberId, savedTeam.getTeamId(), votes.get(0).voteId)
             );
 
         assertThat(voteItems).hasSize(3)
             .extracting("vote.voteId", "voteItemId", "courtId")
             .containsExactlyInAnyOrder(
-                tuple(votes.get(0).getVoteId(), voteItems.get(0).getVoteItemId(), savedCourts.get(0).getCourtId()),
-                tuple(votes.get(0).getVoteId(), voteItems.get(1).getVoteItemId(), savedCourts.get(1).getCourtId()),
-                tuple(votes.get(0).getVoteId(), voteItems.get(2).getVoteItemId(), savedCourts.get(2).getCourtId())
+                tuple(votes.get(0).voteId, voteItems.get(0).voteItemId, savedCourts.get(0).courtId),
+                tuple(votes.get(0).voteId, voteItems.get(1).voteItemId, savedCourts.get(1).courtId),
+                tuple(votes.get(0).voteId, voteItems.get(2).voteItemId, savedCourts.get(2).courtId)
             );
 
         assertThat(response).isNotNull()
             .extracting("voteId", "title", "endAt")
             .containsExactlyInAnyOrder(
-                votes.get(0).getVoteId(), "9월4주차 구장 투표", endAt
+                votes.get(0).voteId, "9월4주차 구장 투표", endAt
             );
 
         assertThat(response.choices())
             .hasSize(3)
             .extracting("voteItemId", "content", "memberIds")
             .containsExactlyInAnyOrder(
-                tuple(voteItems.get(0).getVoteItemId(), "야외 구장 A", List.of()),
-                tuple(voteItems.get(1).getVoteItemId(), "야외 구장 B", List.of()),
-                tuple(voteItems.get(2).getVoteItemId(), "야외 구장 C", List.of())
+                tuple(voteItems.get(0).voteItemId, "야외 구장 A", List.of()),
+                tuple(voteItems.get(1).voteItemId, "야외 구장 B", List.of()),
+                tuple(voteItems.get(2).voteItemId, "야외 구장 C", List.of())
             );
     }
 
@@ -158,9 +158,9 @@ class VoteServiceImplTest extends IntegrationTestSupport {
 
         List<Court> savedCourts = courtRepository.saveAll(List.of(court1, court2, court3));
 
-        List<Long> courtIds = List.of(savedCourts.get(0).getCourtId(), savedCourts.get(1).getCourtId(), savedCourts.get(2).getCourtId());
+        List<Long> courtIds = List.of(savedCourts.get(0).courtId, savedCourts.get(1).courtId, savedCourts.get(2).courtId);
 
-        Team team = Team.create(stadium.getStadiumId(), "팀이름", "팀 설명", 1, 1, 1, "서울");
+        Team team = Team.create(stadium.stadiumId, "팀이름", "팀 설명", 1, 1, 1, "서울");
         Team savedTeam = teamRepository.save(team);
 
         VoteCourtCreateServiceRequest request = new VoteCourtCreateServiceRequest("9월4주차 구장 투표", endAt, stadiumIds);
@@ -188,9 +188,9 @@ class VoteServiceImplTest extends IntegrationTestSupport {
 
         List<Court> savedCourts = courtRepository.saveAll(List.of(court1, court2, court3));
 
-        List<Long> courtIds = List.of(savedCourts.get(0).getCourtId(), savedCourts.get(1).getCourtId(), savedCourts.get(2).getCourtId());
+        List<Long> courtIds = List.of(savedCourts.get(0).courtId, savedCourts.get(1).courtId, savedCourts.get(2).courtId);
 
-        Team team = Team.create(stadium.getStadiumId(), "팀이름", "팀 설명", 1, 1, 1, "서울");
+        Team team = Team.create(stadium.stadiumId, "팀이름", "팀 설명", 1, 1, 1, "서울");
         Team savedTeam = teamRepository.save(team);
 
         VoteCourtCreateServiceRequest request = new VoteCourtCreateServiceRequest("9월4주차 구장 투표", endAt, courtIds);
@@ -204,30 +204,30 @@ class VoteServiceImplTest extends IntegrationTestSupport {
 
         List<VoteItemLocate> savedVoteItems = voteItemRepository.saveAll(voteItemLocates);
 
-        Choice choice1 = Choice.create(10L, savedVoteItems.get(0).getVoteItemId());
-        Choice choice2 = Choice.create(10L, savedVoteItems.get(1).getVoteItemId());
-        Choice choice3 = Choice.create(20L, savedVoteItems.get(0).getVoteItemId());
+        Choice choice1 = Choice.create(10L, savedVoteItems.get(0).voteItemId);
+        Choice choice2 = Choice.create(10L, savedVoteItems.get(1).voteItemId);
+        Choice choice3 = Choice.create(20L, savedVoteItems.get(0).voteItemId);
 
         List<Choice> choices = choiceRepository.saveAll(List.of(choice1, choice2, choice3));
 
 
         //when
-        VoteResponse response = voteService.getVote(savedVote.getVoteId());
+        VoteResponse response = voteService.getVote(savedVote.voteId);
 
         //then
         assertThat(response).isNotNull()
             .extracting("voteId", "title", "endAt")
             .containsExactlyInAnyOrder(
-                savedVote.getVoteId(), "연말 행사 장소 투표", endAt
+                savedVote.voteId, "연말 행사 장소 투표", endAt
             );
 
         assertThat(response.choices())
             .hasSize(3)
             .extracting("voteItemId", "content", "memberIds")
             .containsExactlyInAnyOrder(
-                tuple(savedVoteItems.get(0).getVoteItemId(), "야외 구장 A", List.of(choices.get(0).getMemberId(), choices.get(2).getMemberId())),
-                tuple(savedVoteItems.get(1).getVoteItemId(), "야외 구장 B", List.of(choices.get(0).getMemberId())),
-                tuple(savedVoteItems.get(2).getVoteItemId(), "야외 구장 C", List.of())
+                tuple(savedVoteItems.get(0).voteItemId, "야외 구장 A", List.of(choices.get(0).getMemberId(), choices.get(2).getMemberId())),
+                tuple(savedVoteItems.get(1).voteItemId, "야외 구장 B", List.of(choices.get(0).getMemberId())),
+                tuple(savedVoteItems.get(2).voteItemId, "야외 구장 C", List.of())
             );
     }
 
@@ -246,7 +246,7 @@ class VoteServiceImplTest extends IntegrationTestSupport {
 
         Stadium givenStadium1 = Stadium.create(savedMember, "최강 풋살장", "서울시 강남구 어딘가", "01010101010", "최고임", 54.123, 10.123);
         Stadium savedStadium = stadiumRepository.save(givenStadium1);
-        Team team = Team.create(savedStadium.getStadiumId(), "팀이름", "팀 설명", 1, 1, 1, "서울");
+        Team team = Team.create(savedStadium.stadiumId, "팀이름", "팀 설명", 1, 1, 1, "서울");
         Team savedTeam = teamRepository.save(team);
 
         VoteDateCreateServiceRequest request = new VoteDateCreateServiceRequest("연말 경기 투표", endAt, List.of(choice1, choice2, choice3));
@@ -262,30 +262,30 @@ class VoteServiceImplTest extends IntegrationTestSupport {
         assertThat(votes).hasSize(1)
             .extracting("title", "endAt", "memberId", "teamId", "voteId")
             .containsExactlyInAnyOrder(
-                tuple("연말 경기 투표", endAt, savedMember.getMemberId(), savedTeam.getTeamId(), votes.get(0).getVoteId())
+                tuple("연말 경기 투표", endAt, savedMember.memberId, savedTeam.getTeamId(), votes.get(0).voteId)
             );
 
         assertThat(voteItems).hasSize(3)
             .extracting("vote.voteId", "voteItemId", "time")
             .containsExactlyInAnyOrder(
-                tuple(votes.get(0).getVoteId(), voteItems.get(0).getVoteItemId(), choice1),
-                tuple(votes.get(0).getVoteId(), voteItems.get(1).getVoteItemId(), choice2),
-                tuple(votes.get(0).getVoteId(), voteItems.get(2).getVoteItemId(), choice3)
+                tuple(votes.get(0).voteId, voteItems.get(0).voteItemId, choice1),
+                tuple(votes.get(0).voteId, voteItems.get(1).voteItemId, choice2),
+                tuple(votes.get(0).voteId, voteItems.get(2).voteItemId, choice3)
             );
 
         assertThat(response).isNotNull()
             .extracting("voteId", "title", "endAt")
             .containsExactlyInAnyOrder(
-                votes.get(0).getVoteId(), "연말 경기 투표", endAt
+                votes.get(0).voteId, "연말 경기 투표", endAt
             );
 
         assertThat(response.choices())
             .hasSize(3)
             .extracting("voteItemId", "content", "memberIds")
             .containsExactlyInAnyOrder(
-                tuple(voteItems.get(0).getVoteItemId(), choice1.toString(), List.of()),
-                tuple(voteItems.get(1).getVoteItemId(), choice2.toString(), List.of()),
-                tuple(voteItems.get(2).getVoteItemId(), choice3.toString(), List.of())
+                tuple(voteItems.get(0).voteItemId, choice1.toString(), List.of()),
+                tuple(voteItems.get(1).voteItemId, choice2.toString(), List.of()),
+                tuple(voteItems.get(2).voteItemId, choice3.toString(), List.of())
             );
     }
 
@@ -304,7 +304,7 @@ class VoteServiceImplTest extends IntegrationTestSupport {
 
         Stadium givenStadium1 = Stadium.create(savedMember, "최강 풋살장", "서울시 강남구 어딘가", "01010101010", "최고임", 54.123, 10.123);
         Stadium savedStadium = stadiumRepository.save(givenStadium1);
-        Team team = Team.create(savedStadium.getStadiumId(), "팀이름", "팀 설명", 1, 1, 1, "서울");
+        Team team = Team.create(savedStadium.stadiumId, "팀이름", "팀 설명", 1, 1, 1, "서울");
         Team savedTeam = teamRepository.save(team);
 
         Vote vote = Vote.create(1L, 1L, "연말 경기 투표", endAt);
@@ -317,22 +317,22 @@ class VoteServiceImplTest extends IntegrationTestSupport {
         List<VoteItem> savedVoteItems = voteItemRepository.saveAll(List.of(voteItem1, voteItem2, voteItem3));
 
         //when
-        VoteResponse response = voteService.getVote(savedVote.getVoteId());
+        VoteResponse response = voteService.getVote(savedVote.voteId);
 
         //then
         assertThat(response).isNotNull()
             .extracting("voteId", "title", "endAt")
             .containsExactlyInAnyOrder(
-                savedVote.getVoteId(), "연말 경기 투표", endAt
+                savedVote.voteId, "연말 경기 투표", endAt
             );
 
         assertThat(response.choices())
             .hasSize(3)
             .extracting("voteItemId", "content", "memberIds")
             .containsExactlyInAnyOrder(
-                tuple(savedVoteItems.get(0).getVoteItemId(), choice1.toString(), List.of()),
-                tuple(savedVoteItems.get(1).getVoteItemId(), choice2.toString(), List.of()),
-                tuple(savedVoteItems.get(2).getVoteItemId(), choice3.toString(), List.of())
+                tuple(savedVoteItems.get(0).voteItemId, choice1.toString(), List.of()),
+                tuple(savedVoteItems.get(1).voteItemId, choice2.toString(), List.of()),
+                tuple(savedVoteItems.get(2).voteItemId, choice3.toString(), List.of())
             );
     }
 
@@ -358,12 +358,12 @@ class VoteServiceImplTest extends IntegrationTestSupport {
 
         List<Court> savedCourts = courtRepository.saveAll(List.of(court1, court2, court3));
 
-        List<Long> courtIds = List.of(savedCourts.get(0).getCourtId(), savedCourts.get(1).getCourtId(), savedCourts.get(2).getCourtId());
+        List<Long> courtIds = List.of(savedCourts.get(0).courtId, savedCourts.get(1).courtId, savedCourts.get(2).courtId);
 
-        Team team = Team.create(stadium.getStadiumId(), "팀이름", "팀 설명", 1, 1, 1, "서울");
+        Team team = Team.create(stadium.stadiumId, "팀이름", "팀 설명", 1, 1, 1, "서울");
         Team savedTeam = teamRepository.save(team);
 
-        Vote vote = Vote.create(savedMember.getMemberId(), 1L, "연말 경기 투표", endAt);
+        Vote vote = Vote.create(savedMember.memberId, 1L, "연말 경기 투표", endAt);
         Vote savedVote = voteRepository.save(vote);
 
         VoteItem voteItem1 = VoteItemDate.create(savedVote, choice1);
@@ -372,7 +372,7 @@ class VoteServiceImplTest extends IntegrationTestSupport {
 
         List<VoteItem> savedVoteItems = voteItemRepository.saveAll(List.of(voteItem1, voteItem2, voteItem3));
         //when
-        Long deletedId = voteService.deleteVote(savedVote.getVoteId(), savedMember);
+        Long deletedId = voteService.deleteVote(savedVote.voteId, savedMember);
 
         // @SQLDelete를 사용하면 수동으로 flush 해야함
         entityManager.flush();
@@ -403,7 +403,7 @@ class VoteServiceImplTest extends IntegrationTestSupport {
 
         Stadium givenStadium1 = Stadium.create(savedMember, "최강 풋살장", "서울시 강남구 어딘가", "01010101010", "최고임", 54.123, 10.123);
         Stadium savedStadium = stadiumRepository.save(givenStadium1);
-        Team team = Team.create(savedStadium.getStadiumId(), "팀이름", "팀 설명", 1, 1, 1, "서울");
+        Team team = Team.create(savedStadium.stadiumId, "팀이름", "팀 설명", 1, 1, 1, "서울");
         Team savedTeam = teamRepository.save(team);
 
         Vote vote = Vote.create(1L, 1L, "연말 경기 투표", endAt);
@@ -415,10 +415,10 @@ class VoteServiceImplTest extends IntegrationTestSupport {
 
         List<VoteItem> savedVoteItems = voteItemRepository.saveAll(List.of(voteItem1, voteItem2, voteItem3));
 
-        ChoiceCreateServiceRequest request = new ChoiceCreateServiceRequest(List.of(savedVoteItems.get(0).getVoteItemId(), savedVoteItems.get(1).getVoteItemId()));
+        ChoiceCreateServiceRequest request = new ChoiceCreateServiceRequest(List.of(savedVoteItems.get(0).voteItemId, savedVoteItems.get(1).voteItemId));
 
         //when
-        VoteResponse response = voteService.createChoice(request, savedVote.getVoteId(), savedMember);
+        VoteResponse response = voteService.createChoice(request, savedVote.voteId, savedMember);
 
         List<Choice> choices = choiceRepository.findAll();
 
@@ -426,23 +426,23 @@ class VoteServiceImplTest extends IntegrationTestSupport {
         assertThat(response)
             .extracting("voteId", "title", "endAt")
             .containsExactlyInAnyOrder(
-                savedVote.getVoteId(), "연말 경기 투표", endAt
+                savedVote.voteId, "연말 경기 투표", endAt
             );
 
         assertThat(response.choices())
             .hasSize(3)
             .extracting("voteItemId", "content", "memberIds")
             .containsExactlyInAnyOrder(
-                tuple(savedVoteItems.get(0).getVoteItemId(), choice1.toString(), List.of(choices.get(0).getMemberId())),
-                tuple(savedVoteItems.get(1).getVoteItemId(), choice2.toString(), List.of(choices.get(0).getMemberId())),
-                tuple(savedVoteItems.get(2).getVoteItemId(), choice3.toString(), List.of())
+                tuple(savedVoteItems.get(0).voteItemId, choice1.toString(), List.of(choices.get(0).getMemberId())),
+                tuple(savedVoteItems.get(1).voteItemId, choice2.toString(), List.of(choices.get(0).getMemberId())),
+                tuple(savedVoteItems.get(2).voteItemId, choice3.toString(), List.of())
             );
 
         assertThat(choices)
             .extracting("memberId", "voteItemId")
             .containsExactlyInAnyOrder(
-                tuple(savedMember.getMemberId(), savedVoteItems.get(0).getVoteItemId()),
-                tuple(savedMember.getMemberId(), savedVoteItems.get(1).getVoteItemId())
+                tuple(savedMember.memberId, savedVoteItems.get(0).voteItemId),
+                tuple(savedMember.memberId, savedVoteItems.get(1).voteItemId)
             );
     }
 
@@ -461,7 +461,7 @@ class VoteServiceImplTest extends IntegrationTestSupport {
 
         Stadium givenStadium1 = Stadium.create(savedMember, "최강 풋살장", "서울시 강남구 어딘가", "01010101010", "최고임", 54.123, 10.123);
         Stadium savedStadium = stadiumRepository.save(givenStadium1);
-        Team team = Team.create(savedStadium.getStadiumId(), "팀이름", "팀 설명", 1, 1, 1, "서울");
+        Team team = Team.create(savedStadium.stadiumId, "팀이름", "팀 설명", 1, 1, 1, "서울");
         Team savedTeam = teamRepository.save(team);
 
         Vote vote = Vote.create(1L, 1L, "연말 경기 투표", endAt);
@@ -474,26 +474,26 @@ class VoteServiceImplTest extends IntegrationTestSupport {
         List<VoteItem> savedVoteItems = voteItemRepository.saveAll(List.of(voteItem1, voteItem2, voteItem3));
 
 
-        Choice memberChoice1 = Choice.create(savedMember.getMemberId(), savedVoteItems.get(0).getVoteItemId());
-        Choice memberChoice2 = Choice.create(savedMember.getMemberId(), savedVoteItems.get(1).getVoteItemId());
+        Choice memberChoice1 = Choice.create(savedMember.memberId, savedVoteItems.get(0).voteItemId);
+        Choice memberChoice2 = Choice.create(savedMember.memberId, savedVoteItems.get(1).voteItemId);
         choiceRepository.saveAll(List.of(memberChoice1, memberChoice2));
         //when
-        VoteResponse response = voteService.deleteChoice(savedVote.getVoteId(), savedMember);
+        VoteResponse response = voteService.deleteChoice(savedVote.voteId, savedMember);
 
         //then
         assertThat(response)
             .extracting("voteId", "title", "endAt")
             .containsExactlyInAnyOrder(
-                savedVote.getVoteId(), "연말 경기 투표", endAt
+                savedVote.voteId, "연말 경기 투표", endAt
             );
 
         assertThat(response.choices())
             .hasSize(3)
             .extracting("voteItemId", "content", "memberIds")
             .containsExactlyInAnyOrder(
-                tuple(savedVoteItems.get(0).getVoteItemId(), choice1.toString(), List.of()),
-                tuple(savedVoteItems.get(1).getVoteItemId(), choice2.toString(), List.of()),
-                tuple(savedVoteItems.get(2).getVoteItemId(), choice3.toString(), List.of())
+                tuple(savedVoteItems.get(0).voteItemId, choice1.toString(), List.of()),
+                tuple(savedVoteItems.get(1).voteItemId, choice2.toString(), List.of()),
+                tuple(savedVoteItems.get(2).voteItemId, choice3.toString(), List.of())
             );
     }
 
@@ -513,10 +513,10 @@ class VoteServiceImplTest extends IntegrationTestSupport {
 
         Stadium givenStadium1 = Stadium.create(savedMember, "최강 풋살장", "서울시 강남구 어딘가", "01010101010", "최고임", 54.123, 10.123);
         Stadium savedStadium = stadiumRepository.save(givenStadium1);
-        Team team = Team.create(savedStadium.getStadiumId(), "팀이름", "팀 설명", 1, 1, 1, "서울");
+        Team team = Team.create(savedStadium.stadiumId, "팀이름", "팀 설명", 1, 1, 1, "서울");
         Team savedTeam = teamRepository.save(team);
 
-        Vote vote = Vote.create(savedMember.getMemberId(), 1L, "연말 경기 투표", endAt);
+        Vote vote = Vote.create(savedMember.memberId, 1L, "연말 경기 투표", endAt);
         Vote savedVote = voteRepository.save(vote);
 
         VoteItem voteItem1 = VoteItemDate.create(savedVote, choice1);
@@ -527,13 +527,13 @@ class VoteServiceImplTest extends IntegrationTestSupport {
 
         VoteUpdateServiceRequest request = new VoteUpdateServiceRequest("연말 경기 투표 수정", endAt);
         //when
-        VoteResponse response = voteService.updateVote(request, savedVote.getVoteId(), savedMember);
+        VoteResponse response = voteService.updateVote(request, savedVote.voteId, savedMember);
 
         //then
         assertThat(response)
             .extracting("voteId", "title", "endAt")
             .containsExactlyInAnyOrder(
-                savedVote.getVoteId(), "연말 경기 투표 수정", endAt
+                savedVote.voteId, "연말 경기 투표 수정", endAt
             );
     }
 
@@ -554,9 +554,9 @@ class VoteServiceImplTest extends IntegrationTestSupport {
 
         List<Court> savedCourts = courtRepository.saveAll(List.of(court1, court2, court3));
 
-        List<Long> courtIds = List.of(savedCourts.get(0).getCourtId(), savedCourts.get(1).getCourtId(), savedCourts.get(2).getCourtId());
+        List<Long> courtIds = List.of(savedCourts.get(0).courtId, savedCourts.get(1).courtId, savedCourts.get(2).courtId);
 
-        Team team = Team.create(stadium.getStadiumId(), "팀이름", "팀 설명", 1, 1, 1, "서울");
+        Team team = Team.create(stadium.stadiumId, "팀이름", "팀 설명", 1, 1, 1, "서울");
         Team savedTeam = teamRepository.save(team);
 
         VoteCourtCreateServiceRequest request = new VoteCourtCreateServiceRequest("9월4주차 구장 투표", endAt, courtIds);
@@ -597,7 +597,7 @@ class VoteServiceImplTest extends IntegrationTestSupport {
 
         Stadium givenStadium1 = Stadium.create(savedMember, "최강 풋살장", "서울시 강남구 어딘가", "01010101010", "최고임", 54.123, 10.123);
         Stadium savedStadium = stadiumRepository.save(givenStadium1);
-        Team team = Team.create(savedStadium.getStadiumId(), "팀이름", "팀 설명", 1, 1, 1, "서울");
+        Team team = Team.create(savedStadium.stadiumId, "팀이름", "팀 설명", 1, 1, 1, "서울");
         Team savedTeam = teamRepository.save(team);
 
         Vote vote = Vote.create(1L, 1L, "연말 경기 투표", endAt);
@@ -610,12 +610,12 @@ class VoteServiceImplTest extends IntegrationTestSupport {
         List<VoteItem> savedVoteItems = voteItemRepository.saveAll(List.of(voteItem1, voteItem2, voteItem3));
 
         //when
-        VoteResponse response = voteService.closeVote(savedVote.getVoteId(), savedMember);
+        VoteResponse response = voteService.closeVote(savedVote.voteId, savedMember);
         //then
         assertThat(response)
             .extracting("voteId", "title", "endAt", "voteStatus")
             .containsExactlyInAnyOrder(
-                response.voteId(), "연말 경기 투표", endAt, VoteStatus.CLOSED.getText()
+                response.voteId(), "연말 경기 투표", endAt, VoteStatus.CLOSED.text
             );
     }
 
@@ -634,7 +634,7 @@ class VoteServiceImplTest extends IntegrationTestSupport {
 
         Stadium givenStadium1 = Stadium.create(savedMember, "최강 풋살장", "서울시 강남구 어딘가", "01010101010", "최고임", 54.123, 10.123);
         Stadium savedStadium = stadiumRepository.save(givenStadium1);
-        Team team = Team.create(savedStadium.getStadiumId(), "팀이름", "팀 설명", 1, 1, 1, "서울");
+        Team team = Team.create(savedStadium.stadiumId, "팀이름", "팀 설명", 1, 1, 1, "서울");
         Team savedTeam = teamRepository.save(team);
 
         Vote vote1 = Vote.create(1L, savedTeam.getTeamId(), "연말 경기 투표", endAt);
@@ -652,8 +652,8 @@ class VoteServiceImplTest extends IntegrationTestSupport {
         assertThat(response).hasSize(2)
             .extracting("voteId", "title", "endAt", "status")
             .containsExactlyInAnyOrder(
-                tuple(savedVotes.get(0).getVoteId(), "연말 경기 투표", endAt, VoteStatus.OPENED.getText()),
-                tuple(savedVotes.get(1).getVoteId(), "축구 경기 투표", endAt, VoteStatus.OPENED.getText())
+                tuple(savedVotes.get(0).voteId, "연말 경기 투표", endAt, VoteStatus.OPENED.text),
+                tuple(savedVotes.get(1).voteId, "축구 경기 투표", endAt, VoteStatus.OPENED.text)
             );
     }
 

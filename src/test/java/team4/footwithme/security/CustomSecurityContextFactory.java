@@ -24,7 +24,7 @@ public class CustomSecurityContextFactory implements WithSecurityContextFactory<
 
 
         Member member = Member.create(annotation.email(), annotation.password(), "이름 1", "010-1234-5678", null, null, Gender.FEMALE, annotation.role(), TermsAgreed.AGREE);
-        Collection<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(member.getMemberRole().getText()));
+        Collection<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(member.getMemberRole().text));
         PrincipalDetails principal = new PrincipalDetails(member, authorities);
 
         Authentication auth = new UsernamePasswordAuthenticationToken(principal, "", principal.getAuthorities());

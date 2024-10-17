@@ -1,20 +1,18 @@
-package team4.footwithme.team.api.request;
+package team4.footwithme.team.api.request
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Null;
-import team4.footwithme.team.service.request.TeamDefaultServiceRequest;
+import jakarta.validation.constraints.NotNull
+import jakarta.validation.constraints.Null
+import team4.footwithme.team.service.request.TeamDefaultServiceRequest
 
-public record TeamCreateRequest(
-    @NotNull(message = "팀 명은 필수입니다.")
-    String name,
-    @Null
-    String description,
-    @Null
-    String location
+@JvmRecord
+data class TeamCreateRequest(
+    val name: @NotNull(message = "팀 명은 필수입니다.") String?,
+    val description: @Null String?,
+    val location: @Null String?
 ) {
-    public TeamDefaultServiceRequest toServiceRequest() {
-        return new TeamDefaultServiceRequest(
+    fun toServiceRequest(): TeamDefaultServiceRequest {
+        return TeamDefaultServiceRequest(
             name, description, location
-        );
+        )
     }
 }

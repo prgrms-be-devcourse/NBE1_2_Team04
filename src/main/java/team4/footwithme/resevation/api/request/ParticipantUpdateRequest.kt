@@ -1,16 +1,15 @@
-package team4.footwithme.resevation.api.request;
+package team4.footwithme.resevation.api.request
 
-import jakarta.validation.constraints.NotNull;
-import team4.footwithme.resevation.domain.ParticipantRole;
-import team4.footwithme.resevation.service.request.ParticipantUpdateServiceRequest;
+import jakarta.validation.constraints.NotNull
+import team4.footwithme.resevation.domain.ParticipantRole
+import team4.footwithme.resevation.service.request.ParticipantUpdateServiceRequest
 
-public record ParticipantUpdateRequest(
-    @NotNull
-    Long participantId,
-    @NotNull
-    ParticipantRole role
+@JvmRecord
+data class ParticipantUpdateRequest(
+    val participantId: @NotNull Long?,
+    val role: @NotNull ParticipantRole?
 ) {
-    public ParticipantUpdateServiceRequest toServiceResponse() {
-        return new ParticipantUpdateServiceRequest(participantId, role);
+    fun toServiceResponse(): ParticipantUpdateServiceRequest {
+        return ParticipantUpdateServiceRequest(participantId, role)
     }
 }

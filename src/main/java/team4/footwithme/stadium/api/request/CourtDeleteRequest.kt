@@ -1,13 +1,15 @@
-package team4.footwithme.stadium.api.request;
+package team4.footwithme.stadium.api.request
 
-import jakarta.validation.constraints.NotNull;
-import team4.footwithme.stadium.service.request.CourtDeleteServiceRequest;
+import jakarta.validation.constraints.NotNull
+import team4.footwithme.stadium.service.request.CourtDeleteServiceRequest
 
-public record CourtDeleteRequest(
-    @NotNull(message = "풋살장 아이디는 필수입니다.")
-    Long stadiumId
+@JvmRecord
+data class CourtDeleteRequest(
+    stadiumId: @NotNull(message = "풋살장 아이디는 필수입니다.") Long?
 ) {
-    public CourtDeleteServiceRequest toServiceRequest() {
-        return new CourtDeleteServiceRequest(stadiumId);
+    fun toServiceRequest(): CourtDeleteServiceRequest {
+        return CourtDeleteServiceRequest(stadiumId)
     }
+
+    val stadiumId: @NotNull(message = "풋살장 아이디는 필수입니다.") Long? = stadiumId
 }

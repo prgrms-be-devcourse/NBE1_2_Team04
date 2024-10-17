@@ -1,11 +1,12 @@
-package team4.footwithme;
+package team4.footwithme
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.SpringApplication
+import org.springframework.boot.autoconfigure.SpringBootApplication
 
 @SpringBootApplication
-public class FootwithmeApplication {
-    public static void main(String[] args) {
-        SpringApplication.run(FootwithmeApplication.class, args);
+object FootwithmeApplication {
+    @JvmStatic
+    fun main(args: Array<String>) {
+        SpringApplication.run(FootwithmeApplication::class.java, *args)
     }
 }

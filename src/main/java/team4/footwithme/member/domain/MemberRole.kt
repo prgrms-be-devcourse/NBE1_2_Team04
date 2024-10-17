@@ -1,22 +1,11 @@
-package team4.footwithme.member.domain;
+package team4.footwithme.member.domain
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.Getter
 
 @Getter
-public enum MemberRole {
+enum class MemberRole(@JvmField val text: String) {
     GUEST("ROLE_GUEST"),
     USER("ROLE_USER"),
     ADMIN("ROLE_ADMIN"),
-    MERCHANT("ROLE_MERCHANT");
-
-    private final String text;
-
-    private MemberRole(String text) {
-        this.text = text;
-    }
-
-    public String getText() {
-        return this.text;
-    }
+    MERCHANT("ROLE_MERCHANT")
 }

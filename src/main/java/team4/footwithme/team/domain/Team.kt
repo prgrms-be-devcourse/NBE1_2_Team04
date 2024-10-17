@@ -1,143 +1,136 @@
-package team4.footwithme.team.domain;
+package team4.footwithme.team.domain
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import org.hibernate.annotations.SQLDelete;
-import team4.footwithme.global.domain.BaseEntity;
+import jakarta.persistence.*
+import jakarta.validation.constraints.NotNull
+import org.hibernate.annotations.SQLDelete
+import team4.footwithme.global.domain.BaseEntity
 
 @SQLDelete(sql = "UPDATE team SET is_deleted = 'TRUE' WHERE team_id = ?")
 @Entity
-public class Team extends BaseEntity {
-
+class Team : BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long teamId;
+    var teamId: Long? = null
+        
 
     @Column(nullable = true)
-    private Long stadiumId;
+    var stadiumId: Long? = null
+        
 
-    @NotNull
     @Column(length = 50)
-    private String name;
+    var name: @NotNull String? = null
+        
 
     @Column(length = 200, nullable = true)
-    private String description;
+    var description: String? = null
+        
 
     @Embedded
-    private TotalRecord totalRecord;
+    var totalRecord: TotalRecord? = null
+        
 
     @Column(length = 100, nullable = true)
-    private String location;
+    var location: String? = null
+        
 
-    private Team(Long teamId, Long stadiumId, String name, String description, TotalRecord totalRecord, String location) {
-        this.teamId = teamId;
-        this.stadiumId = stadiumId;
-        this.name = name;
-        this.description = description;
-        this.totalRecord = totalRecord;
-        this.location = location;
+    private constructor(
+        teamId: Long?,
+        stadiumId: Long?,
+        name: String?,
+        description: String?,
+        totalRecord: TotalRecord?,
+        location: String?
+    ) {
+        this.teamId = teamId
+        this.stadiumId = stadiumId
+        this.name = name
+        this.description = description
+        this.totalRecord = totalRecord
+        this.location = location
     }
 
-    protected Team() {
+    protected constructor()
+
+    fun updateName(name: @NotNull String?) {
+        this.name = name
     }
 
-    public static Team create(Long stadiumId, String name, String description, int winCount, int drawCount, int loseCount, String location) {
-        return Team.builder()
-            .stadiumId(stadiumId)
-            .name(name)
-            .description(description)
-            .totalRecord(TotalRecord.builder().build())
-            .location(location)
-            .build();
+    fun updateDescription(description: String?) {
+        this.description = description
     }
 
-    public static TeamBuilder builder() {
-        return new TeamBuilder();
+    fun updateLocation(location: String?) {
+        this.location = location
     }
 
-    public void updateName(@NotNull String name) {
-        this.name = name;
-    }
-
-    public void updateDescription(String description) {
-        this.description = description;
-    }
-
-    public void updateLocation(String location) {
-        this.location = location;
-    }
-
-    public Long getTeamId() {
-        return this.teamId;
-    }
-
-    public Long getStadiumId() {
-        return this.stadiumId;
-    }
-
-    public @NotNull String getName() {
-        return this.name;
-    }
-
-    public String getDescription() {
-        return this.description;
-    }
-
-    public TotalRecord getTotalRecord() {
-        return this.totalRecord;
-    }
-
-    public String getLocation() {
-        return this.location;
-    }
-
-    public static class TeamBuilder {
-        private Long teamId;
-        private Long stadiumId;
-        private String name;
-        private String description;
-        private TotalRecord totalRecord;
-        private String location;
-
-        TeamBuilder() {
+    class TeamBuilder internal constructor() {
+        private var teamId: Long? = null
+        private var stadiumId: Long? = null
+        private var name: String? = null
+        private var description: String? = null
+        private var totalRecord: TotalRecord? = null
+        private var location: String? = null
+        fun teamId(teamId: Long?): TeamBuilder {
+            this.teamId = teamId
+            return this
         }
 
-        public TeamBuilder teamId(Long teamId) {
-            this.teamId = teamId;
-            return this;
+        fun stadiumId(stadiumId: Long?): TeamBuilder {
+            this.stadiumId = stadiumId
+            return this
         }
 
-        public TeamBuilder stadiumId(Long stadiumId) {
-            this.stadiumId = stadiumId;
-            return this;
+        fun name(name: String?): TeamBuilder {
+            this.name = name
+            return this
         }
 
-        public TeamBuilder name(String name) {
-            this.name = name;
-            return this;
+        fun description(description: String?): TeamBuilder {
+            this.description = description
+            return this
         }
 
-        public TeamBuilder description(String description) {
-            this.description = description;
-            return this;
+        fun totalRecord(totalRecord: TotalRecord?): TeamBuilder {
+            this.totalRecord = totalRecord
+            return this
         }
 
-        public TeamBuilder totalRecord(TotalRecord totalRecord) {
-            this.totalRecord = totalRecord;
-            return this;
+        fun location(location: String?): TeamBuilder {
+            this.location = location
+            return this
         }
 
-        public TeamBuilder location(String location) {
-            this.location = location;
-            return this;
+        fun build(): Team {
+            return Team(this.teamId, this.stadiumId, this.name, this.description, this.totalRecord, this.location)
         }
 
-        public Team build() {
-            return new Team(this.teamId, this.stadiumId, this.name, this.description, this.totalRecord, this.location);
+        override fun toString(): String {
+            return "Team.TeamBuilder(teamId=" + this.teamId + ", stadiumId=" + this.stadiumId + ", name=" + this.name + ", description=" + this.description + ", totalRecord=" + this.totalRecord + ", location=" + this.location + ")"
+        }
+    }
+
+    companion object {
+        @JvmStatic
+        fun create(
+            stadiumId: Long?,
+            name: String?,
+            description: String?,
+            winCount: Int,
+            drawCount: Int,
+            loseCount: Int,
+            location: String?
+        ): Team {
+            return builder()
+                .stadiumId(stadiumId)
+                .name(name)
+                .description(description)
+                .totalRecord(TotalRecord.Companion.builder().build())
+                .location(location)
+                .build()
         }
 
-        public String toString() {
-            return "Team.TeamBuilder(teamId=" + this.teamId + ", stadiumId=" + this.stadiumId + ", name=" + this.name + ", description=" + this.description + ", totalRecord=" + this.totalRecord + ", location=" + this.location + ")";
+        fun builder(): TeamBuilder {
+            return TeamBuilder()
         }
     }
 }

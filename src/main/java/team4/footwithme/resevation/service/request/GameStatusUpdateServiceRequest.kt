@@ -1,9 +1,10 @@
-package team4.footwithme.resevation.service.request;
+package team4.footwithme.resevation.service.request
 
-import team4.footwithme.resevation.domain.GameStatus;
+import team4.footwithme.resevation.domain.GameStatus
 
-public record GameStatusUpdateServiceRequest(
-    Long gameId,
-    GameStatus status
+@JvmRecord
+data class GameStatusUpdateServiceRequest(
+    val gameId: Long?,
+    val status: GameStatus?
 ) {
 }

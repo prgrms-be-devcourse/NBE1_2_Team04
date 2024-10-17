@@ -1,13 +1,13 @@
-package team4.footwithme.member.oauth2;
+package team4.footwithme.member.oauth2
 
-import team4.footwithme.member.domain.LoginProvider;
+import team4.footwithme.member.domain.LoginProvider
 
-public interface OAuth2MemberDetails {
-    LoginProvider getProvider();
+interface OAuth2MemberDetails {
+    val provider: LoginProvider?
 
-    String getSNSId();
+    val sNSId: String?
 
-    String getEmail();
+    val email: String?
 
-    String getName();
+    val name: String?
 }

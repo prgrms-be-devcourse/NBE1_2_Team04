@@ -1,85 +1,78 @@
-package team4.footwithme.member.jwt;
+package team4.footwithme.member.jwt
 
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
-import org.springframework.util.ObjectUtils;
-import org.springframework.web.filter.OncePerRequestFilter;
-
-import java.io.IOException;
-import java.util.Arrays;
+import jakarta.servlet.FilterChain
+import jakarta.servlet.ServletException
+import jakarta.servlet.http.Cookie
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
+import org.springframework.data.redis.core.RedisTemplate
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.stereotype.Component
+import org.springframework.util.ObjectUtils
+import org.springframework.web.filter.OncePerRequestFilter
+import java.io.IOException
+import java.util.*
 
 @Component
-public class JwtTokenFilter extends OncePerRequestFilter {
-
-    public static final String ACCESS_TOKEN = "Authorization";
-    public static final String REFRESH_TOKEN = "refresh_token";
-    private static final String COOKIE_REFRESH_TOKEN = "refreshToken";
-    private final JwtTokenUtil jwtTokenUtil;
-    private final RedisTemplate redisTemplate;
-
-    public JwtTokenFilter(JwtTokenUtil jwtTokenUtil, RedisTemplate redisTemplate) {
-        this.jwtTokenUtil = jwtTokenUtil;
-        this.redisTemplate = redisTemplate;
-    }
-
-    public static String getRefreshTokenByRequest(HttpServletRequest request) {
-        Cookie cookies[] = request.getCookies();
-
-        if (cookies != null && cookies.length != 0) {
-            return Arrays.stream(cookies)
-                .filter(c -> c.getName().equals(COOKIE_REFRESH_TOKEN)).findFirst().map(Cookie::getValue)
-                .orElse(null);
-        }
-
-        return null;
-    }
-
-    @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String cookie_refreshToken = getRefreshTokenByRequest(request);
-        String accessToken = jwtTokenUtil.getHeaderToken(request, ACCESS_TOKEN);
-        String refreshToken = jwtTokenUtil.getHeaderToken(request, REFRESH_TOKEN);
+class JwtTokenFilter(private val jwtTokenUtil: JwtTokenUtil, private val redisTemplate: RedisTemplate<*, *>) :
+    OncePerRequestFilter() {
+    @Throws(ServletException::class, IOException::class)
+    override fun doFilterInternal(
+        request: HttpServletRequest,
+        response: HttpServletResponse,
+        filterChain: FilterChain
+    ) {
+        val cookie_refreshToken = getRefreshTokenByRequest(request)
+        val accessToken = jwtTokenUtil.getHeaderToken(request, ACCESS_TOKEN)
+        val refreshToken = jwtTokenUtil.getHeaderToken(request, REFRESH_TOKEN)
         if (cookie_refreshToken != null) {
-            processSecurity(accessToken, cookie_refreshToken, response);
+            processSecurity(accessToken, cookie_refreshToken, response)
         }
 
         if (cookie_refreshToken == null) {
-            processSecurity(accessToken, refreshToken, response);
+            processSecurity(accessToken, refreshToken, response)
         }
 
-        filterChain.doFilter(request, response);
+        filterChain.doFilter(request, response)
     }
 
-    private void processSecurity(String accessToken, String refreshToken, HttpServletResponse response) throws ServletException {
-
+    @Throws(ServletException::class)
+    private fun processSecurity(accessToken: String?, refreshToken: String?, response: HttpServletResponse) {
         if (accessToken != null) {
-            jwtTokenUtil.tokenValidation(accessToken);
+            jwtTokenUtil.tokenValidation(accessToken)
 
-            String isLogout = (String) redisTemplate.opsForValue().get(accessToken);
+            val isLogout = redisTemplate.opsForValue()[accessToken] as String
 
             if (ObjectUtils.isEmpty(isLogout)) {
-                setAuthentication(jwtTokenUtil.getEmailFromToken(accessToken));
+                setAuthentication(jwtTokenUtil.getEmailFromToken(accessToken))
             }
         }
         if (accessToken == null && refreshToken != null) {
-            jwtTokenUtil.refreshTokenValidation(refreshToken);
-            setAuthentication(jwtTokenUtil.getEmailFromToken(refreshToken));
+            jwtTokenUtil.refreshTokenValidation(refreshToken)
+            setAuthentication(jwtTokenUtil.getEmailFromToken(refreshToken))
         }
-
     }
 
-    public void setAuthentication(String email) {
-        Authentication authentication = jwtTokenUtil.createAuthentication(email);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+    fun setAuthentication(email: String?) {
+        val authentication = jwtTokenUtil.createAuthentication(email!!)
+        SecurityContextHolder.getContext().authentication = authentication
     }
 
 
+    companion object {
+        const val ACCESS_TOKEN: String = "Authorization"
+        const val REFRESH_TOKEN: String = "refresh_token"
+        private const val COOKIE_REFRESH_TOKEN = "refreshToken"
+        fun getRefreshTokenByRequest(request: HttpServletRequest): String? {
+            val cookies = request.cookies
+
+            if (cookies != null && cookies.size != 0) {
+                return Arrays.stream(cookies)
+                    .filter { c: Cookie -> c.name == COOKIE_REFRESH_TOKEN }.findFirst().map { obj: Cookie -> obj.value }
+                    .orElse(null)
+            }
+
+            return null
+        }
+    }
 }

@@ -1,19 +1,21 @@
-package team4.footwithme.member.service.request;
+package team4.footwithme.member.service.request
 
-import team4.footwithme.member.domain.*;
+import team4.footwithme.member.domain.*
+import team4.footwithme.member.domain.Member.Companion.create
 
-public record JoinServiceRequest(
-    String email,
-    String password,
-    String name,
-    String phoneNumber,
-    LoginProvider loginProvider,
-    String snsId,
-    Gender gender,
-    MemberRole memberRole,
-    TermsAgreed termsAgree
+@JvmRecord
+data class JoinServiceRequest(
+    @JvmField val email: String?,
+    val password: String?,
+    @JvmField val name: String?,
+    @JvmField val phoneNumber: String?,
+    val loginProvider: LoginProvider,
+    val snsId: String,
+    @JvmField val gender: Gender,
+    @JvmField val memberRole: MemberRole,
+    @JvmField val termsAgree: TermsAgreed?
 ) {
-    public Member toEntity() {
-        return Member.create(email, password, name, phoneNumber, loginProvider, snsId, gender, memberRole, termsAgree);
+    fun toEntity(): Member {
+        return create(email, password, name, phoneNumber, loginProvider, snsId, gender, memberRole, termsAgree)
     }
 }

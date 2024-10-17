@@ -75,13 +75,13 @@ class CourtApiTest extends ApiTestSupport {
         Long invalidStadiumId = -1L;
 
         when(courtService.getCourtsByStadiumId(eq(invalidStadiumId), eq(0), eq("COURT")))
-            .thenThrow(new IllegalArgumentException(ExceptionMessage.STADIUM_NOT_FOUND.getText()));
+            .thenThrow(new IllegalArgumentException(ExceptionMessage.STADIUM_NOT_FOUND.text));
 
         mockMvc.perform(get("/api/v1/court/{stadiumId}/courts", invalidStadiumId)
                 .param("page", "0")
                 .param("sort", "COURT"))
             .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.message").value(ExceptionMessage.STADIUM_NOT_FOUND.getText()));
+            .andExpect(jsonPath("$.message").value(ExceptionMessage.STADIUM_NOT_FOUND.text));
     }
 
     @Test
@@ -101,10 +101,10 @@ class CourtApiTest extends ApiTestSupport {
         Long invalidCourtId = -1L;
 
         when(courtService.getCourtByCourtId(eq(invalidCourtId)))
-            .thenThrow(new IllegalArgumentException(ExceptionMessage.COURT_NOT_FOUND.getText()));
+            .thenThrow(new IllegalArgumentException(ExceptionMessage.COURT_NOT_FOUND.text));
 
         mockMvc.perform(get("/api/v1/court/{courtId}/detail", invalidCourtId))
             .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.message").value(ExceptionMessage.COURT_NOT_FOUND.getText()));
+            .andExpect(jsonPath("$.message").value(ExceptionMessage.COURT_NOT_FOUND.text));
     }
 }

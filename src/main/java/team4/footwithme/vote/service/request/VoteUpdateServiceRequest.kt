@@ -1,9 +1,10 @@
-package team4.footwithme.vote.service.request;
+package team4.footwithme.vote.service.request
 
-import java.time.LocalDateTime;
+import java.time.LocalDateTime
 
-public record VoteUpdateServiceRequest(
-    String title,
-    LocalDateTime endAt
+@JvmRecord
+data class VoteUpdateServiceRequest(
+    val title: String?,
+    val endAt: LocalDateTime?
 ) {
 }

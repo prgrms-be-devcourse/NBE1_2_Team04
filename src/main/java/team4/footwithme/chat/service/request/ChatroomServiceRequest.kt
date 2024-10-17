@@ -1,6 +1,6 @@
-package team4.footwithme.chat.service.request;
+package team4.footwithme.chat.service.request
 
-public record ChatroomServiceRequest(
-    String name
-) {
-}
+@JvmRecord
+data class ChatroomServiceRequest(
+    val name: String?
+)

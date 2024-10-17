@@ -1,19 +1,18 @@
-package team4.footwithme.chat.service;
+package team4.footwithme.chat.service
 
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Slice;
-import team4.footwithme.chat.service.request.ChatServiceRequest;
-import team4.footwithme.chat.service.request.ChatUpdateServiceRequest;
-import team4.footwithme.chat.service.response.ChatResponse;
-import team4.footwithme.member.domain.Member;
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Slice
+import team4.footwithme.chat.service.request.ChatServiceRequest
+import team4.footwithme.chat.service.request.ChatUpdateServiceRequest
+import team4.footwithme.chat.service.response.ChatResponse
+import team4.footwithme.member.domain.Member
 
-public interface ChatService {
+interface ChatService {
+    fun sendMessage(request: ChatServiceRequest?, token: String)
 
-    void sendMessage(ChatServiceRequest request, String token);
+    fun getChatList(chatroomId: Long?, pageRequest: PageRequest?, member: Member?): Slice<ChatResponse>
 
-    Slice<ChatResponse> getChatList(Long chatroomId, PageRequest pageRequest, Member member);
+    fun updateChat(request: ChatUpdateServiceRequest?, member: Member?, chatId: Long?): ChatResponse
 
-    ChatResponse updateChat(ChatUpdateServiceRequest request, Member member, Long chatId);
-
-    Long deleteChat(Member member, Long chatId);
+    fun deleteChat(member: Member?, chatId: Long?): Long?
 }

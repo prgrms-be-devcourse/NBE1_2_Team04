@@ -1,7 +1,7 @@
-package team4.footwithme.vote.service;
+package team4.footwithme.vote.service
 
-public record RegisteredVoteEvent(
-    Long voteId
+@JvmRecord
+data class RegisteredVoteEvent(
+    val voteId: Long?
 ) {
-
 }

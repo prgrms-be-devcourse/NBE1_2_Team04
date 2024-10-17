@@ -1,41 +1,34 @@
-package team4.footwithme.chat.repository;
+package team4.footwithme.chat.repository
 
-import com.querydsl.jpa.impl.JPAQueryFactory;
-import team4.footwithme.chat.domain.ChatMember;
-import team4.footwithme.chat.domain.Chatroom;
-import team4.footwithme.global.domain.IsDeleted;
-import team4.footwithme.member.domain.Member;
+import com.querydsl.jpa.impl.JPAQueryFactory
+import team4.footwithme.chat.domain.ChatMember
+import team4.footwithme.chat.domain.Chatroom
+import team4.footwithme.chat.domain.QChatMember
+import team4.footwithme.global.domain.IsDeleted
+import team4.footwithme.member.domain.Member
 
-import java.util.List;
-
-import static team4.footwithme.chat.domain.QChatMember.chatMember;
-
-public class CustomChatMemberRepositoryImpl implements CustomChatMemberRepository {
-    private final JPAQueryFactory queryFactory;
-
-    public CustomChatMemberRepositoryImpl(JPAQueryFactory queryFactory) {
-        this.queryFactory = queryFactory;
-    }
-
-    @Override
-    public Boolean existByMemberAndChatroom(Member member, Chatroom chatroom) {
-        Integer count = queryFactory
+class CustomChatMemberRepositoryImpl(private val queryFactory: JPAQueryFactory) : CustomChatMemberRepository {
+    override fun existByMemberAndChatroom(member: Member, chatroom: Chatroom): Boolean {
+        val count = queryFactory
             .selectOne()
-            .from(chatMember)
-            .where(chatMember.isDeleted.eq(IsDeleted.FALSE)
-                .and(chatMember.chatRoom.eq(chatroom))
-                .and(chatMember.member.eq(member)))
-            .fetchFirst();
+            .from(QChatMember.chatMember)
+            .where(
+                QChatMember.chatMember.isDeleted.eq(IsDeleted.FALSE)
+                    .and(QChatMember.chatMember.chatRoom.eq(chatroom))
+                    .and(QChatMember.chatMember.member.eq(member))
+            )
+            .fetchFirst()
 
-        return count != null;
+        return count != null
     }
 
-    @Override
-    public List<ChatMember> findByChatroom(Chatroom chatroom) {
-        return queryFactory.select(chatMember)
-            .from(chatMember)
-            .where(chatMember.isDeleted.eq(IsDeleted.FALSE)
-                .and(chatMember.chatRoom.eq(chatroom)))
-            .fetch();
+    override fun findByChatroom(chatroom: Chatroom): List<ChatMember>? {
+        return queryFactory.select(QChatMember.chatMember)
+            .from(QChatMember.chatMember)
+            .where(
+                QChatMember.chatMember.isDeleted.eq(IsDeleted.FALSE)
+                    .and(QChatMember.chatMember.chatRoom.eq(chatroom))
+            )
+            .fetch()
     }
 }

@@ -1,4 +1,3 @@
-package team4.footwithme.team.service;
+package team4.footwithme.team.service
 
-public interface TeamRateService {
-}
+interface TeamRateService 

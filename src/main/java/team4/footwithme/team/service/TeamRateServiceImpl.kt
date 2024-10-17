@@ -1,9 +1,6 @@
-package team4.footwithme.team.service;
+package team4.footwithme.team.service
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Service
 
 @Service
-public class TeamRateServiceImpl implements TeamRateService {
-    public TeamRateServiceImpl() {
-    }
-}
+class TeamRateServiceImpl : TeamRateService

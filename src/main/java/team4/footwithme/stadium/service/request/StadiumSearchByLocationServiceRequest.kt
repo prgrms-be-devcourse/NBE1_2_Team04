@@ -1,8 +1,8 @@
-package team4.footwithme.stadium.service.request;
+package team4.footwithme.stadium.service.request
 
-public record StadiumSearchByLocationServiceRequest(
-    Double latitude,
-    Double longitude,
-    Double distance
-) {
-}
+@JvmRecord
+data class StadiumSearchByLocationServiceRequest(
+    val latitude: Double?,
+    val longitude: Double?,
+    val distance: Double?
+)

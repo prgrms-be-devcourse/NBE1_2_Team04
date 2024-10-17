@@ -1,19 +1,16 @@
-package team4.footwithme.member.jwt.response;
+package team4.footwithme.member.jwt.response
 
-import lombok.Builder;
+import lombok.Builder
 
-@Builder
-public record TokenResponse(
-    String accessToken,
-    String refreshToken,
-    Long refreshTokenExpirationTime
+@JvmRecord
+data class TokenResponse(
+    @JvmField val accessToken: String?,
+    @JvmField val refreshToken: String?,
+    @JvmField val refreshTokenExpirationTime: Long?
 ) {
-
-    public static TokenResponse of(String accessToken, String refreshToken, Long refreshTokenExpirationTime) {
-        return TokenResponse.builder()
-            .accessToken(accessToken)
-            .refreshToken(refreshToken)
-            .refreshTokenExpirationTime(refreshTokenExpirationTime)
-            .build();
+    companion object {
+        fun of(accessToken: String?, refreshToken: String?, refreshTokenExpirationTime: Long?): TokenResponse {
+            return TokenResponse(accessToken, refreshToken, refreshTokenExpirationTime)
+        }
     }
 }

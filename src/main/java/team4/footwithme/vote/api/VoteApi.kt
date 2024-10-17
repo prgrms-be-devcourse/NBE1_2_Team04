@@ -1,62 +1,88 @@
-package team4.footwithme.vote.api;
+package team4.footwithme.vote.api
 
-import jakarta.validation.Valid;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
-import team4.footwithme.global.api.ApiResponse;
-import team4.footwithme.member.jwt.PrincipalDetails;
-import team4.footwithme.vote.api.request.VoteCourtCreateRequest;
-import team4.footwithme.vote.api.request.VoteDateCreateRequest;
-import team4.footwithme.vote.api.request.VoteUpdateRequest;
-import team4.footwithme.vote.service.VoteService;
-import team4.footwithme.vote.service.response.AllVoteResponse;
-import team4.footwithme.vote.service.response.VoteResponse;
-
-import java.util.List;
+import jakarta.validation.Valid
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.web.bind.annotation.*
+import team4.footwithme.global.api.ApiResponse
+import team4.footwithme.member.jwt.PrincipalDetails
+import team4.footwithme.vote.api.request.VoteCourtCreateRequest
+import team4.footwithme.vote.api.request.VoteDateCreateRequest
+import team4.footwithme.vote.api.request.VoteUpdateRequest
+import team4.footwithme.vote.service.VoteService
+import team4.footwithme.vote.service.response.AllVoteResponse
+import team4.footwithme.vote.service.response.VoteResponse
 
 @RestController
 @RequestMapping("/api/v1/votes")
-public class VoteApi {
-
-    private final VoteService voteService;
-
-    public VoteApi(VoteService voteService) {
-        this.voteService = voteService;
-    }
-
+class VoteApi(private val voteService: VoteService) {
     @PostMapping("/stadiums/{teamId}")
-    public ApiResponse<VoteResponse> createLocateVote(@Valid @RequestBody VoteCourtCreateRequest request, @PathVariable Long teamId, @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        return ApiResponse.created(voteService.createCourtVote(request.toServiceRequest(), teamId, principalDetails.getMember()));
+    fun createLocateVote(
+        @RequestBody request: @Valid VoteCourtCreateRequest?,
+        @PathVariable teamId: Long,
+        @AuthenticationPrincipal principalDetails: PrincipalDetails
+    ): ApiResponse<VoteResponse?> {
+        return ApiResponse.Companion.created<VoteResponse?>(
+            voteService.createCourtVote(
+                request!!.toServiceRequest(),
+                teamId,
+                principalDetails.member
+            )
+        )
     }
 
     @GetMapping("{voteId}")
-    public ApiResponse<VoteResponse> getVote(@PathVariable Long voteId) {
-        return ApiResponse.ok(voteService.getVote(voteId));
+    fun getVote(@PathVariable voteId: Long?): ApiResponse<VoteResponse?> {
+        return ApiResponse.Companion.ok<VoteResponse?>(voteService.getVote(voteId))
     }
 
     @PostMapping("/dates/{teamId}")
-    public ApiResponse<VoteResponse> createDateVote(@Valid @RequestBody VoteDateCreateRequest request, @PathVariable Long teamId, @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        return ApiResponse.created(voteService.createDateVote(request.toServiceRequest(), teamId, principalDetails.getMember()));
+    fun createDateVote(
+        @RequestBody request: @Valid VoteDateCreateRequest?,
+        @PathVariable teamId: Long,
+        @AuthenticationPrincipal principalDetails: PrincipalDetails
+    ): ApiResponse<VoteResponse?> {
+        return ApiResponse.Companion.created<VoteResponse?>(
+            voteService.createDateVote(
+                request!!.toServiceRequest(),
+                teamId,
+                principalDetails.member
+            )
+        )
     }
 
     @DeleteMapping("{voteId}")
-    public ApiResponse<Long> deleteVote(@PathVariable Long voteId, @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        return ApiResponse.ok(voteService.deleteVote(voteId, principalDetails.getMember()));
+    fun deleteVote(
+        @PathVariable voteId: Long?,
+        @AuthenticationPrincipal principalDetails: PrincipalDetails
+    ): ApiResponse<Long?> {
+        return ApiResponse.Companion.ok<Long?>(voteService.deleteVote(voteId, principalDetails.member))
     }
 
     @PutMapping("{voteId}")
-    public ApiResponse<VoteResponse> updateVote(@Valid @RequestBody VoteUpdateRequest request, @PathVariable Long voteId, @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        return ApiResponse.ok(voteService.updateVote(request.toServiceRequest(), voteId, principalDetails.getMember()));
+    fun updateVote(
+        @RequestBody request: @Valid VoteUpdateRequest?,
+        @PathVariable voteId: Long?,
+        @AuthenticationPrincipal principalDetails: PrincipalDetails
+    ): ApiResponse<VoteResponse?> {
+        return ApiResponse.Companion.ok<VoteResponse?>(
+            voteService.updateVote(
+                request!!.toServiceRequest(),
+                voteId,
+                principalDetails.member
+            )
+        )
     }
 
     @PostMapping("/close/{voteId}")
-    public ApiResponse<VoteResponse> closeVote(@PathVariable Long voteId, @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        return ApiResponse.ok(voteService.closeVote(voteId, principalDetails.getMember()));
+    fun closeVote(
+        @PathVariable voteId: Long?,
+        @AuthenticationPrincipal principalDetails: PrincipalDetails
+    ): ApiResponse<VoteResponse?> {
+        return ApiResponse.Companion.ok<VoteResponse?>(voteService.closeVote(voteId, principalDetails.member))
     }
 
     @GetMapping("/all/{teamId}")
-    public ApiResponse<List<AllVoteResponse>> getAllVotes(@PathVariable Long teamId) {
-        return ApiResponse.ok(voteService.getAllVotes(teamId));
+    fun getAllVotes(@PathVariable teamId: Long): ApiResponse<List<AllVoteResponse>?> {
+        return ApiResponse.Companion.ok<List<AllVoteResponse>?>(voteService.getAllVotes(teamId))
     }
-
 }

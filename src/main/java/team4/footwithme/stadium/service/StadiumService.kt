@@ -1,27 +1,31 @@
-package team4.footwithme.stadium.service;
+package team4.footwithme.stadium.service
 
-import org.springframework.data.domain.Slice;
-import team4.footwithme.member.domain.Member;
-import team4.footwithme.stadium.service.request.StadiumRegisterServiceRequest;
-import team4.footwithme.stadium.service.request.StadiumSearchByLocationServiceRequest;
-import team4.footwithme.stadium.service.request.StadiumUpdateServiceRequest;
-import team4.footwithme.stadium.service.response.StadiumDetailResponse;
-import team4.footwithme.stadium.service.response.StadiumsResponse;
+import org.springframework.data.domain.Slice
+import team4.footwithme.member.domain.Member
+import team4.footwithme.stadium.service.request.StadiumRegisterServiceRequest
+import team4.footwithme.stadium.service.request.StadiumSearchByLocationServiceRequest
+import team4.footwithme.stadium.service.request.StadiumUpdateServiceRequest
+import team4.footwithme.stadium.service.response.StadiumDetailResponse
+import team4.footwithme.stadium.service.response.StadiumsResponse
 
-public interface StadiumService {
-    Slice<StadiumsResponse> getStadiumList(Integer page, String sort);
+interface StadiumService {
+    fun getStadiumList(page: Int?, sort: String?): Slice<StadiumsResponse>
 
-    StadiumDetailResponse getStadiumDetail(Long id);
+    fun getStadiumDetail(id: Long?): StadiumDetailResponse
 
-    Slice<StadiumsResponse> getStadiumsByName(String query, Integer page, String sort);
+    fun getStadiumsByName(query: String?, page: Int?, sort: String?): Slice<StadiumsResponse>
 
-    Slice<StadiumsResponse> getStadiumsByAddress(String address, Integer page, String sort);
+    fun getStadiumsByAddress(address: String?, page: Int?, sort: String?): Slice<StadiumsResponse>
 
-    Slice<StadiumsResponse> getStadiumsWithinDistance(StadiumSearchByLocationServiceRequest request, Integer page, String sort);
+    fun getStadiumsWithinDistance(
+        request: StadiumSearchByLocationServiceRequest?,
+        page: Int?,
+        sort: String?
+    ): Slice<StadiumsResponse>
 
-    StadiumDetailResponse registerStadium(StadiumRegisterServiceRequest request, Member member);
+    fun registerStadium(request: StadiumRegisterServiceRequest?, member: Member?): StadiumDetailResponse
 
-    StadiumDetailResponse updateStadium(StadiumUpdateServiceRequest request, Member member, Long stadiumId);
+    fun updateStadium(request: StadiumUpdateServiceRequest?, member: Member?, stadiumId: Long?): StadiumDetailResponse
 
-    void deleteStadium(Member member, Long stadiumId);
+    fun deleteStadium(member: Member?, stadiumId: Long?)
 }

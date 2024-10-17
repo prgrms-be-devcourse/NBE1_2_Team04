@@ -1,11 +1,9 @@
-package team4.footwithme.resevation.repository;
+package team4.footwithme.resevation.repository
 
-import team4.footwithme.resevation.domain.Participant;
+import team4.footwithme.resevation.domain.Participant
 
-import java.util.List;
+interface CustomParticipantRepository {
+    fun findParticipantByReservationIdAndRole(reservationId: Long?): List<Participant>?
 
-public interface CustomParticipantRepository {
-    List<Participant> findParticipantByReservationIdAndRole(Long reservationId);
-
-    List<Participant> findParticipantMercenaryByReservationId(Long reservationId);
+    fun findParticipantMercenaryByReservationId(reservationId: Long?): List<Participant>?
 }

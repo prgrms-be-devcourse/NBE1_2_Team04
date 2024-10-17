@@ -1,9 +1,10 @@
-package team4.footwithme.resevation.service.request;
+package team4.footwithme.resevation.service.request
 
-import team4.footwithme.resevation.domain.ParticipantRole;
+import team4.footwithme.resevation.domain.ParticipantRole
 
-public record ParticipantUpdateServiceRequest(
-    Long participantId,
-    ParticipantRole role
+@JvmRecord
+data class ParticipantUpdateServiceRequest(
+    val participantId: Long?,
+    val role: ParticipantRole?
 ) {
 }

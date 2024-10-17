@@ -1,19 +1,16 @@
-package team4.footwithme.vote.repository;
+package team4.footwithme.vote.repository
 
-import team4.footwithme.vote.domain.Vote;
+import team4.footwithme.vote.domain.Vote
+import java.util.*
 
-import java.util.List;
-import java.util.Optional;
+interface CustomVoteRepository {
+    fun findNotDeletedVoteById(id: Long?): Optional<Vote>
 
-public interface CustomVoteRepository {
+    fun findOpenedVotes(): List<Vote>?
 
-    Optional<Vote> findNotDeletedVoteById(Long id);
+    fun choiceMemberCountByVoteId(voteId: Long?): Long?
 
-    List<Vote> findOpenedVotes();
+    fun findRecentlyVoteByTeamId(teamId: Long?): Vote
 
-    Long choiceMemberCountByVoteId(Long voteId);
-
-    Vote findRecentlyVoteByTeamId(Long teamId);
-
-    List<Vote> findAllByTeamId(Long teamId);
+    fun findAllByTeamId(teamId: Long?): List<Vote>?
 }

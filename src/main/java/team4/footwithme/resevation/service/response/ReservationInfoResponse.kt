@@ -1,21 +1,24 @@
-package team4.footwithme.resevation.service.response;
+package team4.footwithme.resevation.service.response
 
-import team4.footwithme.resevation.domain.Reservation;
-import team4.footwithme.resevation.domain.ReservationStatus;
-
-import java.time.LocalDateTime;
+import team4.footwithme.resevation.domain.Reservation
+import team4.footwithme.resevation.domain.ReservationStatus
+import java.time.LocalDateTime
 
 // TODO :: ReservationInfoResponse 이름 변경 부탁
-public record ReservationInfoResponse(
-    String courtName,
-    LocalDateTime matchDate,
-    ReservationStatus status
+@JvmRecord
+data class ReservationInfoResponse(
+    val courtName: String?,
+    val matchDate: LocalDateTime?,
+    val status: ReservationStatus?
 ) {
-    public static ReservationInfoResponse from(Reservation reservation) {
-        return new ReservationInfoResponse(
-            reservation.getCourt().getName(),
-            reservation.getMatchDate(),
-            reservation.getReservationStatus()
-        );
+
+    companion object {
+        fun from(reservation: Reservation?): ReservationInfoResponse {
+            return ReservationInfoResponse(
+                reservation!!.court!!.name,
+                reservation.matchDate,
+                reservation.reservationStatus
+            )
+        }
     }
 }

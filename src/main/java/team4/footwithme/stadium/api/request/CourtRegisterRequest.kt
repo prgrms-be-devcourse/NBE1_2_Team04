@@ -1,28 +1,30 @@
-package team4.footwithme.stadium.api.request;
+package team4.footwithme.stadium.api.request
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PositiveOrZero;
-import jakarta.validation.constraints.Size;
-import team4.footwithme.stadium.service.request.CourtRegisterServiceRequest;
+import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.NotNull
+import jakarta.validation.constraints.PositiveOrZero
+import jakarta.validation.constraints.Size
+import team4.footwithme.stadium.service.request.CourtRegisterServiceRequest
+import java.math.BigDecimal
 
-import java.math.BigDecimal;
+@JvmRecord
+data class CourtRegisterRequest(
+    stadiumId: @NotNull(message = "풋살장 아이디는 필수입니다.") Long?,
 
-public record CourtRegisterRequest(
-    @NotNull(message = "풋살장 아이디는 필수입니다.")
-    Long stadiumId,
+    name: @NotBlank(message = "구장 이름은 필수입니다.") @Size(max = 100, message = "구장 이름은 최대 100자까지 가능합니다.") String?,
 
-    @NotBlank(message = "구장 이름은 필수입니다.")
-    @Size(max = 100, message = "구장 이름은 최대 100자까지 가능합니다.")
-    String name,
+    description: String,
 
-    String description,
-
-    @NotNull(message = "시간당 요금은 필수입니다.")
-    @PositiveOrZero(message = "요금은 음수가 될 수 없습니다.")
-    BigDecimal price_per_hour
+    price_per_hour: @NotNull(message = "시간당 요금은 필수입니다.") @PositiveOrZero(message = "요금은 음수가 될 수 없습니다.") BigDecimal?
 ) {
-    public CourtRegisterServiceRequest toServiceRequest() {
-        return new CourtRegisterServiceRequest(stadiumId, name, description, price_per_hour);
+    fun toServiceRequest(): CourtRegisterServiceRequest {
+        return CourtRegisterServiceRequest(stadiumId, name, description, price_per_hour)
     }
+
+    val stadiumId: @NotNull(message = "풋살장 아이디는 필수입니다.") Long? = stadiumId
+    val name: @NotBlank(message = "구장 이름은 필수입니다.") @Size(max = 100, message = "구장 이름은 최대 100자까지 가능합니다.") String? =
+        name
+    val description: String = description
+    val price_per_hour: @NotNull(message = "시간당 요금은 필수입니다.") @PositiveOrZero(message = "요금은 음수가 될 수 없습니다.") BigDecimal? =
+        price_per_hour
 }

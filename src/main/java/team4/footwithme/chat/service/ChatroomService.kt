@@ -1,20 +1,20 @@
-package team4.footwithme.chat.service;
+package team4.footwithme.chat.service
 
-import team4.footwithme.chat.service.request.ChatroomServiceRequest;
-import team4.footwithme.chat.service.response.ChatroomResponse;
+import team4.footwithme.chat.service.request.ChatroomServiceRequest
+import team4.footwithme.chat.service.response.ChatroomResponse
 
-public interface ChatroomService {
-    ChatroomResponse createChatroom(ChatroomServiceRequest request);
+interface ChatroomService {
+    fun createChatroom(request: ChatroomServiceRequest?): ChatroomResponse
 
-    Long deleteChatroomByChatroomId(Long chatroomId);
+    fun deleteChatroomByChatroomId(chatroomId: Long?): Long?
 
-    ChatroomResponse updateChatroom(Long chatroomId, ChatroomServiceRequest request);
+    fun updateChatroom(chatroomId: Long?, request: ChatroomServiceRequest?): ChatroomResponse
 
-    ChatroomResponse createReservationChatroom(ChatroomServiceRequest request, Long reservationId);
+    fun createReservationChatroom(request: ChatroomServiceRequest, reservationId: Long?): ChatroomResponse
 
-    ChatroomResponse createTeamChatroom(ChatroomServiceRequest request, Long teamId);
+    fun createTeamChatroom(request: ChatroomServiceRequest, teamId: Long?): ChatroomResponse
 
-    Long deleteTeamChatroom(Long teamId);
+    fun deleteTeamChatroom(teamId: Long): Long?
 
-    Long deleteReservationChatroom(Long reservationId);
+    fun deleteReservationChatroom(reservationId: Long): Long?
 }

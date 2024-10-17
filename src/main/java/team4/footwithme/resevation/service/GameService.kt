@@ -1,16 +1,15 @@
-package team4.footwithme.resevation.service;
+package team4.footwithme.resevation.service
 
-import org.springframework.data.domain.Slice;
-import team4.footwithme.member.domain.Member;
-import team4.footwithme.resevation.service.request.GameRegisterServiceRequest;
-import team4.footwithme.resevation.service.request.GameStatusUpdateServiceRequest;
-import team4.footwithme.resevation.service.response.GameDetailResponse;
+import org.springframework.data.domain.Slice
+import team4.footwithme.member.domain.Member
+import team4.footwithme.resevation.service.request.GameRegisterServiceRequest
+import team4.footwithme.resevation.service.request.GameStatusUpdateServiceRequest
+import team4.footwithme.resevation.service.response.GameDetailResponse
 
-public interface GameService {
+interface GameService {
+    fun registerGame(member: Member?, request: GameRegisterServiceRequest?): GameDetailResponse
 
-    GameDetailResponse registerGame(Member member, GameRegisterServiceRequest request);
+    fun updateGameStatus(member: Member?, request: GameStatusUpdateServiceRequest?): String?
 
-    String updateGameStatus(Member member, GameStatusUpdateServiceRequest request);
-
-    Slice<GameDetailResponse> findPendingGames(Member member, Long reservationId, Integer page);
+    fun findPendingGames(member: Member?, reservationId: Long?, page: Int?): Slice<GameDetailResponse>
 }

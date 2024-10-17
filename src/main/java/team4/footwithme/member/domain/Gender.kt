@@ -1,6 +1,6 @@
-package team4.footwithme.member.domain;
+package team4.footwithme.member.domain
 
-public enum Gender {
+enum class Gender {
     MALE,
     FEMALE
 }

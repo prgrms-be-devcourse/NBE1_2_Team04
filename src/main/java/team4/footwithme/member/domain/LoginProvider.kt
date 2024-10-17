@@ -1,5 +1,5 @@
-package team4.footwithme.member.domain;
+package team4.footwithme.member.domain
 
-public enum LoginProvider {
+enum class LoginProvider {
     KAKAO, NAVER, GOOGLE, ORIGINAL
 }

@@ -94,10 +94,10 @@ class TeamMemberServiceImplTest extends IntegrationTestSupport {
 
         //then
         assertThat(response.size()).isEqualTo(4);
-        assertThat(response.get(0).name()).isEqualTo("팀장");
-        assertThat(response.get(0).role()).isEqualTo(TeamMemberRole.MEMBER);
-        assertThat(response.get(1).name()).isEqualTo("남팀원01");
-        assertThat(response.get(1).role()).isEqualTo(TeamMemberRole.MEMBER);
+        assertThat(response.get(0).name).isEqualTo("팀장");
+        assertThat(response.get(0).role).isEqualTo(TeamMemberRole.MEMBER);
+        assertThat(response.get(1).name).isEqualTo("남팀원01");
+        assertThat(response.get(1).role).isEqualTo(TeamMemberRole.MEMBER);
     }
 
     @Test
@@ -125,10 +125,10 @@ class TeamMemberServiceImplTest extends IntegrationTestSupport {
 
         //then
         assertThat(response.size()).isEqualTo(4);
-        assertThat(response.get(0).name()).isEqualTo("팀장");
-        assertThat(response.get(0).role()).isEqualTo(TeamMemberRole.CREATOR);
-        assertThat(response.get(1).name()).isEqualTo("남팀원01");
-        assertThat(response.get(1).role()).isEqualTo(TeamMemberRole.MEMBER);
+        assertThat(response.get(0).name).isEqualTo("팀장");
+        assertThat(response.get(0).role).isEqualTo(TeamMemberRole.CREATOR);
+        assertThat(response.get(1).name).isEqualTo("남팀원01");
+        assertThat(response.get(1).role).isEqualTo(TeamMemberRole.MEMBER);
     }
 
     @Test
@@ -152,8 +152,8 @@ class TeamMemberServiceImplTest extends IntegrationTestSupport {
         chatMemberRepository.save(ChatMember.create(member, chatroom));
 
         //when -- 본인 탈퇴
-        teamMemberService.deleteTeamMemberByCreator(team.getTeamId(), user.getTeamMemberId(), leader);
-        TeamMember result = teamMemberRepository.findById(user.getTeamMemberId())
+        teamMemberService.deleteTeamMemberByCreator(team.getTeamId(), user.teamMemberId, leader);
+        TeamMember result = teamMemberRepository.findById(user.teamMemberId)
             .orElse(null);
         //then
         assertThat(teamMemberRepository.findAll()).hasSize(2);
@@ -183,7 +183,7 @@ class TeamMemberServiceImplTest extends IntegrationTestSupport {
 
         //when -- 본인 탈퇴
         teamMemberService.deleteTeamMember(team.getTeamId(), member);
-        TeamMember result = teamMemberRepository.findById(user.getTeamMemberId())
+        TeamMember result = teamMemberRepository.findById(user.teamMemberId)
             .orElse(null);
         //then
         assertThat(teamMemberRepository.findAll()).hasSize(2);

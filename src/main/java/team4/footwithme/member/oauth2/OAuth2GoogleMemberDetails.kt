@@ -1,34 +1,17 @@
-package team4.footwithme.member.oauth2;
+package team4.footwithme.member.oauth2
 
-import team4.footwithme.member.domain.LoginProvider;
+import team4.footwithme.member.domain.LoginProvider
 
-import java.util.Map;
+class OAuth2GoogleMemberDetails(private val attributes: Map<String, Any>) : OAuth2MemberDetails {
+    override val provider: LoginProvider?
+        get() = LoginProvider.GOOGLE
 
-public class OAuth2GoogleMemberDetails implements OAuth2MemberDetails {
+    override val sNSId: String?
+        get() = attributes["sub"] as String?
 
-    private Map<String, Object> attributes;
+    override val email: String?
+        get() = attributes["email"] as String?
 
-    public OAuth2GoogleMemberDetails(Map<String, Object> attributes) {
-        this.attributes = attributes;
-    }
-
-    @Override
-    public LoginProvider getProvider() {
-        return LoginProvider.GOOGLE;
-    }
-
-    @Override
-    public String getSNSId() {
-        return (String) attributes.get("sub");
-    }
-
-    @Override
-    public String getEmail() {
-        return (String) attributes.get("email");
-    }
-
-    @Override
-    public String getName() {
-        return (String) attributes.get("name");
-    }
+    override val name: String?
+        get() = attributes["name"] as String?
 }

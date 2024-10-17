@@ -1,64 +1,65 @@
-package team4.footwithme.stadium.api;
+package team4.footwithme.stadium.api
 
-import org.slf4j.Logger;
-import org.springframework.data.domain.Slice;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-import team4.footwithme.global.api.ApiResponse;
-import team4.footwithme.stadium.api.request.StadiumSearchByLocationRequest;
-import team4.footwithme.stadium.api.request.validation.StadiumAllowedValues;
-import team4.footwithme.stadium.service.StadiumService;
-import team4.footwithme.stadium.service.response.StadiumDetailResponse;
-import team4.footwithme.stadium.service.response.StadiumsResponse;
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import org.springframework.data.domain.Slice
+import org.springframework.validation.annotation.Validated
+import org.springframework.web.bind.annotation.*
+import team4.footwithme.global.api.ApiResponse
+import team4.footwithme.stadium.api.request.StadiumSearchByLocationRequest
+import team4.footwithme.stadium.api.request.validation.StadiumAllowedValues
+import team4.footwithme.stadium.service.StadiumService
+import team4.footwithme.stadium.service.response.StadiumDetailResponse
+import team4.footwithme.stadium.service.response.StadiumsResponse
 
 @RestController
 @RequestMapping("/api/v1/stadium")
-public class StadiumApi {
-
-    private static final Logger log = org.slf4j.LoggerFactory.getLogger(StadiumApi.class);
-    private final StadiumService stadiumService;
-
-    public StadiumApi(StadiumService stadiumService) {
-        this.stadiumService = stadiumService;
-    }
-
+class StadiumApi(private val stadiumService: StadiumService) {
     @GetMapping("/stadiums")
-    public ApiResponse<Slice<StadiumsResponse>> stadiums(
-        @RequestParam(defaultValue = "0", required = false) Integer page,
-        @RequestParam(defaultValue = "STADIUM", required = false) @StadiumAllowedValues String sort) {
-        Slice<StadiumsResponse> stadiumList = stadiumService.getStadiumList(page, sort);
-        return ApiResponse.ok(stadiumList);
+    fun stadiums(
+        @RequestParam(defaultValue = "0", required = false) page: Int?,
+        @RequestParam(defaultValue = "STADIUM", required = false) @StadiumAllowedValues sort: String?
+    ): ApiResponse<Slice<StadiumsResponse>?> {
+        val stadiumList = stadiumService.getStadiumList(page, sort)
+        return ApiResponse.ok(stadiumList)
     }
 
     @GetMapping("/stadiums/{stadiumId}/detail")
-    public ApiResponse<StadiumDetailResponse> getStadiumDetailById(@PathVariable Long stadiumId) {
-        StadiumDetailResponse stadiumDetailResponse = stadiumService.getStadiumDetail(stadiumId);
-        return ApiResponse.ok(stadiumDetailResponse);
+    fun getStadiumDetailById(@PathVariable stadiumId: Long?): ApiResponse<StadiumDetailResponse?> {
+        val stadiumDetailResponse = stadiumService.getStadiumDetail(stadiumId)
+        return ApiResponse.ok(stadiumDetailResponse)
     }
 
     @GetMapping("/stadiums/search/name")
-    public ApiResponse<Slice<StadiumsResponse>> getStadiumsByName(
-        @RequestParam String query,
-        @RequestParam(defaultValue = "0", required = false) Integer page,
-        @RequestParam(defaultValue = "STADIUM", required = false) @StadiumAllowedValues String sort) {
-        Slice<StadiumsResponse> stadiums = stadiumService.getStadiumsByName(query, page, sort);
-        return ApiResponse.ok(stadiums);
+    fun getStadiumsByName(
+        @RequestParam query: String?,
+        @RequestParam(defaultValue = "0", required = false) page: Int?,
+        @RequestParam(defaultValue = "STADIUM", required = false) @StadiumAllowedValues sort: String?
+    ): ApiResponse<Slice<StadiumsResponse>?> {
+        val stadiums = stadiumService.getStadiumsByName(query, page, sort)
+        return ApiResponse.ok(stadiums)
     }
 
     @GetMapping("/stadiums/search/address")
-    public ApiResponse<Slice<StadiumsResponse>> getStadiumsByAddress(
-        @RequestParam String query, @RequestParam(defaultValue = "0", required = false) Integer page,
-        @RequestParam(defaultValue = "STADIUM", required = false) @StadiumAllowedValues String sort) {
-        Slice<StadiumsResponse> stadiums = stadiumService.getStadiumsByAddress(query, page, sort);
-        return ApiResponse.ok(stadiums);
+    fun getStadiumsByAddress(
+        @RequestParam query: String?, @RequestParam(defaultValue = "0", required = false) page: Int?,
+        @RequestParam(defaultValue = "STADIUM", required = false) @StadiumAllowedValues sort: String?
+    ): ApiResponse<Slice<StadiumsResponse>?> {
+        val stadiums = stadiumService.getStadiumsByAddress(query, page, sort)
+        return ApiResponse.ok(stadiums)
     }
 
     @PostMapping("/stadiums/search/location")
-    public ApiResponse<Slice<StadiumsResponse>> getStadiumsByLocation(
-        @Validated @RequestBody StadiumSearchByLocationRequest request,
-        @RequestParam(defaultValue = "0", required = false) Integer page,
-        @RequestParam(defaultValue = "STADIUM", required = false) @StadiumAllowedValues String sort) {
-        Slice<StadiumsResponse> stadiums = stadiumService.getStadiumsWithinDistance(request.toServiceRequest(), page, sort);
-        return ApiResponse.ok(stadiums);
+    fun getStadiumsByLocation(
+        @Validated @RequestBody request: StadiumSearchByLocationRequest,
+        @RequestParam(defaultValue = "0", required = false) page: Int?,
+        @RequestParam(defaultValue = "STADIUM", required = false) @StadiumAllowedValues sort: String?
+    ): ApiResponse<Slice<StadiumsResponse>?> {
+        val stadiums = stadiumService.getStadiumsWithinDistance(request.toServiceRequest(), page, sort)
+        return ApiResponse.ok(stadiums)
+    }
+
+    companion object {
+        private val log: Logger = LoggerFactory.getLogger(StadiumApi::class.java)
     }
 }

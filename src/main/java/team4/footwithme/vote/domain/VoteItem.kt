@@ -1,33 +1,24 @@
-package team4.footwithme.vote.domain;
+package team4.footwithme.vote.domain
 
-import jakarta.persistence.*;
+import jakarta.persistence.*
 
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn
 @Entity
-public class VoteItem {
-
+open class VoteItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long voteItemId;
+    val voteItemId: Long? = null
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vote_id", nullable = false)
-    private Vote vote;
+    var vote: Vote? = null
+        
 
-    public VoteItem(Vote vote) {
-        this.vote = vote;
-        vote.addChoice(this);
+    constructor(vote: Vote?) {
+        this.vote = vote
+        vote!!.addChoice(this)
     }
 
-    protected VoteItem() {
-    }
-
-    public Long getVoteItemId() {
-        return this.voteItemId;
-    }
-
-    public Vote getVote() {
-        return this.vote;
-    }
+    protected constructor()
 }

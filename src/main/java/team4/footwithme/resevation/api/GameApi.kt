@@ -1,47 +1,57 @@
-package team4.footwithme.resevation.api;
+package team4.footwithme.resevation.api
 
-import jakarta.validation.Valid;
-import org.springframework.data.domain.Slice;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
-import team4.footwithme.global.api.ApiResponse;
-import team4.footwithme.member.jwt.PrincipalDetails;
-import team4.footwithme.resevation.api.request.GameRegisterRequest;
-import team4.footwithme.resevation.api.request.GameStatusUpdateRequest;
-import team4.footwithme.resevation.service.GameService;
-import team4.footwithme.resevation.service.response.GameDetailResponse;
+import jakarta.validation.Valid
+import org.springframework.data.domain.Slice
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.web.bind.annotation.*
+import team4.footwithme.global.api.ApiResponse
+import team4.footwithme.member.jwt.PrincipalDetails
+import team4.footwithme.resevation.api.request.GameRegisterRequest
+import team4.footwithme.resevation.api.request.GameStatusUpdateRequest
+import team4.footwithme.resevation.service.GameService
+import team4.footwithme.resevation.service.response.GameDetailResponse
 
 @RestController
 @RequestMapping("/api/v1/game")
-public class GameApi {
-
-    private final GameService gameService;
-
-    public GameApi(GameService gameService) {
-        this.gameService = gameService;
-    }
-
+class GameApi(private val gameService: GameService) {
     @PostMapping("/register")
-    public ApiResponse<GameDetailResponse> registerGame(
-        @AuthenticationPrincipal PrincipalDetails currentUser,
-        @Valid @RequestBody GameRegisterRequest request) {
-        return ApiResponse.created(gameService.registerGame(currentUser.getMember(), request.toServiceRequest()));
+    fun registerGame(
+        @AuthenticationPrincipal currentUser: PrincipalDetails,
+        @RequestBody request: @Valid GameRegisterRequest?
+    ): ApiResponse<GameDetailResponse?> {
+        return ApiResponse.Companion.created<GameDetailResponse?>(
+            gameService.registerGame(
+                currentUser.member,
+                request!!.toServiceRequest()
+            )
+        )
     }
 
     @GetMapping("/game")
-    public ApiResponse<Slice<GameDetailResponse>> getPendingGames(
-        @AuthenticationPrincipal PrincipalDetails currentUser,
-        @RequestParam(defaultValue = "0", required = false) Integer page,
-        @RequestParam Long reservationId) {
-        return ApiResponse.ok(gameService.findPendingGames(currentUser.getMember(), reservationId, page));
+    fun getPendingGames(
+        @AuthenticationPrincipal currentUser: PrincipalDetails,
+        @RequestParam(defaultValue = "0", required = false) page: Int?,
+        @RequestParam reservationId: Long?
+    ): ApiResponse<Slice<GameDetailResponse>?> {
+        return ApiResponse.Companion.ok<Slice<GameDetailResponse>?>(
+            gameService.findPendingGames(
+                currentUser.member,
+                reservationId,
+                page
+            )
+        )
     }
 
     @PutMapping("/status")
-    public ApiResponse<String> updateGameStatus(
-        @AuthenticationPrincipal PrincipalDetails currentUser,
-        @Valid @RequestBody GameStatusUpdateRequest request) {
-        return ApiResponse.ok(gameService.updateGameStatus(currentUser.getMember(), request.toServiceRequest()));
+    fun updateGameStatus(
+        @AuthenticationPrincipal currentUser: PrincipalDetails,
+        @RequestBody request: @Valid GameStatusUpdateRequest?
+    ): ApiResponse<String?> {
+        return ApiResponse.Companion.ok<String?>(
+            gameService.updateGameStatus(
+                currentUser.member,
+                request!!.toServiceRequest()
+            )
+        )
     }
-
-
 }

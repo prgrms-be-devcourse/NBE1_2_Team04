@@ -1,148 +1,125 @@
-package team4.footwithme.team.service;
+package team4.footwithme.team.service
 
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import team4.footwithme.chat.service.event.TeamMemberJoinEvent;
-import team4.footwithme.chat.service.event.TeamMemberLeaveEvent;
-import team4.footwithme.chat.service.event.TeamMembersJoinEvent;
-import team4.footwithme.member.domain.Member;
-import team4.footwithme.member.repository.MemberRepository;
-import team4.footwithme.team.domain.Team;
-import team4.footwithme.team.domain.TeamMember;
-import team4.footwithme.team.domain.TeamMemberRole;
-import team4.footwithme.team.repository.TeamMemberRepository;
-import team4.footwithme.team.repository.TeamRepository;
-import team4.footwithme.team.service.request.TeamMemberServiceRequest;
-import team4.footwithme.team.service.response.TeamResponse;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.context.ApplicationEventPublisher
+import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
+import team4.footwithme.chat.service.event.TeamMemberJoinEvent
+import team4.footwithme.chat.service.event.TeamMemberLeaveEvent
+import team4.footwithme.chat.service.event.TeamMembersJoinEvent
+import team4.footwithme.member.domain.Member
+import team4.footwithme.member.repository.MemberRepository
+import team4.footwithme.team.domain.Team
+import team4.footwithme.team.domain.TeamMember
+import team4.footwithme.team.domain.TeamMemberRole
+import team4.footwithme.team.repository.TeamMemberRepository
+import team4.footwithme.team.repository.TeamRepository
+import team4.footwithme.team.service.request.TeamMemberServiceRequest
+import team4.footwithme.team.service.response.TeamResponse
 
 @Service
-public class TeamMemberServiceImpl implements TeamMemberService {
-
-
-    private final MemberRepository memberRepository;
-    private final TeamRepository teamRepository;
-    private final TeamMemberRepository teamMemberRepository;
-
-    private final ApplicationEventPublisher publisher;
-
-    public TeamMemberServiceImpl(MemberRepository memberRepository, TeamRepository teamRepository, TeamMemberRepository teamMemberRepository, ApplicationEventPublisher publisher) {
-        this.memberRepository = memberRepository;
-        this.teamRepository = teamRepository;
-        this.teamMemberRepository = teamMemberRepository;
-        this.publisher = publisher;
-    }
-
-    @Override
+class TeamMemberServiceImpl(
+    private val memberRepository: MemberRepository,
+    private val teamRepository: TeamRepository,
+    private val teamMemberRepository: TeamMemberRepository,
+    private val publisher: ApplicationEventPublisher
+) : TeamMemberService {
     @Transactional
-    public List<TeamResponse> addTeamMembers(Long teamId, TeamMemberServiceRequest request) {
+    override fun addTeamMembers(teamId: Long, request: TeamMemberServiceRequest?): List<TeamResponse> {
         //팀원 추가할 팀 찾기
-        Team team = findTeamByIdOrThrowException(teamId);
+        val team = findTeamByIdOrThrowException(teamId)
 
         //return할 DTO
-        List<TeamResponse> teamMembers = new ArrayList<>();
+        val teamMembers: MutableList<TeamResponse> = ArrayList()
 
         //채팅방에 초대할 TeamMember List
-        List<TeamMember> teamMemberList = new ArrayList<>();
+        val teamMemberList: MutableList<TeamMember> = ArrayList()
 
         //member 추가
-        for (String email : request.emails()) {
-            Member member = memberRepository.findByEmail(email).orElse(null);
+        for (email in request!!.emails!!) {
+            val member = memberRepository.findByEmail(email).orElse(null) ?: continue
 
-            if (member == null) {
-                continue;
-            }
-
-            TeamMember teamMember = teamMemberRepository.findByTeamIdAndMemberId(teamId, member.getMemberId()).orElse(null);
+            var teamMember = teamMemberRepository.findByTeamIdAndMemberId(teamId, member.memberId).orElse(null)
             //해당 멤버가 팀에 이미 존재 할 경우
             if (teamMember != null) {
-                continue;
+                continue
             }
 
-            teamMember = TeamMember.createMember(team, member);
+            teamMember = TeamMember.Companion.createMember(team, member)
 
-            teamMembers.add(TeamResponse.of(teamMemberRepository.save(teamMember)));
+            teamMembers.add(TeamResponse.Companion.of(teamMemberRepository.save<TeamMember>(teamMember)))
 
-            teamMemberList.add(teamMember);
+            teamMemberList.add(teamMember)
         }
         // 팀 멤버 채팅방 초대
         if (teamMemberList.isEmpty()) {
-            return teamMembers;
+            return teamMembers
         }
-        if (teamMemberList.size() == 1) {
-            publisher.publishEvent(new TeamMemberJoinEvent(teamMemberList.get(0).getMember(), team.getTeamId()));
+        if (teamMemberList.size == 1) {
+            publisher.publishEvent(TeamMemberJoinEvent(teamMemberList[0].member, team.teamId))
         } else {
-            publisher.publishEvent(new TeamMembersJoinEvent(teamMemberList, team.getTeamId()));
+            publisher.publishEvent(TeamMembersJoinEvent(teamMemberList, team.teamId))
         }
 
-        return teamMembers;
+        return teamMembers
     }
 
-    @Override
     @Transactional(readOnly = true)
-    public List<TeamResponse> getTeamMembers(Long teamId) {
+    override fun getTeamMembers(teamId: Long): List<TeamResponse> {
         //팀 찾기
-        Team team = findTeamByIdOrThrowException(teamId);
+        val team = findTeamByIdOrThrowException(teamId)
 
-        List<TeamMember> teamMembers = teamMemberRepository.findTeamMembersByTeam(team);
-        List<TeamResponse> membersInfo = new ArrayList<>();
+        val teamMembers = teamMemberRepository.findTeamMembersByTeam(team)
+        val membersInfo: MutableList<TeamResponse> = ArrayList()
 
-        for (TeamMember teamMember : teamMembers) {
-            membersInfo.add(TeamResponse.of(teamMember));
+        for (teamMember in teamMembers!!) {
+            membersInfo.add(TeamResponse.Companion.of(teamMember))
         }
-        return membersInfo;
+        return membersInfo
     }
 
     //팀 탈퇴_팀장
-    @Override
     @Transactional
-    public Long deleteTeamMemberByCreator(Long teamId, Long teamMemberId, Member member) {
+    override fun deleteTeamMemberByCreator(teamId: Long, teamMemberId: Long, member: Member?): Long {
         //삭제할 팀 멤버 찾기
-        TeamMember teamMember = findTeamMemberByIdOrThrowException(teamMemberId);
+        val teamMember = findTeamMemberByIdOrThrowException(teamMemberId)
         //현재 유저 정보
-        TeamMember Creator = findByTeamIdAndMemberIdOrThrowException(teamId, member.getMemberId());
+        val Creator = findByTeamIdAndMemberIdOrThrowException(teamId, member!!.memberId!!)
 
-        if (Creator.getRole() != TeamMemberRole.CREATOR) {
-            throw new IllegalArgumentException("삭제 권한이 없습니다");
-        }
+        require(Creator.role == TeamMemberRole.CREATOR) { "삭제 권한이 없습니다" }
 
-        teamMemberRepository.delete(teamMember);
+        teamMemberRepository.delete(teamMember)
         //팀 멤버 삭제시 해당 멤버 채팅방 퇴장 이벤트 처리
-        publisher.publishEvent(new TeamMemberLeaveEvent(teamMember.getMember(), teamMember.getTeam().getTeamId()));
-        return teamMemberId;
+        publisher.publishEvent(TeamMemberLeaveEvent(teamMember.member, teamMember.team?.teamId))
+        return teamMemberId
     }
 
     //팀 탈퇴_본인
-    @Override
     @Transactional
-    public Long deleteTeamMember(Long teamId, Member member) {
-        TeamMember teamMember = findByTeamIdAndMemberIdOrThrowException(teamId, member.getMemberId());
-        teamMemberRepository.delete(teamMember);
+    override fun deleteTeamMember(teamId: Long, member: Member?): Long? {
+        val teamMember = findByTeamIdAndMemberIdOrThrowException(teamId, member!!.memberId!!)
+        teamMemberRepository.delete(teamMember)
         //팀 멤버 삭제시 해당 멤버 채팅방 퇴장 이벤트 처리
-        publisher.publishEvent(new TeamMemberLeaveEvent(teamMember.getMember(), teamMember.getTeam().getTeamId()));
-        return teamMember.getTeamMemberId();
+        publisher.publishEvent(TeamMemberLeaveEvent(teamMember.member, teamMember.team?.teamId))
+        return teamMember.teamMemberId
     }
 
 
-    public Team findTeamByIdOrThrowException(long id) {
-        Team team = teamRepository.findByTeamId(id)
-            .orElseThrow(() -> new IllegalArgumentException("해당 팀이 존재하지 않습니다."));
+    fun findTeamByIdOrThrowException(id: Long): Team {
+        val team = teamRepository.findByTeamId(id)
+            .orElseThrow { IllegalArgumentException("해당 팀이 존재하지 않습니다.") }
 
-        return team;
+        return team
     }
 
-    public TeamMember findTeamMemberByIdOrThrowException(long id) {
-        TeamMember teamMember = teamMemberRepository.findByTeamMemberId(id)
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 팀원입니다."));
-        return teamMember;
+    fun findTeamMemberByIdOrThrowException(id: Long): TeamMember {
+        val teamMember = teamMemberRepository.findByTeamMemberId(id)
+            .orElseThrow { IllegalArgumentException("존재하지 않는 팀원입니다.") }
+        return teamMember
     }
 
-    public TeamMember findByTeamIdAndMemberIdOrThrowException(long teamId, long memberId) {
-        TeamMember teamMember = teamMemberRepository.findByTeamIdAndMemberId(teamId, memberId)
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 팀원입니다."));
-        return teamMember;
+    fun findByTeamIdAndMemberIdOrThrowException(teamId: Long, memberId: Long): TeamMember {
+        val teamMember = teamMemberRepository.findByTeamIdAndMemberId(teamId, memberId)
+            .orElseThrow { IllegalArgumentException("존재하지 않는 팀원입니다.") }
+        return teamMember
     }
 }

@@ -1,20 +1,19 @@
-package team4.footwithme.resevation.service.response;
+package team4.footwithme.resevation.service.response
 
-import team4.footwithme.resevation.domain.Participant;
-import team4.footwithme.resevation.domain.ParticipantRole;
+import team4.footwithme.resevation.domain.Participant
+import team4.footwithme.resevation.domain.ParticipantRole
 
-public record ParticipantResponse(
-    Long participantId,
-    Long reservationId,
-    ParticipantRole role,
-    ParticipantMemberInfo memberInfo
+@JvmRecord
+data class ParticipantResponse(
+    val participantId: Long?,
+    val reservationId: Long?,
+    val role: ParticipantRole?,
+    val memberInfo: ParticipantMemberInfo
 ) {
-    public ParticipantResponse(Participant participant) {
-        this(
-            participant.getParticipantId(),
-            participant.getReservation().getReservationId(),
-            participant.getParticipantRole(),
-            new ParticipantMemberInfo(participant.getMember())
-        );
-    }
+    constructor(participant: Participant?) : this(
+        participant!!.participantId,
+        participant.reservation!!.reservationId,
+        participant.participantRole,
+        ParticipantMemberInfo(participant.member)
+    )
 }

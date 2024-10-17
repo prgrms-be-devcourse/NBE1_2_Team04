@@ -1,22 +1,26 @@
-package team4.footwithme.resevation.service;
+package team4.footwithme.resevation.service
 
-import org.springframework.data.domain.Slice;
-import team4.footwithme.member.domain.Member;
-import team4.footwithme.resevation.service.response.ReservationInfoDetailsResponse;
-import team4.footwithme.resevation.service.response.ReservationInfoResponse;
-import team4.footwithme.resevation.service.response.ReservationsResponse;
+import org.springframework.data.domain.Slice
+import team4.footwithme.member.domain.Member
+import team4.footwithme.resevation.service.response.ReservationInfoDetailsResponse
+import team4.footwithme.resevation.service.response.ReservationInfoResponse
+import team4.footwithme.resevation.service.response.ReservationsResponse
+import java.time.LocalDateTime
 
-import java.time.LocalDateTime;
-import java.util.List;
+interface ReservationService {
+    fun findReadyReservations(reservationId: Long?, page: Int?): Slice<ReservationsResponse>
 
-public interface ReservationService {
-    Slice<ReservationsResponse> findReadyReservations(Long reservationId, Integer page);
+    fun createReservation(
+        memberId: Long?,
+        courtId: Long?,
+        teamId: Long,
+        matchDate: LocalDateTime?,
+        memberIds: List<Long?>
+    )
 
-    void createReservation(Long memberId, Long courtId, Long teamId, LocalDateTime matchDate, List<Long> memberIds);
+    fun getTeamReservationInfo(teamId: Long?): List<ReservationInfoResponse>
 
-    List<ReservationInfoResponse> getTeamReservationInfo(Long teamId);
+    fun getTeamReservationInfoDetails(reservationId: Long): ReservationInfoDetailsResponse
 
-    ReservationInfoDetailsResponse getTeamReservationInfoDetails(Long reservationId);
-
-    Long deleteReservation(Long reservationId, Member member);
+    fun deleteReservation(reservationId: Long, member: Member?): Long
 }

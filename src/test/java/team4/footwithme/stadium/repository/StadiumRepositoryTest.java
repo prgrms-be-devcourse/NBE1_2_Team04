@@ -48,7 +48,7 @@ class StadiumRepositoryTest extends IntegrationTestSupport {
     @Test
     @DisplayName("findActiveById는 삭제되지 않은 풋살장을 조회한다")
     void findActiveById_returnsActiveStadium() {
-        Optional<Stadium> foundStadium = stadiumRepository.findActiveById(stadium1.getStadiumId());
+        Optional<Stadium> foundStadium = stadiumRepository.findActiveById(stadium1.stadiumId);
 
         assertThat(foundStadium).isPresent();
         assertThat(foundStadium.get()).isEqualTo(stadium1);
@@ -59,7 +59,7 @@ class StadiumRepositoryTest extends IntegrationTestSupport {
     void findActiveById_doesNotReturnDeletedStadium() {
         stadiumRepository.delete(stadium1);
 
-        Optional<Stadium> foundStadium = stadiumRepository.findActiveById(stadium1.getStadiumId());
+        Optional<Stadium> foundStadium = stadiumRepository.findActiveById(stadium1.stadiumId);
 
         assertThat(foundStadium).isNotPresent();
     }

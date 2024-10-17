@@ -1,32 +1,37 @@
-package team4.footwithme.vote.api;
+package team4.footwithme.vote.api
 
-import jakarta.validation.Valid;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
-import team4.footwithme.global.api.ApiResponse;
-import team4.footwithme.member.jwt.PrincipalDetails;
-import team4.footwithme.vote.api.request.ChoiceCreateRequest;
-import team4.footwithme.vote.service.VoteService;
-import team4.footwithme.vote.service.response.VoteResponse;
+import jakarta.validation.Valid
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.web.bind.annotation.*
+import team4.footwithme.global.api.ApiResponse
+import team4.footwithme.member.jwt.PrincipalDetails
+import team4.footwithme.vote.api.request.ChoiceCreateRequest
+import team4.footwithme.vote.service.VoteService
+import team4.footwithme.vote.service.response.VoteResponse
 
 @RestController
 @RequestMapping("/api/v1/choice")
-public class ChoiceApi {
-
-    private final VoteService voteService;
-
-    public ChoiceApi(VoteService voteService) {
-        this.voteService = voteService;
-    }
-
+class ChoiceApi(private val voteService: VoteService) {
     @PostMapping("/{voteId}")
-    public ApiResponse<VoteResponse> createChoice(@Valid @RequestBody ChoiceCreateRequest request, @PathVariable Long voteId, @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        return ApiResponse.created(voteService.createChoice(request.toServiceRequest(), voteId, principalDetails.getMember()));
+    fun createChoice(
+        @RequestBody request: @Valid ChoiceCreateRequest?,
+        @PathVariable voteId: Long?,
+        @AuthenticationPrincipal principalDetails: PrincipalDetails
+    ): ApiResponse<VoteResponse?> {
+        return ApiResponse.created(
+            voteService.createChoice(
+                request!!.toServiceRequest(),
+                voteId,
+                principalDetails.member
+            )
+        )
     }
 
     @DeleteMapping("/{voteId}")
-    public ApiResponse<VoteResponse> deleteChoice(@PathVariable Long voteId, @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        return ApiResponse.ok(voteService.deleteChoice(voteId, principalDetails.getMember()));
+    fun deleteChoice(
+        @PathVariable voteId: Long?,
+        @AuthenticationPrincipal principalDetails: PrincipalDetails
+    ): ApiResponse<VoteResponse?> {
+        return ApiResponse.ok(voteService.deleteChoice(voteId, principalDetails.member))
     }
-
 }
