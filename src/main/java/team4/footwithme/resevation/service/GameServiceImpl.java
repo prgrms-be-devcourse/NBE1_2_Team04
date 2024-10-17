@@ -1,7 +1,6 @@
 package team4.footwithme.resevation.service;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
@@ -20,12 +19,16 @@ import team4.footwithme.resevation.service.request.GameRegisterServiceRequest;
 import team4.footwithme.resevation.service.request.GameStatusUpdateServiceRequest;
 import team4.footwithme.resevation.service.response.GameDetailResponse;
 
-@Slf4j
 @Service
-@RequiredArgsConstructor
 public class GameServiceImpl implements GameService {
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(GameServiceImpl.class);
     private final ReservationRepository reservationRepository;
     private final GameRepository gameRepository;
+
+    public GameServiceImpl(ReservationRepository reservationRepository, GameRepository gameRepository) {
+        this.reservationRepository = reservationRepository;
+        this.gameRepository = gameRepository;
+    }
 
     @Transactional
     public GameDetailResponse registerGame(Member member, GameRegisterServiceRequest request) {

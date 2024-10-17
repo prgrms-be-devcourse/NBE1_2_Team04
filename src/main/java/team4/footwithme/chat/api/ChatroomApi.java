@@ -1,18 +1,20 @@
 package team4.footwithme.chat.api;
 
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import team4.footwithme.chat.api.request.ChatroomRequest;
 import team4.footwithme.chat.service.ChatroomService;
 import team4.footwithme.chat.service.response.ChatroomResponse;
 import team4.footwithme.global.api.ApiResponse;
 
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/chat/room")
 public class ChatroomApi {
     private final ChatroomService chatroomService;
+
+    public ChatroomApi(ChatroomService chatroomService) {
+        this.chatroomService = chatroomService;
+    }
 
     /**
      * 채팅방 생성

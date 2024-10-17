@@ -2,16 +2,11 @@ package team4.footwithme.team.domain;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import team4.footwithme.global.domain.BaseEntity;
 
-@Getter
 @Entity
 @SQLDelete(sql = "UPDATE team_rate SET is_deleted = TRUE WHERE team_rate_id = ?")
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TeamRate extends BaseEntity {
 
     @Id
@@ -35,4 +30,22 @@ public class TeamRate extends BaseEntity {
         this.evaluation = evaluation;
     }
 
+    protected TeamRate() {
+    }
+
+    public Long getTeamRateId() {
+        return this.teamRateId;
+    }
+
+    public Team getTeam() {
+        return this.team;
+    }
+
+    public @NotNull double getRating() {
+        return this.rating;
+    }
+
+    public String getEvaluation() {
+        return this.evaluation;
+    }
 }

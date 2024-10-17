@@ -1,15 +1,17 @@
 package team4.footwithme.member.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import lombok.RequiredArgsConstructor;
 import team4.footwithme.global.domain.IsDeleted;
 
 import static team4.footwithme.member.domain.QMember.member;
 
-@RequiredArgsConstructor
 public class CustomMemberRepositoryImpl implements CustomMemberRepository {
 
     private final JPAQueryFactory queryFactory;
+
+    public CustomMemberRepositoryImpl(JPAQueryFactory queryFactory) {
+        this.queryFactory = queryFactory;
+    }
 
     @Override
     public Long findMemberIdByMemberEmail(String email) {

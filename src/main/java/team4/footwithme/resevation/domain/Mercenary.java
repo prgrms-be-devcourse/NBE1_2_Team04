@@ -1,15 +1,9 @@
 package team4.footwithme.resevation.domain;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import team4.footwithme.global.domain.BaseEntity;
 
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SQLDelete(sql = "UPDATE mercenary SET is_deleted = 'TRUE' WHERE mercenary_id = ?")
 @Entity
 public class Mercenary extends BaseEntity {
@@ -25,10 +19,12 @@ public class Mercenary extends BaseEntity {
     @Column(length = 200, nullable = true)
     private String description;
 
-    @Builder
     private Mercenary(Reservation reservation, String description) {
         this.description = description;
         this.reservation = reservation;
+    }
+
+    protected Mercenary() {
     }
 
     public static Mercenary create(Reservation reservation, String description) {
@@ -43,5 +39,47 @@ public class Mercenary extends BaseEntity {
             .reservation(reservation)
             .description("기본 설명")
             .build();
+    }
+
+    public static MercenaryBuilder builder() {
+        return new MercenaryBuilder();
+    }
+
+    public Long getMercenaryId() {
+        return this.mercenaryId;
+    }
+
+    public Reservation getReservation() {
+        return this.reservation;
+    }
+
+    public String getDescription() {
+        return this.description;
+    }
+
+    public static class MercenaryBuilder {
+        private Reservation reservation;
+        private String description;
+
+        MercenaryBuilder() {
+        }
+
+        public MercenaryBuilder reservation(Reservation reservation) {
+            this.reservation = reservation;
+            return this;
+        }
+
+        public MercenaryBuilder description(String description) {
+            this.description = description;
+            return this;
+        }
+
+        public Mercenary build() {
+            return new Mercenary(this.reservation, this.description);
+        }
+
+        public String toString() {
+            return "Mercenary.MercenaryBuilder(reservation=" + this.reservation + ", description=" + this.description + ")";
+        }
     }
 }

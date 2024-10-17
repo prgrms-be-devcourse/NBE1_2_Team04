@@ -1,7 +1,6 @@
 package team4.footwithme.team.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import lombok.RequiredArgsConstructor;
 import team4.footwithme.global.domain.IsDeleted;
 import team4.footwithme.team.domain.TeamMember;
 
@@ -9,10 +8,13 @@ import java.util.Optional;
 
 import static team4.footwithme.team.domain.QTeamMember.teamMember;
 
-@RequiredArgsConstructor
 public class CustomTeamMemberRepositoryImpl implements CustomTeamMemberRepository {
 
     private final JPAQueryFactory queryFactory;
+
+    public CustomTeamMemberRepositoryImpl(JPAQueryFactory queryFactory) {
+        this.queryFactory = queryFactory;
+    }
 
     @Override
     public Optional<TeamMember> findByTeamIdAndMemberId(Long teamId, Long memberId) {

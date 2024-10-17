@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor
 public enum MemberRole {
     GUEST("ROLE_GUEST"),
     USER("ROLE_USER"),
@@ -12,4 +11,12 @@ public enum MemberRole {
     MERCHANT("ROLE_MERCHANT");
 
     private final String text;
+
+    private MemberRole(String text) {
+        this.text = text;
+    }
+
+    public String getText() {
+        return this.text;
+    }
 }

@@ -1,7 +1,6 @@
 package team4.footwithme.vote.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import lombok.RequiredArgsConstructor;
 import team4.footwithme.vote.domain.Vote;
 
 import java.util.List;
@@ -14,10 +13,13 @@ import static team4.footwithme.vote.domain.QVoteItem.voteItem;
 import static team4.footwithme.vote.domain.VoteStatus.CLOSED;
 import static team4.footwithme.vote.domain.VoteStatus.OPENED;
 
-@RequiredArgsConstructor
 public class CustomVoteRepositoryImpl implements CustomVoteRepository {
 
     private final JPAQueryFactory queryFactory;
+
+    public CustomVoteRepositoryImpl(JPAQueryFactory queryFactory) {
+        this.queryFactory = queryFactory;
+    }
 
     @Override
     public Optional<Vote> findNotDeletedVoteById(Long id) {

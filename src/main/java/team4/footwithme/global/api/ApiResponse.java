@@ -1,9 +1,7 @@
 package team4.footwithme.global.api;
 
-import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
-@Getter
 public class ApiResponse<T> {
 
     private int code;
@@ -34,4 +32,19 @@ public class ApiResponse<T> {
         return of(HttpStatus.CREATED, data);
     }
 
+    public int getCode() {
+        return this.code;
+    }
+
+    public HttpStatus getStatus() {
+        return this.status;
+    }
+
+    public String getMessage() {
+        return this.message;
+    }
+
+    public T getData() {
+        return this.data;
+    }
 }

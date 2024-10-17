@@ -1,6 +1,5 @@
 package team4.footwithme.vote.service;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -12,12 +11,16 @@ import team4.footwithme.vote.repository.VoteRepository;
 
 import java.util.List;
 
-@RequiredArgsConstructor
 @Component
 public class VoteEventHandler {
 
     private final VoteRepository voteRepository;
     private final VoteService voteService;
+
+    public VoteEventHandler(VoteRepository voteRepository, VoteService voteService) {
+        this.voteRepository = voteRepository;
+        this.voteService = voteService;
+    }
 
     @Async
     @Transactional

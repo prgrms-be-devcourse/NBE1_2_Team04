@@ -1,7 +1,6 @@
 package team4.footwithme.stadium.api;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 import org.springframework.data.domain.Slice;
 import org.springframework.web.bind.annotation.*;
 import team4.footwithme.global.api.ApiResponse;
@@ -10,13 +9,16 @@ import team4.footwithme.stadium.service.CourtService;
 import team4.footwithme.stadium.service.response.CourtDetailResponse;
 import team4.footwithme.stadium.service.response.CourtsResponse;
 
-@Slf4j
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/court")
 public class CourtApi {
 
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(CourtApi.class);
     private final CourtService courtService;
+
+    public CourtApi(CourtService courtService) {
+        this.courtService = courtService;
+    }
 
     @GetMapping("/")
     public ApiResponse<Slice<CourtsResponse>> getAllCourts(

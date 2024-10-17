@@ -1,12 +1,7 @@
 package team4.footwithme.vote.domain;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn
 @Entity
@@ -25,4 +20,14 @@ public class VoteItem {
         vote.addChoice(this);
     }
 
+    protected VoteItem() {
+    }
+
+    public Long getVoteItemId() {
+        return this.voteItemId;
+    }
+
+    public Vote getVote() {
+        return this.vote;
+    }
 }

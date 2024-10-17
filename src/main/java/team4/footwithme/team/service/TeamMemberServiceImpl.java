@@ -1,6 +1,5 @@
 package team4.footwithme.team.service;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +19,6 @@ import team4.footwithme.team.service.response.TeamResponse;
 import java.util.ArrayList;
 import java.util.List;
 
-@RequiredArgsConstructor
 @Service
 public class TeamMemberServiceImpl implements TeamMemberService {
 
@@ -30,6 +28,13 @@ public class TeamMemberServiceImpl implements TeamMemberService {
     private final TeamMemberRepository teamMemberRepository;
 
     private final ApplicationEventPublisher publisher;
+
+    public TeamMemberServiceImpl(MemberRepository memberRepository, TeamRepository teamRepository, TeamMemberRepository teamMemberRepository, ApplicationEventPublisher publisher) {
+        this.memberRepository = memberRepository;
+        this.teamRepository = teamRepository;
+        this.teamMemberRepository = teamMemberRepository;
+        this.publisher = publisher;
+    }
 
     @Override
     @Transactional

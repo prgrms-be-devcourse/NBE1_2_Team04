@@ -1,7 +1,6 @@
 package team4.footwithme.resevation.api;
 
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -12,12 +11,15 @@ import team4.footwithme.resevation.api.request.GameStatusUpdateRequest;
 import team4.footwithme.resevation.service.GameService;
 import team4.footwithme.resevation.service.response.GameDetailResponse;
 
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/game")
 public class GameApi {
 
     private final GameService gameService;
+
+    public GameApi(GameService gameService) {
+        this.gameService = gameService;
+    }
 
     @PostMapping("/register")
     public ApiResponse<GameDetailResponse> registerGame(

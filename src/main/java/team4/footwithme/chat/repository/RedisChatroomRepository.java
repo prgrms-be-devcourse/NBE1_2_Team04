@@ -1,7 +1,6 @@
 package team4.footwithme.chat.repository;
 
 import jakarta.annotation.PostConstruct;
-import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -9,12 +8,16 @@ import org.springframework.stereotype.Repository;
 import team4.footwithme.chat.domain.Chatroom;
 
 @Repository
-@RequiredArgsConstructor
 public class RedisChatroomRepository implements CommandLineRunner {
     private static final String CHAT_ROOMS = "CHAT_ROOM";
     private final ChatroomRepository chatroomRepository;
     private final RedisTemplate<String, Object> redisTemplate;
     private HashOperations<String, Long, Chatroom> opsHashChatRoom;
+
+    public RedisChatroomRepository(ChatroomRepository chatroomRepository, RedisTemplate<String, Object> redisTemplate) {
+        this.chatroomRepository = chatroomRepository;
+        this.redisTemplate = redisTemplate;
+    }
 
     @PostConstruct
     private void start() {

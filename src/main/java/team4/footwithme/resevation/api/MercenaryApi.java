@@ -1,7 +1,6 @@
 package team4.footwithme.resevation.api;
 
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -12,11 +11,14 @@ import team4.footwithme.resevation.api.request.MercenaryRequest;
 import team4.footwithme.resevation.service.MercenaryService;
 import team4.footwithme.resevation.service.response.MercenaryResponse;
 
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/mercenary")
 public class MercenaryApi {
     private final MercenaryService mercenaryService;
+
+    public MercenaryApi(MercenaryService mercenaryService) {
+        this.mercenaryService = mercenaryService;
+    }
 
     @PostMapping
     public ApiResponse<MercenaryResponse> createMercenary(@RequestBody @Valid MercenaryRequest request, @AuthenticationPrincipal PrincipalDetails principalDetails) {

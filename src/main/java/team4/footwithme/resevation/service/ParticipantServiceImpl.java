@@ -1,6 +1,5 @@
 package team4.footwithme.resevation.service;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class ParticipantServiceImpl implements ParticipantService {
     private final MercenaryRepository mercenaryRepository;
     private final ReservationRepository reservationRepository;
@@ -34,6 +32,14 @@ public class ParticipantServiceImpl implements ParticipantService {
     private final TeamMemberRepository teamMemberRepository;
 
     private final ApplicationEventPublisher publisher;
+
+    public ParticipantServiceImpl(MercenaryRepository mercenaryRepository, ReservationRepository reservationRepository, ParticipantRepository participantRepository, TeamMemberRepository teamMemberRepository, ApplicationEventPublisher publisher) {
+        this.mercenaryRepository = mercenaryRepository;
+        this.reservationRepository = reservationRepository;
+        this.participantRepository = participantRepository;
+        this.teamMemberRepository = teamMemberRepository;
+        this.publisher = publisher;
+    }
 
     /**
      * 용병 추가

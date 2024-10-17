@@ -1,17 +1,19 @@
 package team4.footwithme.team.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import lombok.RequiredArgsConstructor;
 import team4.footwithme.global.domain.IsDeleted;
 import team4.footwithme.member.domain.Gender;
 
 import static team4.footwithme.member.domain.QMember.member;
 import static team4.footwithme.team.domain.QTeamMember.teamMember;
 
-@RequiredArgsConstructor
 public class CustomTeamRepositoryImpl implements CustomTeamRepository {
 
     private final JPAQueryFactory queryFactory;
+
+    public CustomTeamRepositoryImpl(JPAQueryFactory queryFactory) {
+        this.queryFactory = queryFactory;
+    }
 
     @Override
     public Long countMaleByMemberId(Long teamId) {

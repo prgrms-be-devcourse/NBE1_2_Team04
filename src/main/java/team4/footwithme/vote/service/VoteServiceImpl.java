@@ -1,8 +1,7 @@
 package team4.footwithme.vote.service;
 
 import jakarta.annotation.PostConstruct;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
@@ -29,11 +28,10 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 
-@RequiredArgsConstructor
-@Slf4j
 @Service
 public class VoteServiceImpl implements VoteService {
 
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(VoteServiceImpl.class);
     private final VoteRepository voteRepository;
     private final VoteItemRepository voteItemRepository;
     private final CourtRepository courtRepository;
@@ -43,6 +41,16 @@ public class VoteServiceImpl implements VoteService {
     private final ApplicationEventPublisher eventPublisher;
 
     private final Map<Long, ScheduledFuture<?>> scheduledTasks = new ConcurrentHashMap<>();
+
+    public VoteServiceImpl(VoteRepository voteRepository, VoteItemRepository voteItemRepository, CourtRepository courtRepository, TeamRepository teamRepository, ChoiceRepository choiceRepository, TaskScheduler taskScheduler, ApplicationEventPublisher eventPublisher) {
+        this.voteRepository = voteRepository;
+        this.voteItemRepository = voteItemRepository;
+        this.courtRepository = courtRepository;
+        this.teamRepository = teamRepository;
+        this.choiceRepository = choiceRepository;
+        this.taskScheduler = taskScheduler;
+        this.eventPublisher = eventPublisher;
+    }
 
     @PostConstruct
     private void initializeScheduledTasks() {

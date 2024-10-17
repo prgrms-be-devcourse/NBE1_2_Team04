@@ -1,7 +1,6 @@
 package team4.footwithme.vote.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import lombok.RequiredArgsConstructor;
 import team4.footwithme.vote.domain.Choice;
 
 import java.util.List;
@@ -10,10 +9,13 @@ import static team4.footwithme.vote.domain.QChoice.choice;
 import static team4.footwithme.vote.domain.QVote.vote;
 import static team4.footwithme.vote.domain.QVoteItem.voteItem;
 
-@RequiredArgsConstructor
 public class CustomChoiceRepositoryImpl implements CustomChoiceRepository {
 
     private final JPAQueryFactory queryFactory;
+
+    public CustomChoiceRepositoryImpl(JPAQueryFactory queryFactory) {
+        this.queryFactory = queryFactory;
+    }
 
     @Override
     public Long countByVoteItemId(Long voteItemId) {

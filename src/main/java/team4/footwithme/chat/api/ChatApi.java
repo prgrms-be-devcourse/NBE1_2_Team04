@@ -1,7 +1,6 @@
 package team4.footwithme.chat.api;
 
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
@@ -16,11 +15,14 @@ import team4.footwithme.chat.service.response.ChatResponse;
 import team4.footwithme.global.api.ApiResponse;
 import team4.footwithme.member.jwt.PrincipalDetails;
 
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/chat/message")
 public class ChatApi {
     private final ChatService chatService;
+
+    public ChatApi(ChatService chatService) {
+        this.chatService = chatService;
+    }
 
     /**
      * 채팅 보내기

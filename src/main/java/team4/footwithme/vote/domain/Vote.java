@@ -2,10 +2,6 @@ package team4.footwithme.vote.domain;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import team4.footwithme.global.domain.BaseEntity;
 
@@ -18,8 +14,6 @@ import java.util.List;
 import static team4.footwithme.vote.domain.VoteStatus.CLOSED;
 import static team4.footwithme.vote.domain.VoteStatus.OPENED;
 
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(indexes = {
     @Index(name = "idx_vote_team_id", columnList = "teamId"),
     @Index(name = "idx_vote_member_id", columnList = "memberId")
@@ -52,13 +46,15 @@ public class Vote extends BaseEntity {
     @OneToMany(mappedBy = "vote")
     private List<VoteItem> voteItems = new ArrayList<>();
 
-    @Builder
     private Vote(Long memberId, Long teamId, String title, LocalDateTime endAt) {
         this.memberId = memberId;
         this.teamId = teamId;
         this.title = title;
         this.endAt = endAt;
         this.voteStatus = OPENED;
+    }
+
+    protected Vote() {
     }
 
     public static Vote create(Long memberId, Long teamId, String title, LocalDateTime endAt) {
@@ -75,6 +71,10 @@ public class Vote extends BaseEntity {
         if (endAt.isBefore(LocalDateTime.now())) {
             throw new IllegalArgumentException("투표 종료일은 현재 시간 이후여야 합니다.");
         }
+    }
+
+    public static VoteBuilder builder() {
+        return new VoteBuilder();
     }
 
     public void addChoice(VoteItem voteItem) {
@@ -103,5 +103,71 @@ public class Vote extends BaseEntity {
 
     public Instant getInstantEndAt() {
         return endAt.atZone(ZoneId.systemDefault()).toInstant();
+    }
+
+    public Long getVoteId() {
+        return this.voteId;
+    }
+
+    public @NotNull Long getMemberId() {
+        return this.memberId;
+    }
+
+    public @NotNull Long getTeamId() {
+        return this.teamId;
+    }
+
+    public @NotNull String getTitle() {
+        return this.title;
+    }
+
+    public @NotNull LocalDateTime getEndAt() {
+        return this.endAt;
+    }
+
+    public @NotNull VoteStatus getVoteStatus() {
+        return this.voteStatus;
+    }
+
+    public List<VoteItem> getVoteItems() {
+        return this.voteItems;
+    }
+
+    public static class VoteBuilder {
+        private Long memberId;
+        private Long teamId;
+        private String title;
+        private LocalDateTime endAt;
+
+        VoteBuilder() {
+        }
+
+        public VoteBuilder memberId(Long memberId) {
+            this.memberId = memberId;
+            return this;
+        }
+
+        public VoteBuilder teamId(Long teamId) {
+            this.teamId = teamId;
+            return this;
+        }
+
+        public VoteBuilder title(String title) {
+            this.title = title;
+            return this;
+        }
+
+        public VoteBuilder endAt(LocalDateTime endAt) {
+            this.endAt = endAt;
+            return this;
+        }
+
+        public Vote build() {
+            return new Vote(this.memberId, this.teamId, this.title, this.endAt);
+        }
+
+        public String toString() {
+            return "Vote.VoteBuilder(memberId=" + this.memberId + ", teamId=" + this.teamId + ", title=" + this.title + ", endAt=" + this.endAt + ")";
+        }
     }
 }

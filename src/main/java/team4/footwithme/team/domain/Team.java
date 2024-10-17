@@ -2,16 +2,10 @@ package team4.footwithme.team.domain;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import team4.footwithme.global.domain.BaseEntity;
 
-@Getter
 @SQLDelete(sql = "UPDATE team SET is_deleted = 'TRUE' WHERE team_id = ?")
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class Team extends BaseEntity {
 
@@ -35,7 +29,6 @@ public class Team extends BaseEntity {
     @Column(length = 100, nullable = true)
     private String location;
 
-    @Builder
     private Team(Long teamId, Long stadiumId, String name, String description, TotalRecord totalRecord, String location) {
         this.teamId = teamId;
         this.stadiumId = stadiumId;
@@ -43,6 +36,9 @@ public class Team extends BaseEntity {
         this.description = description;
         this.totalRecord = totalRecord;
         this.location = location;
+    }
+
+    protected Team() {
     }
 
     public static Team create(Long stadiumId, String name, String description, int winCount, int drawCount, int loseCount, String location) {
@@ -55,6 +51,10 @@ public class Team extends BaseEntity {
             .build();
     }
 
+    public static TeamBuilder builder() {
+        return new TeamBuilder();
+    }
+
     public void updateName(@NotNull String name) {
         this.name = name;
     }
@@ -65,5 +65,79 @@ public class Team extends BaseEntity {
 
     public void updateLocation(String location) {
         this.location = location;
+    }
+
+    public Long getTeamId() {
+        return this.teamId;
+    }
+
+    public Long getStadiumId() {
+        return this.stadiumId;
+    }
+
+    public @NotNull String getName() {
+        return this.name;
+    }
+
+    public String getDescription() {
+        return this.description;
+    }
+
+    public TotalRecord getTotalRecord() {
+        return this.totalRecord;
+    }
+
+    public String getLocation() {
+        return this.location;
+    }
+
+    public static class TeamBuilder {
+        private Long teamId;
+        private Long stadiumId;
+        private String name;
+        private String description;
+        private TotalRecord totalRecord;
+        private String location;
+
+        TeamBuilder() {
+        }
+
+        public TeamBuilder teamId(Long teamId) {
+            this.teamId = teamId;
+            return this;
+        }
+
+        public TeamBuilder stadiumId(Long stadiumId) {
+            this.stadiumId = stadiumId;
+            return this;
+        }
+
+        public TeamBuilder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public TeamBuilder description(String description) {
+            this.description = description;
+            return this;
+        }
+
+        public TeamBuilder totalRecord(TotalRecord totalRecord) {
+            this.totalRecord = totalRecord;
+            return this;
+        }
+
+        public TeamBuilder location(String location) {
+            this.location = location;
+            return this;
+        }
+
+        public Team build() {
+            return new Team(this.teamId, this.stadiumId, this.name, this.description, this.totalRecord, this.location);
+        }
+
+        public String toString() {
+            return "Team.TeamBuilder(teamId=" + this.teamId + ", stadiumId=" + this.stadiumId + ", name=" + this.name + ", description=" + this.description + ", totalRecord=" + this.totalRecord + ", location=" + this.location + ")";
+        }
     }
 }

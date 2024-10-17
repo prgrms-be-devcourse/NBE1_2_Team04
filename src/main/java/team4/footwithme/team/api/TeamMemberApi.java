@@ -1,6 +1,5 @@
 package team4.footwithme.team.api;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import team4.footwithme.global.api.ApiResponse;
@@ -11,11 +10,14 @@ import team4.footwithme.team.service.response.TeamResponse;
 
 import java.util.List;
 
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/team-member")
 public class TeamMemberApi {
     private final TeamMemberService teamMemberService;
+
+    public TeamMemberApi(TeamMemberService teamMemberService) {
+        this.teamMemberService = teamMemberService;
+    }
 
     /**
      * 팀 멤버 추가

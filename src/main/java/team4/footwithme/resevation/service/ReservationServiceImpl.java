@@ -1,7 +1,6 @@
 package team4.footwithme.resevation.service;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
@@ -33,11 +32,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Slf4j
 @Service
-@RequiredArgsConstructor
 public class ReservationServiceImpl implements ReservationService {
 
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(ReservationServiceImpl.class);
     private final ReservationRepository reservationRepository;
     private final CourtRepository courtRepository;
     private final MemberRepository memberRepository;
@@ -46,6 +44,17 @@ public class ReservationServiceImpl implements ReservationService {
     private final MercenaryRepository mercenaryRepository;
     private final ApplicationEventPublisher eventPublisher;
     private final GameRepository gameRepository;
+
+    public ReservationServiceImpl(ReservationRepository reservationRepository, CourtRepository courtRepository, MemberRepository memberRepository, TeamRepository teamRepository, ParticipantRepository participantRepository, MercenaryRepository mercenaryRepository, ApplicationEventPublisher eventPublisher, GameRepository gameRepository) {
+        this.reservationRepository = reservationRepository;
+        this.courtRepository = courtRepository;
+        this.memberRepository = memberRepository;
+        this.teamRepository = teamRepository;
+        this.participantRepository = participantRepository;
+        this.mercenaryRepository = mercenaryRepository;
+        this.eventPublisher = eventPublisher;
+        this.gameRepository = gameRepository;
+    }
 
     @Transactional(readOnly = true)
     public Slice<ReservationsResponse> findReadyReservations(Long reservationId, Integer page) {

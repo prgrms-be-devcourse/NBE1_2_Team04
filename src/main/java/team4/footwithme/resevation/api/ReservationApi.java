@@ -1,6 +1,5 @@
 package team4.footwithme.resevation.api;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -13,12 +12,15 @@ import team4.footwithme.resevation.service.response.ReservationsResponse;
 
 import java.util.List;
 
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/reservation")
 public class ReservationApi {
 
     private final ReservationService reservationService;
+
+    public ReservationApi(ReservationService reservationService) {
+        this.reservationService = reservationService;
+    }
 
     @GetMapping("/ready")
     public ApiResponse<Slice<ReservationsResponse>> getReadyReservations(

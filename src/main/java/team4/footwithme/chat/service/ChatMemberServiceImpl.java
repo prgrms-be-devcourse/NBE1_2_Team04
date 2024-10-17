@@ -1,6 +1,5 @@
 package team4.footwithme.chat.service;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team4.footwithme.chat.domain.Chat;
@@ -21,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@RequiredArgsConstructor
 @Service
 public class ChatMemberServiceImpl implements ChatMemberService {
     private final ChatMemberRepository chatMemberRepository;
@@ -30,6 +28,14 @@ public class ChatMemberServiceImpl implements ChatMemberService {
     private final ChatRepository chatRepository;
 
     private final RedisPublisher redisPublisher;
+
+    public ChatMemberServiceImpl(ChatMemberRepository chatMemberRepository, MemberRepository memberRepository, ChatroomRepository chatroomRepository, ChatRepository chatRepository, RedisPublisher redisPublisher) {
+        this.chatMemberRepository = chatMemberRepository;
+        this.memberRepository = memberRepository;
+        this.chatroomRepository = chatroomRepository;
+        this.chatRepository = chatRepository;
+        this.redisPublisher = redisPublisher;
+    }
 
     /**
      * 개인 채팅방 초대

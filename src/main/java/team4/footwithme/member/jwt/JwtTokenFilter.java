@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.util.Arrays;
 
 @Component
-@RequiredArgsConstructor
 public class JwtTokenFilter extends OncePerRequestFilter {
 
     public static final String ACCESS_TOKEN = "Authorization";
@@ -25,6 +24,11 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     private static final String COOKIE_REFRESH_TOKEN = "refreshToken";
     private final JwtTokenUtil jwtTokenUtil;
     private final RedisTemplate redisTemplate;
+
+    public JwtTokenFilter(JwtTokenUtil jwtTokenUtil, RedisTemplate redisTemplate) {
+        this.jwtTokenUtil = jwtTokenUtil;
+        this.redisTemplate = redisTemplate;
+    }
 
     public static String getRefreshTokenByRequest(HttpServletRequest request) {
         Cookie cookies[] = request.getCookies();

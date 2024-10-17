@@ -1,7 +1,6 @@
 package team4.footwithme.member.service;
 
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,7 +21,6 @@ import team4.footwithme.member.service.response.MemberResponse;
 import java.util.concurrent.TimeUnit;
 
 @Service
-@RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
@@ -30,6 +28,14 @@ public class MemberServiceImpl implements MemberService {
     private final JwtTokenUtil jwtTokenUtil;
     private final RedisTemplate redisTemplate;
     private final BCryptPasswordEncoder passwordEncoder;
+
+    public MemberServiceImpl(MemberRepository memberRepository, SecurityConfig jwtSecurityConfig, JwtTokenUtil jwtTokenUtil, RedisTemplate redisTemplate, BCryptPasswordEncoder passwordEncoder) {
+        this.memberRepository = memberRepository;
+        this.jwtSecurityConfig = jwtSecurityConfig;
+        this.jwtTokenUtil = jwtTokenUtil;
+        this.redisTemplate = redisTemplate;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Override
     @Transactional

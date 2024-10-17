@@ -1,7 +1,6 @@
 package team4.footwithme.chat.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
@@ -14,9 +13,12 @@ import java.util.List;
 
 import static team4.footwithme.chat.domain.QChat.chat;
 
-@RequiredArgsConstructor
 public class CustomChatRepositoryImpl implements CustomChatRepository {
     private final JPAQueryFactory queryFactory;
+
+    public CustomChatRepositoryImpl(JPAQueryFactory queryFactory) {
+        this.queryFactory = queryFactory;
+    }
 
 
     @Override

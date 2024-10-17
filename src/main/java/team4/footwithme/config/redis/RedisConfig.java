@@ -1,6 +1,5 @@
 package team4.footwithme.config.redis;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -20,10 +19,12 @@ import team4.footwithme.chat.service.RedisSubscriber;
 @Configuration
 @EnableRedisRepositories
 @EnableTransactionManagement
-@RequiredArgsConstructor
 public class RedisConfig {
 
     private static final String CHAT_ROOMS = "CHAT_ROOM";
+
+    public RedisConfig() {
+    }
 
     //redis pub/sub 사용할 때의 chatting Topic
     @Bean

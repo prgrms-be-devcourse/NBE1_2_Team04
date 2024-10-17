@@ -4,8 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -22,14 +21,19 @@ import team4.footwithme.member.service.CookieService;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-@Slf4j
 @Component
-@RequiredArgsConstructor
 public class CustomOAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(CustomOAuth2LoginSuccessHandler.class);
     private final JwtTokenUtil jwtTokenUtil;
     private final RedisTemplate redisTemplate;
     private final CookieService cookieService;
+
+    public CustomOAuth2LoginSuccessHandler(JwtTokenUtil jwtTokenUtil, RedisTemplate redisTemplate, CookieService cookieService) {
+        this.jwtTokenUtil = jwtTokenUtil;
+        this.redisTemplate = redisTemplate;
+        this.cookieService = cookieService;
+    }
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {

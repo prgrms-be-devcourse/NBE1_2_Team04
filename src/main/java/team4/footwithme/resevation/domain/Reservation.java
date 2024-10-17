@@ -2,10 +2,6 @@ package team4.footwithme.resevation.domain;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import team4.footwithme.global.domain.BaseEntity;
 import team4.footwithme.member.domain.Member;
@@ -14,8 +10,6 @@ import team4.footwithme.team.domain.Team;
 
 import java.time.LocalDateTime;
 
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SQLDelete(sql = "UPDATE reservation SET is_deleted = 'TRUE' WHERE reservation_id = ?")
 @Entity
 public class Reservation extends BaseEntity {
@@ -47,7 +41,6 @@ public class Reservation extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ParticipantGender gender;
 
-    @Builder
     private Reservation(Court court, Member member, Team team, LocalDateTime matchDate, ReservationStatus reservationStatus, ParticipantGender gender) {
         this.court = court;
         this.member = member;
@@ -55,6 +48,9 @@ public class Reservation extends BaseEntity {
         this.matchDate = matchDate;
         this.reservationStatus = reservationStatus;
         this.gender = gender;
+    }
+
+    protected Reservation() {
     }
 
     public static Reservation create(Court court, Member member, Team team, LocalDateTime matchDate, ReservationStatus reservationStatus, ParticipantGender gender) {
@@ -136,7 +132,89 @@ public class Reservation extends BaseEntity {
             .build();
     }
 
+    public static ReservationBuilder builder() {
+        return new ReservationBuilder();
+    }
+
     public void updateStatus(ReservationStatus reservationStatus) {
         this.reservationStatus = reservationStatus;
+    }
+
+    public Long getReservationId() {
+        return this.reservationId;
+    }
+
+    public Court getCourt() {
+        return this.court;
+    }
+
+    public Member getMember() {
+        return this.member;
+    }
+
+    public Team getTeam() {
+        return this.team;
+    }
+
+    public @NotNull LocalDateTime getMatchDate() {
+        return this.matchDate;
+    }
+
+    public @NotNull ReservationStatus getReservationStatus() {
+        return this.reservationStatus;
+    }
+
+    public @NotNull ParticipantGender getGender() {
+        return this.gender;
+    }
+
+    public static class ReservationBuilder {
+        private Court court;
+        private Member member;
+        private Team team;
+        private LocalDateTime matchDate;
+        private ReservationStatus reservationStatus;
+        private ParticipantGender gender;
+
+        ReservationBuilder() {
+        }
+
+        public ReservationBuilder court(Court court) {
+            this.court = court;
+            return this;
+        }
+
+        public ReservationBuilder member(Member member) {
+            this.member = member;
+            return this;
+        }
+
+        public ReservationBuilder team(Team team) {
+            this.team = team;
+            return this;
+        }
+
+        public ReservationBuilder matchDate(LocalDateTime matchDate) {
+            this.matchDate = matchDate;
+            return this;
+        }
+
+        public ReservationBuilder reservationStatus(ReservationStatus reservationStatus) {
+            this.reservationStatus = reservationStatus;
+            return this;
+        }
+
+        public ReservationBuilder gender(ParticipantGender gender) {
+            this.gender = gender;
+            return this;
+        }
+
+        public Reservation build() {
+            return new Reservation(this.court, this.member, this.team, this.matchDate, this.reservationStatus, this.gender);
+        }
+
+        public String toString() {
+            return "Reservation.ReservationBuilder(court=" + this.court + ", member=" + this.member + ", team=" + this.team + ", matchDate=" + this.matchDate + ", reservationStatus=" + this.reservationStatus + ", gender=" + this.gender + ")";
+        }
     }
 }

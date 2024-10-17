@@ -1,7 +1,6 @@
 package team4.footwithme.stadium.api;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -13,13 +12,16 @@ import team4.footwithme.stadium.api.request.CourtUpdateRequest;
 import team4.footwithme.stadium.service.CourtService;
 import team4.footwithme.stadium.service.response.CourtDetailResponse;
 
-@Slf4j
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/merchant/court")
 public class CourtMerchantApi {
 
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(CourtMerchantApi.class);
     private final CourtService courtService;
+
+    public CourtMerchantApi(CourtService courtService) {
+        this.courtService = courtService;
+    }
 
     //@PreAuthorize("hasRole('ROLE_MERCHANT')")
     @PostMapping("/register")

@@ -1,17 +1,11 @@
 package team4.footwithme.vote.domain;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-@Getter
 @Table(indexes = {
     @Index(name = "idx_choice_member_id", columnList = "memberId"),
     @Index(name = "idx_choice_vote_item_id", columnList = "voteItemId")
 })
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class Choice {
 
@@ -23,10 +17,12 @@ public class Choice {
 
     private Long voteItemId;
 
-    @Builder
     private Choice(Long memberId, Long voteItemId) {
         this.memberId = memberId;
         this.voteItemId = voteItemId;
+    }
+
+    protected Choice() {
     }
 
     public static Choice create(Long memberId, Long voteItemId) {
@@ -36,4 +32,45 @@ public class Choice {
             .build();
     }
 
+    public static ChoiceBuilder builder() {
+        return new ChoiceBuilder();
+    }
+
+    public Long getChoiceId() {
+        return this.choiceId;
+    }
+
+    public Long getMemberId() {
+        return this.memberId;
+    }
+
+    public Long getVoteItemId() {
+        return this.voteItemId;
+    }
+
+    public static class ChoiceBuilder {
+        private Long memberId;
+        private Long voteItemId;
+
+        ChoiceBuilder() {
+        }
+
+        public ChoiceBuilder memberId(Long memberId) {
+            this.memberId = memberId;
+            return this;
+        }
+
+        public ChoiceBuilder voteItemId(Long voteItemId) {
+            this.voteItemId = voteItemId;
+            return this;
+        }
+
+        public Choice build() {
+            return new Choice(this.memberId, this.voteItemId);
+        }
+
+        public String toString() {
+            return "Choice.ChoiceBuilder(memberId=" + this.memberId + ", voteItemId=" + this.voteItemId + ")";
+        }
+    }
 }

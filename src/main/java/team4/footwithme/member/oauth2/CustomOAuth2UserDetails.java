@@ -1,6 +1,5 @@
 package team4.footwithme.member.oauth2;
 
-import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -12,7 +11,6 @@ import java.util.Map;
 
 public class CustomOAuth2UserDetails implements UserDetails, OAuth2User {
 
-    @Getter
     private final Member member;
     private Map<String, Object> attributes;
 
@@ -54,4 +52,7 @@ public class CustomOAuth2UserDetails implements UserDetails, OAuth2User {
         return member.getEmail();
     }
 
+    public Member getMember() {
+        return this.member;
+    }
 }

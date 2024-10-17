@@ -1,6 +1,5 @@
 package team4.footwithme.chat.service.event;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import team4.footwithme.chat.service.ChatMemberService;
@@ -8,11 +7,15 @@ import team4.footwithme.chat.service.ChatroomService;
 import team4.footwithme.chat.service.request.ChatroomServiceRequest;
 
 @Component
-@RequiredArgsConstructor
 public class ChatEventListener {
 
     private final ChatroomService chatroomService;
     private final ChatMemberService chatMemberService;
+
+    public ChatEventListener(ChatroomService chatroomService, ChatMemberService chatMemberService) {
+        this.chatroomService = chatroomService;
+        this.chatMemberService = chatMemberService;
+    }
 
     @EventListener
     public void onTeamPublishedEvent(TeamPublishedEvent event) {

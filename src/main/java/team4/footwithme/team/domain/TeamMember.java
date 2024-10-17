@@ -2,18 +2,12 @@ package team4.footwithme.team.domain;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import team4.footwithme.global.domain.BaseEntity;
 import team4.footwithme.member.domain.Member;
 
-@Getter
 @Entity
 @SQLDelete(sql = "UPDATE team_member SET is_deleted = 'TRUE' WHERE team_member_id = ?")
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TeamMember extends BaseEntity {
 
     @Id
@@ -32,11 +26,13 @@ public class TeamMember extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private TeamMemberRole role;
 
-    @Builder
     private TeamMember(Team team, Member member, TeamMemberRole role) {
         this.team = team;
         this.member = member;
         this.role = role;
+    }
+
+    protected TeamMember() {
     }
 
     public static TeamMember create(Team team, Member member, TeamMemberRole role) {
@@ -63,4 +59,55 @@ public class TeamMember extends BaseEntity {
             .build();
     }
 
+    public static TeamMemberBuilder builder() {
+        return new TeamMemberBuilder();
+    }
+
+    public Long getTeamMemberId() {
+        return this.teamMemberId;
+    }
+
+    public Team getTeam() {
+        return this.team;
+    }
+
+    public Member getMember() {
+        return this.member;
+    }
+
+    public @NotNull TeamMemberRole getRole() {
+        return this.role;
+    }
+
+    public static class TeamMemberBuilder {
+        private Team team;
+        private Member member;
+        private TeamMemberRole role;
+
+        TeamMemberBuilder() {
+        }
+
+        public TeamMemberBuilder team(Team team) {
+            this.team = team;
+            return this;
+        }
+
+        public TeamMemberBuilder member(Member member) {
+            this.member = member;
+            return this;
+        }
+
+        public TeamMemberBuilder role(TeamMemberRole role) {
+            this.role = role;
+            return this;
+        }
+
+        public TeamMember build() {
+            return new TeamMember(this.team, this.member, this.role);
+        }
+
+        public String toString() {
+            return "TeamMember.TeamMemberBuilder(team=" + this.team + ", member=" + this.member + ", role=" + this.role + ")";
+        }
+    }
 }

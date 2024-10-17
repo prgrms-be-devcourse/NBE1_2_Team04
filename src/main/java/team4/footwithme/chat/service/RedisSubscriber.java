@@ -2,18 +2,21 @@ package team4.footwithme.chat.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 import team4.footwithme.chat.domain.Chat;
 import team4.footwithme.chat.service.response.ChatResponse;
 
 @Service
-@RequiredArgsConstructor
 public class RedisSubscriber {
 
     private final ObjectMapper objectMapper;
     private final SimpMessageSendingOperations messagingTemplate;
+
+    public RedisSubscriber(ObjectMapper objectMapper, SimpMessageSendingOperations messagingTemplate) {
+        this.objectMapper = objectMapper;
+        this.messagingTemplate = messagingTemplate;
+    }
 
     public void sendMessage(String publishMessage) {
         try {

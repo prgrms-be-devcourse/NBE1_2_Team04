@@ -1,7 +1,6 @@
 package team4.footwithme.resevation.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import lombok.RequiredArgsConstructor;
 import team4.footwithme.global.domain.IsDeleted;
 import team4.footwithme.resevation.domain.Participant;
 import team4.footwithme.resevation.domain.ParticipantRole;
@@ -10,9 +9,12 @@ import java.util.List;
 
 import static team4.footwithme.resevation.domain.QParticipant.participant;
 
-@RequiredArgsConstructor
 public class CustomParticipantRepositoryImpl implements CustomParticipantRepository {
     private final JPAQueryFactory queryFactory;
+
+    public CustomParticipantRepositoryImpl(JPAQueryFactory queryFactory) {
+        this.queryFactory = queryFactory;
+    }
 
     public List<Participant> findParticipantByReservationIdAndRole(Long reservationId) {
         return queryFactory

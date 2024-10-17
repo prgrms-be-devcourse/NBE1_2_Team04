@@ -2,7 +2,6 @@ package team4.footwithme.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -28,13 +27,19 @@ import team4.footwithme.member.oauth2.CustomOAuth2UserService;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-@RequiredArgsConstructor
 public class SecurityConfig {
 
     private final JwtTokenFilter jwtTokenFilter;
     private final ExceptionHandlerFilter exceptionHandlerFilter;
     private final CustomOAuth2UserService customOAuth2UserService;
     private final CustomOAuth2LoginSuccessHandler customOAuth2LoginSuccessHandler;
+
+    public SecurityConfig(JwtTokenFilter jwtTokenFilter, ExceptionHandlerFilter exceptionHandlerFilter, CustomOAuth2UserService customOAuth2UserService, CustomOAuth2LoginSuccessHandler customOAuth2LoginSuccessHandler) {
+        this.jwtTokenFilter = jwtTokenFilter;
+        this.exceptionHandlerFilter = exceptionHandlerFilter;
+        this.customOAuth2UserService = customOAuth2UserService;
+        this.customOAuth2LoginSuccessHandler = customOAuth2LoginSuccessHandler;
+    }
 
 
     @Bean

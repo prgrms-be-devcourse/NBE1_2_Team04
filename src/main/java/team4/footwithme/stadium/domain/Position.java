@@ -2,13 +2,7 @@ package team4.footwithme.stadium.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Embeddable
 public class Position {
 
@@ -18,10 +12,16 @@ public class Position {
     @Column(nullable = false)
     private double longitude;
 
-    @Builder
     private Position(double latitude, double longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
+    }
+
+    protected Position() {
+    }
+
+    public static PositionBuilder builder() {
+        return new PositionBuilder();
     }
 
     public void updatePosition(Double latitude, Double longitude) {
@@ -29,4 +29,37 @@ public class Position {
         this.longitude = longitude;
     }
 
+    public double getLatitude() {
+        return this.latitude;
+    }
+
+    public double getLongitude() {
+        return this.longitude;
+    }
+
+    public static class PositionBuilder {
+        private double latitude;
+        private double longitude;
+
+        PositionBuilder() {
+        }
+
+        public PositionBuilder latitude(double latitude) {
+            this.latitude = latitude;
+            return this;
+        }
+
+        public PositionBuilder longitude(double longitude) {
+            this.longitude = longitude;
+            return this;
+        }
+
+        public Position build() {
+            return new Position(this.latitude, this.longitude);
+        }
+
+        public String toString() {
+            return "Position.PositionBuilder(latitude=" + this.latitude + ", longitude=" + this.longitude + ")";
+        }
+    }
 }

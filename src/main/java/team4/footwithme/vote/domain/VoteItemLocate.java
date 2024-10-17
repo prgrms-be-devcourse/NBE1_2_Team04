@@ -1,22 +1,18 @@
 package team4.footwithme.vote.domain;
 
 import jakarta.persistence.Entity;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class VoteItemLocate extends VoteItem {
 
     private Long courtId;
 
-    @Builder
     private VoteItemLocate(Vote vote, Long courtId) {
         super(vote);
         this.courtId = courtId;
+    }
+
+    protected VoteItemLocate() {
     }
 
     public static VoteItemLocate create(Vote vote, Long courtId) {
@@ -26,4 +22,37 @@ public class VoteItemLocate extends VoteItem {
             .build();
     }
 
+    public static VoteItemLocateBuilder builder() {
+        return new VoteItemLocateBuilder();
+    }
+
+    public Long getCourtId() {
+        return this.courtId;
+    }
+
+    public static class VoteItemLocateBuilder {
+        private Vote vote;
+        private Long courtId;
+
+        VoteItemLocateBuilder() {
+        }
+
+        public VoteItemLocateBuilder vote(Vote vote) {
+            this.vote = vote;
+            return this;
+        }
+
+        public VoteItemLocateBuilder courtId(Long courtId) {
+            this.courtId = courtId;
+            return this;
+        }
+
+        public VoteItemLocate build() {
+            return new VoteItemLocate(this.vote, this.courtId);
+        }
+
+        public String toString() {
+            return "VoteItemLocate.VoteItemLocateBuilder(vote=" + this.vote + ", courtId=" + this.courtId + ")";
+        }
+    }
 }

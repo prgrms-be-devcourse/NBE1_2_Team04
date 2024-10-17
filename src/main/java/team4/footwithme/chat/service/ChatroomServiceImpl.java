@@ -1,6 +1,5 @@
 package team4.footwithme.chat.service;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team4.footwithme.chat.domain.Chatroom;
@@ -12,12 +11,16 @@ import team4.footwithme.chat.service.request.ChatroomServiceRequest;
 import team4.footwithme.chat.service.response.ChatroomResponse;
 import team4.footwithme.global.exception.ExceptionMessage;
 
-@RequiredArgsConstructor
 @Service
 public class ChatroomServiceImpl implements ChatroomService {
     private final ChatroomRepository chatroomRepository;
 
     private final RedisChatroomRepository redisChatroomRepository;
+
+    public ChatroomServiceImpl(ChatroomRepository chatroomRepository, RedisChatroomRepository redisChatroomRepository) {
+        this.chatroomRepository = chatroomRepository;
+        this.redisChatroomRepository = redisChatroomRepository;
+    }
 
     /**
      * 채팅방 생성

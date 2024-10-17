@@ -11,4 +11,8 @@ public enum VoteStatus {
     VoteStatus(String text) {
         this.text = text;
     }
+
+    public String getText() {
+        return this.text;
+    }
 }

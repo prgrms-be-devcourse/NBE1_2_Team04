@@ -4,13 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Embeddable
 public class LoginType {
 
@@ -20,9 +14,49 @@ public class LoginType {
     @Column(nullable = true)
     private String snsId;
 
-    @Builder
     private LoginType(LoginProvider loginProvider, String snsId) {
         this.loginProvider = loginProvider;
         this.snsId = snsId;
+    }
+
+    protected LoginType() {
+    }
+
+    public static LoginTypeBuilder builder() {
+        return new LoginTypeBuilder();
+    }
+
+    public LoginProvider getLoginProvider() {
+        return this.loginProvider;
+    }
+
+    public String getSnsId() {
+        return this.snsId;
+    }
+
+    public static class LoginTypeBuilder {
+        private LoginProvider loginProvider;
+        private String snsId;
+
+        LoginTypeBuilder() {
+        }
+
+        public LoginTypeBuilder loginProvider(LoginProvider loginProvider) {
+            this.loginProvider = loginProvider;
+            return this;
+        }
+
+        public LoginTypeBuilder snsId(String snsId) {
+            this.snsId = snsId;
+            return this;
+        }
+
+        public LoginType build() {
+            return new LoginType(this.loginProvider, this.snsId);
+        }
+
+        public String toString() {
+            return "LoginType.LoginTypeBuilder(loginProvider=" + this.loginProvider + ", snsId=" + this.snsId + ")";
+        }
     }
 }

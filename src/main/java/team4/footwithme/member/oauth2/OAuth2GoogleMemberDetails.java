@@ -1,14 +1,16 @@
 package team4.footwithme.member.oauth2;
 
-import lombok.AllArgsConstructor;
 import team4.footwithme.member.domain.LoginProvider;
 
 import java.util.Map;
 
-@AllArgsConstructor
 public class OAuth2GoogleMemberDetails implements OAuth2MemberDetails {
 
     private Map<String, Object> attributes;
+
+    public OAuth2GoogleMemberDetails(Map<String, Object> attributes) {
+        this.attributes = attributes;
+    }
 
     @Override
     public LoginProvider getProvider() {

@@ -1,6 +1,5 @@
 package team4.footwithme.chat.service;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -18,7 +17,6 @@ import team4.footwithme.member.domain.Member;
 import team4.footwithme.member.jwt.JwtTokenUtil;
 import team4.footwithme.member.repository.MemberRepository;
 
-@RequiredArgsConstructor
 @Service
 public class ChatServiceImpl implements ChatService {
     private final ChatRepository chatRepository;
@@ -28,6 +26,15 @@ public class ChatServiceImpl implements ChatService {
 
     private final RedisPublisher redisPublisher;
     private final JwtTokenUtil jwtTokenUtil;
+
+    public ChatServiceImpl(ChatRepository chatRepository, ChatroomRepository chatroomRepository, MemberRepository memberRepository, ChatMemberRepository chatMemberRepository, RedisPublisher redisPublisher, JwtTokenUtil jwtTokenUtil) {
+        this.chatRepository = chatRepository;
+        this.chatroomRepository = chatroomRepository;
+        this.memberRepository = memberRepository;
+        this.chatMemberRepository = chatMemberRepository;
+        this.redisPublisher = redisPublisher;
+        this.jwtTokenUtil = jwtTokenUtil;
+    }
 
     /**
      * 메세지 보내기

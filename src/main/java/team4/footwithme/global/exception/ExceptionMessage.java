@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor
 public enum ExceptionMessage {
 
     // Stadium
@@ -50,4 +49,12 @@ public enum ExceptionMessage {
     GAME_NOT_FOUND("해당 게임을 찾을 수 없습니다."),
     GAME_STATUS_NOT_VALID("게임 상태는 READY 또는 IGNORE만 가능합니다.");
     private final String text;
+
+    private ExceptionMessage(String text) {
+        this.text = text;
+    }
+
+    public String getText() {
+        return this.text;
+    }
 }

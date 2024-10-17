@@ -1,6 +1,5 @@
 package team4.footwithme.resevation.service;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -17,10 +16,14 @@ import team4.footwithme.resevation.service.response.MercenaryResponse;
 import java.time.format.DateTimeFormatter;
 
 @Service
-@RequiredArgsConstructor
 public class MercenaryServiceImpl implements MercenaryService {
     private final MercenaryRepository mercenaryRepository;
     private final ReservationRepository reservationRepository;
+
+    public MercenaryServiceImpl(MercenaryRepository mercenaryRepository, ReservationRepository reservationRepository) {
+        this.mercenaryRepository = mercenaryRepository;
+        this.reservationRepository = reservationRepository;
+    }
 
     /**
      * 용병 게시판 생성

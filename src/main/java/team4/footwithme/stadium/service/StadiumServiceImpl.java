@@ -1,7 +1,6 @@
 package team4.footwithme.stadium.service;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -25,16 +24,21 @@ import team4.footwithme.stadium.util.SortFieldMapper;
 
 import java.util.List;
 
-@Slf4j
-@RequiredArgsConstructor
 @Service
 public class StadiumServiceImpl implements StadiumService {
 
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(StadiumServiceImpl.class);
     private final StadiumRepository stadiumRepository;
 
     private final MemberRepository memberRepository;
 
     private final CourtRepository courtRepository;
+
+    public StadiumServiceImpl(StadiumRepository stadiumRepository, MemberRepository memberRepository, CourtRepository courtRepository) {
+        this.stadiumRepository = stadiumRepository;
+        this.memberRepository = memberRepository;
+        this.courtRepository = courtRepository;
+    }
 
     @Override
     public Slice<StadiumsResponse> getStadiumList(Integer page, String sort) {
